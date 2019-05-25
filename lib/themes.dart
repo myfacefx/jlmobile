@@ -19,5 +19,13 @@ ThemeData buildThemeData() {
       splashColor: kPrimaryLight,
       buttonColor: kPrimaryColor,
       //dividerColor: Color.fromRGBO(242, 242, 242, 1),
-      textTheme: TextTheme(title: TextStyle(color: Colors.black, fontWeight: prefix0.FontWeight.w700, fontSize: 23)));
+      textTheme: TextTheme(
+          title: TextStyle(
+              color: Colors.black,
+              fontWeight: prefix0.FontWeight.w700,
+              fontSize: 23),
+          headline: TextStyle(color: Colors.black, fontSize: 16),
+          subtitle: TextStyle(color: Colors.black, fontWeight: prefix0.FontWeight.w400),
+          display1: TextStyle(color: Color.fromRGBO(178, 178, 178, 1), fontSize: 10)
+          ));
 }
