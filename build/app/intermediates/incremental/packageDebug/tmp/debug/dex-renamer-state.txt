@@ -1,0 +1,4 @@
+#Sat May 25 22:32:36 WIB 2019
+base.0=/home/joe/project/jlf-mobile/build/app/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex
