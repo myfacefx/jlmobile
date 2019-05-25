@@ -23,6 +23,7 @@
 .dart_tool/
 .flutter-plugins
 .packages
+pubspec.lock
 .pub-cache/
 .pub/
 /build/
