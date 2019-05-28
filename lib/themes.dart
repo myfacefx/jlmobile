@@ -21,11 +21,13 @@ ThemeData buildThemeData() {
       //dividerColor: Color.fromRGBO(242, 242, 242, 1),
       textTheme: TextTheme(
           title: TextStyle(
-              color: Colors.black,
-              fontWeight: prefix0.FontWeight.w700,
-              fontSize: 23),
+            color: Colors.black,
+          ),
           headline: TextStyle(color: Colors.black, fontSize: 16),
-          subtitle: TextStyle(color: Colors.black, fontWeight: prefix0.FontWeight.w400),
-          display1: TextStyle(color: Color.fromRGBO(178, 178, 178, 1), fontSize: 10)
-          ));
+          subtitle: TextStyle(
+              color: Colors.black, fontWeight: prefix0.FontWeight.w400),
+          display1:
+              TextStyle(color: Color.fromRGBO(178, 178, 178, 1), fontSize: 10),
+          display2: TextStyle(
+              color: Color.fromRGBO(136, 136, 136, 1), fontSize: 10)));
 }

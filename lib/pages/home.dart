@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:jlf_mobile/pages/category_detail.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,19 +28,23 @@ class _HomePage extends State<HomePage> {
     List<Widget> listImage = [
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'https://media.mercola.com/imageserver/public/2011/May/two-cute-pet-puppies05.03.jpg',
+        image:
+            'https://media.mercola.com/imageserver/public/2011/May/two-cute-pet-puppies05.03.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'https://www.disktrend.com/wp-content/uploads/2017/03/Jack-Russell-Terrier-running.jpg',
+        image:
+            'https://www.disktrend.com/wp-content/uploads/2017/03/Jack-Russell-Terrier-running.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'https://dbw4iivs1kce3.cloudfront.net/680x390/2014/05/Lactation-pregnant-dog.jpg',
+        image:
+            'https://dbw4iivs1kce3.cloudfront.net/680x390/2014/05/Lactation-pregnant-dog.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'https://cdn.newsapi.com.au/image/v1/9ff9ff58d79063b90446a39560fdeaa2?width=650',
+        image:
+            'https://cdn.newsapi.com.au/image/v1/9ff9ff58d79063b90446a39560fdeaa2?width=650',
       )
     ];
     return Stack(
@@ -80,7 +85,7 @@ class _HomePage extends State<HomePage> {
       height: 64,
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(25)),
+          borderRadius: BorderRadius.circular(10)),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(
           "BINGUNG ? YUK SINI KAMI AJARIN",
@@ -123,7 +128,7 @@ class _HomePage extends State<HomePage> {
             shape: BoxShape.circle,
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(90),
             child: FadeInImage.assetNetwork(
               fit: BoxFit.cover,
               placeholder: 'assets/images/loading.gif',
@@ -147,18 +152,26 @@ class _HomePage extends State<HomePage> {
         );
       }
 
-      return Card(
-        child: Container(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              image(),
-              SizedBox(
-                width: 8,
-              ),
-              detail()
-            ],
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CategoryDetailPage()));
+        },
+        child: Card(
+          child: Container(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                image(),
+                SizedBox(
+                  width: 8,
+                ),
+                detail()
+              ],
+            ),
           ),
         ),
       );
@@ -231,11 +244,8 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("JLF"),
-        leading: Icon(Icons.menu),
-        centerTitle: true,
-      ),
+      appBar: globals.appBar(context),
+      drawer: globals.drawer(),
       body: SafeArea(
         child: ListView(
           children: <Widget>[
@@ -256,7 +266,7 @@ class _HomePage extends State<HomePage> {
           color: Color.fromRGBO(201, 0, 0, 1),
           child: Center(
             child: Text(
-              "take care your product, avoid blacklist member | check here",
+              "Take care of your product, avoid blacklist member | check here",
               textAlign: TextAlign.center,
             ),
           )),
