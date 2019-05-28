@@ -11,10 +11,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //SystemChrome.setEnabledSystemUIOverlays ([]);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'JLF',
       debugShowCheckedModeBanner: false,
       theme:buildThemeData(),
-      home: HomePage(),
+      home: LoginPage(),
+      routes: <String, WidgetBuilder>{
+        //Root Page
+        '/home': (BuildContext context) => HomePage(),
+        
+      },
     );
   }
 }

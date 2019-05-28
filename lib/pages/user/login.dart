@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/pages/home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,7 +21,7 @@ class _LoginPage extends State<LoginPage> {
       padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: FloatingActionButton.extended(
         onPressed: () {
-          print("FB");
+          Navigator.pushNamed(context, "/home");
         },
         backgroundColor: backgr,
         label: Container(
@@ -63,7 +64,7 @@ class _LoginPage extends State<LoginPage> {
         _buildBackground(),
         Center(
           child: Container(
-            padding: EdgeInsets.fromLTRB(0, globals.mh(context)*0.3, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, globals.mh(context) * 0.2, 0, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -71,8 +72,9 @@ class _LoginPage extends State<LoginPage> {
                   child: Text("LOGIN & REGISTER",
                       style: Theme.of(context).textTheme.title),
                 ),
-                SizedBox(height: 40,),
-                _floatingButton("Facebook"),
+                SizedBox(
+                  height: 40,
+                ),
                 _floatingButton("Google"),
               ],
             ),

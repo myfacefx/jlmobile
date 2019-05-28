@@ -27,19 +27,19 @@ class _HomePage extends State<HomePage> {
     List<Widget> listImage = [
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'http://hd.wallpaperswide.com/thumbs/animal_8-t2.jpg',
+        image: 'https://media.mercola.com/imageserver/public/2011/May/two-cute-pet-puppies05.03.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'http://www.zwallpapers.net/data/programs/images/antelopes.jpg',
+        image: 'https://www.disktrend.com/wp-content/uploads/2017/03/Jack-Russell-Terrier-running.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'http://www.zwallpapers.net/data/programs/images/antelopes.jpg',
+        image: 'https://dbw4iivs1kce3.cloudfront.net/680x390/2014/05/Lactation-pregnant-dog.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'http://www.zwallpapers.net/data/programs/images/antelopes.jpg',
+        image: 'https://cdn.newsapi.com.au/image/v1/9ff9ff58d79063b90446a39560fdeaa2?width=650',
       )
     ];
     return Stack(
@@ -128,7 +128,7 @@ class _HomePage extends State<HomePage> {
               fit: BoxFit.cover,
               placeholder: 'assets/images/loading.gif',
               image:
-                  'http://www.zwallpapers.net/data/programs/images/antelopes.jpg',
+                  'https://thenypost.files.wordpress.com/2018/10/102318-dogs-color-determine-disesases-life.jpg?quality=90&strip=all&w=618&h=410&crop=1',
             ),
           ),
         );
