@@ -16,6 +16,72 @@ double mw(BuildContext context) {
   return MediaQuery.of(context).size.width;
 }
 
+String baseUrl = "http://192.168.100.119:8000";
+String flavor = "Development";
+String state = "Login";
+
+String getBaseUrl() {
+  return baseUrl;
+}
+
+/// Global Function to return Alert Dialog
+Future<bool> showDialogs(String content, BuildContext context,
+    {String title = "Perhatian",
+    String route = "",
+    bool isDouble = false,
+    Function openSetting,
+    String text = "Close"}) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(text),
+            onPressed: () {
+              if (text != "Close") {
+                Navigator.pop(context);
+                openSetting();
+              } else {
+                if (route == "") {
+                  Navigator.of(context).pop(true);
+                } else {
+                  Navigator.popUntil(context, ModalRoute.withName(route));
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, route);
+                }
+
+                if (isDouble) {
+                  Navigator.of(context).pop();
+                }
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void loadingModel(context, {label = "Memuat. . ."}) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (_) => AlertDialog(
+          title: Text(label),
+          content: MaterialButton(
+            onPressed: () {},
+            height: 50,
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.red,
+            ),
+          ),
+        ),
+  );
+}
+
 Widget bottomAppBar() {
   return Container(
       height: 20,
@@ -44,11 +110,7 @@ Widget drawer() {
     child: Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        child: ListView(padding: EdgeInsets.all(10.0), children: [
-         DrawerHeader(
-           
-         )
-        ]),
+        child: ListView(padding: EdgeInsets.all(10.0), children: []),
       ),
     ),
   );

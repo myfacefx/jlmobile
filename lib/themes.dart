@@ -12,6 +12,7 @@ ThemeData buildThemeData() {
       appBarTheme: AppBarTheme(
         color: kPrimaryColor,
       ),
+      accentColor: kPrimaryColor,
       primaryColor: kPrimaryColor,
       primaryColorDark: kPrimaryDark,
       primaryColorLight: kPrimaryLight,
