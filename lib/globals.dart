@@ -5,6 +5,7 @@ import 'package:flutter_advanced_networkimage/provider.dart'
     show AdvancedNetworkImage;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:validators/validators.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
@@ -136,4 +137,16 @@ Future<ImageProvider> imageUrlProvider(String link,
     retImg = AdvancedNetworkImage(link, fallbackImage: list);
   }
   return retImg;
+}
+
+String convertToMoney(double number) {
+  var moneyMasked = new MoneyMaskedTextController(
+    decimalSeparator: '',
+    precision: 0,
+    thousandSeparator: '.',
+    rightSymbol: ",-",
+    // leftSymbol: "Rp."
+  );
+  moneyMasked.updateValue(number);
+  return moneyMasked.text;
 }
