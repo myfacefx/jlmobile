@@ -194,11 +194,11 @@ class _HomePage extends State<HomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              image(category.slug),
+              image(category.image),
               SizedBox(
                 width: 8,
               ),
-              detail(category.name, category.count.toString())
+              detail(category.name, category.animalsCount.toString())
             ],
           ),
         ),
