@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/pages/product_detail.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   @override
@@ -171,7 +172,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       height: 128,
       color: Colors.black,
-      width: (globals.mw(context) * 0.5) - 40,
+      width: 165,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
@@ -205,7 +206,12 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       bottom: 4,
       right: 10,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+           Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => ProductDetailPage()));
+        },
         splashColor: Theme.of(context).primaryColor,
         child: Container(
             width: 40,
@@ -320,7 +326,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           ),
         ),
       ),
-      bottomNavigationBar: globals.bottomAppBar(),
     );
   }
 }
