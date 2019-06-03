@@ -41,6 +41,25 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions "flavor"
+    productFlavors {
+        staging {
+            dimension "flavor"
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+        }
+ 
+        development {
+            dimension "flavor"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+
+        production {
+            dimension "flavor"
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
