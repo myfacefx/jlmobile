@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
+import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 
 class HomePage extends StatefulWidget {
@@ -285,6 +285,7 @@ class _HomePage extends State<HomePage> {
     return Scaffold(
       appBar: globals.appBar(context),
       drawer: globals.drawer(),
+      bottomNavigationBar: globals.bottomNavigationBar(context),
       body: SafeArea(
         child: ListView(
           children: <Widget>[

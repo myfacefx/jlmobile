@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -21,6 +22,13 @@ String baseUrl = "http://192.168.100.119:8000";
 String flavor = "Development";
 String state = "Login";
 
+// Global timeout setting
+int timeOut = 30;
+
+int getTimeOut() {
+  return timeOut;
+}
+
 String getBaseUrl() {
   return baseUrl;
 }
@@ -31,18 +39,18 @@ Future<bool> showDialogs(String content, BuildContext context,
     String route = "",
     bool isDouble = false,
     Function openSetting,
-    String text = "Close"}) {
+    String text = "Tutup"}) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(title),
+        title: Text(title, style: TextStyle(color: Colors.black)),
         content: Text(content),
         actions: <Widget>[
           FlatButton(
             child: Text(text),
             onPressed: () {
-              if (text != "Close") {
+              if (text != "Tutup") {
                 Navigator.pop(context);
                 openSetting();
               } else {
@@ -83,8 +91,12 @@ void loadingModel(context, {label = "Memuat. . ."}) {
   );
 }
 
-Widget bottomAppBar() {
-  return Container(
+Widget bottomNavigationBar(context) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.pushNamed(context, "/blacklist");
+    },
+    child: Container(
       height: 20,
       color: Color.fromRGBO(201, 0, 0, 1),
       child: Center(
@@ -93,7 +105,9 @@ Widget bottomAppBar() {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 12),
         ),
-      ));
+      )
+    )
+  );
 }
 
 Widget appBar(_scaffoldKey) {

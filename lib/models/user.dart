@@ -6,7 +6,10 @@ import 'dart:convert';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
+List<User> listUserFromJson(String str) => new List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
+
 String userToJson(User data) => json.encode(data.toJson());
+
 
 class User {
     int id;
@@ -17,6 +20,8 @@ class User {
     dynamic createdAt;
     dynamic updatedAt;
     dynamic deletedAt;
+    int blacklisted;
+    int reportsCount;
 
     User({
         this.id,
@@ -27,6 +32,8 @@ class User {
         this.createdAt,
         this.updatedAt,
         this.deletedAt,
+        this.blacklisted,
+        this.reportsCount
     });
 
     factory User.fromJson(Map<String, dynamic> json) => new User(
@@ -35,9 +42,11 @@ class User {
         email: json["email"] == null ? null : json["email"],
         phoneNumber: json["phone_number"] == null ? null : json["phone_number"],
         address: json["address"] == null ? null : json["address"],
-        createdAt: json["created_at"],
-        updatedAt: json["updated_at"],
-        deletedAt: json["deleted_at"],
+        createdAt: json["created_at"] == null ? null : json["created_at"],
+        updatedAt: json["updated_at"] == null ? null : json["updated_at"],
+        deletedAt: json["deleted_at"] == null ? null : json["deleted_at"],
+        blacklisted: json["blacklisted"] == null ? null : json['blacklisted'],
+        reportsCount: json["reports_count"] == null ? null : json["reports_count"]
     );
 
     Map<String, dynamic> toJson() => {
@@ -49,5 +58,7 @@ class User {
         "created_at": createdAt,
         "updated_at": updatedAt,
         "deleted_at": deletedAt,
+        "blacklisted": blacklisted,
+        "reports_count": reportsCount
     };
 }
