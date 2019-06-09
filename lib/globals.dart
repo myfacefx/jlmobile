@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_advanced_networkimage/provider.dart'
     show AdvancedNetworkImage;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
@@ -110,24 +111,151 @@ Widget bottomNavigationBar(context) {
   );
 }
 
-Widget appBar(_scaffoldKey) {
+Widget appBar(GlobalKey<ScaffoldState> scaffoldKey) {
   return AppBar(
     title: Text("JLF"),
     leading: new IconButton(
-        icon: new Icon(Icons.menu),
-        onPressed: () => _scaffoldKey.currentState.openDrawer()),
+      icon: new Icon(Icons.menu),
+      onPressed: () {
+        if (scaffoldKey.currentState.isDrawerOpen) scaffoldKey.currentState.openEndDrawer();
+        else scaffoldKey.currentState.openDrawer();
+      }
+    ),
     centerTitle: true,
   );
 }
 
-Widget drawer() {
-  return Drawer(
-    child: Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        child: ListView(padding: EdgeInsets.all(10.0), children: []),
+Widget _buildDrawerNavigationButtonBig(title, context) {
+  return Container(
+    padding: EdgeInsets.fromLTRB(0, 3, 20, 5),
+    child: FlatButton(
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      padding: EdgeInsets.all(0),
+      // shape: StadiumBorder(side: BorderSide),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(10),
+          bottomRight: Radius.circular(10)
+        )
+      ),
+      color: Colors.white,
+      onPressed: () {},
+      child: SizedBox(
+        width: double.infinity,
+        child: Row(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 8),
+              child: Text(title,  style: TextStyle(color: Theme.of(context).primaryColor)),
+            )
+            // Container(
+            //   width: 20,
+            //   child: RaisedButton(
+            //     onPressed: () {},
+            //     color: Theme.of(context).primaryColor,
+            //     child: Text("10", style: Theme.of(context).textTheme.display4)
+            //   )
+            // )
+          ]
+        )
       ),
     ),
+  );
+}
+
+Widget _buildDrawerNavigationButtonSmall(title, context) {
+  return Container(
+    padding: EdgeInsets.fromLTRB(0, 5, 60, 0),
+    height: 35,
+    child: OutlineButton(
+      padding: EdgeInsets.only(left: 8),
+      borderSide: BorderSide(
+        color: Colors.white
+      ),
+      highlightColor: Colors.white10,
+      highlightedBorderColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(10),
+          bottomRight: Radius.circular(10)
+        )
+      ),
+      onPressed: () {}, 
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(title, style: Theme.of(context).textTheme.display1)
+      ),
+    )
+  );
+}
+
+Widget drawer(context) {
+  return SizedBox(
+    width: MediaQuery.of(context).size.width * 0.55,
+    child: Drawer(
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        child: ListView(
+          children: <Widget>[
+            // Avatar
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+              height: 150,
+              child: CircleAvatar(
+                radius: 100,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: FadeInImage.assetNetwork(
+                    image:'https://66.media.tumblr.com/d3a12893ef0dfec39cf7335008f16c7f/tumblr_pcve4yqyEO1uaogmwo8_400.png',
+                    placeholder: 'assets/images/loading.gif',
+                    fit: BoxFit.cover
+                  )
+                )
+              )
+            ),          
+            Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.35,
+                child: OutlineButton(
+                  onPressed: () {},
+                  color: Colors.transparent,
+                  highlightColor: Colors.white10,
+                  highlightedBorderColor: Colors.white,
+                  borderSide: BorderSide(color: Colors.white),
+                  child: Text("Edit Profile", style: Theme.of(context).textTheme.display4),
+                )
+              )
+            ),
+            spacePadding(),
+            _buildDrawerNavigationButtonBig("Our Auction Products", context),
+            _buildDrawerNavigationButtonBig("Our Shop Products", context),
+            _buildDrawerNavigationButtonBig("Our Bids", context),
+            _buildDrawerNavigationButtonBig("Our Carts", context),
+            _buildDrawerNavigationButtonBig("Notifications", context),
+            spacePadding(),
+            _buildDrawerNavigationButtonSmall("About", context),
+            _buildDrawerNavigationButtonSmall("How To", context),
+            _buildDrawerNavigationButtonSmall("FAQ", context),
+            _buildDrawerNavigationButtonSmall("Settings", context),
+            _buildDrawerNavigationButtonSmall("Log Out", context),
+            spacePadding()
+            // Container()
+          ],
+        )
+      )
+      // child: Align(
+      //   alignment: Alignment.bottomCenter,
+      //   child: Container(
+      //     child: ListView(padding: EdgeInsets.all(10.0), children: []),
+      //   ),
+      // ),
+    ),
+  );
+}
+
+Widget spacePadding() {
+  return Padding(
+    padding: EdgeInsets.only(bottom: 20)
   );
 }
 

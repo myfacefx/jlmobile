@@ -12,6 +12,7 @@ class BlacklistPage extends StatefulWidget {
 }
 
 class _BlacklistPageState extends State<BlacklistPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
   bool failedDataFetching = false;
   List<User> blacklistedUser = List<User>();
@@ -133,13 +134,16 @@ class _BlacklistPageState extends State<BlacklistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(context),
-      drawer: globals.drawer(),
-      body: Column(
-        children: <Widget> [
-          _buildPageTitle(),
-          _buildGridBlacklistedUser()
-        ]
+      appBar: globals.appBar(_scaffoldKey),
+      body: Scaffold(
+        key: _scaffoldKey,
+        drawer: globals.drawer(context),
+        body: Column(
+          children: <Widget> [
+            _buildPageTitle(),
+            _buildGridBlacklistedUser()
+          ]
+        )
       )
     );
   }

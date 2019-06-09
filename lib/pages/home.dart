@@ -13,6 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   int _current = 0;
   bool isLoadingCategories = true;
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
@@ -283,22 +285,25 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(context),
-      drawer: globals.drawer(),
-      bottomNavigationBar: globals.bottomNavigationBar(context),
-      body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            _buildCarousel(),
-            _buildAsk(),
-            _buildTitle(),
-            _buildAnimalCategories(animalCategories),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(35, 5, 35, 5),
-              child: Divider(color: Colors.black),
-            ),
-            _buildPromotion()
-          ],
+      appBar: globals.appBar(_scaffoldKey),
+      body: Scaffold(
+        key: _scaffoldKey,
+        bottomNavigationBar: globals.bottomNavigationBar(context),
+        drawer: globals.drawer(context),
+        body: SafeArea(
+          child: ListView(
+            children: <Widget>[
+              _buildCarousel(),
+              _buildAsk(),
+              _buildTitle(),
+              _buildAnimalCategories(animalCategories),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(35, 5, 35, 5),
+                child: Divider(color: Colors.black),
+              ),
+              _buildPromotion()
+            ],
+          ),
         ),
       ),
     );
