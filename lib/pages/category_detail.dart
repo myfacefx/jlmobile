@@ -307,7 +307,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       appBar: globals.appBar(_scaffoldKey),
       body: Scaffold(
         key: _scaffoldKey,
-        drawer: globals.drawer(),
+        drawer: globals.drawer(context),
         body: SafeArea(
           child: ListView(
             children: <Widget>[
