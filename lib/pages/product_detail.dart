@@ -291,7 +291,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(_scaffoldKey),
+      appBar: globals.appBar(_scaffoldKey, context),
       body: Scaffold(
         key: _scaffoldKey,
         drawer: globals.drawer(context),

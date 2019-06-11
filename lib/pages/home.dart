@@ -285,7 +285,7 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(_scaffoldKey),
+      appBar: globals.appBar(_scaffoldKey, context),
       body: Scaffold(
         key: _scaffoldKey,
         bottomNavigationBar: globals.bottomNavigationBar(context),

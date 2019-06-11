@@ -134,15 +134,17 @@ class _BlacklistPageState extends State<BlacklistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(_scaffoldKey),
+      appBar: globals.appBar(_scaffoldKey, context),
       body: Scaffold(
         key: _scaffoldKey,
         drawer: globals.drawer(context),
-        body: Column(
-          children: <Widget> [
-            _buildPageTitle(),
-            _buildGridBlacklistedUser()
-          ]
+        body: SafeArea(
+          child: Column(
+            children: <Widget> [
+              _buildPageTitle(),
+              _buildGridBlacklistedUser()
+            ]
+          ),
         )
       )
     );
