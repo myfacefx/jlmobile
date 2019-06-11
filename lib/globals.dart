@@ -111,7 +111,7 @@ Widget bottomNavigationBar(context) {
   );
 }
 
-Widget appBar(GlobalKey<ScaffoldState> scaffoldKey) {
+Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
   return AppBar(
     title: Text("JLF"),
     leading: new IconButton(
@@ -121,11 +121,61 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey) {
         else scaffoldKey.currentState.openDrawer();
       }
     ),
+    actions: <Widget>[
+      myAppBarIcon(context)
+    ],
     centerTitle: true,
   );
 }
 
-Widget _buildDrawerNavigationButtonBig(title, context) {
+Widget myAppBarIcon(context){
+  return GestureDetector(
+    onTap: () {
+        
+    },
+    child: Center(
+      child: Container(
+        margin: EdgeInsets.only(right: 10),
+        width: 30,
+        height: 30,
+        child: Stack(
+          children: [
+            Icon(
+              Icons.notifications,
+              color: Colors.white,
+              size: 30,
+            ),
+            Container(
+              width: 30,
+              height: 30,
+              alignment: Alignment.topRight,
+              margin: EdgeInsets.only(top: 0),
+              child: Container(
+                width: 15,
+                height: 15,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xffc32c37),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: 1)),
+                child: Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Center(
+                    child: Text(
+                      "1",
+                      style: TextStyle(fontSize: 10),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
+      ),
+    ),
+  );
+}
+
+Widget _buildDrawerNavigationButtonBig(title, route, context) {
   return Container(
     padding: EdgeInsets.fromLTRB(0, 3, 20, 5),
     child: FlatButton(
@@ -139,7 +189,10 @@ Widget _buildDrawerNavigationButtonBig(title, context) {
         )
       ),
       color: Colors.white,
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, route);
+      },
       child: SizedBox(
         width: double.infinity,
         child: Row(
@@ -163,7 +216,7 @@ Widget _buildDrawerNavigationButtonBig(title, context) {
   );
 }
 
-Widget _buildDrawerNavigationButtonSmall(title, context) {
+Widget _buildDrawerNavigationButtonSmall(title, route, context) {
   return Container(
     padding: EdgeInsets.fromLTRB(0, 5, 60, 0),
     height: 35,
@@ -180,7 +233,10 @@ Widget _buildDrawerNavigationButtonSmall(title, context) {
           bottomRight: Radius.circular(10)
         )
       ),
-      onPressed: () {}, 
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, route);
+      }, 
       child: SizedBox(
         width: double.infinity,
         child: Text(title, style: Theme.of(context).textTheme.display1)
@@ -227,17 +283,17 @@ Widget drawer(context) {
               )
             ),
             spacePadding(),
-            _buildDrawerNavigationButtonBig("Our Auction Products", context),
-            _buildDrawerNavigationButtonBig("Our Shop Products", context),
-            _buildDrawerNavigationButtonBig("Our Bids", context),
-            _buildDrawerNavigationButtonBig("Our Carts", context),
-            _buildDrawerNavigationButtonBig("Notifications", context),
+            _buildDrawerNavigationButtonBig("Auction", '/home', context),
+            // _buildDrawerNavigationButtonBig("Our Shop Products", context),
+            _buildDrawerNavigationButtonBig("Bid", '/home', context),
+            // _buildDrawerNavigationButtonBig("Our Carts", context),
+            // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
             spacePadding(),
-            _buildDrawerNavigationButtonSmall("About", context),
-            _buildDrawerNavigationButtonSmall("How To", context),
-            _buildDrawerNavigationButtonSmall("FAQ", context),
-            _buildDrawerNavigationButtonSmall("Settings", context),
-            _buildDrawerNavigationButtonSmall("Log Out", context),
+            _buildDrawerNavigationButtonSmall("About", "/about", context),
+            _buildDrawerNavigationButtonSmall("How To", "/how-to", context),
+            _buildDrawerNavigationButtonSmall("FAQ", "/faq", context),
+            _buildDrawerNavigationButtonSmall("Setting", "/setting", context),
+            _buildDrawerNavigationButtonSmall("Log Out", "/logout", context),
             spacePadding()
             // Container()
           ],
