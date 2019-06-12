@@ -299,6 +299,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
   // card animals
 
+  
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override

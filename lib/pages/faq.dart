@@ -12,25 +12,27 @@ class _FAQPageState extends State<FAQPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(_scaffoldKey, context),
-      body: Scaffold(
-        key: _scaffoldKey,
-        drawer: globals.drawer(context),
-        body: SafeArea(
-          child: Center(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
-              child: Column(
-                children: <Widget> [
-                  Text("FAQ", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: Colors.black)),
-                  globals.spacePadding(),
-                  Text("Bagaimana cara mendaftar akun pada JLF?", style: Theme.of(context).textTheme.subtitle, textAlign: TextAlign.center)
-                ]
+        appBar: globals.appBar(_scaffoldKey, context),
+        body: Scaffold(
+            key: _scaffoldKey,
+            drawer: globals.drawer(context),
+            body: SafeArea(
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
+                  child: Column(children: <Widget>[
+                    Text("FAQ",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black)),
+                    globals.spacePadding(),
+                    Text("Bagaimana cara mendaftar akun pada JLF?",
+                        style: Theme.of(context).textTheme.subtitle,
+                        textAlign: TextAlign.center)
+                  ]),
+                ),
               ),
-            ),
-          ),
-        )
-      )
-    );
+            )));
   }
 }

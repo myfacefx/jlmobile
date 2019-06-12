@@ -17,7 +17,15 @@ class _HomePage extends State<HomePage> {
 
   int _current = 0;
   bool isLoadingCategories = true;
+  bool failedDataCategories = false;
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getListCategories();
+  }
 
   _HomePage() {
     getAnimalCategory("token").then((onValue) {
@@ -27,6 +35,27 @@ class _HomePage extends State<HomePage> {
       });
     }).catchError((onError) {
       globals.showDialogs(onError, context);
+    });
+  }
+
+  void _getListCategories() {
+    setState(() {
+      failedDataCategories = false;
+      isLoadingCategories = true;
+    });
+
+    getAnimalCategory("token").then((onValue) {
+      animalCategories = onValue;
+      setState(() {
+        isLoadingCategories = false;
+      });
+    }).catchError((onError) {
+      failedDataCategories = true;
+    }).then((_) {
+      isLoadingCategories = false;
+
+      if (!mounted) return;
+      setState(() {});
     });
   }
 
@@ -138,13 +167,17 @@ class _HomePage extends State<HomePage> {
     return Container(
       width: 70,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             name,
             style: Theme.of(context).textTheme.subtitle,
           ),
-          Text("$count Items", style: Theme.of(context).textTheme.display1),
+          Text("$count Items",
+              style: Theme.of(context)
+                  .textTheme
+                  .display1
+                  .copyWith(color: Colors.grey[400])),
         ],
       ),
     );
@@ -169,18 +202,6 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  Widget gridList(AnimalCategory category1, AnimalCategory category2) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        cardAnimal(category1),
-        Opacity(
-            opacity: category2 != null ? 1 : 0,
-            child: cardAnimal(category2 != null ? category2 : category1)),
-      ],
-    );
-  }
-
   Widget cardAnimal(AnimalCategory category) {
     return GestureDetector(
       onTap: () {
@@ -191,49 +212,17 @@ class _HomePage extends State<HomePage> {
       },
       child: Card(
         child: Container(
-          width: 160,
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               image(category.image),
-              SizedBox(
-                width: 8,
-              ),
               detail(category.name, category.animalsCount.toString())
             ],
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildAnimalCategories(List<AnimalCategory> animals) {
-    List<Widget> listMyWidgets() {
-      List<Widget> list = List();
-      if (!isLoadingCategories) {
-        for (var i = 0; i < animals.length; i += 2) {
-          if ((i + 2) - animals.length == 1) {
-            list.add(gridList(animals[i], null));
-          } else {
-            list.add(gridList(animals[i], animals[i + 1]));
-          }
-        }
-      }
-
-      return list;
-    }
-
-    return isLoadingCategories
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Container(
-            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Column(
-              children: listMyWidgets(),
-            ),
-          );
   }
 
   Widget _buildPromotion() {
@@ -282,6 +271,32 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
+  Widget _buildGridCategory(List<AnimalCategory> animals) {
+    List<Widget> listMyWidgets() {
+      List<Widget> list = List();
+      if (!isLoadingCategories) {
+        for (var i = 0; i < animals.length; i++) {
+          list.add(cardAnimal(animals[i]));
+        }
+      }
+
+      return list;
+    }
+
+    return failedDataCategories
+        ? globals.buildFailedLoadingData(context, _getListCategories)
+        : isLoadingCategories
+            ? Container(child: Center(child: CircularProgressIndicator()))
+            : Container(
+                margin: EdgeInsets.fromLTRB(35, 0, 35, 0),
+                child: GridView.count(
+                    physics: ScrollPhysics(),
+                    shrinkWrap: true,
+                    childAspectRatio: 2,
+                    crossAxisCount: 2,
+                    children: listMyWidgets()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -296,7 +311,7 @@ class _HomePage extends State<HomePage> {
               _buildCarousel(),
               _buildAsk(),
               _buildTitle(),
-              _buildAnimalCategories(animalCategories),
+              _buildGridCategory(animalCategories),
               Padding(
                 padding: const EdgeInsets.fromLTRB(35, 5, 35, 5),
                 child: Divider(color: Colors.black),
