@@ -208,7 +208,9 @@ class _HomePage extends State<HomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => CategoryDetailPage()));
+                builder: (BuildContext context) => CategoryDetailPage(
+                      animalCategory: category,
+                    )));
       },
       child: Card(
         child: Container(
