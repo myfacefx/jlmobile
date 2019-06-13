@@ -329,19 +329,37 @@ String convertToMoney(double number) {
 }
 
 Widget buildFailedLoadingData(context, Function refresh) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          FlatButton(
-              shape: CircleBorder(),
-              onPressed: () => refresh(),
-              child: Icon(Icons.refresh,
-                  color: Theme.of(context).accentColor, size: 50)),
-          Padding(padding: EdgeInsets.only(bottom: 10)),
-          Text("Gagal memuat data, klik untuk refresh",
-              style: TextStyle(color: Colors.black)),
-        ],
-      ),
-    );
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        FlatButton(
+            shape: CircleBorder(),
+            onPressed: () => refresh(),
+            child: Icon(Icons.refresh,
+                color: Theme.of(context).accentColor, size: 50)),
+        Padding(padding: EdgeInsets.only(bottom: 10)),
+        Text("Gagal memuat data, klik untuk refresh",
+            style: TextStyle(color: Colors.black)),
+      ],
+    ),
+  );
+}
+
+String convertFormatDate(String date) {
+  String newDate = "";
+  List<String> splitDate = date.split("-");
+  newDate = "${splitDate[2]}/${splitDate[1]}/${splitDate[0]}";
+  return newDate;
+}
+
+String convertToAge(DateTime birthDate) {
+  final birthday = birthDate;
+  final date2 = DateTime.now();
+  final year = date2.year - birthDate.year;
+  var month = date2.month - birthDate.month;
+  if (month < 0) {
+    month = month * -1;
   }
+  return "$year THN $month";
+}

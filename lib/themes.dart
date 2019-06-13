@@ -28,7 +28,7 @@ ThemeData buildThemeData() {
         subtitle:
             TextStyle(color: Colors.black, fontWeight: prefix0.FontWeight.w400),
         display1:
-            TextStyle(color: Colors.white, fontSize: 10),
+            TextStyle(color: Color.fromRGBO(136, 136, 136, 1), fontSize: 10),
         display2:
             TextStyle(color: Color.fromRGBO(136, 136, 136, 1), fontSize: 10),
         display3:

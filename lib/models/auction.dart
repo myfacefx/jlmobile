@@ -12,13 +12,15 @@ class Auction {
     String paymentImage;
     int ownerConfirmation;
     int winnerConfirmation;
-    dynamic winnerBidId;
+    int winnerBidId;
     String winnerAcceptedDate;
     int active;
     String slug;
-    String createdAt;
-    String updatedAt;
+    DateTime createdAt;
+    DateTime updatedAt;
     dynamic deletedAt;
+    int countComments;
+    int sumBids;
 
     Auction({
         this.id,
@@ -40,6 +42,8 @@ class Auction {
         this.createdAt,
         this.updatedAt,
         this.deletedAt,
+        this.countComments,
+        this.sumBids,
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -55,13 +59,15 @@ class Auction {
         paymentImage: json["payment_image"] == null ? null : json["payment_image"],
         ownerConfirmation: json["owner_confirmation"] == null ? null : json["owner_confirmation"],
         winnerConfirmation: json["winner_confirmation"] == null ? null : json["winner_confirmation"],
-        winnerBidId: json["winner_bid_id"],
+        winnerBidId: json["winner_bid_id"] == null ? null : json["winner_bid_id"],
         winnerAcceptedDate: json["winner_accepted_date"] == null ? null : json["winner_accepted_date"],
         active: json["active"] == null ? null : json["active"],
         slug: json["slug"] == null ? null : json["slug"],
-        createdAt: json["created_at"] == null ? null : json["created_at"],
-        updatedAt: json["updated_at"] == null ? null : json["updated_at"],
+        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"],
+        countComments: json["count_comments"] == null ? null : json["count_comments"],
+        sumBids: json["sum_bids"] == null ? null : json["sum_bids"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -77,12 +83,14 @@ class Auction {
         "payment_image": paymentImage == null ? null : paymentImage,
         "owner_confirmation": ownerConfirmation == null ? null : ownerConfirmation,
         "winner_confirmation": winnerConfirmation == null ? null : winnerConfirmation,
-        "winner_bid_id": winnerBidId,
+        "winner_bid_id": winnerBidId == null ? null : winnerBidId,
         "winner_accepted_date": winnerAcceptedDate == null ? null : winnerAcceptedDate,
         "active": active == null ? null : active,
         "slug": slug == null ? null : slug,
-        "created_at": createdAt == null ? null : createdAt,
-        "updated_at": updatedAt == null ? null : updatedAt,
+        "created_at": createdAt == null ? null : createdAt.toIso8601String(),
+        "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
         "deleted_at": deletedAt,
+        "count_comments": countComments == null ? null : countComments,
+        "sum_bids": sumBids == null ? null : sumBids,
     };
 }

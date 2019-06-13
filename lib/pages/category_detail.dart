@@ -2,48 +2,85 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/services/animal_services.dart';
 
 class CategoryDetailPage extends StatefulWidget {
+  final AnimalCategory animalCategory;
+
+  CategoryDetailPage({Key key, @required this.animalCategory})
+      : super(key: key);
+
   @override
-  _CategoryDetailPage createState() => _CategoryDetailPage();
+  _CategoryDetailPage createState() => _CategoryDetailPage(animalCategory.id);
 }
 
 class _CategoryDetailPage extends State<CategoryDetailPage> {
   ImageProvider defaultPic = const AssetImage("assets/images/dog2.jpg");
+  bool isLoading = true;
+
+  List<Animal> animals = List<Animal>();
+
+  _CategoryDetailPage(int categoryId) {
+    getAnimalByCategory("Token", categoryId).then((onValue) {
+      animals = onValue;
+      setState(() {
+        isLoading = false;
+      });
+    }).catchError((onError) {
+      globals.showDialogs(onError, context);
+    });
+  }
 
   //top container
-  Widget _buildcontSub(String text) {
+  Widget _buildcontSub(String name, String count) {
     return Container(
       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
       margin: EdgeInsets.fromLTRB(10, 5, 0, 5),
       decoration: BoxDecoration(
-          color: text.contains("ALL")
+          color: name.contains("ALL")
               ? Color.fromRGBO(186, 39, 75, 1)
               : Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(25)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(
-          text,
+          "$name ($count)",
           textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12),
         )
       ]),
     );
   }
 
-  Widget _buildCategory(
-    String text1,
-    String text2,
-    String text3,
-  ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        _buildcontSub(text1),
-        _buildcontSub(text2),
-        _buildcontSub(text3),
-      ],
-    );
+  Widget _buildCategory() {
+    List<Widget> listMyWidgets() {
+      List<Widget> list = List();
+      List<AnimalSubCategory> animalSubCategories =
+          widget.animalCategory.animalSubCategories;
+      int countAll = 0;
+
+      for (var i = 0; i < animalSubCategories.length; i++) {
+        list.add(_buildcontSub(animalSubCategories[i].name,
+            animalSubCategories[i].animalsCount.toString()));
+        countAll += animalSubCategories[i].animalsCount;
+      }
+
+      list.add(_buildcontSub("ALL", countAll.toString()));
+
+      return list.reversed.toList();
+    }
+
+    return Container(
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        child: GridView.count(
+            physics: ScrollPhysics(),
+            shrinkWrap: true,
+            childAspectRatio: 2.5,
+            crossAxisCount: 3,
+            children: listMyWidgets()));
   }
 
   Widget _buildTopCont() {
@@ -83,8 +120,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           SizedBox(
             height: 8,
           ),
-          _buildCategory("ALL (300)", "BELGIAN. M (91)", "POM MINI (35)"),
-          _buildCategory("TERRIER (34)", "BULDOG (30)", "MALTESEE (13)"),
+          _buildCategory(),
         ],
       ),
     );
@@ -101,7 +137,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            "ANJING - ALL",
+            "${widget.animalCategory.name} - ALL",
             style: Theme.of(context)
                 .textTheme
                 .title
@@ -115,7 +151,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 child: Image.asset("assets/images/icon_add.png"),
               ),
               Text(
-                "POST BID",
+                "PENAWARAN",
                 style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w900),
@@ -133,23 +169,32 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   // sort and search
 
   // card animals
-  Widget _buildcontCard() {
+
+  Widget _buildAnimals() {
+    List<Widget> listMyWidgets() {
+      List<Widget> list = List();
+
+      animals.forEach((animal) {
+        list.add(_buildCard(animal));
+      });
+
+      return list;
+    }
+
     return Container(
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _buildCard(),
-              _buildCard(),
-            ],
-          )
-        ],
-      ),
-    );
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        child: GridView.count(
+            physics: ScrollPhysics(),
+            shrinkWrap: true,
+            childAspectRatio: 0.56,
+            crossAxisCount: 2,
+            children: listMyWidgets()));
   }
 
-  Widget _buildTime() {
+  Widget _buildTime(String expiryTime) {
+    List<String> splitText = expiryTime.split(" ");
+    String date = splitText[0];
+    String timeRemaining = splitText[0];
     return Row(
       children: <Widget>[
         Text("10 Min Remaining",
@@ -160,14 +205,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           width: 6,
         ),
         Text(
-          "13/04/2019",
+          globals.convertFormatDate(date),
           style: Theme.of(context).textTheme.display1,
         ),
       ],
     );
   }
 
-  Widget _buildImage() {
+  Widget _buildImage(String image) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       height: 128,
@@ -178,39 +223,40 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         child: FadeInImage.assetNetwork(
           fit: BoxFit.fitHeight,
           placeholder: 'assets/images/loading.gif',
-          image:
-              'https://thenypost.files.wordpress.com/2018/10/102318-dogs-color-determine-disesases-life.jpg?quality=90&strip=all&w=618&h=410&crop=1',
+          image: image,
         ),
       ),
     );
   }
 
-  Widget _buildDetail() {
+  Widget _buildDetail(
+      String name, String userPost, String gender, DateTime birthDate) {
+    String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: (globals.mw(context) * 0.5) - 40,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "POMERIAN BETINA - SEHAT 14 THN 09",
+            "$name $gender - $ageNow",
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
           ),
-          Text("Mr Agustianto", style: Theme.of(context).textTheme.display1),
+          Text(userPost, style: Theme.of(context).textTheme.display1),
         ],
       ),
     );
   }
 
-  Widget _buildChat() {
+  Widget _buildChat(String countComments) {
     return Positioned(
       bottom: 4,
       right: 10,
       child: InkWell(
         onTap: () {
-           Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => ProductDetailPage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ProductDetailPage()));
         },
         splashColor: Theme.of(context).primaryColor,
         child: Container(
@@ -229,7 +275,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 ]),
             child: Center(
               child: Text(
-                "100",
+                countComments,
                 style: TextStyle(
                     color: Theme.of(context).primaryColor, fontSize: 10),
               ),
@@ -238,7 +284,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _buildCard() {
+  Widget _buildCard(Animal animal) {
     return Stack(
       children: <Widget>[
         Container(
@@ -248,19 +294,32 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               padding: EdgeInsets.fromLTRB(10, 12, 10, 12),
               child: Column(
                 children: <Widget>[
-                  _buildTime(),
-                  _buildImage(),
-                  _buildDetail(),
-                  _buildChips("start", "130.000,-"),
-                  _buildChips("multiplier", "10.000,-"),
-                  _buildChips("bin", "190.000,-"),
-                  _buildChips("current", "150.000,-"),
+                  _buildTime(animal.auction.expiryDate),
+                  _buildImage(animal.animalImages[0].image),
+                  _buildDetail(animal.name, animal.owner.name, animal.gender,
+                      animal.dateOfBirth),
+                  _buildChips(
+                      "start",
+                      globals
+                          .convertToMoney(animal.auction.openBid.toDouble())),
+                  _buildChips(
+                      "multiplier",
+                      globals
+                          .convertToMoney(animal.auction.multiply.toDouble())),
+                  _buildChips(
+                      "bin",
+                      globals
+                          .convertToMoney(animal.auction.buyItNow.toDouble())),
+                  _buildChips(
+                      "current",
+                      globals
+                          .convertToMoney(animal.auction.sumBids.toDouble())),
                 ],
               ),
             ),
           ),
         ),
-        _buildChat()
+        _buildChat(animal.auction.countComments.toString())
       ],
     );
   }
@@ -299,8 +358,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
   // card animals
 
-  
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -321,9 +378,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               SizedBox(
                 height: 16,
               ),
-              _buildcontCard(),
-              _buildcontCard(),
-              _buildcontCard()
+              isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : _buildAnimals()
             ],
           ),
         ),
