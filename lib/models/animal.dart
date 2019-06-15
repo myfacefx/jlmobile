@@ -22,8 +22,8 @@ class Animal {
     int regencyId;
     int ownerUserId;
     String slug;
-    DateTime createdAt;
-    DateTime updatedAt;
+    String createdAt;
+    String updatedAt;
     dynamic deletedAt;
     Auction auction;
     List<AnimalImage> animalImages;
@@ -57,12 +57,12 @@ class Animal {
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
         ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         slug: json["slug"] == null ? null : json["slug"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null ? null : json["created_at"],
+        updatedAt: json["updated_at"] == null ? null : json["updated_at"],
         deletedAt: json["deleted_at"],
         auction: json["auction"] == null ? null : Auction.fromJson(json["auction"]),
         animalImages: json["animal_images"] == null ? null : new List<AnimalImage>.from(json["animal_images"].map((x) => AnimalImage.fromJson(x))),
-        owner: json["owner"] == null ? null : User.fromJson(json["owner"]),
+        owner: json["user"] == null ? null : User.fromJson(json["user"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -75,11 +75,14 @@ class Animal {
         "regency_id": regencyId == null ? null : regencyId,
         "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "slug": slug == null ? null : slug,
-        "created_at": createdAt == null ? null : createdAt.toIso8601String(),
-        "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "created_at": createdAt == null ? null : createdAt,
+        "updated_at": updatedAt == null ? null : updatedAt,
         "deleted_at": deletedAt,
         "auction": auction == null ? null : auction.toJson(),
         "animal_images": animalImages == null ? null : new List<dynamic>.from(animalImages.map((x) => x.toJson())),
-        "owner": owner == null ? null : owner.toJson(),
+        "user": owner == null ? null : owner.toJson(),
     };
 }
+
+
+
