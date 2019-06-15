@@ -1,3 +1,5 @@
+import 'package:jlf_mobile/models/auction_comment.dart';
+import 'package:jlf_mobile/models/bid.dart';
 
 class Auction {
     int id;
@@ -12,15 +14,17 @@ class Auction {
     String paymentImage;
     int ownerConfirmation;
     int winnerConfirmation;
-    int winnerBidId;
+    dynamic winnerBidId;
     String winnerAcceptedDate;
     int active;
     String slug;
-    DateTime createdAt;
-    DateTime updatedAt;
+    String createdAt;
+    String updatedAt;
     dynamic deletedAt;
     int countComments;
     int sumBids;
+    List<AuctionComment> auctionComments;
+    List<Bid> bids;
 
     Auction({
         this.id,
@@ -44,6 +48,8 @@ class Auction {
         this.deletedAt,
         this.countComments,
         this.sumBids,
+        this.auctionComments,
+        this.bids,
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -59,15 +65,17 @@ class Auction {
         paymentImage: json["payment_image"] == null ? null : json["payment_image"],
         ownerConfirmation: json["owner_confirmation"] == null ? null : json["owner_confirmation"],
         winnerConfirmation: json["winner_confirmation"] == null ? null : json["winner_confirmation"],
-        winnerBidId: json["winner_bid_id"] == null ? null : json["winner_bid_id"],
+        winnerBidId: json["winner_bid_id"],
         winnerAcceptedDate: json["winner_accepted_date"] == null ? null : json["winner_accepted_date"],
         active: json["active"] == null ? null : json["active"],
         slug: json["slug"] == null ? null : json["slug"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null ? null : json["created_at"],
+        updatedAt: json["updated_at"] == null ? null : json["updated_at"],
         deletedAt: json["deleted_at"],
         countComments: json["count_comments"] == null ? null : json["count_comments"],
         sumBids: json["sum_bids"] == null ? null : json["sum_bids"],
+        auctionComments: json["auction_comments"] == null ? null : new List<AuctionComment>.from(json["auction_comments"].map((x) => AuctionComment.fromJson(x))),
+        bids: json["bids"] == null ? null : new List<Bid>.from(json["bids"].map((x) => Bid.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -83,14 +91,16 @@ class Auction {
         "payment_image": paymentImage == null ? null : paymentImage,
         "owner_confirmation": ownerConfirmation == null ? null : ownerConfirmation,
         "winner_confirmation": winnerConfirmation == null ? null : winnerConfirmation,
-        "winner_bid_id": winnerBidId == null ? null : winnerBidId,
+        "winner_bid_id": winnerBidId,
         "winner_accepted_date": winnerAcceptedDate == null ? null : winnerAcceptedDate,
         "active": active == null ? null : active,
         "slug": slug == null ? null : slug,
-        "created_at": createdAt == null ? null : createdAt.toIso8601String(),
-        "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "created_at": createdAt == null ? null : createdAt,
+        "updated_at": updatedAt == null ? null : updatedAt,
         "deleted_at": deletedAt,
         "count_comments": countComments == null ? null : countComments,
         "sum_bids": sumBids == null ? null : sumBids,
+        "auction_comments": auctionComments == null ? null : new List<dynamic>.from(auctionComments.map((x) => x.toJson())),
+        "bids": bids == null ? null : new List<dynamic>.from(bids.map((x) => x.toJson())),
     };
 }
