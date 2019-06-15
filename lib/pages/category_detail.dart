@@ -21,6 +21,7 @@ class CategoryDetailPage extends StatefulWidget {
 class _CategoryDetailPage extends State<CategoryDetailPage> {
   ImageProvider defaultPic = const AssetImage("assets/images/dog2.jpg");
   bool isLoading = true;
+  String currentSubCategory = "ALL";
 
   List<Animal> animals = List<Animal>();
 
@@ -35,23 +36,57 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     });
   }
 
+  void _refresh(int subCategoryId, String subCategoryName) {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (subCategoryId != null) {
+      currentSubCategory = subCategoryName;
+      getAnimalBySubCategory("Token", subCategoryId).then((onValue) {
+        animals = onValue;
+        setState(() {
+          isLoading = false;
+        });
+      }).catchError((onError) {
+        globals.showDialogs(onError, context);
+      });
+    } else {
+      currentSubCategory = "ALL";
+      getAnimalByCategory("Token", widget.animalCategory.id).then((onValue) {
+        animals = onValue;
+        setState(() {
+          isLoading = false;
+        });
+      }).catchError((onError) {
+        globals.showDialogs(onError, context);
+      });
+    }
+  }
+
   //top container
-  Widget _buildcontSub(String name, String count) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-      margin: EdgeInsets.fromLTRB(10, 5, 0, 5),
-      decoration: BoxDecoration(
-          color: name.contains("ALL")
-              ? Color.fromRGBO(186, 39, 75, 1)
-              : Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(25)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(
-          "$name ($count)",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 12),
-        )
-      ]),
+  Widget _buildcontSub(String name, String count, int subCategory) {
+    return GestureDetector(
+      onTap: () {
+        print("$name - $subCategory");
+        _refresh(subCategory, name);
+      },
+      child: Container(
+        padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+        margin: EdgeInsets.fromLTRB(10, 5, 0, 5),
+        decoration: BoxDecoration(
+            color: name.contains(currentSubCategory)
+                ? Color.fromRGBO(186, 39, 75, 1)
+                : Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(25)),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(
+            "$name ($count)",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12),
+          )
+        ]),
+      ),
     );
   }
 
@@ -63,12 +98,15 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       int countAll = 0;
 
       for (var i = 0; i < animalSubCategories.length; i++) {
-        list.add(_buildcontSub(animalSubCategories[i].name,
-            animalSubCategories[i].animalsCount.toString()));
+        //print("${animalSubCategories[i].name} -- ${animalSubCategories[i].id}");
+        list.add(_buildcontSub(
+            animalSubCategories[i].name,
+            animalSubCategories[i].animalsCount.toString(),
+            animalSubCategories[i].id));
         countAll += animalSubCategories[i].animalsCount;
       }
 
-      list.add(_buildcontSub("ALL", countAll.toString()));
+      list.add(_buildcontSub("ALL", countAll.toString(), null));
 
       return list.reversed.toList();
     }
@@ -137,7 +175,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            "${widget.animalCategory.name} - ALL",
+            "${widget.animalCategory.name} - $currentSubCategory",
             style: Theme.of(context)
                 .textTheme
                 .title

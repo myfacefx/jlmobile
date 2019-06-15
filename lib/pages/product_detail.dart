@@ -102,7 +102,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         children: <Widget>[
           Text(
             "Budi",
-            style: Theme.of(context).textTheme.display4,
+            style: Theme.of(context)
+                .textTheme
+                .display4
+                .copyWith(color: Color.fromRGBO(136, 136, 136, 1)),
           ),
           SizedBox(
             width: 10,
