@@ -27,6 +27,8 @@ dependencies:
   shared_preferences: ^0.5.1
   flutter_masked_text: ^0.8.0
 
+  flutter_facebook_login:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -56,6 +58,7 @@ flutter:
     - assets/images/dog2.jpg
     - assets/images/icon_add.png
     - assets/images/account.png
+    - assets/images/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
