@@ -5,8 +5,10 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
+import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
+import 'package:jlf_mobile/services/province_services.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final AnimalCategory animalCategory;
@@ -21,7 +23,13 @@ class CategoryDetailPage extends StatefulWidget {
 class _CategoryDetailPage extends State<CategoryDetailPage> {
   ImageProvider defaultPic = const AssetImage("assets/images/dog2.jpg");
   bool isLoading = true;
+  bool isLoadingProvince = true;
   String currentSubCategory = "ALL";
+  String selectedProvince = "All";
+  String selectedSortBy = "Terbaru";
+  
+  List<Province> provinces = List<Province>();
+  List<String> itemProvince = <String>['All'];
 
   List<Animal> animals = List<Animal>();
 
@@ -33,6 +41,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       });
     }).catchError((onError) {
       globals.showDialogs(onError, context);
+    });
+
+    getProvices("token").then((onValue) {
+      provinces = onValue;
+      provinces.forEach((province) {
+        itemProvince.add(province.name);
+      });
+      setState(() {
+        isLoadingProvince = false;
+      });
     });
   }
 
@@ -204,11 +222,82 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   //title add post bid
 
   // sort and search
-  Widget _buildSearch(){
+  Widget dropdownSortBy() {
+    List<String> item = <String>['Terbaru', 'Populer'];
+    return DropdownButton<String>(
+        value: selectedSortBy,
+        items: item.map((String value) {
+          return DropdownMenuItem(
+            value: value,
+            child: Text(
+              value,
+              style: TextStyle(color: Colors.black, fontSize: 12),
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedSortBy = value;
+          });
+        });
+  }
+
+  Widget dropdownSearchType() {
     return Container(
+      child: isLoadingProvince
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : DropdownButton<String>(
+              value: selectedProvince,
+              items: itemProvince.map((String value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(color: Colors.black, fontSize: 10),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedProvince = value;
+                });
+              }),
+    );
+  }
+
+  Widget _buildTextSearch() {
+    return Container(
+      width: globals.mw(context) * 0.35,
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      height: 30,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: TextField(
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 12,
+        ),
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Search',
+            hintStyle: TextStyle(fontSize: 10)),
+      ),
+    );
+  }
+
+  Widget _buildSearch() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          
+          dropdownSortBy(),
+          _buildTextSearch(),
+          dropdownSearchType()
         ],
       ),
     );
@@ -422,6 +511,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 height: 8,
               ),
               _buildTitle(),
+              SizedBox(
+                height: 16,
+              ),
+              _buildSearch(),
               SizedBox(
                 height: 16,
               ),
