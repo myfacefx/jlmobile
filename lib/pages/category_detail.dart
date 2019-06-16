@@ -189,7 +189,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 child: Image.asset("assets/images/icon_add.png"),
               ),
               Text(
-                "PENAWARAN",
+                "Buat Lelang",
                 style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w900),
@@ -204,6 +204,15 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   //title add post bid
 
   // sort and search
+  Widget _buildSearch(){
+    return Container(
+      child: Row(
+        children: <Widget>[
+          
+        ],
+      ),
+    );
+  }
   // sort and search
 
   // card animals

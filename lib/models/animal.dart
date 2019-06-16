@@ -62,7 +62,7 @@ class Animal {
         deletedAt: json["deleted_at"],
         auction: json["auction"] == null ? null : Auction.fromJson(json["auction"]),
         animalImages: json["animal_images"] == null ? null : new List<AnimalImage>.from(json["animal_images"].map((x) => AnimalImage.fromJson(x))),
-        owner: json["user"] == null ? null : User.fromJson(json["user"]),
+        owner: json["owner"] == null ? null : User.fromJson(json["owner"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -80,7 +80,7 @@ class Animal {
         "deleted_at": deletedAt,
         "auction": auction == null ? null : auction.toJson(),
         "animal_images": animalImages == null ? null : new List<dynamic>.from(animalImages.map((x) => x.toJson())),
-        "user": owner == null ? null : owner.toJson(),
+        "owner": owner == null ? null : owner.toJson(),
     };
 }
 
