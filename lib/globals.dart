@@ -111,7 +111,9 @@ Widget bottomNavigationBar(context) {
 
 Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
   return AppBar(
-    title: Text("JLF"),
+    title: Container(
+      child: Image.asset("assets/images/logo.png", height: 30)
+    ),
     leading: IconButton(
         icon: Icon(Icons.menu),
         onPressed: () {
@@ -220,6 +222,9 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
                 topRight: Radius.circular(10),
                 bottomRight: Radius.circular(10))),
         onPressed: () {
+          if (route == "/logout") {
+            
+          }
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
         },
@@ -254,7 +259,10 @@ Widget drawer(context) {
                     child: Container(
                         width: MediaQuery.of(context).size.width * 0.35,
                         child: OutlineButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushNamed("/profile");
+                          },
                           color: Colors.transparent,
                           highlightColor: Colors.white10,
                           highlightedBorderColor: Colors.white,
@@ -263,9 +271,9 @@ Widget drawer(context) {
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 spacePadding(),
-                _buildDrawerNavigationButtonBig("Auction", '/home', context),
+                _buildDrawerNavigationButtonBig("Lelangku", '/home', context),
                 // _buildDrawerNavigationButtonBig("Our Shop Products", context),
-                _buildDrawerNavigationButtonBig("Bid", '/home', context),
+                _buildDrawerNavigationButtonBig("Penawaranku", '/home', context),
                 // _buildDrawerNavigationButtonBig("Our Carts", context),
                 // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 spacePadding(),
