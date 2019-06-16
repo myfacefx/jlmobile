@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/services/bid_services.dart';
 
 class ProductDetailPage extends StatefulWidget {
   @override
@@ -9,6 +10,8 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPage extends State<ProductDetailPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  TextEditingController bidController = TextEditingController();
 
   Widget _buildImage() {
     return Container(
@@ -214,14 +217,16 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(30)),
-          child: TextField(
+          child: TextFormField(
+            keyboardType: TextInputType.number,
+            controller: bidController,
             style: TextStyle(
               color: Colors.black,
               fontSize: 24,
             ),
             decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: 'Your Bid | Multiply 25.000',
+                hintText: 'Tawaran Anda',
                 hintStyle: TextStyle(fontSize: 14)),
           ),
         ),
@@ -248,6 +253,40 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
+  _addBid() {
+    var formData = Map<String, dynamic>();
+    formData['auction_id'] = 1;
+    formData['user_id'] = 1;
+    formData['amount'] = bidController.text;
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Memasang Bid", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25), textAlign: TextAlign.center),
+          content: Text("Yakin memasang bid Rp. ${formData['amount']}?", style: TextStyle(color: Colors.black)),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Batal", style: TextStyle(color: Theme.of(context).primaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              }
+            ),
+            FlatButton(
+              color: Theme.of(context).primaryColor,
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                placeBid(formData);
+                bidController.text = '';
+                Navigator.of(context).pop();
+              }
+            )
+          ],
+        );
+      }
+    );
+  }
+
   Widget _buildPutBid() {
     return Container(
       color: Colors.white,
@@ -260,6 +299,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
           SizedBox(
             height: 20,
+          ),
+          Text(
+            "Kelipatan: 25.000"
           ),
           textField(),
           SizedBox(
@@ -274,9 +316,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(25)),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _addBid();
+                    return;
+                  },
                   child: Text(
-                    "DONE",
+                    "PASANG",
                     style: Theme.of(context)
                         .textTheme
                         .title

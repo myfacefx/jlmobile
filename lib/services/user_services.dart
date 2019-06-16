@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<User> login(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   http.Response res = await http.post(getBaseUrl() + "/login",
-      headers: header, body: json.encode(_data));
+      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
     return userFromJson(res.body);
   } else {
@@ -21,6 +21,18 @@ Future<bool> logout(String token) async {
   http.Response res = await http.get(getBaseUrl() + "/logout", headers: header);
   if (res.statusCode == 202) {
     return true;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<User> register(Map<String, dynamic> _data) async {
+  final header = {"Content-Type": "application/json"};
+  http.Response res = await http.post(getBaseUrl() + "/users",
+      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return userFromJson(res.body);
   } else {
     throw Exception(res.body);
   }
@@ -69,20 +81,4 @@ Future<List<User>> getBlacklistedUser() async {
   } else {
     throw Exception(res.body);
   }
-
-  // try {
-  //   http.Response res = await http.get(getBaseUrl() + "/blacklists",
-  //       headers: header).timeout(const Duration(seconds: 10));
-  //   if (res.statusCode == 200) {
-  //     return listUserFromJson(res.body);
-  //   } else {
-  //     throw Exception(res.body);
-  //   }
-  // } on TimeoutException catch (_) {
-  //   throw Exception(TimeoutException("Time out bruh"));
-  //   // throw Exception("Timeout Bruh");
-  // } on SocketException catch (_) {
-  //   print("ERROR #2");
-  //   throw Exception("Socket exception");
-  // }
 }

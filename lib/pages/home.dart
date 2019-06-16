@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  SharedPreferences prefs;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _current = 0;
@@ -20,11 +22,13 @@ class _HomePage extends State<HomePage> {
   bool failedDataCategories = false;
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
 
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _getListCategories();
+    _checkSharedPreferences();
   }
 
   _HomePage() {
@@ -36,6 +40,21 @@ class _HomePage extends State<HomePage> {
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
+  }
+
+  _checkSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+    print("#### LOGGED IN ID ${prefs.getInt('id')}");
+    if (prefs.getInt('id') == null) {
+      // User Has Logged In
+      Navigator.of(context).pushNamed("/login");
+    }
+  }
+
+  _logOut() async {
+    if (prefs.getInt('id') != null) await prefs.remove('id');
+    Navigator.of(context).pop();
+    Navigator.of(context).pushNamed('/login');
   }
 
   void _getListCategories() {
@@ -299,27 +318,60 @@ class _HomePage extends State<HomePage> {
                     children: listMyWidgets()));
   }
 
+  _exitDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Perhatian", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25), textAlign: TextAlign.center),
+          content: Text("Keluar dari aplikasi?", style: TextStyle(color: Colors.black)),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Batal", style: TextStyle(color: Theme.of(context).primaryColor)),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              }
+            ),
+            FlatButton(
+              color: Theme.of(context).primaryColor,
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                _logOut();
+              }
+            )
+          ],
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: globals.appBar(_scaffoldKey, context),
-      body: Scaffold(
-        key: _scaffoldKey,
-        bottomNavigationBar: globals.bottomNavigationBar(context),
-        drawer: globals.drawer(context),
-        body: SafeArea(
-          child: ListView(
-            children: <Widget>[
-              _buildCarousel(),
-              _buildAsk(),
-              _buildTitle(),
-              _buildGridCategory(animalCategories),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(35, 5, 35, 5),
-                child: Divider(color: Colors.black),
-              ),
-              _buildPromotion()
-            ],
+    return WillPopScope(
+      onWillPop: () {
+        _exitDialog();
+        return;
+      },
+      child: Scaffold(
+        appBar: globals.appBar(_scaffoldKey, context),
+        body: Scaffold(
+          key: _scaffoldKey,
+          bottomNavigationBar: globals.bottomNavigationBar(context),
+          drawer: globals.drawer(context),
+          body: SafeArea(
+            child: ListView(
+              children: <Widget>[
+                _buildCarousel(),
+                _buildAsk(),
+                _buildTitle(),
+                _buildGridCategory(animalCategories),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(35, 5, 35, 5),
+                  child: Divider(color: Colors.black),
+                ),
+                _buildPromotion()
+              ],
+            ),
           ),
         ),
       ),
