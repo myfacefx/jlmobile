@@ -25,16 +25,22 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   bool isLoading = true;
   bool isLoadingProvince = true;
   String currentSubCategory = "ALL";
+  int currentIdSubCategory;
+
   String selectedProvince = "All";
   String selectedSortBy = "Terbaru";
-  
+
   List<Province> provinces = List<Province>();
   List<String> itemProvince = <String>['All'];
 
   List<Animal> animals = List<Animal>();
 
+  TextEditingController searchController = TextEditingController();
+
   _CategoryDetailPage(int categoryId) {
-    getAnimalByCategory("Token", categoryId).then((onValue) {
+    getAnimalByCategory(
+            "Token", categoryId, selectedSortBy, searchController.text)
+        .then((onValue) {
       animals = onValue;
       setState(() {
         isLoading = false;
@@ -61,7 +67,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
     if (subCategoryId != null) {
       currentSubCategory = subCategoryName;
-      getAnimalBySubCategory("Token", subCategoryId).then((onValue) {
+      getAnimalBySubCategory(
+              "Token", subCategoryId, selectedSortBy, searchController.text)
+          .then((onValue) {
         animals = onValue;
         setState(() {
           isLoading = false;
@@ -71,7 +79,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       });
     } else {
       currentSubCategory = "ALL";
-      getAnimalByCategory("Token", widget.animalCategory.id).then((onValue) {
+      currentIdSubCategory = null;
+      getAnimalByCategory("Token", widget.animalCategory.id, selectedSortBy,
+              searchController.text)
+          .then((onValue) {
         animals = onValue;
         setState(() {
           isLoading = false;
@@ -116,7 +127,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       int countAll = 0;
 
       for (var i = 0; i < animalSubCategories.length; i++) {
-        //print("${animalSubCategories[i].name} -- ${animalSubCategories[i].id}");
         list.add(_buildcontSub(
             animalSubCategories[i].name,
             animalSubCategories[i].animalsCount.toString(),
@@ -238,6 +248,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         onChanged: (value) {
           setState(() {
             selectedSortBy = value;
+            _refresh(currentIdSubCategory, currentSubCategory);
           });
         });
   }
@@ -277,10 +288,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: TextField(
+        controller: searchController,
         style: TextStyle(
           color: Colors.black,
           fontSize: 12,
         ),
+        onSubmitted: (String text) {
+          _refresh(currentIdSubCategory, currentSubCategory);
+        },
         decoration: InputDecoration(
             border: InputBorder.none,
             hintText: 'Search',
@@ -317,14 +332,21 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       return list;
     }
 
-    return Container(
-        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-        child: GridView.count(
-            physics: ScrollPhysics(),
-            shrinkWrap: true,
-            childAspectRatio: 0.56,
-            crossAxisCount: 2,
-            children: listMyWidgets()));
+    return animals.length == 0
+        ? Center(
+            child: Text(
+              "Data tidak ditemukan",
+              style: Theme.of(context).textTheme.title,
+            ),
+          )
+        : Container(
+            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+            child: GridView.count(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                childAspectRatio: 0.56,
+                crossAxisCount: 2,
+                children: listMyWidgets()));
   }
 
   Widget _buildTime(String expiryTime) {
@@ -383,7 +405,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _buildChat(String countComments) {
+  Widget _buildChat(String countComments, int animalId) {
     return Positioned(
       bottom: 4,
       right: 10,
@@ -392,7 +414,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => ProductDetailPage()));
+                  builder: (BuildContext context) => ProductDetailPage(
+                        animalId: animalId,
+                      )));
         },
         splashColor: Theme.of(context).primaryColor,
         child: Container(
@@ -455,7 +479,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ),
           ),
         ),
-        _buildChat(animal.auction.countComments.toString())
+        _buildChat(animal.auction.countComments.toString(), animal.id)
       ],
     );
   }
