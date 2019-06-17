@@ -27,12 +27,14 @@ class AppConfig extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 
   Future<Null> checkLocalData() async {
+    print("Checking local storage");
     globals.baseUrl = baseUrl;
     globals.flavor = flavorName;
     try {
       String userData = await readLocalData("user");
       if (userData != null) {
         User newUser = userFromJson(userData);
+        print("User Found = ${newUser.username}");
         globals.user = newUser;
         globals.state = "home";
       } else {

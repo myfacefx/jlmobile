@@ -159,7 +159,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           Container(
             child: Column(
               children: <Widget>[
-                Text(animal.owner.name),
+                Text(animal.owner.username),
                 globals.myText(
                     text: "Kabupaten Sumba timur", color: "light", size: 10),
                 Row(
@@ -296,7 +296,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     myList = animal.auction.bids.map((i) {
       count++;
       return _buildTableRow(
-          count == 1, i.user.name, i.createdAt, i.amount.toDouble());
+          count == 1, i.user.username, i.createdAt, i.amount.toDouble());
     }).toList();
 
     return Container(
@@ -482,8 +482,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildTextComment(AuctionComment auctionComment, int sellerId) {
-    String username =
-        sellerId != auctionComment.userId ? auctionComment.user.name : "SELLER";
+    String username = sellerId != auctionComment.userId
+        ? auctionComment.user.username
+        : "SELLER";
     return Container(
       margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: Column(
@@ -650,10 +651,22 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             SizedBox(
               height: 20,
             ),
-            Column(
-              children: animal.auction.auctionComments.map((comment) {
-                return _buildTextComment(comment, animal.ownerUserId);
-              }).toList(),
+            // Column(
+            //   children: animal.auction.auctionComments.map((comment) {
+            //     return _buildTextComment(comment, animal.ownerUserId);
+            //   }).toList(),
+            // ),
+            Container(
+              height: globals.mh(context)*0.4,
+              child: ListView.builder(
+                physics: ScrollPhysics(),
+                itemCount: animal.auction.countComments,
+                itemBuilder: (context, int index) {
+                  return _buildTextComment(
+                      animal.auction.auctionComments[index],
+                      animal.ownerUserId);
+                },
+              ),
             ),
             SizedBox(
               height: 20,
