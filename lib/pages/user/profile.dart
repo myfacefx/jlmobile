@@ -13,27 +13,12 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
 
   TabController _tabController;
 
-  SharedPreferences prefs;
-
   String _username;
 
   @override
   void initState() {
     super.initState();
-
-    _checkSharedPreferences();
-
     _tabController = TabController(length: 4, vsync: this);
-  }
-
-  _checkSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('id') == null) {
-      // User Has Logged In
-      Navigator.of(context).pushNamed("/login");
-    }
-    
-    _username = prefs.getString('username');
   }
 
   @override
@@ -84,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                 Text("4.5", style: TextStyle(color: Colors.grey))
                               ],
                             ),
-                            Text(_username != null && _username.isNotEmpty ? _username.toUpperCase() : "-", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
+                            Text(globals.user.username, style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[

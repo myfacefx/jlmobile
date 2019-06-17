@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,7 +16,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  SharedPreferences prefs;
   FacebookLogin facebookLogin = FacebookLogin();
 
   final _formKey = GlobalKey<FormState>();
@@ -22,6 +24,9 @@ class _LoginPage extends State<LoginPage> {
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  String _facebookPhotoProfile =
+      'https://66.media.tumblr.com/d3a12893ef0dfec39cf7335008f16c7f/tumblr_pcve4yqyEO1uaogmwo8_400.png';
 
   bool passwordVisibility = true;
 
@@ -34,16 +39,6 @@ class _LoginPage extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-
-    _checkSharedPreferences();
-  }
-
-  _checkSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('id') != null) {
-      // User Has Logged In
-      Navigator.of(context).pushNamed("/home");
-    }
   }
 
   _logIn() async {
@@ -60,10 +55,16 @@ class _LoginPage extends State<LoginPage> {
       formData['username'] = _username;
       formData['password'] = _password;
 
-      var result = await login(formData);
-      if (result != null && result.id != null) {
-        prefs.setInt('id', result.id); 
-        prefs.setString('username', result.username);
+      User loginUser = User();
+      loginUser.username = _username;
+      loginUser.password = _password;
+
+      User userResult = await login((loginUser.toJson()));
+      if (userResult != null) {
+        saveLocalData('user', userToJson(userResult));
+
+        globals.user = userResult;
+        globals.state = "home";
 
         Navigator.of(context).pop();
         Navigator.pushNamed(context, "/home");
@@ -72,6 +73,64 @@ class _LoginPage extends State<LoginPage> {
       setState(() {
         autoValidate = true;
       });
+    }
+  }
+
+  _loginWithFacebook() async {
+    FacebookLoginResult result = await facebookLogin
+        .logInWithReadPermissions(['email', 'public_profile']);
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        print("####FACEBOOKOUTPUT#####");
+
+        var graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,address,gender,picture.type(large).redirect(false)&access_token=${result.accessToken.token}');
+
+        var profile = json.decode(graphResponse.body);
+        print(profile.toString());
+
+        User searchUser = User();
+        searchUser.email = profile['email'];
+
+        List<User> users = await getByEmail(searchUser.toJson());
+
+        print("####USERS TO STRING#####" + users.toString());
+
+        if (users.length > 0) {
+          print("USER FOUND, login");
+          // Similar email found, user registered
+          saveLocalData("user", userToJson(users[0]));
+
+          globals.user = users[0];
+          globals.state = "home";
+
+          Navigator.of(context).pop();
+          Navigator.pushNamed(context, "/home");
+        } else {
+          print("USER NOT FOUND, registering");
+          // No similar email found, user will be pushed to register page
+
+          globals.state = "register";
+
+          print(profile['email']);
+          
+          Navigator.of(context).pop();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => RegisterPage(email: profile['email'])));
+        }
+
+        setState(() {
+          // _facebookPhotoProfile = profile['picture']['data']['url'];
+        });
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        throw new StateError("Cancelled by user");
+        break;
+      case FacebookLoginStatus.error:
+        throw new StateError(FacebookLoginStatus.error.toString());
+        break;
     }
   }
 
@@ -85,26 +144,7 @@ class _LoginPage extends State<LoginPage> {
       padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: FloatingActionButton.extended(
         onPressed: () {
-          facebookLogin.logInWithReadPermissions(['email']).then((result) {
-            print("TOKEN: " + result.accessToken.token);
-
-            switch (result.status) {
-              case FacebookLoginStatus.loggedIn:
-                // print(result.)
-                print(result.accessToken.token);
-                break;
-              case FacebookLoginStatus.cancelledByUser:
-                throw new StateError("Cancelled by user");
-                break;
-              case FacebookLoginStatus.error:
-                throw new StateError(FacebookLoginStatus.error.toString());
-                break;
-            }
-          }).catchError((e) {
-            print("ERROR");
-            print(e);
-          });
-          // Navigator.pushNamed(context, "/home");
+          _loginWithFacebook();
         },
         backgroundColor: backgr,
         label: Container(
@@ -248,6 +288,10 @@ class _LoginPage extends State<LoginPage> {
                         height: 10,
                       ),
                       _floatingButton("Facebook"),
+                      FadeInImage.assetNetwork(
+                        placeholder: 'assets/images/loading.gif',
+                        image: _facebookPhotoProfile,
+                      ),
                       SizedBox(height: 10)
                     ],
                   ),
