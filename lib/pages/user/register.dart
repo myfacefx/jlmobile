@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/services/user_services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterPage extends StatefulWidget {
+  final String email;
+  RegisterPage({this.email});
+
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _RegisterPageState createState() => _RegisterPageState(email);
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  SharedPreferences prefs;
   final _formKey = GlobalKey<FormState>();
 
   bool autoValidate = false;
@@ -29,18 +31,14 @@ class _RegisterPageState extends State<RegisterPage> {
   String _username;
   String _password;
 
+  _RegisterPageState(String email) {
+    // If email sent from login, login from Facebook
+    if (email != null) _email = email;
+  }
+
   @override
   void initState() {
     super.initState();
-
-    _checkSharedPreferences();
-  }
-
-  _checkSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('id') != null) {
-      // User Has Logged In
-    }
   }
 
   Widget _buildBackground() {
@@ -64,17 +62,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
       _formKey.currentState.save();
 
-      var formData = Map<String, dynamic>();
-      formData['email'] = _email;
-      formData['username'] = _username;
-      formData['password'] = _password;
-      formData['role_id'] = 2;
+      User user = User();
+      user.email = _email;
+      user.username = _username;
+      user.password = _password;
+      user.roleId = 2;
 
-      var result = await register(formData);
+      User userResult = await register(user.toJson());
 
-      if (result != null) {
-        prefs.setInt('id', result.id);
-        prefs.setString('username', result.username);
+      if (userResult != null) {
+        saveLocalData('user', userToJson(userResult));
+
+        globals.user = userResult;
+        globals.state = "home";
 
         Navigator.of(context).pop();
         Navigator.pushNamed(context, "/home");
@@ -106,36 +106,40 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _formKey,
             child: Column(children: <Widget>[
               Container(
+                  alignment: Alignment.center,
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: TextFormField(
-                    onSaved: (String value) {
-                      _email = value;
-                    },
-                    onFieldSubmitted: (String value) {
-                      if (value.length > 0) {
-                        FocusScope.of(context).requestFocus(usernameFocusNode);
-                      }
-                    },
-                    validator: (value) {
-                      Pattern pattern =
-                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                      RegExp regex = new RegExp(pattern);
-                      if (!regex.hasMatch(value))
-                        return 'Email tidak valid';
-                      else
-                        return null;
-                    },
-                    style: TextStyle(color: Colors.black),
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(13),
-                        hintText: "Email",
-                        labelText: "Email",
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20))),
-                  )),
+                  child: _email != null
+                      ? Text(_email, style: TextStyle(color: Colors.black))
+                      : TextFormField(
+                          onSaved: (String value) {
+                            _email = value;
+                          },
+                          onFieldSubmitted: (String value) {
+                            if (value.length > 0) {
+                              FocusScope.of(context)
+                                  .requestFocus(usernameFocusNode);
+                            }
+                          },
+                          validator: (value) {
+                            Pattern pattern =
+                                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                            RegExp regex = new RegExp(pattern);
+                            if (!regex.hasMatch(value))
+                              return 'Email tidak valid';
+                            else
+                              return null;
+                          },
+                          style: TextStyle(color: Colors.black),
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(13),
+                              hintText: "Email",
+                              labelText: "Email",
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20))),
+                        )),
               Container(
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
