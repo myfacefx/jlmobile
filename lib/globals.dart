@@ -46,7 +46,7 @@ Future<bool> showDialogs(String content, BuildContext context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(title, style: TextStyle(color: Colors.black)),
-        content: Text(content),
+        content: myText(text: content),
         actions: <Widget>[
           FlatButton(
             child: Text(text),
@@ -111,9 +111,7 @@ Widget bottomNavigationBar(context) {
 
 Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
   return AppBar(
-    title: Container(
-      child: Image.asset("assets/images/logo.png", height: 30)
-    ),
+    title: Container(child: Image.asset("assets/images/logo.png", height: 30)),
     leading: IconButton(
         icon: Icon(Icons.menu),
         onPressed: () {
@@ -222,9 +220,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
                 topRight: Radius.circular(10),
                 bottomRight: Radius.circular(10))),
         onPressed: () {
-          if (route == "/logout") {
-            
-          }
+          if (route == "/logout") {}
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
         },
@@ -273,7 +269,8 @@ Widget drawer(context) {
                 spacePadding(),
                 _buildDrawerNavigationButtonBig("Lelangku", '/home', context),
                 // _buildDrawerNavigationButtonBig("Our Shop Products", context),
-                _buildDrawerNavigationButtonBig("Penawaranku", '/home', context),
+                _buildDrawerNavigationButtonBig(
+                    "Penawaranku", '/home', context),
                 // _buildDrawerNavigationButtonBig("Our Carts", context),
                 // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 spacePadding(),
@@ -361,6 +358,17 @@ String convertFormatDate(String date) {
   return newDate;
 }
 
+String convertFormatDateTimeProduct(String date) {
+  String newDate = "";
+  List<String> split = date.split(" ");
+  List<String> splitTime = split[1].split(":");
+
+
+  List<String> splitDate = split[0].split("-");
+  newDate = "${splitDate[2]}/${splitDate[1]} ${splitTime[0]}:${splitTime[1]}";
+  return newDate;
+}
+
 String convertToAge(DateTime birthDate) {
   final birthday = birthDate;
   final date2 = DateTime.now();
@@ -370,4 +378,113 @@ String convertToAge(DateTime birthDate) {
     month = month * -1;
   }
   return "$year THN $month";
+}
+
+Widget isLoading() {
+  return Center(
+    child: CircularProgressIndicator(),
+  );
+}
+
+/// get color by Style Name : `primary`,`unprime`,`secondary`,`active`,`warnig`,`danger`,`disabled`.
+Color myColor([String color = "default"]) {
+  Color returnedColor;
+  switch (color) {
+    case "primary":
+      returnedColor = Color.fromRGBO(255, 77, 77, 1);
+      break;
+    case "danger":
+      returnedColor = Colors.red[300];
+      break;
+    case "warning":
+      returnedColor = Colors.deepOrange;
+      break;
+    case "secondary":
+      returnedColor = Colors.deepOrange;
+      break;
+    case "active":
+      returnedColor = Colors.black;
+      break;
+    case "unprime":
+      returnedColor = Color.fromRGBO(136, 136, 136, 1);
+      break;
+    case "disabled":
+      returnedColor = Color.fromRGBO(178, 178, 178, 1);
+      break;
+    case "light":
+      returnedColor = Colors.white;
+      break;
+    case "dark":
+      returnedColor = Colors.grey[700];
+      break;
+    default:
+      returnedColor = Colors.black;
+      break;
+  }
+  return returnedColor;
+}
+
+/// get weight by Style Name : `T`/`XL`/`L`/`N`/`M`/`SB`/`B`/`XB`/`TB`
+///
+/// `T` : Thin.
+/// `XL` : Extra Light.
+/// `L`  : Light.
+/// `N`  : Normal.
+/// `M`  : Medium.
+/// `SB` : Semi-Bold.
+/// `B`  : Bold.
+/// `XB` : Extra Bold.
+/// `TB` : True Bold/ Real Black.
+FontWeight myFontWeight([String weight = 'N']) {
+  FontWeight returnedFW;
+  switch (weight) {
+    case 'T':
+      returnedFW = FontWeight.w100;
+      break;
+    case 'XL':
+      returnedFW = FontWeight.w200;
+      break;
+    case 'L':
+      returnedFW = FontWeight.w300;
+      break;
+    case 'N':
+      returnedFW = FontWeight.w400;
+      break;
+    case 'M':
+      returnedFW = FontWeight.w500;
+      break;
+    case 'SB':
+      returnedFW = FontWeight.w600;
+      break;
+    case 'B':
+      returnedFW = FontWeight.w700;
+      break;
+    case 'XB':
+      returnedFW = FontWeight.w800;
+      break;
+    case 'TB':
+      returnedFW = FontWeight.w900;
+      break;
+  }
+  return returnedFW;
+}
+
+/// Global Function to return Text with [color] as in [myColor] and [weight] as in [myFontWeight]
+Text myText(
+    {@required String text,
+    String color = "default",
+    double size = 14,
+    String weight = "N",
+    TextDecoration decoration = TextDecoration.none}) {
+  if (text == null || text == "") text = "-";
+  return Text(
+    text,
+    style: TextStyle(
+      decoration: decoration,
+      decorationColor: myColor(color),
+      color: myColor(color),
+      fontSize: size,
+      fontWeight: myFontWeight(weight),
+    ),
+  );
 }

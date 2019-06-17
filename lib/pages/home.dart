@@ -47,7 +47,7 @@ class _HomePage extends State<HomePage> {
     print("#### LOGGED IN ID ${prefs.getInt('id')}");
     if (prefs.getInt('id') == null) {
       // User Has Logged In
-      Navigator.of(context).pushNamed("/login");
+      //Navigator.of(context).pushNamed("/login");
     }
   }
 

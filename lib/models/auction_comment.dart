@@ -46,5 +46,5 @@ class AuctionComment {
         "deleted_at": deletedAt,
         "user": user == null ? null : user.toJson(),
         "amount": amount == null ? null : amount,
-    };
+    }..removeWhere( (key, val) => val == null);
 }

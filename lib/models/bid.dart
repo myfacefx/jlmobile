@@ -42,5 +42,5 @@ class Bid {
         "updated_at": updatedAt == null ? null : updatedAt,
         "deleted_at": deletedAt,
         "user": user == null ? null : user.toJson(),
-    };
+    }..removeWhere( (key, val) => val == null);
 }
