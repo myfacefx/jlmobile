@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,7 +29,6 @@ class _HomePage extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     _getListCategories();
-    _checkSharedPreferences();
   }
 
   _HomePage() {
@@ -42,17 +42,9 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  _checkSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    print("#### LOGGED IN ID ${prefs.getInt('id')}");
-    if (prefs.getInt('id') == null) {
-      // User Has Logged In
-      Navigator.of(context).pushNamed("/login");
-    }
-  }
-
   _logOut() async {
-    if (prefs.getInt('id') != null) await prefs.remove('id');
+    deleteLocalData("user");
+    globals.state = "login";
     Navigator.of(context).pop();
     Navigator.of(context).pushNamed('/login');
   }

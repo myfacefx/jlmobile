@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 
 import 'package:meta/meta.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
@@ -27,19 +29,18 @@ class AppConfig extends InheritedWidget {
   Future<Null> checkLocalData() async {
     globals.baseUrl = baseUrl;
     globals.flavor = flavorName;
-    // try {
-    //   String userData = await readLocalData("userData");
-    //   if (userData != null) {
-    //     User newUser = userFromJson(userData);
-    //     globals.user = newUser.data[0];
-    //     globals.state = "verify_pin";
-
-    //   } else {
-    //     globals.state = "login";
-    //   }
-    // } catch (e) {
-    //   globals.state = "login";
-    //   print("readLocalData(userData) : ${e.toString()}");
-    // }
+    try {
+      String userData = await readLocalData("user");
+      if (userData != null) {
+        User newUser = userFromJson(userData);
+        globals.user = newUser;
+        globals.state = "home";
+      } else {
+        globals.state = "login";
+      }
+    } catch (e) {
+      globals.state = "login";
+      print("readLocalData(userData) : ${e.toString()}");
+    }
   }
 }

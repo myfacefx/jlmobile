@@ -99,6 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       child: Scaffold(
         appBar: globals.appBar(_scaffoldKey, context),
         body: Scaffold(
+          drawer: globals.drawer(context),
           key: _scaffoldKey,
             body: Stack(children: <Widget>[
           // _buildBackground(),

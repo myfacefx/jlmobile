@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<User> login(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
+
+  print(getBaseUrl() + "/login");
   http.Response res = await http.post(getBaseUrl() + "/login",
       headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
@@ -76,6 +78,18 @@ Future<List<User>> getBlacklistedUser() async {
   
   http.Response res = await http.get(getBaseUrl() + "/blacklists",
       headers: header).timeout(Duration(seconds: getTimeOut()));
+  if (res.statusCode == 200) {
+    return listUserFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<List<User>> getByEmail(Map<String, dynamic> _data) async {
+  final header = {"Content-Type": "application/json"};
+  http.Response res = await http.post(getBaseUrl() + "/users/search/email",
+      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+
   if (res.statusCode == 200) {
     return listUserFromJson(res.body);
   } else {

@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_advanced_networkimage/provider.dart'
     show AdvancedNetworkImage;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 import 'package:validators/validators.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
@@ -22,6 +24,8 @@ double mw(BuildContext context) {
 String baseUrl = "http://192.168.100.119:8000";
 String flavor = "Development";
 String state = "Login";
+
+User user;
 
 // Global timeout setting
 int timeOut = 30;
@@ -223,14 +227,18 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
                 bottomRight: Radius.circular(10))),
         onPressed: () {
           if (route == "/logout") {
-            
+            deleteLocalData("user");
+            state = "login";
+            Navigator.of(context).pop();
+            Navigator.pushNamed(context, "/login");
+          } else {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, route);
           }
-          Navigator.pop(context);
-          Navigator.pushNamed(context, route);
         },
         child: SizedBox(
             width: double.infinity,
-            child: Text(title, style: Theme.of(context).textTheme.display1)),
+            child: Text(title, style: TextStyle(color: Colors.white))),
       ));
 }
 
