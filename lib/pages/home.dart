@@ -23,7 +23,6 @@ class _HomePage extends State<HomePage> {
   bool failedDataCategories = false;
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -108,8 +107,8 @@ class _HomePage extends State<HomePage> {
       children: <Widget>[
         Container(
           color: Colors.white,
-          margin: EdgeInsets.fromLTRB(20, 16, 20, 16),
-          padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          margin: EdgeInsets.fromLTRB(10, 16, 10, 16),
+          padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
           child: CarouselSlider(
             enlargeCenterPage: true,
             viewportFraction: 1.0,
@@ -138,7 +137,7 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildAsk() {
     return Container(
-      margin: EdgeInsets.fromLTRB(20, 0, 20, 16),
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
       height: 64,
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
@@ -154,7 +153,7 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildTitle() {
     return Container(
-      margin: EdgeInsets.fromLTRB(20, 0, 20, 16),
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
       child: Row(
         children: <Widget>[
           Text(
@@ -176,7 +175,6 @@ class _HomePage extends State<HomePage> {
 
   Widget detail(String name, String count) {
     return Container(
-      width: 70,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -225,7 +223,6 @@ class _HomePage extends State<HomePage> {
       },
       child: Card(
         child: Container(
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
@@ -240,7 +237,7 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildPromotion() {
     return Container(
-        margin: EdgeInsets.fromLTRB(20, 0, 20, 16),
+        margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
         child: Column(
           children: <Widget>[
             Container(
@@ -301,7 +298,7 @@ class _HomePage extends State<HomePage> {
         : isLoadingCategories
             ? Container(child: Center(child: CircularProgressIndicator()))
             : Container(
-                margin: EdgeInsets.fromLTRB(35, 0, 35, 0),
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: GridView.count(
                     physics: ScrollPhysics(),
                     shrinkWrap: true,
@@ -312,29 +309,30 @@ class _HomePage extends State<HomePage> {
 
   _exitDialog() {
     return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Perhatian", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25), textAlign: TextAlign.center),
-          content: Text("Keluar dari aplikasi?", style: TextStyle(color: Colors.black)),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Batal", style: TextStyle(color: Theme.of(context).primaryColor)),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              }
-            ),
-            FlatButton(
-              color: Theme.of(context).primaryColor,
-              child: Text("Ya", style: TextStyle(color: Colors.white)),
-              onPressed: () {
-                _logOut();
-              }
-            )
-          ],
-        );
-      }
-    );
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Perhatian",
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
+                textAlign: TextAlign.center),
+            content: Text("Keluar dari aplikasi?",
+                style: TextStyle(color: Colors.black)),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text("Batal",
+                      style: TextStyle(color: Theme.of(context).primaryColor)),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  }),
+              FlatButton(
+                  color: Theme.of(context).primaryColor,
+                  child: Text("Ya", style: TextStyle(color: Colors.white)),
+                  onPressed: () {
+                    _logOut();
+                  })
+            ],
+          );
+        });
   }
 
   @override
@@ -358,7 +356,7 @@ class _HomePage extends State<HomePage> {
                 _buildTitle(),
                 _buildGridCategory(animalCategories),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(35, 5, 35, 5),
+                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: Divider(color: Colors.black),
                 ),
                 _buildPromotion()

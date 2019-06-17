@@ -97,7 +97,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   Widget _buildcontSub(String name, String count, int subCategory) {
     return GestureDetector(
       onTap: () {
-        print("$name - $subCategory");
         _refresh(subCategory, name);
       },
       child: Container(
@@ -280,7 +279,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildTextSearch() {
     return Container(
-      width: globals.mw(context) * 0.35,
+      width: globals.mw(context) * 0.6,
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       height: 30,
       decoration: BoxDecoration(
@@ -312,7 +311,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         children: <Widget>[
           dropdownSortBy(),
           _buildTextSearch(),
-          dropdownSearchType()
+          // dropdownSearchType()
         ],
       ),
     );
@@ -340,7 +339,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ),
           )
         : Container(
-            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
             child: GridView.count(
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
@@ -353,19 +351,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     List<String> splitText = expiryTime.split(" ");
     String date = splitText[0];
     String timeRemaining = splitText[0];
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
-        Text("10 Min Remaining",
+        Text("10 Min Remaining - ${globals.convertFormatDate(date)}",
             style: Theme.of(context).textTheme.display1.copyWith(
-                  fontSize: 12,
+                  fontSize: 10,
                 )),
-        SizedBox(
-          width: 6,
-        ),
-        Text(
-          globals.convertFormatDate(date),
-          style: Theme.of(context).textTheme.display1,
-        ),
+        
       ],
     );
   }
@@ -375,7 +368,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       height: 128,
       color: Colors.black,
-      width: 165,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
@@ -391,7 +383,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       String name, String userPost, String gender, DateTime birthDate) {
     String ageNow = globals.convertToAge(birthDate);
     return Container(
-      width: (globals.mw(context) * 0.5) - 40,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -445,18 +436,40 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   Widget _buildCard(Animal animal) {
+    bool myProduct = animal.ownerUserId == globals.user.id;
     return Stack(
       children: <Widget>[
         Container(
           margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
           child: Card(
             child: Container(
-              padding: EdgeInsets.fromLTRB(10, 12, 10, 12),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
               child: Column(
                 children: <Widget>[
+                  myProduct
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              width: 85,
+                              padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: globals.myText(
+                                  text: "YOUR PRODUCT",
+                                  color: "light",
+                                  size: 10),
+                            )
+                          ],
+                        )
+                      : Container(),
+                  SizedBox(
+                    height: 5,
+                  ),
                   _buildTime(animal.auction.expiryDate),
                   _buildImage(animal.animalImages[0].image),
-                  _buildDetail(animal.name, animal.owner.name, animal.gender,
+                  _buildDetail(animal.name, animal.owner.username, animal.gender,
                       animal.dateOfBirth),
                   _buildChips(
                       "start",

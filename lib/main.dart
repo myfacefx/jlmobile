@@ -10,6 +10,7 @@ import 'package:jlf_mobile/themes.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
+import 'package:jlf_mobile/globals.dart' as globals;
 
 void main() => runApp(MyApp());
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'JLF',
       debugShowCheckedModeBanner: false,
       theme: buildThemeData(),
-      home: LoginPage(),
+      home: globals.state == "home" ? HomePage() : LoginPage(),
       routes: <String, WidgetBuilder>{
         //Root Page
         '/home': (BuildContext context) => HomePage(),
