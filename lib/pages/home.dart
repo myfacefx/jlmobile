@@ -106,13 +106,14 @@ class _HomePage extends State<HomePage> {
     return Stack(
       children: <Widget>[
         Container(
-          color: Colors.white,
           margin: EdgeInsets.fromLTRB(10, 16, 10, 16),
           padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
           child: CarouselSlider(
+            autoPlay: true,
             enlargeCenterPage: true,
             viewportFraction: 1.0,
             height: 153,
+            enableInfiniteScroll: true,
             onPageChanged: (index) {
               setState(() {
                 _current = index;
@@ -223,10 +224,14 @@ class _HomePage extends State<HomePage> {
       },
       child: Card(
         child: Container(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               image(category.image),
+              SizedBox(
+                width: 10,
+              ),
               detail(category.name, category.animalsCount.toString())
             ],
           ),

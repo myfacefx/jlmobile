@@ -140,7 +140,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildOwnerDetail() {
     return Container(
       color: Theme.of(context).primaryColor,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -156,6 +156,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                               'https://66.media.tumblr.com/d3a12893ef0dfec39cf7335008f16c7f/tumblr_pcve4yqyEO1uaogmwo8_400.png',
                           placeholder: 'assets/images/loading.gif',
                           fit: BoxFit.cover)))),
+          SizedBox(width: 5),
           Container(
             child: Column(
               children: <Widget>[
@@ -179,6 +180,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               ],
             ),
           ),
+          SizedBox(width: 5),
           Container(
             child: FlatButton(
                 shape: RoundedRectangleBorder(
@@ -254,7 +256,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             decoration: BoxDecoration(
                 color: isFirst ? Theme.of(context).primaryColor : Colors.white,
                 borderRadius: BorderRadius.circular(5)),
-            width: 100,
+            width: globals.mw(context) * 0.25,
             padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
             margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
             child: Text(
@@ -342,10 +344,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget textField() {
-    return Stack(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          width: globals.mw(context) - 80,
+          width: globals.mw(context) - 138,
           padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
           decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -355,7 +358,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             controller: bidController,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 24,
+              fontSize: 16,
             ),
             decoration: InputDecoration(
                 border: InputBorder.none,
@@ -363,25 +366,23 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 hintStyle: TextStyle(fontSize: 14)),
           ),
         ),
-        Positioned(
-          right: 0,
-          child: Container(
-            padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
-            decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(30)),
-            child: FlatButton(
-              onPressed: () {},
-              child: Text(
-                "B.I.N",
-                style: Theme.of(context)
-                    .textTheme
-                    .title
-                    .copyWith(color: Colors.white),
-              ),
+        Container(
+          decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(30)),
+          child: FlatButton(
+            onPressed: () {
+              _addBid();
+            },
+            child: Text(
+              "PASANG",
+              style: Theme.of(context)
+                  .textTheme
+                  .title
+                  .copyWith(color: Colors.white, fontSize: 16),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -389,7 +390,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   _addBid() {
     Bid newBid = Bid();
     newBid.auctionId = animal.auction.id;
-    newBid.userId = 1;
+    newBid.userId = globals.user.id;
     newBid.amount = int.parse(bidController.text);
 
     double amountDouble = newBid.amount.toDouble();
@@ -445,37 +446,26 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       child: Column(
         children: <Widget>[
           globals.myText(
-              text: "-- PASANG BID --", weight: "XB", color: "dark", size: 16),
+              text: "-- PASANG BID --", weight: "B", color: "dark", size: 16),
           SizedBox(
             height: 20,
           ),
           textField(),
           SizedBox(
-            height: 16,
+            height: 8,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(25)),
-                child: FlatButton(
-                  onPressed: () {
-                    _addBid();
-                  },
-                  child: Text(
-                    "PASANG",
-                    style: Theme.of(context)
-                        .textTheme
-                        .title
-                        .copyWith(color: Colors.white, fontSize: 16),
-                  ),
-                ),
+          Container(
+            child: SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                onPressed: () {},
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: globals.myText(text: "B.I.N", color: "light", size: 15),
+                color: globals.myColor("primary"),
               ),
-            ],
-          ),
+            ),
+          )
         ],
       ),
     );
@@ -557,7 +547,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     AuctionComment auctionComment = AuctionComment();
     auctionComment.comment = comment;
     auctionComment.auctionId = animal.auction.id;
-    auctionComment.userId = 1;
+    auctionComment.userId = globals.user.id;
 
     try {
       globals.loadingModel(context);
@@ -582,8 +572,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       children: <Widget>[
         Container(
           width: globals.mw(context) * 0.65,
-          margin: EdgeInsets.fromLTRB(20, 0, 5, 0),
-          padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+          margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(30)),
@@ -592,7 +582,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             controller: commentController,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 24,
+              fontSize: 16,
             ),
             validator: (text) {
               if (text == null || text == "" || text == " ") {
@@ -614,14 +604,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               borderRadius: BorderRadius.circular(30)),
           child: FlatButton(
             onPressed: () {
-              _addComment("UP");
+              _formKeyComment.currentState.save();
+              if (_formKeyComment.currentState.validate()) {
+                _addComment(commentController.text);
+              }
             },
             child: Text(
-              "UP",
+              "SUBMIT",
               style: Theme.of(context)
                   .textTheme
                   .title
-                  .copyWith(color: Colors.white),
+                  .copyWith(color: Colors.white, fontSize: 16),
             ),
           ),
         ),
@@ -657,7 +650,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             //   }).toList(),
             // ),
             Container(
-              height: globals.mh(context)*0.4,
+              height: globals.mh(context) * 0.4,
               child: ListView.builder(
                 physics: ScrollPhysics(),
                 itemCount: animal.auction.countComments,
@@ -678,15 +671,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 width: double.infinity,
                 child: RaisedButton(
                   onPressed: () {
-                    _formKeyComment.currentState.save();
-                    if (_formKeyComment.currentState.validate()) {
-                      _addComment(commentController.text);
-                    }
+                    _addComment("UP");
                   },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
-                  child:
-                      globals.myText(text: "SUBMIT", color: "light", size: 15),
+                  child: globals.myText(text: "UP", color: "light", size: 15),
                   color: globals.myColor("primary"),
                 ),
               ),

@@ -288,10 +288,6 @@ class _LoginPage extends State<LoginPage> {
                         height: 10,
                       ),
                       _floatingButton("Facebook"),
-                      FadeInImage.assetNetwork(
-                        placeholder: 'assets/images/loading.gif',
-                        image: _facebookPhotoProfile,
-                      ),
                       SizedBox(height: 10)
                     ],
                   ),

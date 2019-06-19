@@ -111,7 +111,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           Text(
             "$name ($count)",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12),
+            style: TextStyle(fontSize: 10),
           )
         ]),
       ),
@@ -143,7 +143,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         child: GridView.count(
             physics: ScrollPhysics(),
             shrinkWrap: true,
-            childAspectRatio: 2.5,
+            childAspectRatio: 2.3,
             crossAxisCount: 3,
             children: listMyWidgets()));
   }
@@ -342,7 +342,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             child: GridView.count(
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
-                childAspectRatio: 0.56,
+                childAspectRatio: 0.5,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }
@@ -350,16 +350,42 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   Widget _buildTime(String expiryTime) {
     List<String> splitText = expiryTime.split(" ");
     String date = splitText[0];
-    String timeRemaining = splitText[0];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: <Widget>[
-        Text("10 Min Remaining - ${globals.convertFormatDate(date)}",
-            style: Theme.of(context).textTheme.display1.copyWith(
-                  fontSize: 10,
-                )),
-        
-      ],
+
+    final exptDate = DateTime.parse(expiryTime);
+    final dateNow = DateTime.now();
+    final differenceMinutes = (dateNow.difference(exptDate).inMinutes).abs();
+    String def = "";
+    def = "${(dateNow.difference(exptDate).inSeconds).abs()} Sec";
+
+    //1 year
+    if (differenceMinutes > 525600) {
+      def = "${differenceMinutes ~/ 525600} Year";
+    }
+    //1 month
+    else if (differenceMinutes > 43200) {
+      def = "${differenceMinutes ~/ 43200} Month";
+    }
+    //1 day
+    else if (differenceMinutes > 1440) {
+      def = "${differenceMinutes ~/ 1440} Day";
+    }
+
+    //1 hour
+    else if (differenceMinutes > 60) {
+      def = "${differenceMinutes ~/ 60} Hour";
+    } else if (differenceMinutes > 1) {
+      def = "$differenceMinutes Min";
+    }
+
+    return Container(
+      width: globals.mw(context) * 0.5,
+      child: Text(
+        "$def Remaining - ${globals.convertFormatDate(date)}",
+        style: Theme.of(context).textTheme.display1.copyWith(
+              fontSize: 10,
+            ),
+        textAlign: TextAlign.left,
+      ),
     );
   }
 
@@ -469,8 +495,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   ),
                   _buildTime(animal.auction.expiryDate),
                   _buildImage(animal.animalImages[0].image),
-                  _buildDetail(animal.name, animal.owner.username, animal.gender,
-                      animal.dateOfBirth),
+                  _buildDetail(animal.name, animal.owner.username,
+                      animal.gender, animal.dateOfBirth),
                   _buildChips(
                       "start",
                       globals
@@ -499,7 +525,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildcontChips(String text) {
     return Container(
-      width: ((globals.mw(context) * 0.5) - 40) * 0.46,
       padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
       margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
       decoration: BoxDecoration(
@@ -517,7 +542,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildChips(String text, String value) {
     return Container(
-      width: (globals.mw(context) * 0.5) - 40,
+      width: (globals.mw(context) * 0.5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
