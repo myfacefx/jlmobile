@@ -28,6 +28,9 @@ dependencies:
   flutter_masked_text: ^0.8.0
   
   flutter_facebook_login:
+    git: 
+      url: https://github.com/yudaprama/flutter_facebook_login
+      ref: android-x
 
 dev_dependencies:
   flutter_test:
