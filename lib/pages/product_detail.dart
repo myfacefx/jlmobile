@@ -360,9 +360,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               color: Colors.black,
               fontSize: 16,
             ),
+            autovalidate: true,
+            validator: (String bid) {
+              if (animal.auction.sumBids > int.parse(bid)) {
+                return "Jumlah tawaran harus lebih dari tawaran sebelumnya";
+              } else if ((int.parse(bid) % animal.auction.multiply) != 0) {
+                return "Jumlah tawaran harus dengan ketentuan kelipatan";
+              }
+            },
             decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: 'Tawaran Anda',
+                hintText: 'Tawaran Anda | Kelipatan ${animal.auction.multiply}',
                 hintStyle: TextStyle(fontSize: 14)),
           ),
         ),
@@ -422,13 +430,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       Navigator.pop(context);
                       if (result) {
                         await globals.showDialogs("Bid Placed", context);
-                        bidController.text = '';
-                        Navigator.pop(context);
-                        setState(() {
-                          isLoading = true;
-                        });
-                        loadAnimal(animal.id);
+                      } else {
+                        await globals.showDialogs(
+                            "Bid Fail, Current Bid lower that Current Bid",
+                            context);
                       }
+
+                      bidController.text = '';
+                      Navigator.pop(context);
+                      setState(() {
+                        isLoading = true;
+                      });
+                      loadAnimal(animal.id);
                     } catch (e) {
                       Navigator.pop(context);
                       globals.showDialogs(e.toString(), context);
