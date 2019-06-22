@@ -11,6 +11,11 @@ Future<User> login(Map<String, dynamic> _data) async {
   print(getBaseUrl() + "/login");
   http.Response res = await http.post(getBaseUrl() + "/login",
       headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+
+  print("Login statuscode = ${res.statusCode}");
+
+  print(res.body);
+
   if (res.statusCode == 200) {
     return userFromJson(res.body);
   } else {
@@ -30,7 +35,7 @@ Future<bool> logout(String token) async {
 
 Future<User> register(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
-  http.Response res = await http.post(getBaseUrl() + "/users",
+  http.Response res = await http.post(getBaseUrl() + "/register",
       headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {

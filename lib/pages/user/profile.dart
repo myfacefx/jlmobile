@@ -25,7 +25,7 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _getAnimals();
   }
 
@@ -328,48 +328,42 @@ class _ProfilePageState extends State<ProfilePage>
                               style:
                                   TextStyle(color: Colors.black, fontSize: 11)),
                         ),
-                        Tab(
-                          child: Text("Produk Jual",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 11)),
-                        ),
-                        Tab(
-                          child: Text("Tambahkan",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 11)),
-                        )
+                        // Tab(
+                        //   child: Text("Produk Jual",
+                        //       style:
+                        //           TextStyle(color: Colors.black, fontSize: 9)),
+                        // ),
+                        // Tab(
+                        //   child: Text("Tambahkan",
+                        //       style:
+                        //           TextStyle(color: Colors.black, fontSize: 9)),
+                        // )
                       ],
                     )))),
                 Flexible(
                     child: Container(
                   padding: EdgeInsets.all(5),
-                  child: Card(
                     child: TabBarView(
                       controller: _tabController,
                       children: <Widget>[
                         Container(
-                            padding: EdgeInsets.all(10),
                             child: isLoading
                                 ? globals.isLoading()
                                 : _buildAnimals()),
                         Container(
-                            padding: EdgeInsets.all(10),
                             child: isLoading
                                 ? globals.isLoading()
                                 : _buildAnimals()),
-                        Container(
-                            padding: EdgeInsets.all(10),
-                            child: isLoading
-                                ? globals.isLoading()
-                                : _buildAnimals()),
-                        Container(
-                            padding: EdgeInsets.all(10),
-                            child: isLoading
-                                ? globals.isLoading()
-                                : _buildAnimals()),
+                        // Container(
+                        //     child: isLoading
+                        //         ? globals.isLoading()
+                        //         : _buildAnimals()),
+                        // Container(
+                        //     child: isLoading
+                        //         ? globals.isLoading()
+                        //         : _buildAnimals()),
                       ],
                     ),
-                  ),
                 ))
               ],
             ))));

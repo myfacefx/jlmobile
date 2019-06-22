@@ -35,19 +35,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-
-    _checkSharedPreferences();
-  }
-
-  _checkSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('id') == null) {
-      Navigator.of(context).pop();
-      Navigator.of(context).pushNamed("/login");
-    } else {
-      _id = prefs.getInt('id');
-      _username = prefs.getString('username');
-    }
   }
 
   Widget _buildBackground() {

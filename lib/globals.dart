@@ -174,7 +174,7 @@ Widget myAppBarIcon(context) {
   );
 }
 
-Widget _buildDrawerNavigationButtonBig(String title, String route, context) {
+Widget _buildDrawerNavigationButtonBig(String title, String route, int bidCount, context) {
   return Container(
     padding: EdgeInsets.fromLTRB(0, 3, 20, 5),
     child: FlatButton(
@@ -191,21 +191,23 @@ Widget _buildDrawerNavigationButtonBig(String title, String route, context) {
       },
       child: SizedBox(
           width: double.infinity,
-          child: Row(children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 8),
-              child: Text(title,
-                  style: TextStyle(color: Theme.of(context).primaryColor)),
-            )
-            // Container(
-            //   width: 20,
-            //   child: RaisedButton(
-            //     onPressed: () {},
-            //     color: Theme.of(context).primaryColor,
-            //     child: Text("10", style: Theme.of(context).textTheme.display4)
-            //   )
-            // )
-          ])),
+          child: Container(padding: EdgeInsets.symmetric(horizontal: 8), child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+            Container(child: Text(title, style: TextStyle(color: Theme.of(context).primaryColor))),
+            bidCount != null && bidCount > 0 ? Container(
+              constraints: BoxConstraints(
+                minWidth: 10,
+                minHeight: 10
+              ),
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(100)
+              ),
+              child: Text("$bidCount", style: TextStyle(color: Colors.white, fontSize: 10))
+            ) : Container()
+          ]))),
     ),
   );
 }
@@ -241,6 +243,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
 }
 
 Widget drawer(context) {
+
   return SizedBox(
     width: MediaQuery.of(context).size.width * 0.55,
     child: Drawer(
@@ -277,10 +280,10 @@ Widget drawer(context) {
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 spacePadding(),
-                _buildDrawerNavigationButtonBig("Lelangku", '/home', context),
+                _buildDrawerNavigationButtonBig("Lelangku", '/profile', null, context),
                 // _buildDrawerNavigationButtonBig("Our Shop Products", context),
                 _buildDrawerNavigationButtonBig(
-                    "Penawaranku", '/home', context),
+                    "Penawaranku", '/profile', user.bidsCount, context),
                 // _buildDrawerNavigationButtonBig("Our Carts", context),
                 // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 spacePadding(),

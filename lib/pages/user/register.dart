@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/models/province.dart';
+import 'package:jlf_mobile/models/regency.dart';
 import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/services/province_services.dart';
+import 'package:jlf_mobile/services/regency_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -23,6 +27,8 @@ class _RegisterPageState extends State<RegisterPage> {
   FocusNode usernameFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
   FocusNode confirmPasswordFocusNode = FocusNode();
+  FocusNode provinceFocusNode = FocusNode();
+  FocusNode regencyFocusNode = FocusNode();
 
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -30,6 +36,11 @@ class _RegisterPageState extends State<RegisterPage> {
   String _email;
   String _username;
   String _password;
+  Province _province;
+  Regency _regency;
+
+  List<Province> provinces = List<Province>();
+  List<Regency> regencies = List<Regency>();
 
   _RegisterPageState(String email) {
     // If email sent from login, login from Facebook
@@ -39,6 +50,26 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
+
+    this.registerLoading = true;
+
+    getProvinces("token").then((value) {
+      provinces = value;
+      setState(() {
+        this.registerLoading = false;
+      });
+    });
+  }
+
+  _updateRegencies() {
+    regencies = List<Regency>();
+    this.registerLoading = true;
+    getRegenciesByProvinceId("token", _province.id).then((onValue) {
+      setState(() {
+        regencies = onValue;
+        this.registerLoading = false;
+      });
+    });
   }
 
   Widget _buildBackground() {
@@ -66,6 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
       user.email = _email;
       user.username = _username;
       user.password = _password;
+      user.regencyId = _regency.id;
       user.roleId = 2;
 
       User userResult = await register(user.toJson());
@@ -91,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return SafeArea(
       child: Scaffold(
           body: Stack(children: <Widget>[
-        // _buildBackground(),
+        _buildBackground(),
         !registerLoading
             ? Container()
             : Center(child: CircularProgressIndicator()),
@@ -186,7 +218,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     validator: (value) {
                       if (value.isEmpty ||
-                          value.length < 5 ||
+                          value.length < 8 ||
                           value.length > 12) {
                         return 'Password minimal 8 maksimal 12 huruf';
                       }
@@ -224,7 +256,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                     onFieldSubmitted: (String value) {
-                      _register();
+                      // FocusScope.of(context).requestFocus(regencyFocusNode);
                     },
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
@@ -245,6 +277,67 @@ class _RegisterPageState extends State<RegisterPage> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
+                  )),
+              Container(
+                  width: 300,
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: DropdownButtonFormField<Province>(
+                    decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        contentPadding: EdgeInsets.all(13),
+                        hintText: "Provinsi",
+                        labelText: "Provinsi"),
+                    value: _province,
+                    validator: (province) {
+                      if (province == null) {
+                        return 'Silahkan pilih provinsi';
+                      }
+                    },
+                    onChanged: (Province province) {
+                      setState(() {
+                        _province = province;
+                      });
+                      _updateRegencies();
+                      // FocusScope.of(context)
+                      //   .requestFocus(regencyFocusNode);
+                    },
+                    items: provinces.map((Province province) {
+                      return DropdownMenuItem<Province>(
+                          value: province,
+                          child: Text(province.name,
+                              style: TextStyle(color: Colors.black)));
+                    }).toList(),
+                  )),
+              Container(
+                  width: 300,
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: DropdownButtonFormField<Regency>(
+                    decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        contentPadding: EdgeInsets.all(13),
+                        hintText: "Kota/Kabupaten",
+                        labelText: "Kota/Kabupaten"),
+                    onChanged: (Regency regency) {
+                      setState(() {
+                        _regency = regency;
+                      });
+                    },
+                    value: _regency,
+                    validator: (regency) {
+                      if (regency == null) {
+                        return 'Silahkan pilih wilayah kota/kabupaten';
+                      }
+                    },
+                    items: regencies.map((Regency regency) {
+                      return DropdownMenuItem<Regency>(
+                          value: regency,
+                          child: Text(regency.name,
+                              style: TextStyle(color: Colors.black)));
+                    }).toList(),
                   )),
               Container(
                   width: 300,

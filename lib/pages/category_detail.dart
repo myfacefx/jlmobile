@@ -49,7 +49,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       globals.showDialogs(onError, context);
     });
 
-    getProvices("token").then((onValue) {
+    getProvinces("token").then((onValue) {
       provinces = onValue;
       provinces.forEach((province) {
         itemProvince.add(province.name);

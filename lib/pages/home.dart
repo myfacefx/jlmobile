@@ -321,7 +321,7 @@ class _HomePage extends State<HomePage> {
             title: Text("Perhatian",
                 style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
                 textAlign: TextAlign.center),
-            content: Text("Keluar dari aplikasi?",
+            content: Text("Log out dari aplikasi?",
                 style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton(

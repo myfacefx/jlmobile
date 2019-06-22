@@ -1,17 +1,18 @@
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
-import 'package:jlf_mobile/models/province.dart';
+import 'package:jlf_mobile/models/regency.dart';
 
-Future<List<Province>> getProvinces(String token) async {
+Future<List<Regency>> getRegenciesByProvinceId(String token,  provinceId) async {
   final header = {"Content-Type": "application/json"};
-  final url = getBaseUrl() + "/provinces";
+
+  final url = getBaseUrl() + "/provinces/$provinceId/regencies";
 
   print(url);
 
   http.Response res = await http.get(url,
       headers: header).timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
-    return provinceFromJson(res.body);
+    return regencyFromJson(res.body);
   } else {
     throw Exception(res.body);
   }
