@@ -61,6 +61,45 @@ Future<Animal> getAnimalById(String token, int animalId) async {
   }
 }
 
+Future<List<Animal>> getUserAnimals(String token, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  print(getBaseUrl() + "/users/$userId/animals");
+  http.Response res =
+      await http.get(getBaseUrl() + "/users/$userId/animals", headers: header);
+  if (res.statusCode == 200) {
+    return animalFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  print(getBaseUrl() + "/users/$userId/auctions/animals");
+  http.Response res = await http
+      .get(getBaseUrl() + "/users/$userId/auctions/animals", headers: header);
+  if (res.statusCode == 200) {
+    return animalFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<List<Animal>> getUserBidsAnimals(String token, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  print(getBaseUrl() + "/users/$userId/bids/animals");
+  http.Response res = await http
+      .get(getBaseUrl() + "/users/$userId/bids/animals", headers: header);
+  if (res.statusCode == 200) {
+    return animalFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 Future<Animal> create(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   http.Response res = await http.post(getBaseUrl() + "/animals",
@@ -72,3 +111,4 @@ Future<Animal> create(Map<String, dynamic> _data) async {
     throw Exception(res.body);
   }
 }
+

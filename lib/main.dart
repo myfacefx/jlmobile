@@ -4,6 +4,7 @@ import 'package:jlf_mobile/pages/faq.dart';
 import 'package:jlf_mobile/pages/home.dart';
 import 'package:jlf_mobile/pages/blacklist.dart';
 import 'package:jlf_mobile/pages/how_to.dart';
+import 'package:jlf_mobile/pages/our_bid.dart';
 import 'package:jlf_mobile/pages/setting.dart';
 import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/themes.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/logout': (BuildContext context) => LoginPage(),
         '/profile': (BuildContext context) => ProfilePage(),
         '/edit-profile': (BuildContext context) => EditProfilePage(),
+        '/our-bid': (BuildContext context) => OurBidPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage()
       },
     );

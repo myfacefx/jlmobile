@@ -3,6 +3,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -106,8 +107,7 @@ class _HomePage extends State<HomePage> {
     return Stack(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.fromLTRB(10, 16, 10, 16),
-          padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
           child: CarouselSlider(
             autoPlay: true,
             enlargeCenterPage: true,
@@ -353,7 +353,7 @@ class _HomePage extends State<HomePage> {
         body: Scaffold(
           key: _scaffoldKey,
           bottomNavigationBar: globals.bottomNavigationBar(context),
-          drawer: globals.drawer(context),
+          drawer: drawer(context),
           body: SafeArea(
             child: ListView(
               children: <Widget>[

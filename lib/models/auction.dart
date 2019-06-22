@@ -22,7 +22,8 @@ class Auction {
     String updatedAt;
     dynamic deletedAt;
     int countComments;
-    int sumBids;
+    int currentBid;
+    String lastBid;
     List<AuctionComment> auctionComments;
     List<Bid> bids;
     int ownerUserId;
@@ -48,9 +49,10 @@ class Auction {
         this.updatedAt,
         this.deletedAt,
         this.countComments,
-        this.sumBids,
+        this.currentBid,
         this.auctionComments,
         this.bids,
+        this.lastBid
         this.ownerUserId
     });
 
@@ -76,7 +78,9 @@ class Auction {
         updatedAt: json["updated_at"] == null ? null : json["updated_at"],
         deletedAt: json["deleted_at"],
         countComments: json["count_comments"] == null ? null : json["count_comments"],
-        sumBids: json["sum_bids"] == null ? null : json["sum_bids"],
+        lastBid: json["last_bid"] == null ? null : json["last_bid"],
+        ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
+        currentBid: json["current_bid"] == null ? null : json["current_bid"],
         auctionComments: json["auction_comments"] == null ? null : new List<AuctionComment>.from(json["auction_comments"].map((x) => AuctionComment.fromJson(x))),
         bids: json["bids"] == null ? null : new List<Bid>.from(json["bids"].map((x) => Bid.fromJson(x))),
     );
@@ -103,7 +107,9 @@ class Auction {
         "updated_at": updatedAt == null ? null : updatedAt,
         "deleted_at": deletedAt,
         "count_comments": countComments == null ? null : countComments,
-        "sum_bids": sumBids == null ? null : sumBids,
+        "last_bid": lastBid == null ? null : lastBid,
+        "current_bid": currentBid == null ? null : currentBid,
+        "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "auction_comments": auctionComments == null ? null : new List<dynamic>.from(auctionComments.map((x) => x.toJson())),
         "bids": bids == null ? null : new List<dynamic>.from(bids.map((x) => x.toJson())),
     };

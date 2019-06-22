@@ -4,6 +4,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
+import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/bid_services.dart';
@@ -331,7 +332,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               _buildRule("start", animal.auction.openBid.toDouble()),
-              _buildRule("current", animal.auction.sumBids.toDouble()),
+              _buildRule("current", animal.auction.currentBid.toDouble()),
               _buildRule("bin", animal.auction.buyItNow.toDouble()),
             ],
           ),
@@ -366,7 +367,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               validator: (String bid) {
                 if (bid == null || bid == "" || bid == "0") {
                   return "Bid tidak boleh kosong";
-                } else if (animal.auction.sumBids > int.parse(bid)) {
+                } else if (animal.auction.currentBid > int.parse(bid)) {
                   return "Jumlah bid terlalu kecil";
                 } else if ((int.parse(bid) % animal.auction.multiply) != 0) {
                   return "Jumlah bid tidak sesuai kelipatan";
@@ -713,7 +714,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       appBar: globals.appBar(_scaffoldKey, context),
       body: Scaffold(
         key: _scaffoldKey,
-        drawer: globals.drawer(context),
+        drawer: drawer(context),
         body: isLoading
             ? globals.isLoading()
             : SafeArea(
