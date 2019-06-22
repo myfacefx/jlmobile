@@ -60,3 +60,15 @@ Future<Animal> getAnimalById(String token, int animalId) async {
     throw Exception(res.body);
   }
 }
+
+Future<Animal> create(Map<String, dynamic> _data) async {
+  final header = {"Content-Type": "application/json"};
+  http.Response res = await http.post(getBaseUrl() + "/animals",
+      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return Animal.fromJson(json.decode(res.body));
+  } else {
+    throw Exception(res.body);
+  }
+}

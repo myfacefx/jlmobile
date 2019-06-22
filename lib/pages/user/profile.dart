@@ -303,7 +303,14 @@ class _ProfilePageState extends State<ProfilePage>
                                           EdgeInsets.symmetric(vertical: 15),
                                       child: Text(
                                           "First hand importir anjing, silahkan lihat-lihat",
-                                          style: TextStyle(color: Colors.grey)))
+                                          style: TextStyle(color: Colors.grey))),
+                                  FlatButton(
+                                    shape: CircleBorder(),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, "/auction/create");
+                                    },
+                                    child: Icon("Add Auction",
+                                        color: Colors.black, size: 20)),
                                 ],
                               ),
                             ],
