@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,40 +19,56 @@ class _ProfilePageState extends State<ProfilePage>
   TabController _tabController;
 
   String _username;
-  bool isLoading = true;
+  bool isLoadingAnimals = true;
+  bool isLoadingAuctions = true;
 
   List<Animal> animals = List<Animal>();
+  List<Animal> auctions = List<Animal>();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _getAnimals();
+    _getProdukKu();
+    _getProdukLelang();
   }
 
-  _getAnimals() {
-    getAnimalByCategory("Token", 1, "", "").then((onValue) {
+  _getProdukKu() {
+    getUserAnimals("Token", globals.user.id).then((onValue) {
       animals = onValue;
       setState(() {
-        isLoading = false;
+        isLoadingAnimals = false;
       });
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
   }
 
-  Widget _buildAnimals() {
+  _getProdukLelang() {
+    getUserAuctionAnimals("Token", globals.user.id).then((onValue) {
+      auctions = onValue;
+      setState(() {
+        isLoadingAuctions = false;
+      });
+    }).catchError((onError) {
+      globals.showDialogs(onError, context);
+    });
+  }
+
+  // card animals
+
+  Widget _buildAnimals(List<Animal> data, String type) {
     List<Widget> listMyWidgets() {
       List<Widget> list = List();
 
-      animals.forEach((animal) {
-        list.add(_buildCard(animal));
+      data.forEach((animal) {
+        list.add(_buildCard(animal, type));
       });
 
       return list;
     }
 
-    return animals.length == 0
+    return data.length == 0
         ? Center(
             child: Text(
               "Data tidak ditemukan",
@@ -62,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage>
             child: GridView.count(
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
-                childAspectRatio: 0.53,
+                childAspectRatio: type == "produkku" ? 0.75 : 0.5,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }
@@ -70,15 +87,42 @@ class _ProfilePageState extends State<ProfilePage>
   Widget _buildTime(String expiryTime) {
     List<String> splitText = expiryTime.split(" ");
     String date = splitText[0];
-    String timeRemaining = splitText[0];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: <Widget>[
-        Text("10 Min Remaining - ${globals.convertFormatDate(date)}",
-            style: Theme.of(context).textTheme.display1.copyWith(
-                  fontSize: 10,
-                )),
-      ],
+
+    final exptDate = DateTime.parse(expiryTime);
+    final dateNow = DateTime.now();
+    final differenceMinutes = (dateNow.difference(exptDate).inMinutes).abs();
+    String def = "";
+    def = "${(dateNow.difference(exptDate).inSeconds).abs()} Sec";
+
+    //1 year
+    if (differenceMinutes > 525600) {
+      def = "${differenceMinutes ~/ 525600} Year";
+    }
+    //1 month
+    else if (differenceMinutes > 43200) {
+      def = "${differenceMinutes ~/ 43200} Month";
+    }
+    //1 day
+    else if (differenceMinutes > 1440) {
+      def = "${differenceMinutes ~/ 1440} Day";
+    }
+
+    //1 hour
+    else if (differenceMinutes > 60) {
+      def = "${differenceMinutes ~/ 60} Hour";
+    } else if (differenceMinutes > 1) {
+      def = "$differenceMinutes Min";
+    }
+
+    return Container(
+      width: globals.mw(context) * 0.5,
+      child: Text(
+        "$def Remaining - ${globals.convertFormatDate(date)}",
+        style: Theme.of(context).textTheme.display1.copyWith(
+              fontSize: 10,
+            ),
+        textAlign: TextAlign.left,
+      ),
     );
   }
 
@@ -115,24 +159,24 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Widget _buildChat(String countComments, int animalId) {
+  Widget _buildEditAuction(int auctionId) {
     return Positioned(
       bottom: 4,
       right: 10,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ProductDetailPage(
-                        animalId: animalId,
-                      )));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => ProductDetailPage(
+          //               animalId: animalId,
+          //             )));
         },
         splashColor: Theme.of(context).primaryColor,
         child: Container(
             width: 40,
             height: 40,
-            padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+            padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
             margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -144,17 +188,46 @@ class _ProfilePageState extends State<ProfilePage>
                   ),
                 ]),
             child: Center(
-              child: Text(
-                countComments,
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 10),
-              ),
+              child: Icon(Icons.settings)
             )),
       ),
     );
   }
 
-  Widget _buildCard(Animal animal) {
+  Widget _buildEditAnimal(int animalId) {
+    return Positioned(
+      bottom: 4,
+      right: 10,
+      child: InkWell(
+        onTap: () {
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => ProductDetailPage(
+          //               animalId: animalId,
+          //             )));
+        },
+        splashColor: Theme.of(context).primaryColor,
+        child: Container(
+            width: 40,
+            height: 40,
+            padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
+            margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(50),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 2.0,
+                  ),
+                ]),
+            child: Center(child: Icon(Icons.edit))),
+      ),
+    );
+  }
+
+  Widget _buildProdukKu(Animal animal) {
     return Stack(
       children: <Widget>[
         Container(
@@ -165,7 +238,33 @@ class _ProfilePageState extends State<ProfilePage>
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 10,
+                    height: 5,
+                  ),
+                  _buildImage(animal.animalImages[0].image),
+                  _buildDetail(animal.name, animal.owner.username,
+                      animal.gender, animal.dateOfBirth),
+                ],
+              ),
+            ),
+          ),
+        ),
+        _buildEditAnimal(animal.id)
+      ],
+    );
+  }
+
+  Widget _buildProdukLelang(Animal animal) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+          child: Card(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 5,
                   ),
                   _buildTime(animal.auction.expiryDate),
                   _buildImage(animal.animalImages[0].image),
@@ -185,21 +284,34 @@ class _ProfilePageState extends State<ProfilePage>
                           .convertToMoney(animal.auction.buyItNow.toDouble())),
                   _buildChips(
                       "current",
-                      globals
-                          .convertToMoney(animal.auction.sumBids.toDouble())),
+                      globals.convertToMoney(
+                          animal.auction.currentBid.toDouble())),
                 ],
               ),
             ),
           ),
         ),
-        _buildChat(animal.auction.countComments.toString(), animal.id)
+        _buildEditAuction(animal.auction.id)
       ],
     );
   }
 
+  Widget _buildCard(Animal animal, String type) {
+    var widget;
+    switch (type) {
+      case "produkku":
+        widget = _buildProdukKu(animal);
+        break;
+      case "produklelang":
+        widget = _buildProdukLelang(animal);
+        break;
+      default:
+    }
+    return widget;
+  }
+
   Widget _buildcontChips(String text) {
     return Container(
-      width: ((globals.mw(context) * 0.5) - 40) * 0.46,
       padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
       margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
       decoration: BoxDecoration(
@@ -217,7 +329,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Widget _buildChips(String text, String value) {
     return Container(
-      width: (globals.mw(context) * 0.5) - 40,
+      width: (globals.mw(context) * 0.5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -237,7 +349,7 @@ class _ProfilePageState extends State<ProfilePage>
         appBar: globals.appBar(_scaffoldKey, context),
         body: Scaffold(
             key: _scaffoldKey,
-            drawer: globals.drawer(context),
+            drawer: drawer(context),
             body: SafeArea(
                 child: Column(
               children: <Widget>[
@@ -343,27 +455,27 @@ class _ProfilePageState extends State<ProfilePage>
                 Flexible(
                     child: Container(
                   padding: EdgeInsets.all(5),
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: <Widget>[
-                        Container(
-                            child: isLoading
-                                ? globals.isLoading()
-                                : _buildAnimals()),
-                        Container(
-                            child: isLoading
-                                ? globals.isLoading()
-                                : _buildAnimals()),
-                        // Container(
-                        //     child: isLoading
-                        //         ? globals.isLoading()
-                        //         : _buildAnimals()),
-                        // Container(
-                        //     child: isLoading
-                        //         ? globals.isLoading()
-                        //         : _buildAnimals()),
-                      ],
-                    ),
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      Container(
+                          child: isLoadingAnimals
+                              ? globals.isLoading()
+                              : _buildAnimals(animals, "produkku")),
+                      Container(
+                          child: isLoadingAuctions
+                              ? globals.isLoading()
+                              : _buildAnimals(auctions, "produklelang")),
+                      // Container(
+                      //     child: isLoading
+                      //         ? globals.isLoading()
+                      //         : _buildAnimals()),
+                      // Container(
+                      //     child: isLoading
+                      //         ? globals.isLoading()
+                      //         : _buildAnimals()),
+                    ],
+                  ),
                 ))
               ],
             ))));

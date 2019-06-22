@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
@@ -86,7 +87,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       child: Scaffold(
         appBar: globals.appBar(_scaffoldKey, context),
         body: Scaffold(
-          drawer: globals.drawer(context),
+          drawer: drawer(context),
           key: _scaffoldKey,
             body: Stack(children: <Widget>[
           // _buildBackground(),

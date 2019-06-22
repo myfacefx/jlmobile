@@ -6,6 +6,7 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/province.dart';
+import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
@@ -512,7 +513,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   _buildChips(
                       "current",
                       globals
-                          .convertToMoney(animal.auction.sumBids.toDouble())),
+                          .convertToMoney(animal.auction.currentBid.toDouble())),
                 ],
               ),
             ),
@@ -564,7 +565,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       appBar: globals.appBar(_scaffoldKey, context),
       body: Scaffold(
         key: _scaffoldKey,
-        drawer: globals.drawer(context),
+        drawer: drawer(context),
         body: SafeArea(
           child: ListView(
             children: <Widget>[

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/pages/component/drawer.dart';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _AboutPageState extends State<AboutPage> {
         appBar: globals.appBar(_scaffoldKey, context),
         body: Scaffold(
             key: _scaffoldKey,
-            drawer: globals.drawer(context),
+            drawer: drawer(context),
             body: SafeArea(
               child: Container(
                 padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
