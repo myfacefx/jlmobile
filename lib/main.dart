@@ -11,6 +11,7 @@ import 'package:jlf_mobile/themes.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
+import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 
 void main() => runApp(MyApp());
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/profile': (BuildContext context) => ProfilePage(),
         '/edit-profile': (BuildContext context) => EditProfilePage(),
         '/our-bid': (BuildContext context) => OurBidPage(),
+        '/auction/create': (BuildContext context) => CreateAuctionPage()
       },
     );
   }

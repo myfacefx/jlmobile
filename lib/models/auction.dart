@@ -26,6 +26,7 @@ class Auction {
     String lastBid;
     List<AuctionComment> auctionComments;
     List<Bid> bids;
+    int ownerUserId;
 
     Auction({
         this.id,
@@ -52,6 +53,7 @@ class Auction {
         this.auctionComments,
         this.bids,
         this.lastBid
+        this.ownerUserId
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -65,6 +67,7 @@ class Auction {
         cancellationReason: json["cancellation_reason"] == null ? null : json["cancellation_reason"],
         cancellationDate: json["cancellation_date"] == null ? null : json["cancellation_date"],
         paymentImage: json["payment_image"] == null ? null : json["payment_image"],
+        ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         ownerConfirmation: json["owner_confirmation"] == null ? null : json["owner_confirmation"],
         winnerConfirmation: json["winner_confirmation"] == null ? null : json["winner_confirmation"],
         winnerBidId: json["winner_bid_id"],
@@ -76,6 +79,7 @@ class Auction {
         deletedAt: json["deleted_at"],
         countComments: json["count_comments"] == null ? null : json["count_comments"],
         lastBid: json["last_bid"] == null ? null : json["last_bid"],
+        ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         currentBid: json["current_bid"] == null ? null : json["current_bid"],
         auctionComments: json["auction_comments"] == null ? null : new List<AuctionComment>.from(json["auction_comments"].map((x) => AuctionComment.fromJson(x))),
         bids: json["bids"] == null ? null : new List<Bid>.from(json["bids"].map((x) => Bid.fromJson(x))),
@@ -92,6 +96,7 @@ class Auction {
         "cancellation_reason": cancellationReason == null ? null : cancellationReason,
         "cancellation_date": cancellationDate == null ? null : cancellationDate,
         "payment_image": paymentImage == null ? null : paymentImage,
+        "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "owner_confirmation": ownerConfirmation == null ? null : ownerConfirmation,
         "winner_confirmation": winnerConfirmation == null ? null : winnerConfirmation,
         "winner_bid_id": winnerBidId,
@@ -104,6 +109,7 @@ class Auction {
         "count_comments": countComments == null ? null : countComments,
         "last_bid": lastBid == null ? null : lastBid,
         "current_bid": currentBid == null ? null : currentBid,
+        "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "auction_comments": auctionComments == null ? null : new List<dynamic>.from(auctionComments.map((x) => x.toJson())),
         "bids": bids == null ? null : new List<dynamic>.from(bids.map((x) => x.toJson())),
     };

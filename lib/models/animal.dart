@@ -81,7 +81,7 @@ class Animal {
         "auction": auction == null ? null : auction.toJson(),
         "animal_images": animalImages == null ? null : new List<dynamic>.from(animalImages.map((x) => x.toJson())),
         "owner": owner == null ? null : owner.toJson(),
-    };
+    }..removeWhere((key, val) => val == null);
 }
 
 
