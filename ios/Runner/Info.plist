@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- MULTI IMAGE PICKER FOR IOS -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Example usage description</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Example usage description</string>
+
+	<!-- END OF MULTI IMAGE PICKER FOR IOS -->
+
 	<!-- FACEBOOK LOGIN FOR IOS -->
 	
 	<key>CFBundleURLTypes</key>

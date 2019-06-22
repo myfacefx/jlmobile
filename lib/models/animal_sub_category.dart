@@ -1,3 +1,9 @@
+import 'dart:convert';
+
+List<AnimalSubCategory> animalSubCategoryFromJson(String str) => new List<AnimalSubCategory>.from(json.decode(str).map((x) => AnimalSubCategory.fromJson(x)));
+
+String animalSubCategoryToJson(List<AnimalSubCategory> data) => json.encode(new List<dynamic>.from(data.map((x) => x.toJson())));
+
 class AnimalSubCategory {
     int id;
     String name;

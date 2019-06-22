@@ -26,6 +26,8 @@ dependencies:
   http: ^0.12.0
   shared_preferences: ^0.5.1
   flutter_masked_text: ^0.8.0
+
+  multi_image_picker: ^4.3.4
   
   flutter_facebook_login:
     git: 

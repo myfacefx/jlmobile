@@ -25,6 +25,7 @@ class Auction {
     int sumBids;
     List<AuctionComment> auctionComments;
     List<Bid> bids;
+    int ownerUserId;
 
     Auction({
         this.id,
@@ -50,6 +51,7 @@ class Auction {
         this.sumBids,
         this.auctionComments,
         this.bids,
+        this.ownerUserId
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -63,6 +65,7 @@ class Auction {
         cancellationReason: json["cancellation_reason"] == null ? null : json["cancellation_reason"],
         cancellationDate: json["cancellation_date"] == null ? null : json["cancellation_date"],
         paymentImage: json["payment_image"] == null ? null : json["payment_image"],
+        ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         ownerConfirmation: json["owner_confirmation"] == null ? null : json["owner_confirmation"],
         winnerConfirmation: json["winner_confirmation"] == null ? null : json["winner_confirmation"],
         winnerBidId: json["winner_bid_id"],
@@ -89,6 +92,7 @@ class Auction {
         "cancellation_reason": cancellationReason == null ? null : cancellationReason,
         "cancellation_date": cancellationDate == null ? null : cancellationDate,
         "payment_image": paymentImage == null ? null : paymentImage,
+        "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "owner_confirmation": ownerConfirmation == null ? null : ownerConfirmation,
         "winner_confirmation": winnerConfirmation == null ? null : winnerConfirmation,
         "winner_bid_id": winnerBidId,
