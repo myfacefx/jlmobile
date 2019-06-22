@@ -52,7 +52,7 @@ class Auction {
         this.currentBid,
         this.auctionComments,
         this.bids,
-        this.lastBid
+        this.lastBid,
         this.ownerUserId
     });
 
@@ -79,7 +79,6 @@ class Auction {
         deletedAt: json["deleted_at"],
         countComments: json["count_comments"] == null ? null : json["count_comments"],
         lastBid: json["last_bid"] == null ? null : json["last_bid"],
-        ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         currentBid: json["current_bid"] == null ? null : json["current_bid"],
         auctionComments: json["auction_comments"] == null ? null : new List<AuctionComment>.from(json["auction_comments"].map((x) => AuctionComment.fromJson(x))),
         bids: json["bids"] == null ? null : new List<Bid>.from(json["bids"].map((x) => Bid.fromJson(x))),
@@ -109,7 +108,6 @@ class Auction {
         "count_comments": countComments == null ? null : countComments,
         "last_bid": lastBid == null ? null : lastBid,
         "current_bid": currentBid == null ? null : currentBid,
-        "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "auction_comments": auctionComments == null ? null : new List<dynamic>.from(auctionComments.map((x) => x.toJson())),
         "bids": bids == null ? null : new List<dynamic>.from(bids.map((x) => x.toJson())),
     };

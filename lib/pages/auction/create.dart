@@ -4,6 +4,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
+import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
@@ -221,7 +222,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       child: Scaffold(
         appBar: globals.appBar(_scaffoldKey, context),
         body: Scaffold(
-          drawer: globals.drawer(context),
+          drawer: drawer(context),
           key: _scaffoldKey,
             body: Stack(children: <Widget>[
           !isLoading
