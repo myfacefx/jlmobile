@@ -20,6 +20,7 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPage extends State<ProductDetailPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKeyComment = GlobalKey<FormState>();
+  final _formKeyBid = GlobalKey<FormState>();
 
   int _current = 0;
   bool isLoading = true;
@@ -347,31 +348,37 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Container(
-          width: globals.mw(context) - 138,
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
-          decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(30)),
-          child: TextFormField(
-            keyboardType: TextInputType.number,
-            controller: bidController,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
+        Form(
+          key: _formKeyBid,
+          child: Container(
+            width: globals.mw(context) - 138,
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
+            decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(30)),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              controller: bidController,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 12,
+              ),
+              validator: (String bid) {
+                if (bid == null || bid == "" || bid == "0") {
+                  return "Bid tidak boleh kosong";
+                } else if (animal.auction.sumBids > int.parse(bid)) {
+                  return "Jumlah bid terlalu kecil";
+                } else if ((int.parse(bid) % animal.auction.multiply) != 0) {
+                  return "Jumlah bid tidak sesuai kelipatan";
+                }
+              },
+              decoration: InputDecoration(
+                  errorStyle: TextStyle(fontSize: 10),
+                  border: InputBorder.none,
+                  hintText:
+                      'Tawaran Anda | Kelipatan ${animal.auction.multiply}',
+                  hintStyle: TextStyle(fontSize: 14)),
             ),
-            autovalidate: true,
-            validator: (String bid) {
-              if (animal.auction.sumBids > int.parse(bid)) {
-                return "Jumlah tawaran harus lebih dari tawaran sebelumnya";
-              } else if ((int.parse(bid) % animal.auction.multiply) != 0) {
-                return "Jumlah tawaran harus dengan ketentuan kelipatan";
-              }
-            },
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Tawaran Anda | Kelipatan ${animal.auction.multiply}',
-                hintStyle: TextStyle(fontSize: 14)),
           ),
         ),
         Container(
@@ -380,7 +387,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               borderRadius: BorderRadius.circular(30)),
           child: FlatButton(
             onPressed: () {
-              _addBid();
+              _formKeyBid.currentState.save();
+              if (_formKeyBid.currentState.validate()) {
+                _addBid();
+              }
             },
             child: Text(
               "PASANG",

@@ -178,6 +178,7 @@ class _HomePage extends State<HomePage> {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             name,
