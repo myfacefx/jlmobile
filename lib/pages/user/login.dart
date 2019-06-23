@@ -233,6 +233,32 @@ class _LoginPage extends State<LoginPage> {
         });
   }
 
+  Widget _termOfServices() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        children: <Widget> [
+          Text("By logging in or registering, I agree to Jual Lelang Fauna's ", style: TextStyle(color: Colors.black, fontSize: 12)),
+          GestureDetector(
+            onTap: () {
+              globals.showDialogs("Term of Service JLF", context);
+            },
+            child: Text("Terms of Service", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12)),
+          ),
+          Text(" and ", style: TextStyle(color: Colors.black, fontSize: 12)),
+          GestureDetector(
+            onTap: () {
+              globals.showDialogs("Privacy Policy JLF", context);
+            },
+            child: Text("Privacy Policy", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12)), 
+          ),
+          Text(".", style: TextStyle(color: Colors.black, fontSize: 12))     
+        ]
+      ) 
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -344,7 +370,8 @@ class _LoginPage extends State<LoginPage> {
                           height: 10,
                         ),
                         _floatingButton("Facebook"),
-                        SizedBox(height: 10)
+                        SizedBox(height: 30),
+                        _termOfServices()
                       ],
                     ),
                   ),

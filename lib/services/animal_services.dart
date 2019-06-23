@@ -100,13 +100,13 @@ Future<List<Animal>> getUserBidsAnimals(String token, int userId) async {
   }
 }
 
-Future<Animal> create(Map<String, dynamic> _data) async {
+Future<String> create(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   http.Response res = await http.post(getBaseUrl() + "/animals",
-      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()+270));
 
   if (res.statusCode == 200) {
-    return Animal.fromJson(json.decode(res.body));
+    return res.body;
   } else {
     throw Exception(res.body);
   }
