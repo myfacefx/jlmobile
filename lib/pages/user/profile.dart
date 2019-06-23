@@ -404,7 +404,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           size: 18,
                                           color:
                                               Theme.of(context).primaryColor),
-                                      Text("Kota Tangerang Selatan",
+                                      Text(globals.user.regency.name,
                                           style: TextStyle(color: Colors.grey))
                                     ],
                                   ),
@@ -412,17 +412,24 @@ class _ProfilePageState extends State<ProfilePage>
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15),
                                       child: Text(
-                                          "First hand importir anjing, silahkan lihat-lihat",
+                                          globals.user.description,
                                           style:
                                               TextStyle(color: Colors.grey))),
                                   FlatButton(
-                                      shape: CircleBorder(),
+                                      // shape: CircleBorder(),
+                                      color: Theme.of(context).primaryColor,
                                       onPressed: () {
                                         Navigator.pushNamed(
                                             context, "/auction/create");
                                       },
-                                      child: Icon(Icons.add,
-                                          color: Colors.black, size: 20)),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text("Tambahkan", style: TextStyle(color: Colors.white)),
+                                          Icon(Icons.add,
+                                              color: Colors.white, size: 20),
+                                        ],
+                                      )),
                                 ],
                               ),
                             ],
