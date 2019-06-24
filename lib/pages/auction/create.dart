@@ -258,6 +258,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
       try {
         String response = await create(formData);
+        print(response);
 
         Map<String, dynamic> finalResponse = jsonDecode(response);
 
@@ -265,10 +266,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
           isLoading = false;
         });
 
-        await globals.showDialogs(finalResponse['message'], context);
+        //await globals.showDialogs(finalResponse['message'], context);
         Navigator.pop(context);
       } catch (e) {
-        globals.showDialogs(e.toString(), context);
+        //globals.showDialogs(e.toString(), context);
         print(e);
         setState(() {
           isLoading = false;

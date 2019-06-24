@@ -87,12 +87,17 @@ Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
   }
 }
 
-Future<List<Animal>> getUserBidsAnimals(String token, int userId) async {
+Future<List<Animal>> getUserBidsAnimals(
+    String token, int userId, String sortBy) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
+  String params = "?";
 
-  print(getBaseUrl() + "/users/$userId/bids/animals");
-  http.Response res = await http
-      .get(getBaseUrl() + "/users/$userId/bids/animals", headers: header);
+  params = params + "sort_by=$sortBy";
+
+  print(getBaseUrl() + "/users/$userId/bids/animals$params");
+  http.Response res = await http.get(
+      getBaseUrl() + "/users/$userId/bids/animals$params",
+      headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
   } else {
@@ -102,13 +107,15 @@ Future<List<Animal>> getUserBidsAnimals(String token, int userId) async {
 
 Future<String> create(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
-  http.Response res = await http.post(getBaseUrl() + "/animals",
-      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()+270));
+  http.Response res = await http
+      .post(getBaseUrl() + "/animals",
+          headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut() + 270));
 
   if (res.statusCode == 200) {
+    print(res.body);
     return res.body;
   } else {
     throw Exception(res.body);
   }
 }
-
