@@ -100,4 +100,7 @@ dependencies {
     // AndroidX
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'com.sangcomz:FishBun:0.9.1'
+    
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
