@@ -10,7 +10,7 @@ Future<User> login(Map<String, dynamic> _data) async {
 
   print(getBaseUrl() + "/login");
   http.Response res = await http.post(getBaseUrl() + "/login",
-      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()+270));
+      headers: header, body: json.encode(_data));
 
   print(res.body);
 

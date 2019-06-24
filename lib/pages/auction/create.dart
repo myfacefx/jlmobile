@@ -37,12 +37,16 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
   TextEditingController openBidController = TextEditingController();
   TextEditingController multiplyController = TextEditingController();
+  TextEditingController binController = TextEditingController();
+  TextEditingController dateOfBirthController = TextEditingController();
 
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   AnimalCategory _animalCategory;
 
   List<AnimalSubCategory> animalSubCategories = List<AnimalSubCategory>();
   AnimalSubCategory _animalSubCategory;
+
+  var images_base64 = List<String>();
 
   String _name;
   String _description;
@@ -52,6 +56,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String _bidType;
   String _auctionExpiryDateType;
   int _gender;
+  DateTime _dateOfBirth;
 
   List<String> auctionTypes = ["24 Hours", "48 Hours"];
 
@@ -87,6 +92,27 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         isLoading = false;
       });
     });
+  }
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        lastDate: DateTime.now(),
+        firstDate: DateTime(2000, 1),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.dark(),
+            child: child,
+          );
+        });
+
+    if (picked != null) {
+      setState(() {
+        _dateOfBirth = picked;
+        dateOfBirthController.text = _dateOfBirth.day.toString() + "-" + _dateOfBirth.month.toString() + "-" + _dateOfBirth.year.toString();
+      });
+    }
   }
 
   _getAnimalSubCategories() {
@@ -161,8 +187,23 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
     setState(() {
       images = resultList;
-      if (error == null) _error = 'No Error Dectected';
+      // if (error == null) _error = 'No Error Detected';
     });
+
+    _generateImageBase64();
+  }
+
+  _generateImageBase64() async {
+    images_base64 = List<String>();
+
+    for (int i = 0; i < images.length; i++) {
+      ByteData byteData = await images[i].requestOriginal(quality: 75);
+
+      List<int> imageData = byteData.buffer.asUint8List();
+      // byteData.buffer.asByteData();
+
+      images_base64.add(base64Encode(imageData));
+    }
   }
 
   _save() async {
@@ -190,7 +231,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
           break;
       }
 
-      animal.dateOfBirth = DateTime.now();
+      animal.dateOfBirth = _dateOfBirth;
       animal.description = _description;
       animal.ownerUserId = globals.user.id;
       animal.regencyId = globals.user.regencyId;
@@ -213,44 +254,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         formData['auction'] = auction;
       }
 
-      // Uri uri = Uri.parse(globals.getBaseUrl() + "/animals");
-
-      // MultipartRequest request = http.MultipartRequest("POST", uri);
-      var images_base64 = List<String>();
-
-      for (int i=0; i<images.length; i++) {
-        ByteData byteData = await images[i].requestOriginal(
-          quality: 75
-        );
-        
-        // print("byteData = ${byteData.toString()}");
-        List<int> imageData = byteData.buffer.asUint8List();
-        byteData.buffer.asByteData();
-        // print("BASE64 = ${base64Encode(imageData)}");
-        
-        images_base64.add(base64Encode(imageData));
-        // print("imageData = $imageData");
-
-        // MultipartFile multipartFile = MultipartFile.fromBytes(
-        //   'photo[]',
-        //   imageData,
-        //   filename: 'some-file-name.jpg',
-        //   contentType: MediaType("image", "jpg"),
-        // );
-
-        // print("wew : ${multipartFile.field} dan ${multipartFile.contentType} dan $multipartFile");
-
-        // print("multipart = ${multipartFile.toString()}");
-
-        // request.files.add(multipartFile);
-      }
-
-      // StreamedResponse response = await request.send();
-      // response.stream.transform(utf8.decoder).listen((value) {
-      //   print(value);
-      // });
-      // print("RESPONSE = $response");
-
       formData['images'] = images_base64;
 
       try {
@@ -258,15 +261,15 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
         Map<String, dynamic> finalResponse = jsonDecode(response);
 
-        print(finalResponse);
-        
-        globals.showDialogs(finalResponse['message'], context);
-
         setState(() {
           isLoading = false;
         });
+
+        await globals.showDialogs(finalResponse['message'], context);
+        Navigator.pop(context);
       } catch (e) {
         globals.showDialogs(e.toString(), context);
+        print(e);
         setState(() {
           isLoading = false;
         });
@@ -299,9 +302,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
             drawer: drawer(context),
             key: _scaffoldKey,
             body: Stack(children: <Widget>[
-              !isLoading
-                  ? Container()
-                  : Center(child: CircularProgressIndicator()),
               ListView(children: <Widget>[
                 Form(
                   autovalidate: autoValidate,
@@ -393,7 +393,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                             // FocusScope.of(context).requestFocus(usernameFocusNode);
                             // }
                           },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Nama hewan wajib diisi';
+                            }
+                          },
                           style: TextStyle(color: Colors.black),
+                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(13),
                               hintText: "Nama Hewan",
@@ -402,6 +408,46 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20))),
                         )),
+                    // Container(
+                    //   width: 300,
+                    //   child: Row(children: <Widget>[
+                    //     GestureDetector(
+                    //         onTap: () => _selectDate(context),
+                    //         child: Icon(Icons.calendar_today)),
+                    //     Center(
+                    //       child: Text(
+                    //           _dateOfBirth == null
+                    //               ? "-"
+                    //               : _dateOfBirth.day.toString() +
+                    //                   "-" +
+                    //                   _dateOfBirth.month.toString() +
+                    //                   "-" +
+                    //                   _dateOfBirth.year.toString(),
+                    //           style: TextStyle(color: Colors.black)),
+                    //     ),
+                    //   ]),
+                    // ),
+                    Container(
+                      width: 300,
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: TextFormField(
+                        controller: dateOfBirthController,
+                        validator: (String value) {
+                          if (value.isEmpty) return 'Tanggal lahir masih kosong';
+                        },
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              onTap: () => _selectDate(context),
+                              child: Icon(Icons.calendar_today),
+                            ),
+                            contentPadding: EdgeInsets.all(13),
+                            hintText: "Tanggal Lahir",
+                            labelText: "Tanggal Lahir",
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20))),
+                      )),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -420,7 +466,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                         width: 300,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                         child: TextFormField(
-                          initialValue: _description,
+                          // initialValue: _description,
                           // focusNode: usernameFocusNode,
                           onSaved: (String value) {
                             _description = value;
@@ -437,6 +483,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                               return 'Deskripsi wajib diisi';
                             }
                           },
+                          textCapitalization: TextCapitalization.sentences,
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(13),
@@ -462,28 +509,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                         color: Theme.of(context).primaryColor,
                         onPressed: loadAssets,
                       ),
-                    ),
-                    FlatButton(
-                      onPressed: () async {
-                        for (var asset in images) {
-                          ByteData byteData = await asset.requestOriginal();
-                          
-                          print("byteData = ${byteData.toString()}");
-                          List<int> imageData = byteData.buffer.asUint8List();
-                          
-                          print("imageData = $imageData");
-
-                          MultipartFile multipartFile = MultipartFile.fromBytes(
-                            'photo',
-                            imageData,
-                            filename: 'some-file-name.jpg',
-                            contentType: MediaType("image", "jpg"),
-                          );
-
-                          print("multipart = ${multipartFile.toString()}");
-                        }
-
-                      }
                     ),
                     images != null && images.length > 0
                         ? _buildGridViewImages()
@@ -546,7 +571,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                   width: 300,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
-                                    initialValue: _openBid,
+                                    keyboardType: TextInputType.number,
+                                    controller: openBidController,
+                                    // initialValue: _openBid,
                                     // focusNode: usernameFocusNode,
                                     onSaved: (String value) {
                                       _openBid = value;
@@ -559,6 +586,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Open bid wajib diisi';
+                                      }
+
+                                      if (binController.text.isNotEmpty) {
+                                        if (int.parse(value) >=
+                                            int.parse(binController.text)) {
+                                          return 'Harga open bid tidak boleh lebih atau sama dengan harga BIN';
+                                        }
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
@@ -576,7 +610,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                   width: 300,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
-                                    initialValue: _bin,
+                                    keyboardType: TextInputType.number,
+                                    controller: binController,
+                                    // initialValue: _bin,
                                     // focusNode: usernameFocusNode,
                                     onSaved: (String value) {
                                       _bin = value;
@@ -589,6 +625,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Harga Buy It Now (BIN) wajib diisi';
+                                      }
+                                      if (openBidController.text.isNotEmpty) {
+                                        if (int.parse(value) <=
+                                            int.parse(openBidController.text)) {
+                                          return 'Harga BIN tidak boleh kurang atau sama dengan harga open bid';
+                                        }
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
@@ -606,7 +648,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                   width: 300,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
-                                    initialValue: _multiply,
+                                    keyboardType: TextInputType.number,
+                                    controller: multiplyController,
+                                    // initialValue: _multiply,
                                     // focusNode: usernameFocusNode,
                                     onSaved: (String value) {
                                       _multiply = value;
@@ -619,6 +663,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Harga multiply wajib diisi';
+                                      }
+
+                                      if (binController.text.isNotEmpty) {
+                                        if (int.parse(value) >=
+                                            int.parse(binController.text)) {
+                                          return 'Harga multiply tidak boleh melebihi atau sama dengan BIN';
+                                        }
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
@@ -649,14 +700,17 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                 : Theme.of(context).primaryColor,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)))),
-                    FlatButton(
-                      child: Text("Restart Request"),
-                      onPressed: () {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      },
-                    )
+                    // FlatButton(
+                    //   child: Text("Restart Request"),
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       isLoading = false;
+                    //     });
+                    //   },
+                    // ),
+                    !isLoading
+                        ? Container()
+                        : Center(child: CircularProgressIndicator()),
                     // Flexible(
                     //   child: _buildGridViewImages(),
                     // )
