@@ -164,7 +164,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               children: <Widget>[
                 Text(animal.owner.username),
                 globals.myText(
-                    text: "Kabupaten Sumba timur", color: "light", size: 10),
+                    text: animal.owner.regency.name, color: "light", size: 10),
                 Row(
                   children: <Widget>[
                     Icon(Icons.star),
@@ -260,7 +260,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 borderRadius: BorderRadius.circular(5)),
             width: globals.mw(context) * 0.25,
             padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-            margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+            margin: EdgeInsets.fromLTRB(5, 3, 0, 3),
             child: Text(
               globals.convertToMoney(amount),
               style: Theme.of(context).textTheme.display3.copyWith(
@@ -303,16 +303,24 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           count == 1, i.user.username, i.createdAt, i.amount.toDouble());
     }).toList();
 
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Table(
-          columnWidths: {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
-          border: TableBorder(
-              bottom: BorderSide(color: Colors.grey[300]),
-              verticalInside: BorderSide(color: Colors.grey[300]),
-              horizontalInside: BorderSide(color: Colors.grey[300])),
-          children: myList),
-    );
+    return animal.auction.bids.length != 0
+        ? Container(
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Table(
+                columnWidths: {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
+                border: TableBorder(
+                    bottom: BorderSide(color: Colors.grey[300]),
+                    verticalInside: BorderSide(color: Colors.grey[300]),
+                    horizontalInside: BorderSide(color: Colors.grey[300])),
+                children: myList),
+          )
+        : Container(
+            alignment: Alignment.center,
+            child: Text(
+              "Belum ada tawaran",
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+            ));
   }
 
   Widget _buildBidRule() {
@@ -367,6 +375,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               validator: (String bid) {
                 if (bid == null || bid == "" || bid == "0") {
                   return "Bid tidak boleh kosong";
+                } else if (animal.auction.openBid > int.parse(bid)) {
+                  return "Jumlah bid terlalu kecil dari start";
                 } else if (animal.auction.currentBid > int.parse(bid)) {
                   return "Jumlah bid terlalu kecil";
                 } else if ((int.parse(bid) % animal.auction.multiply) != 0) {
@@ -378,7 +388,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   border: InputBorder.none,
                   hintText:
                       'Tawaran Anda | Kelipatan ${animal.auction.multiply}',
-                  hintStyle: TextStyle(fontSize: 14)),
+                  hintStyle: TextStyle(fontSize: 10)),
             ),
           ),
         ),
@@ -619,7 +629,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Tanyakan Sesuatu',
-                hintStyle: TextStyle(fontSize: 14)),
+                hintStyle: TextStyle(fontSize: 12)),
           ),
         ),
         Container(
@@ -673,18 +683,26 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             //     return _buildTextComment(comment, animal.ownerUserId);
             //   }).toList(),
             // ),
-            Container(
-              height: globals.mh(context) * 0.4,
-              child: ListView.builder(
-                physics: ScrollPhysics(),
-                itemCount: animal.auction.countComments,
-                itemBuilder: (context, int index) {
-                  return _buildTextComment(
-                      animal.auction.auctionComments[index],
-                      animal.ownerUserId);
-                },
-              ),
-            ),
+            animal.auction.countComments > 0
+                ? Container(
+                    height: globals.mh(context) * 0.4,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: animal.auction.countComments,
+                      itemBuilder: (context, int index) {
+                        return _buildTextComment(
+                            animal.auction.auctionComments[index],
+                            animal.ownerUserId);
+                      },
+                    ),
+                  )
+                : Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Belum ada komentar",
+                      style: TextStyle(color: Colors.black),
+                      textAlign: TextAlign.center,
+                    )),
             SizedBox(
               height: 20,
             ),

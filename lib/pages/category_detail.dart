@@ -352,36 +352,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     List<String> splitText = expiryTime.split(" ");
     String date = splitText[0];
 
-    final exptDate = DateTime.parse(expiryTime);
-    final dateNow = DateTime.now();
-    final differenceMinutes = (dateNow.difference(exptDate).inMinutes).abs();
-    String def = "";
-    def = "${(dateNow.difference(exptDate).inSeconds).abs()} Sec";
-
-    //1 year
-    if (differenceMinutes > 525600) {
-      def = "${differenceMinutes ~/ 525600} Year";
-    }
-    //1 month
-    else if (differenceMinutes > 43200) {
-      def = "${differenceMinutes ~/ 43200} Month";
-    }
-    //1 day
-    else if (differenceMinutes > 1440) {
-      def = "${differenceMinutes ~/ 1440} Day";
-    }
-
-    //1 hour
-    else if (differenceMinutes > 60) {
-      def = "${differenceMinutes ~/ 60} Hour";
-    } else if (differenceMinutes > 1) {
-      def = "$differenceMinutes Min";
-    }
-
     return Container(
       width: globals.mw(context) * 0.5,
       child: Text(
-        "$def Remaining - ${globals.convertFormatDate(date)}",
+        "${globals.convertTimer(expiryTime)} Remaining - ${globals.convertFormatDate(date)}",
         style: Theme.of(context).textTheme.display1.copyWith(
               fontSize: 10,
             ),
@@ -410,14 +384,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       String name, String userPost, String gender, DateTime birthDate) {
     String ageNow = globals.convertToAge(birthDate);
     return Container(
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             "$name $gender - $ageNow",
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
           ),
-          Text(userPost, style: Theme.of(context).textTheme.display1),
+          globals.myText(text: userPost, color: "unprime", size: 10)
         ],
       ),
     );
@@ -464,6 +440,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildCard(Animal animal) {
     bool myProduct = animal.ownerUserId == globals.user.id;
+    var isNotError = false;
+    if (animal.animalImages.length > 0 &&
+        animal.animalImages[0].image != null) {
+      isNotError = true;
+    }
+
+    double currentBid = 0.0;
+    if (animal.auction != null) {
+      currentBid = animal.auction.currentBid.toDouble();
+    }
     return Stack(
       children: <Widget>[
         Container(
@@ -495,7 +481,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     height: 5,
                   ),
                   _buildTime(animal.auction.expiryDate),
-                  _buildImage(animal.animalImages[0].image),
+                  isNotError
+                      ? _buildImage(animal.animalImages[0].image)
+                      : globals.failLoadImage(),
                   _buildDetail(animal.name, animal.owner.username,
                       animal.gender, animal.dateOfBirth),
                   _buildChips(
@@ -510,10 +498,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                       "bin",
                       globals
                           .convertToMoney(animal.auction.buyItNow.toDouble())),
-                  _buildChips(
-                      "current",
-                      globals
-                          .convertToMoney(animal.auction.currentBid.toDouble())),
+                  _buildChips("current", globals.convertToMoney(currentBid)),
                 ],
               ),
             ),

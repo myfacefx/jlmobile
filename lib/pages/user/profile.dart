@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:jlf_mobile/globals.dart' as globals;
@@ -40,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage>
         isLoadingAnimals = false;
       });
     }).catchError((onError) {
-      globals.showDialogs(onError, context);
+      globals.showDialogs(onError.toString(), context);
     });
   }
 
@@ -51,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage>
         isLoadingAuctions = false;
       });
     }).catchError((onError) {
-      globals.showDialogs(onError, context);
+      globals.showDialogs(onError.toString(), context);
     });
   }
 
@@ -146,11 +148,13 @@ class _ProfilePageState extends State<ProfilePage>
       String name, String userPost, String gender, DateTime birthDate) {
     String ageNow = globals.convertToAge(birthDate);
     return Container(
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             "$name $gender - $ageNow",
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
           ),
           Text(userPost, style: Theme.of(context).textTheme.display1),
@@ -159,18 +163,18 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Widget _buildEditAuction(int auctionId) {
+  Widget _buildEditAuction(int animalId) {
     return Positioned(
       bottom: 4,
       right: 10,
       child: InkWell(
         onTap: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) => ProductDetailPage(
-          //               animalId: animalId,
-          //             )));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ProductDetailPage(
+                        animalId: animalId,
+                      )));
         },
         splashColor: Theme.of(context).primaryColor,
         child: Container(
@@ -226,6 +230,11 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _buildProdukKu(Animal animal) {
+    var isNotError = false;
+    if (animal.animalImages.length > 0 &&
+        animal.animalImages[0].image != null) {
+      isNotError = true;
+    }
     return Stack(
       children: <Widget>[
         Container(
@@ -238,7 +247,9 @@ class _ProfilePageState extends State<ProfilePage>
                   SizedBox(
                     height: 5,
                   ),
-                  _buildImage(animal.animalImages[0].image),
+                  isNotError
+                      ? _buildImage(animal.animalImages[0].image)
+                      : globals.failLoadImage(),
                   _buildDetail(animal.name, animal.owner.username,
                       animal.gender, animal.dateOfBirth),
                 ],
@@ -252,6 +263,16 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _buildProdukLelang(Animal animal) {
+    var isNotError = false;
+    if (animal.animalImages.length > 0 &&
+        animal.animalImages[0].image != null) {
+      isNotError = true;
+    }
+
+    double currentBid = 0.0;
+    if (animal.auction != null) {
+      currentBid = animal.auction.currentBid.toDouble();
+    }
     return Stack(
       children: <Widget>[
         Container(
@@ -265,7 +286,9 @@ class _ProfilePageState extends State<ProfilePage>
                     height: 5,
                   ),
                   _buildTime(animal.auction.expiryDate),
-                  _buildImage(animal.animalImages[0].image),
+                  isNotError
+                      ? _buildImage(animal.animalImages[0].image)
+                      : globals.failLoadImage(),
                   _buildDetail(animal.name, animal.owner.username,
                       animal.gender, animal.dateOfBirth),
                   _buildChips(
@@ -280,16 +303,13 @@ class _ProfilePageState extends State<ProfilePage>
                       "bin",
                       globals
                           .convertToMoney(animal.auction.buyItNow.toDouble())),
-                  _buildChips(
-                      "current",
-                      globals.convertToMoney(
-                          animal.auction.currentBid.toDouble())),
+                  _buildChips("current", globals.convertToMoney(currentBid)),
                 ],
               ),
             ),
           ),
         ),
-        _buildEditAuction(animal.auction.id)
+        _buildEditAuction(animal.id)
       ],
     );
   }
@@ -411,8 +431,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   Container(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15),
-                                      child: Text(
-                                          globals.user.description,
+                                      child: Text(globals.user.description,
                                           style:
                                               TextStyle(color: Colors.grey))),
                                   FlatButton(
@@ -423,9 +442,12 @@ class _ProfilePageState extends State<ProfilePage>
                                             context, "/auction/create");
                                       },
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text("Tambahkan", style: TextStyle(color: Colors.white)),
+                                          Text("Tambahkan",
+                                              style: TextStyle(
+                                                  color: Colors.white)),
                                           Icon(Icons.add,
                                               color: Colors.white, size: 20),
                                         ],

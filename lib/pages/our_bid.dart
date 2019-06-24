@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 
 class OurBidPage extends StatefulWidget {
@@ -14,11 +18,17 @@ class _OurBidPageState extends State<OurBidPage> {
 
   TextEditingController searchController = TextEditingController();
 
-  String selectedProvince = "All";
   String selectedSortBy = "Terbaru";
+  String searchQuery;
 
   List<Animal> animals = List<Animal>();
   bool isLoading = true;
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -27,13 +37,20 @@ class _OurBidPageState extends State<OurBidPage> {
   }
 
   _getOurBid() {
-    getUserBidsAnimals("Token", globals.user.id).then((onValue) {
+    getUserBidsAnimals("Token", globals.user.id, selectedSortBy)
+        .then((onValue) {
       animals = onValue;
       setState(() {
         isLoading = false;
       });
     }).catchError((onError) {
       globals.showDialogs(onError, context);
+    });
+
+    searchController.addListener(() {
+      setState(() {
+        searchQuery = searchController.text;
+      });
     });
   }
 
@@ -54,7 +71,8 @@ class _OurBidPageState extends State<OurBidPage> {
         onChanged: (value) {
           setState(() {
             selectedSortBy = value;
-            //_refresh(currentIdSubCategory, currentSubCategory);
+            isLoading = true;
+            _getOurBid();
           });
         });
   }
@@ -124,14 +142,28 @@ class _OurBidPageState extends State<OurBidPage> {
               shrinkWrap: true,
               itemCount: animals.length,
               itemBuilder: (BuildContext context, int index) {
-                return _buildCard(animals[index]);
+                String textSearch =
+                    "${animals[index].name} ${animals[index].description} ${animals[index].gender}";
+                return (searchQuery == null || searchQuery == "")
+                    ? _buildCard(animals[index])
+                    : (textSearch)
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase())
+                        ? _buildCard(animals[index])
+                        : Container();
               },
             ),
     );
   }
 
   Widget _buildStatus(String status) {
-    var colorBox = Colors.black;
+    String currentStatus = "on running";
+    Color colorBox = Colors.green;
+    if (status != "Active") {
+      currentStatus = "closed";
+      colorBox = Colors.black;
+    }
+
     return Row(
       children: <Widget>[
         SizedBox(
@@ -146,36 +178,203 @@ class _OurBidPageState extends State<OurBidPage> {
         SizedBox(
           width: 8,
         ),
-        globals.myText(text: "on running", color: "unprime"),
+        globals.myText(text: currentStatus, color: "unprime"),
       ],
     );
   }
 
-  Widget _buildTimer(String status) {
-    var colorBox = Theme.of(context).primaryColor;
+  Widget _buildTimer(String status, String expiryTime) {
+    Color colorBox = Color.fromRGBO(255, 77, 77, 1);
     var colorText = "light";
+    String text = globals.convertTimer(expiryTime) + " left";
+
+    if (status == "Finished") {
+      colorBox = Colors.grey;
+      colorText = "light";
+      text = "Finished";
+    } else if (status == "Win" || status == "Confirmed") {
+      colorBox = Colors.green;
+      text = "YOU WIN";
+    }
+
     return Container(
       width: 85,
       padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
       margin: EdgeInsets.only(right: 10),
       decoration: BoxDecoration(
           color: colorBox, borderRadius: BorderRadius.circular(5)),
-      child:
-          globals.myText(text: "10 Minutes Left", color: colorText, size: 10),
+      child: globals.myText(
+          text: text, color: colorText, size: 10, align: TextAlign.center),
+    );
+  }
+  //
+
+  //detail
+  Widget _buildImage(String image) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+      height: 100,
+      color: Colors.black,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(1),
+        child: FadeInImage.assetNetwork(
+          fit: BoxFit.fitHeight,
+          placeholder: 'assets/images/loading.gif',
+          image: image,
+        ),
+      ),
+    );
+  }
+  //detail
+
+  Widget _buildcontChips(String text) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+      margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(5)),
+      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text(
+          text,
+          style: TextStyle(fontSize: 10),
+          textAlign: TextAlign.center,
+        )
+      ]),
     );
   }
 
-  Widget _buildCard(Animal animal) {
-    return Card(
-      child: Column(
+  Widget _buildChips(String text, String value) {
+    return Container(
+      width: (globals.mw(context) * 0.5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          //build status and timer
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[_buildStatus(""), _buildTimer("")],
-          ),
-          //detail
+          Container(
+              width: ((globals.mw(context) * 0.5) - 40) * 0.3,
+              child: Text(text, style: Theme.of(context).textTheme.display2)),
+          _buildcontChips(value)
         ],
+      ),
+    );
+  }
+
+  Widget _buildStatusAuction(Animal animal, String status) {
+    Widget widget = globals.myText(
+        text: 'last bid by " ${animal.auction.lastBid} "',
+        color: "unprime",
+        size: 10);
+    if (status == "Finished") {
+      widget = globals.myText(
+          text: 'win by " ${animal.auction.lastBid} "',
+          color: "unprime",
+          size: 10);
+    } else if (status == "Win") {
+      widget =
+          globals.myText(text: 'win by " YOU "', color: "unprime", size: 10);
+    } else if (status == "Confirmed") {
+      widget = Container(
+        padding: EdgeInsets.fromLTRB(3, 2, 3, 1),
+        decoration: BoxDecoration(
+            border: Border.all(width: 1, color: globals.myColor("primary"))),
+        child: globals.myText(
+            text: 'PROSES PERMINTAAN PENGIRIMAN', size: 10, weight: "B"),
+      );
+    }
+    return widget;
+  }
+
+  Widget _buildCard(Animal animal) {
+    var isNotError = false;
+    if (animal.animalImages.length > 0 &&
+        animal.animalImages[0].image != null) {
+      isNotError = true;
+    }
+
+    String ageNow = globals.convertToAge(animal.dateOfBirth);
+
+    String status = "Active";
+
+    Bid lastBid;
+    if (animal.auction.bids.length > 0) {
+      lastBid = animal.auction.bids[0];
+    }
+
+    if (animal.auction.winnerBidId != null &&
+        lastBid.userId != globals.user.id) {
+      status = "Finished";
+    } else if (animal.auction.winnerBidId != null &&
+        lastBid.userId == globals.user.id) {
+      status = "Win";
+    } else if (animal.auction.winnerConfirmation != null &&
+        lastBid.userId == globals.user.id) {
+      status = "Confirmed";
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => ProductDetailPage(
+                      animalId: animal.id,
+                    )));
+      },
+      child: Card(
+        child: Column(
+          children: <Widget>[
+            //build status and timer
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buildStatus(status),
+                _buildTimer(status, animal.auction.expiryDate)
+              ],
+            ),
+            //detail
+            Row(
+              children: <Widget>[
+                isNotError
+                    ? _buildImage(animal.animalImages[0].image)
+                    : globals.failLoadImage(),
+                Container(
+                  height: 95,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      globals.myText(
+                          text: animal.owner.name, color: "unprime", size: 10),
+                      Text(
+                        "${animal.name} ${animal.gender} - $ageNow",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context)
+                            .textTheme
+                            .title
+                            .copyWith(fontSize: 12),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      _buildChips(
+                          "Sekarang",
+                          globals.convertToMoney(
+                              animal.auction.currentBid.toDouble())),
+                      _buildChips(
+                          "BIN",
+                          globals.convertToMoney(
+                              animal.auction.buyItNow.toDouble())),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      _buildStatusAuction(animal, status),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -189,8 +388,8 @@ class _OurBidPageState extends State<OurBidPage> {
             key: _scaffoldKey,
             drawer: drawer(context),
             body: SafeArea(
-              child: Container(
-                child: Column(children: <Widget>[
+              child: ListView(
+                children: <Widget>[
                   SizedBox(
                     height: 8,
                   ),
@@ -203,7 +402,7 @@ class _OurBidPageState extends State<OurBidPage> {
                     height: 16,
                   ),
                   isLoading ? globals.isLoading() : _buildListView()
-                ]),
+                ],
               ),
             )));
   }

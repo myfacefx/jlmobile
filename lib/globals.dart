@@ -174,8 +174,6 @@ Widget myAppBarIcon(context) {
   );
 }
 
-
-
 Widget spacePadding() {
   return Padding(padding: EdgeInsets.only(bottom: 20));
 }
@@ -244,7 +242,6 @@ String convertFormatDateTimeProduct(String date) {
   List<String> split = date.split(" ");
   List<String> splitTime = split[1].split(":");
 
-
   List<String> splitDate = split[0].split("-");
   newDate = "${splitDate[2]}/${splitDate[1]} ${splitTime[0]}:${splitTime[1]}";
   return newDate;
@@ -265,6 +262,47 @@ Widget isLoading() {
   return Center(
     child: CircularProgressIndicator(),
   );
+}
+
+Widget failLoadImage() {
+  return Container(
+    margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+    height: 128,
+    color: Colors.black,
+    child: ClipRRect(
+        borderRadius: BorderRadius.circular(1),
+        child: Image.asset("assets/images/image_not_found.png")),
+  );
+}
+
+String convertTimer(String expiryTime) {
+  final exptDate = DateTime.parse(expiryTime);
+  final dateNow = DateTime.now();
+  final differenceMinutes = (dateNow.difference(exptDate).inMinutes).abs();
+  String def = "";
+  def = "${(dateNow.difference(exptDate).inSeconds).abs()} Sec";
+
+  //1 year
+  if (differenceMinutes > 525600) {
+    def = "${differenceMinutes ~/ 525600} Year";
+  }
+  //1 month
+  else if (differenceMinutes > 43200) {
+    def = "${differenceMinutes ~/ 43200} Month";
+  }
+  //1 day
+  else if (differenceMinutes > 1440) {
+    def = "${differenceMinutes ~/ 1440} Day";
+  }
+
+  //1 hour
+  else if (differenceMinutes > 60) {
+    def = "${differenceMinutes ~/ 60} Hour";
+  } else if (differenceMinutes > 1) {
+    def = "$differenceMinutes Min";
+  }
+
+  return def;
 }
 
 /// get color by Style Name : `primary`,`unprime`,`secondary`,`active`,`warnig`,`danger`,`disabled`.
@@ -356,10 +394,11 @@ Text myText(
     String color = "default",
     double size = 14,
     String weight = "N",
-    TextDecoration decoration = TextDecoration.none}) {
+    TextDecoration decoration = TextDecoration.none, TextAlign align = TextAlign.start}) {
   if (text == null || text == "") text = "-";
   return Text(
     text,
+    textAlign: align,
     style: TextStyle(
       decoration: decoration,
       decorationColor: myColor(color),
