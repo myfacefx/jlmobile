@@ -8,11 +8,11 @@ import 'package:jlf_mobile/services/regency_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
 class RegisterPage extends StatefulWidget {
-  final String email;
-  RegisterPage({this.email});
+  final User user;
+  RegisterPage({this.user});
 
   @override
-  _RegisterPageState createState() => _RegisterPageState(email);
+  _RegisterPageState createState() => _RegisterPageState(user);
 }
 
 class _RegisterPageState extends State<RegisterPage> {
@@ -23,6 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool confirmPasswordVisibility = true;
 
   bool registerLoading = false;
+  bool lockEmailFromFacebook = false;
 
   FocusNode usernameFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
@@ -32,19 +33,31 @@ class _RegisterPageState extends State<RegisterPage> {
 
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
+  User user;
+
+  String _name;
   String _email;
   String _username;
   String _password;
+  String _photo;
+  String _gender = "M";
   Province _province;
   Regency _regency;
 
   List<Province> provinces = List<Province>();
   List<Regency> regencies = List<Regency>();
 
-  _RegisterPageState(String email) {
-    // If email sent from login, login from Facebook
-    if (email != null) _email = email;
+  _RegisterPageState(User user) {
+    if (user != null) {
+      this.lockEmailFromFacebook = true;
+      this.user = user;
+      // this._name = user.name;
+      nameController.text = user.name;
+      this._photo = user.photo;
+      this._email = user.email;
+    }
   }
 
   @override
@@ -83,8 +96,19 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  void _handleGenderChange(String value) {
+    setState(() {
+      _gender = value;
+    });
+  }
+
   void _register() async {
     if (registerLoading) return;
+
+    if (_gender == null) {
+      globals.showDialogs("Gender belum dipilih", context);
+      return;
+    }
 
     if (_formKey.currentState.validate()) {
       setState(() {
@@ -95,23 +119,36 @@ class _RegisterPageState extends State<RegisterPage> {
 
       User user = User();
       user.email = _email;
+      user.photo = _photo;
+      user.gender = _gender;
+      user.name = _name;
       user.username = _username;
       user.password = _password;
       user.regencyId = _regency.id;
       user.roleId = 2;
 
-      User userResult = await register(user.toJson());
+      try {
+        User userResult = await register(user.toJson());
 
-      if (userResult != null) {
-        saveLocalData('user', userToJson(userResult));
+        if (userResult != null) {
+          saveLocalData('user', userToJson(userResult));
 
-        globals.user = userResult;
-        globals.state = "home";
+          globals.user = userResult;
+          globals.state = "home";
 
-        Navigator.of(context).pop();
-        Navigator.pushNamed(context, "/home");
+          Navigator.of(context).pop();
+          Navigator.pushNamed(context, "/home");
+        }
+      } catch (e) {
+        print(e);
+        globals.showDialogs("Username/email sudah terdaftar, silahkan ganti yang lain", context);
+        setState(() {
+          registerLoading = false;
+          autoValidate = true;
+        });
       }
     } else {
+      globals.showDialogs("Form kurang lengkap/masih kurang sesuai, silahkan cek kembali", context);
       setState(() {
         autoValidate = true;
       });
@@ -126,7 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _buildBackground(),
         !registerLoading
             ? Container()
-            : Center(child: CircularProgressIndicator()),
+            : Positioned(child: Center(child: CircularProgressIndicator())),
         ListView(children: <Widget>[
           Container(
               height: globals.mh(context) * 0.3,
@@ -137,11 +174,16 @@ class _RegisterPageState extends State<RegisterPage> {
             autovalidate: autoValidate,
             key: _formKey,
             child: Column(children: <Widget>[
+              _photo != null ? FadeInImage.assetNetwork(
+                height: 150,
+                fit: BoxFit.fill,
+                placeholder: 'assets/images/loading.gif',
+                image: _photo) : Container(),
               Container(
                   alignment: Alignment.center,
                   width: 300,
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: _email != null
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: lockEmailFromFacebook
                       ? Text(_email, style: TextStyle(color: Colors.black))
                       : TextFormField(
                           onSaved: (String value) {
@@ -168,6 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               contentPadding: EdgeInsets.all(13),
                               hintText: "Email",
                               labelText: "Email",
+                              filled: true,
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20))),
@@ -196,11 +239,59 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(13),
                         hintText: "Username",
-                        labelText: "Username",
-                        fillColor: Colors.white,
+                        labelText: "Username",filled: true,
+                                  fillColor: Colors.white,
+                                  
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
+              Container(
+                  width: 300,
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: TextFormField(
+                    controller: nameController,
+                    // focusNode: usernameFocusNode,
+                    onSaved: (String value) {
+                      _name = value;
+                    },
+                    onFieldSubmitted: (String value) {
+                      if (value.length > 0) {
+                        FocusScope.of(context).requestFocus(passwordFocusNode);
+                      }
+                    },
+                    validator: (value) {
+                      if (value.isEmpty ||
+                          value.length < 3) {
+                        return 'Silahkan isi nama lengkap Anda';
+                      }
+                    },
+                    textCapitalization: TextCapitalization.words,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(13),
+                        hintText: "Nama Lengkap",
+                        labelText: "Nama Lengkap",filled: true,
+                                  fillColor: Colors.white,
+                                  
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20))),
+                  )),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Radio(
+                      value: "M",
+                      onChanged: _handleGenderChange,
+                      groupValue: _gender),
+                  Text("Laki-Laki", style: TextStyle(color: Colors.black)),
+                  Radio(
+                      value: "F",
+                      onChanged: _handleGenderChange,
+                      groupValue: _gender),
+                  Text("Perempuan", style: TextStyle(color: Colors.black))
+                ]),
               Container(
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -238,8 +329,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               : Icons.visibility_off),
                         ),
                         hintText: "Password",
-                        labelText: "Password",
-                        fillColor: Colors.white,
+                        labelText: "Password",filled: true,
+                                  fillColor: Colors.white,
+                                  
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -274,6 +366,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         hintText: "Ulangi Password",
                         labelText: "Ulangi Password",
+                        filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
@@ -282,8 +375,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: DropdownButtonFormField<Province>(
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
+                    decoration: InputDecoration(filled: true,
+                                  fillColor: Colors.white,
+                                  
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20)),
                         contentPadding: EdgeInsets.all(13),
@@ -314,8 +408,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: DropdownButtonFormField<Regency>(
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
+                    decoration: InputDecoration(filled: true,
+                                  fillColor: Colors.white,
+                                  
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20)),
                         contentPadding: EdgeInsets.all(13),
@@ -356,11 +451,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       onTap: () => Navigator.of(context).pop(),
                       child: Text("Kembali ke halaman login",
                           style: TextStyle(color: Colors.grey)))),
-              // FlatButton(
-              //     onPressed: () => setState(() {
-              //           registerLoading = false;
-              //         }),
-              //     child: Text("RESET"))
+              SizedBox(height: 20),
+              FlatButton(
+                  onPressed: () => setState(() {
+                        registerLoading = false;
+                      }),
+                  child: Text("RESET"))
             ]),
           ),
         ])

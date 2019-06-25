@@ -43,6 +43,22 @@ Future<User> register(Map<String, dynamic> _data) async {
   }
 }
 
+Future<String> update(Map<String, dynamic> _data, int userId) async {
+  final header = {"Content-Type": "application/json"};
+  final String url = getBaseUrl() + "/users/$userId/update";
+
+  print(url);
+
+  http.Response res = await http.put(url,
+      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 202) {
+    return json.decode(res.body)['content'];
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 Future<User> changePassword(String token, Map<String, dynamic> input) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   http.Response res = await http.put(getBaseUrl() + "/users",

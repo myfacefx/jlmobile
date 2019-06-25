@@ -55,7 +55,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String _multiply;
   String _bidType;
   String _auctionExpiryDateType;
-  int _gender;
+  String _gender = "M";
   DateTime _dateOfBirth;
 
   List<String> auctionTypes = ["24 Hours", "48 Hours"];
@@ -209,6 +209,16 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   _save() async {
     if (isLoading) return;
 
+    if (_gender == null) {
+      globals.showDialogs("Gender belum dipilih", context);
+      return;
+    }
+
+    if (images_base64.length == 0) {
+      globals.showDialogs("Wajib upload foto hewan 1-3 foto", context);
+      return;
+    }
+
     if (_formKey.currentState.validate()) {
       setState(() {
         isLoading = true;
@@ -221,16 +231,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       Animal animal = Animal();
       animal.animalSubCategoryId = _animalSubCategory.id;
       animal.name = _name;
-
-      switch (_gender) {
-        case 0:
-          animal.gender = 'F';
-          break;
-        case 1:
-          animal.gender = 'M';
-          break;
-      }
-
+      animal.gender = _gender;
       animal.dateOfBirth = _dateOfBirth;
       animal.description = _description;
       animal.ownerUserId = globals.user.id;
@@ -288,7 +289,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     });
   }
 
-  void _handleGenderChange(int value) {
+  void _handleGenderChange(String value) {
     setState(() {
       _gender = value;
     });
@@ -400,7 +401,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                             }
                           },
                           style: TextStyle(color: Colors.black),
-                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(13),
                               hintText: "Nama Hewan",
@@ -430,7 +430,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     // ),
                     Container(
                       width: 300,
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: TextFormField(
                         controller: dateOfBirthController,
                         validator: (String value) {
@@ -453,12 +453,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Radio(
-                              value: 0,
+                              value: "M",
                               onChanged: _handleGenderChange,
                               groupValue: _gender),
                           Text("Jantan", style: TextStyle(color: Colors.black)),
                           Radio(
-                              value: 1,
+                              value: "F",
                               onChanged: _handleGenderChange,
                               groupValue: _gender),
                           Text("Betina", style: TextStyle(color: Colors.black))
@@ -597,7 +597,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
-                                    // keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(13),
                                         hintText: "Open Bid",

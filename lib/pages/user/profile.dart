@@ -398,12 +398,12 @@ class _ProfilePageState extends State<ProfilePage>
                                           child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(100),
-                                              child: FadeInImage.assetNetwork(
-                                                  image:
-                                                      'https://66.media.tumblr.com/d3a12893ef0dfec39cf7335008f16c7f/tumblr_pcve4yqyEO1uaogmwo8_400.png',
-                                                  placeholder:
-                                                      'assets/images/loading.gif',
-                                                  fit: BoxFit.cover)))),
+                                              child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: globals.user.photo != null ? FadeInImage.assetNetwork(
+                                image: globals.user.photo,
+                                placeholder: 'assets/images/loading.gif',
+                                fit: BoxFit.cover) : Image.asset('assets/images/account.png'))))),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -431,7 +431,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   Container(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 15),
-                                      child: Text(globals.user.description,
+                                      child: Text(globals.user.description != null ? globals.user.description : '',
                                           style:
                                               TextStyle(color: Colors.grey))),
                                   FlatButton(

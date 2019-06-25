@@ -87,11 +87,10 @@ Widget drawer(context) {
                         radius: 100,
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
-                            child: FadeInImage.assetNetwork(
-                                image:
-                                    'https://66.media.tumblr.com/d3a12893ef0dfec39cf7335008f16c7f/tumblr_pcve4yqyEO1uaogmwo8_400.png',
+                            child: globals.user.photo != null ? FadeInImage.assetNetwork(
+                                image: globals.user.photo,
                                 placeholder: 'assets/images/loading.gif',
-                                fit: BoxFit.cover)))),
+                                fit: BoxFit.cover) : Image.asset('assets/images/account.png')))),
                 Center(
                     child: Container(
                         width: MediaQuery.of(context).size.width * 0.35,
