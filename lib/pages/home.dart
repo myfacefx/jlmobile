@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
@@ -314,31 +315,33 @@ class _HomePage extends State<HomePage> {
   }
 
   _exitDialog() {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Perhatian",
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
-                textAlign: TextAlign.center),
-            content: Text("Log out dari aplikasi?",
-                style: TextStyle(color: Colors.black)),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text("Batal",
-                      style: TextStyle(color: Theme.of(context).primaryColor)),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  }),
-              FlatButton(
-                  color: Theme.of(context).primaryColor,
-                  child: Text("Ya", style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    _logOut();
-                  })
-            ],
-          );
-        });
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // return;
+    // return showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return AlertDialog(
+    //         title: Text("Perhatian",
+    //             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
+    //             textAlign: TextAlign.center),
+    //         content: Text("Log out dari aplikasi?",
+    //             style: TextStyle(color: Colors.black)),
+    //         actions: <Widget>[
+    //           FlatButton(
+    //               child: Text("Batal",
+    //                   style: TextStyle(color: Theme.of(context).primaryColor)),
+    //               onPressed: () {
+    //                 Navigator.of(context).pop(true);
+    //               }),
+    //           FlatButton(
+    //               color: Theme.of(context).primaryColor,
+    //               child: Text("Ya", style: TextStyle(color: Colors.white)),
+    //               onPressed: () {
+    //                 _logOut();
+    //               })
+    //         ],
+    //       );
+    //     });
   }
 
   @override

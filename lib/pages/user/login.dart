@@ -92,6 +92,9 @@ class _LoginPage extends State<LoginPage> {
   }
 
   _loginWithFacebook() async {
+    setState(() {
+      loginLoading = true;
+    });
     FacebookLoginResult result = await facebookLogin
         .logInWithReadPermissions(['email', 'public_profile']);
     switch (result.status) {
@@ -119,21 +122,25 @@ class _LoginPage extends State<LoginPage> {
           globals.user = users[0];
           globals.state = "home";
 
-          Navigator.of(context).pop();
           Navigator.pushNamed(context, "/home");
         } else {
+          User registerUser = User();
+          registerUser.email = profile['email'];
+          registerUser.name = profile['name'];
+          registerUser.photo = profile['picture']['data']['url'];
+
           print("USER NOT FOUND, registering");
           // No similar email found, user will be pushed to register page
 
           globals.state = "register";
 
           print(profile['email']);
-          
-          Navigator.of(context).pop();
+
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => RegisterPage(email: profile['email'])));
+                  builder: (BuildContext context) =>
+                      RegisterPage(user: registerUser)));
         }
 
         setState(() {
@@ -157,6 +164,10 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
+  _doNothing() {
+    return;
+  }
+
   Widget _floatingButton(String icon) {
     Color backgr =
         icon == "Facebook" ? Color.fromRGBO(45, 80, 155, 1) : Colors.white;
@@ -167,9 +178,9 @@ class _LoginPage extends State<LoginPage> {
       padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: FloatingActionButton.extended(
         onPressed: () {
-          _loginWithFacebook();
+          !loginLoading ? _loginWithFacebook() : _doNothing();
         },
-        backgroundColor: backgr,
+        backgroundColor: loginLoading ? Colors.grey : backgr,
         label: Container(
             padding: EdgeInsets.fromLTRB(0, 0, globals.mw(context) * 0.1, 0),
             child: Text(
@@ -206,57 +217,59 @@ class _LoginPage extends State<LoginPage> {
   }
 
   _exitDialog() {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Perhatian",
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
-                textAlign: TextAlign.center),
-            content: Text("Keluar dari aplikasi?",
-                style: TextStyle(color: Colors.black)),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text("Batal",
-                      style: TextStyle(color: Theme.of(context).primaryColor)),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  }),
-              FlatButton(
-                  color: Theme.of(context).primaryColor,
-                  child: Text("Ya", style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  })
-            ],
-          );
-        });
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // return showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return AlertDialog(
+    //         title: Text("Perhatian",
+    //             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
+    //             textAlign: TextAlign.center),
+    //         content: Text("Keluar dari aplikasi?",
+    //             style: TextStyle(color: Colors.black)),
+    //         actions: <Widget>[
+    //           FlatButton(
+    //               child: Text("Batal",
+    //                   style: TextStyle(color: Theme.of(context).primaryColor)),
+    //               onPressed: () {
+    //                 Navigator.of(context).pop(true);
+    //               }),
+    //           FlatButton(
+    //               color: Theme.of(context).primaryColor,
+    //               child: Text("Ya", style: TextStyle(color: Colors.white)),
+    //               onPressed: () {
+    //                 SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    //               })
+    //         ],
+    //       );
+    //     });
   }
 
   Widget _termOfServices() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        children: <Widget> [
-          Text("By logging in or registering, I agree to Jual Lelang Fauna's ", style: TextStyle(color: Colors.black, fontSize: 12)),
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Wrap(alignment: WrapAlignment.center, children: <Widget>[
+          Text("By logging in or registering, I agree to Jual Lelang Fauna's ",
+              style: TextStyle(color: Colors.black, fontSize: 12)),
           GestureDetector(
             onTap: () {
               globals.showDialogs("Term of Service JLF", context);
             },
-            child: Text("Terms of Service", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12)),
+            child: Text("Terms of Service",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 12)),
           ),
           Text(" and ", style: TextStyle(color: Colors.black, fontSize: 12)),
           GestureDetector(
             onTap: () {
               globals.showDialogs("Privacy Policy JLF", context);
             },
-            child: Text("Privacy Policy", style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12)), 
+            child: Text("Privacy Policy",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 12)),
           ),
-          Text(".", style: TextStyle(color: Colors.black, fontSize: 12))     
-        ]
-      ) 
-    );
+          Text(".", style: TextStyle(color: Colors.black, fontSize: 12))
+        ]));
   }
 
   @override
@@ -279,7 +292,8 @@ class _LoginPage extends State<LoginPage> {
                   Container(
                       height: globals.mh(context) * 0.4,
                       child: Center(
-                        child: Image.asset("assets/images/logo.png", height: 140),
+                        child:
+                            Image.asset("assets/images/logo.png", height: 140),
                       )),
                   Form(
                     autovalidate: autoValidate,
@@ -291,7 +305,8 @@ class _LoginPage extends State<LoginPage> {
                             padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                             child: TextFormField(
                               validator: (String value) {
-                                if (value.isEmpty) return 'Username masih kosong';
+                                if (value.isEmpty)
+                                  return 'Username masih kosong';
                               },
                               onSaved: (String value) => _username = value,
                               onFieldSubmitted: (String value) {
@@ -302,10 +317,11 @@ class _LoginPage extends State<LoginPage> {
                               style: TextStyle(color: Colors.black),
                               controller: usernameController,
                               decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
                                   contentPadding: EdgeInsets.all(13),
                                   hintText: "Username",
                                   labelText: "Username",
-                                  fillColor: Colors.white,
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20))),
                             )),
@@ -315,7 +331,8 @@ class _LoginPage extends State<LoginPage> {
                             padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                             child: TextFormField(
                               validator: (String value) {
-                                if (value.isEmpty) return 'Password masih kosong';
+                                if (value.isEmpty)
+                                  return 'Password masih kosong';
                               },
                               onFieldSubmitted: (String value) => _logIn(),
                               onSaved: (String value) => _password = value,
@@ -327,7 +344,8 @@ class _LoginPage extends State<LoginPage> {
                                   suffixIcon: GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        passwordVisibility = !passwordVisibility;
+                                        passwordVisibility =
+                                            !passwordVisibility;
                                       });
                                     },
                                     child: Icon(passwordVisibility
@@ -337,6 +355,7 @@ class _LoginPage extends State<LoginPage> {
                                   contentPadding: EdgeInsets.all(13),
                                   hintText: "Password",
                                   labelText: "Password",
+                                  filled: true,
                                   fillColor: Colors.white,
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20))),
@@ -347,7 +366,8 @@ class _LoginPage extends State<LoginPage> {
                             child: FlatButton(
                                 onPressed: () => loginLoading ? null : _logIn(),
                                 child: Text(loginLoading ? "Loading" : "LOG IN",
-                                    style: Theme.of(context).textTheme.display4),
+                                    style:
+                                        Theme.of(context).textTheme.display4),
                                 color: loginLoading
                                     ? Colors.grey
                                     : Theme.of(context).primaryColor,
