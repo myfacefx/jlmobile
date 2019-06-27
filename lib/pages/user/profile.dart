@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import 'package:jlf_mobile/globals.dart' as globals;
@@ -7,7 +5,6 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -445,7 +442,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text("Tambahkan",
+                                          Text("Buat Lelang",
                                               style: TextStyle(
                                                   color: Colors.white)),
                                           Icon(Icons.add,

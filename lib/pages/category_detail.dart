@@ -22,7 +22,7 @@ class CategoryDetailPage extends StatefulWidget {
 }
 
 class _CategoryDetailPage extends State<CategoryDetailPage> {
-  ImageProvider defaultPic = const AssetImage("assets/images/dog2.jpg");
+  ImageProvider defaultPic = const AssetImage("assets/images/dog1.jpg");
   bool isLoading = true;
   bool isLoadingProvince = true;
   String currentSubCategory = "ALL";
@@ -427,12 +427,22 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     blurRadius: 2.0,
                   ),
                 ]),
-            child: Center(
-              child: Text(
-                countComments,
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 10),
-              ),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.center,
+                    child: Center(
+                      child: Image.asset('assets/images/comment.png', height: 80, width: 80)
+                    )
+                ),
+                Center(
+                  child: Text(
+                    countComments,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 10),
+                  ),
+                ),
+              ],
             )),
       ),
     );
@@ -454,52 +464,65 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       children: <Widget>[
         Container(
           margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-          child: Card(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
-              child: Column(
-                children: <Widget>[
-                  myProduct
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Container(
-                              width: 85,
-                              padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: globals.myText(
-                                  text: "YOUR PRODUCT",
-                                  color: "light",
-                                  size: 10),
-                            )
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  _buildTime(animal.auction.expiryDate),
-                  isNotError
-                      ? _buildImage(animal.animalImages[0].image)
-                      : globals.failLoadImage(),
-                  _buildDetail(animal.name, animal.owner.username,
-                      animal.gender, animal.dateOfBirth),
-                  _buildChips(
-                      "start",
-                      globals
-                          .convertToMoney(animal.auction.openBid.toDouble())),
-                  _buildChips(
-                      "multiplier",
-                      globals
-                          .convertToMoney(animal.auction.multiply.toDouble())),
-                  _buildChips(
-                      "bin",
-                      globals
-                          .convertToMoney(animal.auction.buyItNow.toDouble())),
-                  _buildChips("current", globals.convertToMoney(currentBid)),
-                ],
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ProductDetailPage(
+                            animalId: animal.id,
+                          )));
+            },
+            child: Card(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
+                child: Column(
+                  children: <Widget>[
+                    myProduct
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Container(
+                                width: 85,
+                                padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: globals.myText(
+                                    text: "YOUR PRODUCT",
+                                    color: "light",
+                                    size: 10),
+                              )
+                            ],
+                          )
+                        : Container(),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    _buildTime(animal.auction.expiryDate),
+                    isNotError
+                        ? _buildImage(animal.animalImages[0].image)
+                        : globals.failLoadImage(),
+                    _buildDetail(animal.name, animal.owner.username,
+                        animal.gender, animal.dateOfBirth),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _buildChips(
+                        "Harga Awal",
+                        globals
+                            .convertToMoney(animal.auction.openBid.toDouble())),
+                    _buildChips(
+                        "Kelipatan",
+                        globals.convertToMoney(
+                            animal.auction.multiply.toDouble())),
+                    _buildChips(
+                        "Beli Sekarang",
+                        globals.convertToMoney(
+                            animal.auction.buyItNow.toDouble())),
+                    _buildChips("Saat Ini", globals.convertToMoney(currentBid)),
+                  ],
+                ),
               ),
             ),
           ),
@@ -509,22 +532,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _buildcontChips(String text) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-      margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(5)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text(
-          text,
-          style: TextStyle(fontSize: 12),
-          textAlign: TextAlign.center,
-        )
-      ]),
-    );
-  }
+  // Widget _buildcontChips(String text) {
+  //   return
+  // }
 
   Widget _buildChips(String text, String value) {
     return Container(
@@ -533,9 +543,28 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-              width: ((globals.mw(context) * 0.5) - 40) * 0.3,
+              padding: EdgeInsets.only(right: 10),
+              // width: ((globals.mw(context) * 0.5) - 40) * 0.3,
+              width: globals.mw(context) * 0.2,
               child: Text(text, style: Theme.of(context).textTheme.display2)),
-          _buildcontChips(value)
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(15, 2, 0, 2),
+              margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
+              decoration: BoxDecoration(
+                  color: text == 'Saat Ini'
+                      ? Color.fromRGBO(184, 134, 11, 1)
+                      : Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(5)),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text(
+                  value,
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                )
+              ]),
+            ),
+          )
         ],
       ),
     );

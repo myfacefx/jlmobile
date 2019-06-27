@@ -107,6 +107,7 @@ Widget drawer(context) {
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 globals.spacePadding(),
+                _buildDrawerNavigationButtonBig("Daftar Lelang", '/home', null, context),
                 _buildDrawerNavigationButtonBig("Lelangku", '/profile', null, context),
                 // _buildDrawerNavigationButtonBig("Our Shop Products", context),
                 _buildDrawerNavigationButtonBig(

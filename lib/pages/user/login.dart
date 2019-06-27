@@ -26,9 +26,6 @@ class _LoginPage extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  String _facebookPhotoProfile =
-      'https://66.media.tumblr.com/d3a12893ef0dfec39cf7335008f16c7f/tumblr_pcve4yqyEO1uaogmwo8_400.png';
-
   bool passwordVisibility = true;
 
   bool loginLoading = false;
@@ -284,9 +281,6 @@ class _LoginPage extends State<LoginPage> {
           body: Stack(
             children: <Widget>[
               _buildBackground(),
-              !loginLoading
-                  ? Container()
-                  : Center(child: CircularProgressIndicator()),
               ListView(
                 children: <Widget>[
                   Container(
@@ -391,12 +385,20 @@ class _LoginPage extends State<LoginPage> {
                         ),
                         _floatingButton("Facebook"),
                         SizedBox(height: 30),
-                        _termOfServices()
+                        _termOfServices(),
                       ],
                     ),
                   ),
                 ],
               ),
+              Positioned(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: !loginLoading
+                    ? Container()
+                    : Container(child: Center(child: CircularProgressIndicator())),
+                ),
+              )
             ],
           ),
         ),

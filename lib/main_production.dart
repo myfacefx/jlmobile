@@ -7,7 +7,7 @@ void main() async {
   var configuredApp = AppConfig(
     appName: 'Build flavors Prod',
     flavorName: 'production',
-    baseUrl: 'https://jlfdev.herokuapp.com',
+    baseUrl: 'http://api.juallelangfauna.com',
     apiUrl: '/api',
     child: MyApp(),
   );

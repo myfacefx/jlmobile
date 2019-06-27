@@ -31,6 +31,7 @@ class User {
     DateTime updatedAt;
     int reportsCount;
     int bidsCount;
+    int historiesCount;
     Role role;
     Regency regency;
 
@@ -53,6 +54,7 @@ class User {
         this.updatedAt,
         this.reportsCount,
         this.bidsCount,
+        this.historiesCount,
         this.role,
         this.regency,
     });
@@ -76,6 +78,7 @@ class User {
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         reportsCount: json["reports_count"] == null ? null : json["reports_count"],
         bidsCount: json["bids_count"] == null ? null : json["bids_count"],
+        historiesCount: json["histories_count"] == null ? null : json["histories_count"],
         role: json["role"] == null ? null : Role.fromJson(json["role"]),
         regency: json["regency"] == null ? null : Regency.fromJson(json["regency"]),
     );
@@ -99,6 +102,7 @@ class User {
         "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
         "reports_count": reportsCount == null ? null : reportsCount,
         "bids_count": bidsCount == null ? null : bidsCount,
+        "histories_count": historiesCount == null ? null : historiesCount,
         "role": role == null ? null : role.toJson(),
         "regency": regency == null ? null : regency.toJson(),
     }..removeWhere((key, val) => val == null);
