@@ -131,7 +131,7 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
 
 Widget myAppBarIcon(context) {
   return GestureDetector(
-    onTap: () {},
+    onTap: () => Navigator.of(context).pushNamed('/notification'),
     child: Center(
       child: Container(
           margin: EdgeInsets.only(right: 10),
@@ -144,7 +144,7 @@ Widget myAppBarIcon(context) {
                 color: Colors.white,
                 size: 30,
               ),
-              Container(
+              user.historiesCount != null && user.historiesCount > 0 ? Container(
                 width: 30,
                 height: 30,
                 alignment: Alignment.topRight,
@@ -161,13 +161,13 @@ Widget myAppBarIcon(context) {
                     padding: const EdgeInsets.all(0.0),
                     child: Center(
                       child: Text(
-                        "1",
+                        "${user.historiesCount}",
                         style: TextStyle(fontSize: 10),
                       ),
                     ),
                   ),
                 ),
-              ),
+              ) : Container(),
             ],
           )),
     ),

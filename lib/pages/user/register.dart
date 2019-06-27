@@ -161,9 +161,6 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Scaffold(
           body: Stack(children: <Widget>[
         _buildBackground(),
-        !registerLoading
-            ? Container()
-            : Positioned(child: Center(child: CircularProgressIndicator())),
         ListView(children: <Widget>[
           Container(
               height: globals.mh(context) * 0.3,
@@ -459,8 +456,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Text("RESET"))
             ]),
           ),
-        ])
-      ])),
+        ]),
+        Positioned(
+          child: Align(
+            alignment: Alignment.center,
+            child: !registerLoading
+              ? Container()
+              : Container(child: Center(child: CircularProgressIndicator())),
+          ),
+        )
+      ])
+      ),
     );
   }
 }

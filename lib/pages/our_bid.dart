@@ -97,7 +97,7 @@ class _OurBidPageState extends State<OurBidPage> {
         },
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Search',
+            hintText: 'Cari',
             hintStyle: TextStyle(fontSize: 10)),
       ),
     );
@@ -251,9 +251,26 @@ class _OurBidPageState extends State<OurBidPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-              width: ((globals.mw(context) * 0.5) - 40) * 0.3,
+              // width: ((globals.mw(context) * 0.5) - 40) * 0.3,
+              width: globals.mw(context) * 0.2,
               child: Text(text, style: Theme.of(context).textTheme.display2)),
-          _buildcontChips(value)
+          // _buildcontChips(value)
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(15, 2, 0, 2),
+              margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
+              decoration: BoxDecoration(
+                  color: text == 'Saat Ini' ? Color.fromRGBO(184,134,11,1) : Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(5)),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text(
+                  value,
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                )
+              ]),
+            ),
+          )
         ],
       ),
     );
@@ -261,17 +278,17 @@ class _OurBidPageState extends State<OurBidPage> {
 
   Widget _buildStatusAuction(Animal animal, String status) {
     Widget widget = globals.myText(
-        text: 'last bid by " ${animal.auction.lastBid} "',
+        text: 'Penawaran terakhir oleh " ${animal.auction.lastBid} "',
         color: "unprime",
         size: 10);
     if (status == "Finished") {
       widget = globals.myText(
-          text: 'win by " ${animal.auction.lastBid} "',
+          text: 'Dimenangkan oleh " ${animal.auction.lastBid} "',
           color: "unprime",
           size: 10);
     } else if (status == "Win") {
       widget =
-          globals.myText(text: 'win by " YOU "', color: "unprime", size: 10);
+          globals.myText(text: 'Dimenangkan oleh Anda', color: "unprime", size: 10);
     } else if (status == "Confirmed") {
       widget = Container(
         padding: EdgeInsets.fromLTRB(3, 2, 3, 1),
@@ -357,11 +374,11 @@ class _OurBidPageState extends State<OurBidPage> {
                         height: 5,
                       ),
                       _buildChips(
-                          "Sekarang",
+                          "Saat Ini",
                           globals.convertToMoney(
                               animal.auction.currentBid.toDouble())),
                       _buildChips(
-                          "BIN",
+                          "Beli Sekarang",
                           globals.convertToMoney(
                               animal.auction.buyItNow.toDouble())),
                       SizedBox(
