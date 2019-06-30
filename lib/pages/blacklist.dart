@@ -24,6 +24,7 @@ class _BlacklistPageState extends State<BlacklistPage> {
     // TODO: implement initState
     super.initState();
     _getListBlacklistedUser();
+    globals.getNotificationCount();
   }
 
   void _getListBlacklistedUser() {

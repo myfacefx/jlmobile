@@ -74,6 +74,21 @@ Future<List<Animal>> getUserAnimals(String token, int userId) async {
   }
 }
 
+Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "/users/$userId/animals/unauctioned";
+  print(url);
+
+  http.Response res =
+      await http.get(url, headers: header);
+
+  if (res.statusCode == 200) {
+    return animalFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
@@ -113,8 +128,28 @@ Future<String> create(Map<String, dynamic> _data) async {
       .timeout(Duration(seconds: getTimeOut() + 270));
 
   if (res.statusCode == 200) {
-    print(res.body);
+    // print(res.body);
     return res.body;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> activate(Map<String, dynamic> _data, int animalId) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/animals/$animalId/auction/create";
+
+  print(url);
+
+  http.Response res = await http
+      .post(url,
+          headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut() + 270));
+
+  if (res.statusCode == 201) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
   } else {
     throw Exception(res.body);
   }

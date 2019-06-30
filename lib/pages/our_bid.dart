@@ -34,6 +34,7 @@ class _OurBidPageState extends State<OurBidPage> {
   void initState() {
     super.initState();
     _getOurBid();
+    globals.getNotificationCount();
   }
 
   _getOurBid() {
@@ -123,14 +124,14 @@ class _OurBidPageState extends State<OurBidPage> {
       width: globals.mw(context),
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       color: Colors.white,
-      child: globals.myText(text: "OUR BID", size: 16, weight: "SB"),
+      child: globals.myText(text: "Lelang Diikuti", size: 16, weight: "SB"),
     );
   }
   //build top name
 
 // build listview
   Widget _buildListView() {
-    return Container(
+    return Flexible(
       child: animals.length == 0
           ? Center(
               child: Text(
@@ -157,10 +158,10 @@ class _OurBidPageState extends State<OurBidPage> {
   }
 
   Widget _buildStatus(String status) {
-    String currentStatus = "on running";
+    String currentStatus = "Berjalan";
     Color colorBox = Colors.green;
-    if (status != "Active") {
-      currentStatus = "closed";
+    if (status != "Aktif") {
+      currentStatus = "Dibatalkan";
       colorBox = Colors.black;
     }
 
@@ -188,13 +189,13 @@ class _OurBidPageState extends State<OurBidPage> {
     var colorText = "light";
     String text = globals.convertTimer(expiryTime) + " left";
 
-    if (status == "Finished") {
+    if (status == "Selesai") {
       colorBox = Colors.grey;
       colorText = "light";
-      text = "Finished";
-    } else if (status == "Win" || status == "Confirmed") {
+      text = "Selesai";
+    } else if (status == "Menang" || status == "Terkonfirmasi") {
       colorBox = Colors.green;
-      text = "YOU WIN";
+      text = "Anda Menang";
     }
 
     return Container(
@@ -218,7 +219,7 @@ class _OurBidPageState extends State<OurBidPage> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.cover,
           placeholder: 'assets/images/loading.gif',
           image: image,
         ),
@@ -257,10 +258,10 @@ class _OurBidPageState extends State<OurBidPage> {
           // _buildcontChips(value)
           Expanded(
             child: Container(
-              padding: EdgeInsets.fromLTRB(15, 2, 0, 2),
+              padding: EdgeInsets.fromLTRB(8, 2, 0, 2),
               margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
               decoration: BoxDecoration(
-                  color: text == 'Saat Ini' ? Color.fromRGBO(184,134,11,1) : Theme.of(context).primaryColor,
+                  color: text == 'Saat Ini' ? globals.myColor("mimosa") : Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(5)),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Text(
@@ -278,18 +279,18 @@ class _OurBidPageState extends State<OurBidPage> {
 
   Widget _buildStatusAuction(Animal animal, String status) {
     Widget widget = globals.myText(
-        text: 'Penawaran terakhir oleh " ${animal.auction.lastBid} "',
+        text: "Penawaran terakhir oleh ${animal.auction.lastBid}",
         color: "unprime",
         size: 10);
-    if (status == "Finished") {
+    if (status == "Selesai") {
       widget = globals.myText(
-          text: 'Dimenangkan oleh " ${animal.auction.lastBid} "',
+          text: "Dimenangkan oleh ${animal.auction.lastBid}",
           color: "unprime",
           size: 10);
-    } else if (status == "Win") {
+    } else if (status == "Menang") {
       widget =
           globals.myText(text: 'Dimenangkan oleh Anda', color: "unprime", size: 10);
-    } else if (status == "Confirmed") {
+    } else if (status == "Terkonfirmasi") {
       widget = Container(
         padding: EdgeInsets.fromLTRB(3, 2, 3, 1),
         decoration: BoxDecoration(
@@ -310,22 +311,22 @@ class _OurBidPageState extends State<OurBidPage> {
 
     String ageNow = globals.convertToAge(animal.dateOfBirth);
 
-    String status = "Active";
+    String status = "Aktif";
 
     Bid lastBid;
     if (animal.auction.bids.length > 0) {
-      lastBid = animal.auction.bids[0];
+      lastBid = animal.auction.bids[animal.auction.bids.length-1];
     }
 
     if (animal.auction.winnerBidId != null &&
         lastBid.userId != globals.user.id) {
-      status = "Finished";
+      status = "Selesai";
     } else if (animal.auction.winnerBidId != null &&
         lastBid.userId == globals.user.id) {
-      status = "Win";
+      status = "Menang";
     } else if (animal.auction.winnerConfirmation != null &&
         lastBid.userId == globals.user.id) {
-      status = "Confirmed";
+      status = "Terkonfirmasi";
     }
 
     return GestureDetector(
@@ -405,7 +406,7 @@ class _OurBidPageState extends State<OurBidPage> {
             key: _scaffoldKey,
             drawer: drawer(context),
             body: SafeArea(
-              child: ListView(
+              child: Column(
                 children: <Widget>[
                   SizedBox(
                     height: 8,

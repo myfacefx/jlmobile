@@ -44,6 +44,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     } else {
       Navigator.of(context).pop();
     }
+    globals.getNotificationCount();
   }
 
   Widget _buildBackground() {

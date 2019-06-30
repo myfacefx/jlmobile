@@ -18,15 +18,18 @@ class CategoryDetailPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _CategoryDetailPage createState() => _CategoryDetailPage(animalCategory.id);
+  _CategoryDetailPage createState() => _CategoryDetailPage(animalCategory);
 }
 
 class _CategoryDetailPage extends State<CategoryDetailPage> {
-  ImageProvider defaultPic = const AssetImage("assets/images/dog1.jpg");
+  AnimalCategory animalCategory;
   bool isLoading = true;
   bool isLoadingProvince = true;
   String currentSubCategory = "ALL";
   int currentIdSubCategory;
+
+  int allAuctionCounts = 0;
+  int allPlayerCounts = 0;
 
   String selectedProvince = "All";
   String selectedSortBy = "Terbaru";
@@ -38,16 +41,19 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   TextEditingController searchController = TextEditingController();
 
-  _CategoryDetailPage(int categoryId) {
+  _CategoryDetailPage(AnimalCategory animalCategory) {
+    this.animalCategory = animalCategory;
+
     getAnimalByCategory(
-            "Token", categoryId, selectedSortBy, searchController.text)
+            "Token", animalCategory.id, selectedSortBy, searchController.text)
         .then((onValue) {
       animals = onValue;
       setState(() {
         isLoading = false;
       });
     }).catchError((onError) {
-      globals.showDialogs(onError, context);
+      globals.showDialogs(onError.toString(), context);
+      print(onError);
     });
 
     getProvinces("token").then((onValue) {
@@ -59,6 +65,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         isLoadingProvince = false;
       });
     });
+    
+    globals.getNotificationCount();
   }
 
   void _refresh(int subCategoryId, String subCategoryName) {
@@ -134,6 +142,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         countAll += animalSubCategories[i].animalsCount;
       }
 
+      setState(() {
+        this.allAuctionCounts = countAll;
+      });
+
       list.add(_buildcontSub("ALL", countAll.toString(), null));
 
       return list.reversed.toList();
@@ -156,33 +168,42 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       child: Column(
         children: <Widget>[
           Container(
-            width: 80.0,
-            height: 80.0,
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            height: 60,
+            width: 60,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(90),
+              child: FadeInImage.assetNetwork(
                 fit: BoxFit.cover,
-                image: defaultPic,
+                placeholder: 'assets/images/loading.gif',
+                image: animalCategory.image,
               ),
             ),
           ),
           SizedBox(
             height: 8,
           ),
-          Text(
-            "164 ITEMS",
-            style: Theme.of(context)
-                .textTheme
-                .title
-                .copyWith(fontWeight: FontWeight.w300),
-          ),
+          allAuctionCounts > 0
+              ? Text(
+                  "$allAuctionCounts Hewan",
+                  style: Theme.of(context)
+                      .textTheme
+                      .title
+                      .copyWith(fontWeight: FontWeight.w300),
+                )
+              : Container(),
           SizedBox(
             height: 8,
           ),
-          Text(
-            "100 Player",
-            style: Theme.of(context).textTheme.subtitle,
-          ),
+          allPlayerCounts > 0
+              ? Text(
+                  "$allPlayerCounts Pemain",
+                  style: Theme.of(context).textTheme.subtitle,
+                )
+              : Container(),
           SizedBox(
             height: 8,
           ),
@@ -209,21 +230,26 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 .title
                 .copyWith(fontWeight: FontWeight.w500),
           ),
-          Row(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 16),
-                height: 24,
-                child: Image.asset("assets/images/icon_add.png"),
-              ),
-              Text(
-                "Buat Lelang",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w900),
-              ),
-            ],
-          )
+          GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed("/auction/create");
+              },
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(right: 5),
+                    height: 20,
+                    child: Image.asset("assets/images/icon_add.png"),
+                  ),
+                  Text(
+                    "Buat Lelang",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w900),
+                  ),
+                ],
+              ))
         ],
       ),
     );
@@ -380,8 +406,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _buildDetail(
-      String name, String userPost, String gender, DateTime birthDate) {
+  Widget _buildDetail(String name, String username, String regency,
+      String gender, DateTime birthDate) {
     String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: double.infinity,
@@ -393,7 +419,25 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
           ),
-          globals.myText(text: userPost, color: "unprime", size: 10)
+          Container(
+              padding: EdgeInsets.symmetric(vertical: 3),
+              child:
+                  globals.myText(text: username, color: "unprime", size: 10)),
+          Text(
+            regency,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.title.copyWith(fontSize: 10),
+          ),
+          // Container(
+          //   width: double.infinity,
+          //   child: Row(
+          //     children: <Widget>[
+          //       Icon(Icons.location_on,
+          //           size: 15, color: Theme.of(context).primaryColor),
+          //       // globals.myText(text: regency, color: 'black', size: 10),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
@@ -432,9 +476,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 Container(
                     alignment: Alignment.center,
                     child: Center(
-                      child: Image.asset('assets/images/comment.png', height: 80, width: 80)
-                    )
-                ),
+                        child: Image.asset('assets/images/comment.png',
+                            height: 80, width: 80))),
                 Center(
                   child: Text(
                     countComments,
@@ -450,6 +493,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildCard(Animal animal) {
     bool myProduct = animal.ownerUserId == globals.user.id;
+    // print("${animal.ownerUserId} == ${globals.user.id}");
     var isNotError = false;
     if (animal.animalImages.length > 0 &&
         animal.animalImages[0].image != null) {
@@ -478,24 +522,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
                 child: Column(
                   children: <Widget>[
-                    myProduct
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Container(
-                                width: 85,
-                                padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: globals.myText(
-                                    text: "YOUR PRODUCT",
-                                    color: "light",
-                                    size: 10),
-                              )
-                            ],
-                          )
-                        : Container(),
                     SizedBox(
                       height: 5,
                     ),
@@ -503,11 +529,12 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     isNotError
                         ? _buildImage(animal.animalImages[0].image)
                         : globals.failLoadImage(),
-                    _buildDetail(animal.name, animal.owner.username,
-                        animal.gender, animal.dateOfBirth),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    _buildDetail(
+                        animal.name,
+                        animal.owner.username,
+                        animal.owner.regency.name,
+                        animal.gender,
+                        animal.dateOfBirth),
                     _buildChips(
                         "Harga Awal",
                         globals
@@ -527,7 +554,29 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ),
           ),
         ),
-        _buildChat(animal.auction.countComments.toString(), animal.id)
+        _buildChat(animal.auction.countComments.toString(), animal.id),
+        myProduct
+            ? Positioned(
+                bottom: 20,
+                left: 15,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      width: globals.mw(context) * 0.3,
+                      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: globals.myText(
+                          align: TextAlign.center,
+                          text: "PRODUK ANDA",
+                          color: "light",
+                          size: 10),
+                    )
+                  ],
+                ))
+            : Container(),
       ],
     );
   }
@@ -549,11 +598,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               child: Text(text, style: Theme.of(context).textTheme.display2)),
           Expanded(
             child: Container(
-              padding: EdgeInsets.fromLTRB(15, 2, 0, 2),
+              padding: EdgeInsets.fromLTRB(8, 2, 0, 2),
               margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
               decoration: BoxDecoration(
                   color: text == 'Saat Ini'
-                      ? Color.fromRGBO(184, 134, 11, 1)
+                      ? globals.myColor("mimosa")
                       : Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(5)),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [

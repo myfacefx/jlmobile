@@ -2,7 +2,10 @@ import 'dart:ui' as prefix0;
 
 import 'package:flutter/material.dart';
 
-const kPrimaryColor = const Color.fromRGBO(255, 77, 77, 1); //red pink
+// const kPrimaryColor = const Color.fromRGBO(255, 77, 77, 1); //red pink
+
+// Color.fromRGBO(73, 187, 255, 1) - light blue
+const kPrimaryColor = const Color.fromRGBO(60, 90, 153, 1);
 const kPrimaryLight = const Color.fromRGBO(255, 98, 98, 1);
 const kPrimaryDark = const Color.fromRGBO(186, 39, 75, 1);
 

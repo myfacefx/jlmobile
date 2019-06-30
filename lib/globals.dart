@@ -103,7 +103,8 @@ Widget bottomNavigationBar(context) {
       },
       child: Container(
           height: 20,
-          color: Color.fromRGBO(201, 0, 0, 1),
+          color: Theme.of(context).primaryColor,
+          // color: Color.fromRGBO(201, 0, 0, 1),
           child: Center(
             child: Text(
               "Take care of your product, avoid blacklist member | check here",
@@ -144,30 +145,33 @@ Widget myAppBarIcon(context) {
                 color: Colors.white,
                 size: 30,
               ),
-              user.historiesCount != null && user.historiesCount > 0 ? Container(
-                width: 30,
-                height: 30,
-                alignment: Alignment.topRight,
-                margin: EdgeInsets.only(top: 0),
-                child: Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xffc32c37),
-                      border: Border.all(
-                          color: Theme.of(context).primaryColor, width: 1)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Center(
-                      child: Text(
-                        "${user.historiesCount}",
-                        style: TextStyle(fontSize: 10),
+              user.historiesCount != null && user.historiesCount > 0
+                  ? Container(
+                      width: 30,
+                      height: 30,
+                      alignment: Alignment.topRight,
+                      margin: EdgeInsets.only(top: 0),
+                      child: Container(
+                        width: 15,
+                        height: 15,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: myColor('prime'),
+                            border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                                width: 1)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: Center(
+                            child: Text(
+                              "${user.historiesCount}",
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ) : Container(),
+                    )
+                  : Container(),
             ],
           )),
     ),
@@ -198,6 +202,14 @@ Future<ImageProvider> imageUrlProvider(String link,
     retImg = AdvancedNetworkImage(link, fallbackImage: list);
   }
   return retImg;
+}
+
+void getNotificationCount() async {
+  if (user.id != null) {
+    int historiesCount = await getHistoriesCount(user.id);
+    user.historiesCount = historiesCount;
+  }
+  return null;
 }
 
 String convertToMoney(double number) {
@@ -310,7 +322,18 @@ Color myColor([String color = "default"]) {
   Color returnedColor;
   switch (color) {
     case "primary":
-      returnedColor = Color.fromRGBO(255, 77, 77, 1);
+      // red pink
+      // returnedColor = Color.fromRGBO(255, 77, 77, 1);
+      
+      // light blue
+      // returnedColor = Color.fromRGBO(73, 187, 255, 1);
+      
+      // blue navy
+      returnedColor = Color.fromRGBO(60,90,153,1);
+      break;
+    case "mimosa": 
+      // for current bid
+      returnedColor = Color.fromRGBO(239, 192, 80, 1);
       break;
     case "danger":
       returnedColor = Colors.red[300];
@@ -394,11 +417,14 @@ Text myText(
     String color = "default",
     double size = 14,
     String weight = "N",
-    TextDecoration decoration = TextDecoration.none, TextAlign align = TextAlign.start}) {
+    TextDecoration decoration = TextDecoration.none,
+    TextAlign align = TextAlign.start,
+    TextOverflow textOverflow = TextOverflow.visible}) {
   if (text == null || text == "") text = "-";
   return Text(
     text,
     textAlign: align,
+    overflow: textOverflow,
     style: TextStyle(
       decoration: decoration,
       decorationColor: myColor(color),

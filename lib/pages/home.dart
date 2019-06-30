@@ -30,6 +30,7 @@ class _HomePage extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     _getListCategories();
+    globals.getNotificationCount();
   }
 
   _HomePage() {
@@ -43,12 +44,12 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  _logOut() async {
-    deleteLocalData("user");
-    globals.state = "login";
-    Navigator.of(context).pop();
-    Navigator.of(context).pushNamed('/login');
-  }
+  // _logOut() async {
+  //   deleteLocalData("user");
+  //   globals.state = "login";
+  //   Navigator.of(context).pop();
+  //   Navigator.of(context).pushNamed('/login');
+  // }
 
   void _getListCategories() {
     setState(() {
@@ -86,34 +87,35 @@ class _HomePage extends State<HomePage> {
     List<Widget> listImage = [
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image:
-            'https://media.mercola.com/imageserver/public/2011/May/two-cute-pet-puppies05.03.jpg',
+        image: 'https://placeimg.com/520/200/animals?4'
+            // 'https://media.mercola.com/imageserver/public/2011/May/two-cute-pet-puppies05.03.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image:
-            'https://www.disktrend.com/wp-content/uploads/2017/03/Jack-Russell-Terrier-running.jpg',
+        image: 'https://placeimg.com/420/200/animals?1'
+            // 'https://www.disktrend.com/wp-content/uploads/2017/03/Jack-Russell-Terrier-running.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image:
-            'https://dbw4iivs1kce3.cloudfront.net/680x390/2014/05/Lactation-pregnant-dog.jpg',
+        image: 'https://placeimg.com/420/200/animals?2'
+            // 'https://dbw4iivs1kce3.cloudfront.net/680x390/2014/05/Lactation-pregnant-dog.jpg',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image:
-            'https://cdn.newsapi.com.au/image/v1/9ff9ff58d79063b90446a39560fdeaa2?width=650',
+        image: 'https://placeimg.com/420/200/animals?3'
+            // 'https://cdn.newsapi.com.au/image/v1/9ff9ff58d79063b90446a39560fdeaa2?width=650',
       )
     ];
     return Stack(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: CarouselSlider(
+            aspectRatio: 3,
             autoPlay: true,
-            enlargeCenterPage: true,
-            viewportFraction: 1.0,
-            height: 153,
+            // enlargeCenterPage: true,
+            viewportFraction: 3.0,
+            height: 200,
             enableInfiniteScroll: true,
             onPageChanged: (index) {
               setState(() {
@@ -170,6 +172,10 @@ class _HomePage extends State<HomePage> {
                 .headline
                 .copyWith(color: Color.fromRGBO(178, 178, 178, 1)),
           ),
+          Expanded(
+            child: Text("")
+          ),
+          globals.myText(text: "51 PEMAIN", color: 'dark')
         ],
       ),
     );
@@ -195,7 +201,7 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  Widget image(String slug) {
+  Widget image(String url) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       height: 60,
@@ -208,7 +214,7 @@ class _HomePage extends State<HomePage> {
         child: FadeInImage.assetNetwork(
           fit: BoxFit.cover,
           placeholder: 'assets/images/loading.gif',
-          image: slug,
+          image: url,
         ),
       ),
     );
@@ -244,38 +250,38 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildPromotion() {
     return Container(
-        margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
         child: Column(
           children: <Widget>[
             Container(
               color: Colors.white,
-              width: globals.mw(context) * 0.83,
+              width: globals.mw(context),
               child: FadeInImage.assetNetwork(
                 placeholder: 'assets/images/loading.gif',
                 image: 'http://hd.wallpaperswide.com/thumbs/animal_8-t2.jpg',
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
                   color: Colors.white,
-                  width: globals.mw(context) * 0.4,
+                  width: globals.mw(context) * 0.47,
                   child: FadeInImage.assetNetwork(
                     placeholder: 'assets/images/loading.gif',
                     image:
                         'http://hd.wallpaperswide.com/thumbs/animal_8-t2.jpg',
                   ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                // SizedBox(
+                //   width: 10,
+                // ),
                 Container(
                   color: Colors.white,
-                  width: globals.mw(context) * 0.4,
+                  width: globals.mw(context) * 0.47,
                   child: FadeInImage.assetNetwork(
                     placeholder: 'assets/images/loading.gif',
                     image:
@@ -305,7 +311,7 @@ class _HomePage extends State<HomePage> {
         : isLoadingCategories
             ? Container(child: Center(child: CircularProgressIndicator()))
             : Container(
-                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                 child: GridView.count(
                     physics: ScrollPhysics(),
                     shrinkWrap: true,

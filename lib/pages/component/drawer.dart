@@ -103,7 +103,7 @@ Widget drawer(context) {
                           highlightColor: Colors.white10,
                           highlightedBorderColor: Colors.white,
                           borderSide: BorderSide(color: Colors.white),
-                          child: Text("Edit Profile",
+                          child: Text("Profil",
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 globals.spacePadding(),
@@ -111,7 +111,7 @@ Widget drawer(context) {
                 _buildDrawerNavigationButtonBig("Lelangku", '/profile', null, context),
                 // _buildDrawerNavigationButtonBig("Our Shop Products", context),
                 _buildDrawerNavigationButtonBig(
-                    "Lelang di Ikuti", '/our-bid', globals.user.bidsCount, context),
+                    "Lelang Diikuti", '/our-bid', globals.user.bidsCount, context),
                 // _buildDrawerNavigationButtonBig("Our Carts", context),
                 // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 globals.spacePadding(),

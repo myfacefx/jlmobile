@@ -29,7 +29,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   bool passwordVisibility = true;
   bool confirmPasswordVisibility = true;
 
-  bool isLoading = false;
+  bool isLoading = true;
 
   FocusNode usernameFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
@@ -58,7 +58,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String _gender = "M";
   DateTime _dateOfBirth;
 
-  List<String> auctionTypes = ["24 Hours", "48 Hours"];
+  List<String> auctionTypes = ["24 Jam", "48 Jam"];
 
   List<Asset> images = List<Asset>();
   String _error;
@@ -92,6 +92,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         isLoading = false;
       });
     });
+    
+    globals.getNotificationCount();
   }
 
   Future<Null> _selectDate(BuildContext context) async {
@@ -267,10 +269,11 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
           isLoading = false;
         });
 
-        //await globals.showDialogs(finalResponse['message'], context);
+        await globals.showDialogs(finalResponse['message'], context);
         Navigator.pop(context);
+        Navigator.pushNamed(context, "/profile");
       } catch (e) {
-        //globals.showDialogs(e.toString(), context);
+        globals.showDialogs(e.toString(), context);
         print(e);
         setState(() {
           isLoading = false;
@@ -315,7 +318,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                         color: Theme.of(context).primaryColor,
                         child: Center(
                           child: Text(
-                            "ADD NEW AUCTION PRODUCT",
+                            "Buat Lelang",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
@@ -401,6 +404,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                             }
                           },
                           style: TextStyle(color: Colors.black),
+                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(13),
                               hintText: "Nama Hewan",
@@ -586,21 +590,21 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     },
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Open bid wajib diisi';
+                                        return 'Harga awal wajib diisi';
                                       }
 
                                       if (binController.text.isNotEmpty) {
                                         if (int.parse(value) >=
                                             int.parse(binController.text)) {
-                                          return 'Harga open bid tidak boleh lebih atau sama dengan harga BIN';
+                                          return 'Harga awal tidak boleh lebih atau sama dengan harga beli sekarang';
                                         }
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(13),
-                                        hintText: "Open Bid",
-                                        labelText: "Open Bid",
+                                        hintText: "Harga Awal",
+                                        labelText: "Harga Awal",
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
@@ -624,12 +628,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     },
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Harga Buy It Now (BIN) wajib diisi';
+                                        return 'Harga Beli Sekarang wajib diisi';
                                       }
                                       if (openBidController.text.isNotEmpty) {
                                         if (int.parse(value) <=
                                             int.parse(openBidController.text)) {
-                                          return 'Harga BIN tidak boleh kurang atau sama dengan harga open bid';
+                                          return 'Harga Beli Sekarang tidak boleh kurang atau sama dengan harga awal';
                                         }
                                       }
                                     },
@@ -637,8 +641,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     // keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(13),
-                                        hintText: "Buy It Now (BIN)",
-                                        labelText: "Buy It Now (BIN)",
+                                        hintText: "Beli Sekarang (BIN)",
+                                        labelText: "Beli Sekarang (BIN)",
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
@@ -662,13 +666,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     },
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Harga multiply wajib diisi';
+                                        return 'Harga kelipatan wajib diisi';
                                       }
 
                                       if (binController.text.isNotEmpty) {
                                         if (int.parse(value) >=
                                             int.parse(binController.text)) {
-                                          return 'Harga multiply tidak boleh melebihi atau sama dengan BIN';
+                                          return 'Harga kelipatan tidak boleh melebihi atau sama dengan harga beli sekarang';
                                         }
                                       }
                                     },
@@ -676,8 +680,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     // keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(13),
-                                        hintText: "Multiply (Kelipatan Bid)",
-                                        labelText: "Multiply (Kelipatan Bid)",
+                                        hintText: "Harga Kelipatan",
+                                        labelText: "Harga Kelipatan",
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
@@ -700,6 +704,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                 : Theme.of(context).primaryColor,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)))),
+                    SizedBox(height: 20),
                     // FlatButton(
                     //   child: Text("Restart Request"),
                     //   onPressed: () {
@@ -708,105 +713,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     //     });
                     //   },
                     // ),
-                    !isLoading
-                        ? Container()
-                        : Center(child: CircularProgressIndicator()),
-                    // Flexible(
-                    //   child: _buildGridViewImages(),
-                    // )
-
-                    // Container(
-                    //     width: 300,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: TextFormField(
-                    //       focusNode: passwordFocusNode,
-                    //       onSaved: (String value) {
-                    //         _password = value;
-                    //       },
-                    //       controller: passwordController,
-                    //       onFieldSubmitted: (String value) {
-                    //         if (value.length > 0) {
-                    //           FocusScope.of(context)
-                    //               .requestFocus(confirmPasswordFocusNode);
-                    //         }
-                    //       },
-                    //       validator: (value) {
-                    //         if (value.isEmpty ||
-                    //             value.length < 5 ||
-                    //             value.length > 12) {
-                    //           return 'Password minimal 8 maksimal 12 huruf';
-                    //         }
-                    //       },
-                    //       obscureText: passwordVisibility,
-                    //       style: TextStyle(color: Colors.black),
-                    //       decoration: InputDecoration(
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           suffixIcon: GestureDetector(
-                    //             onTap: () {
-                    //               setState(() {
-                    //                 passwordVisibility = !passwordVisibility;
-                    //               });
-                    //             },
-                    //             child: Icon(passwordVisibility
-                    //                 ? Icons.visibility
-                    //                 : Icons.visibility_off),
-                    //           ),
-                    //           hintText: "Password",
-                    //           labelText: "Password",
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(20))),
-                    //     )),
-                    // Container(
-                    //     width: 300,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: TextFormField(
-                    //       focusNode: confirmPasswordFocusNode,
-                    //       controller: confirmPasswordController,
-                    //       obscureText: confirmPasswordVisibility,
-                    //       validator: (value) {
-                    //         if (value != passwordController.text) {
-                    //           return 'Password tidak sesuai';
-                    //         }
-                    //       },
-                    //       onFieldSubmitted: (String value) {
-                    //         // _register();
-                    //       },
-                    //       style: TextStyle(color: Colors.black),
-                    //       decoration: InputDecoration(
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           suffixIcon: GestureDetector(
-                    //             onTap: () {
-                    //               setState(() {
-                    //                 confirmPasswordVisibility =
-                    //                     !confirmPasswordVisibility;
-                    //               });
-                    //             },
-                    //             child: Icon(confirmPasswordVisibility
-                    //                 ? Icons.visibility
-                    //                 : Icons.visibility_off),
-                    //           ),
-                    //           hintText: "Ulangi Password",
-                    //           labelText: "Ulangi Password",
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(20))),
-                    //     )),
-                    // Container(
-                    //     width: 300,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: FlatButton(
-                    //         onPressed: () => loading,
-                    //         child: Text(!loading ? "Simpan Perubahan" : "Mohon Tunggu",
-                    //             style: Theme.of(context).textTheme.display4),
-                    //         color: loading
-                    //             ? Colors.grey
-                    //             : Theme.of(context).primaryColor,
-                    //         shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(20)))),
                   ]),
                 ),
-              ])
+              ]),
+              !isLoading
+                ? Container()
+                : Center(child: CircularProgressIndicator()),
             ])),
       ),
     );

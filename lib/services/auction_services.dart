@@ -21,8 +21,50 @@ Future<Auction> create(Map<String, dynamic> _data) async {
 Future<bool> setWinner(String token, int auctionId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
+  final url = getBaseUrl() + "/auctions/$auctionId/set/winner";
+
+  print(url);
+
   http.Response res = await http
-      .put(getBaseUrl() + "/auctions/$auctionId/set/winner", headers: header)
+      .put(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 202) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> cancelAuction(String token, int auctionId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "/auctions/$auctionId/cancel";
+
+  print(url);
+
+  http.Response res = await http
+      .put(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 202) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> startAuction(String token, int auctionId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "/auctions/$auctionId/start";
+
+  print(url);
+
+  http.Response res = await http
+      .put(url, headers: header)
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 202) {
