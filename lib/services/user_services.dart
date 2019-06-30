@@ -115,3 +115,17 @@ Future<List<User>> getByEmail(Map<String, dynamic> _data) async {
     throw Exception(res.body);
   }
 }
+
+Future<int> getHistoriesCount(int userId) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/$userId/histories/count";
+
+  http.Response res = await http.get(url,
+      headers: header).timeout(Duration(seconds: getTimeOut()));
+  
+  if (res.statusCode == 200) {
+    return int.parse(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}

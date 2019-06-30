@@ -4,13 +4,16 @@
 
 import 'dart:convert';
 
+import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/user.dart';
 
 List<Animal> animalFromJson(String str) => new List<Animal>.from(json.decode(str).map((x) => Animal.fromJson(x)));
 
-String animalToJson(List<Animal> data) => json.encode(new List<dynamic>.from(data.map((x) => x.toJson())));
+// Animal animalFromJson(String str) => Animal.fromJson(json.decode(str));
+
+String animalToJson(Animal data) => json.encode(data.toJson());
 
 class Animal {
     int id;
@@ -22,12 +25,13 @@ class Animal {
     int regencyId;
     int ownerUserId;
     String slug;
-    String createdAt;
-    String updatedAt;
+    DateTime createdAt;
+    DateTime updatedAt;
     dynamic deletedAt;
     Auction auction;
     List<AnimalImage> animalImages;
     User owner;
+    AnimalSubCategory animalSubCategory;
 
     Animal({
         this.id,
@@ -45,6 +49,7 @@ class Animal {
         this.auction,
         this.animalImages,
         this.owner,
+        this.animalSubCategory,
     });
 
     factory Animal.fromJson(Map<String, dynamic> json) => new Animal(
@@ -57,12 +62,13 @@ class Animal {
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
         ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         slug: json["slug"] == null ? null : json["slug"],
-        createdAt: json["created_at"] == null ? null : json["created_at"],
-        updatedAt: json["updated_at"] == null ? null : json["updated_at"],
+        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"],
         auction: json["auction"] == null ? null : Auction.fromJson(json["auction"]),
         animalImages: json["animal_images"] == null ? null : new List<AnimalImage>.from(json["animal_images"].map((x) => AnimalImage.fromJson(x))),
         owner: json["owner"] == null ? null : User.fromJson(json["owner"]),
+        animalSubCategory: json["animal_sub_category"] == null ? null : AnimalSubCategory.fromJson(json["animal_sub_category"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -75,14 +81,12 @@ class Animal {
         "regency_id": regencyId == null ? null : regencyId,
         "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "slug": slug == null ? null : slug,
-        "created_at": createdAt == null ? null : createdAt,
-        "updated_at": updatedAt == null ? null : updatedAt,
+        "created_at": createdAt == null ? null : createdAt.toIso8601String(),
+        "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
         "deleted_at": deletedAt,
         "auction": auction == null ? null : auction.toJson(),
         "animal_images": animalImages == null ? null : new List<dynamic>.from(animalImages.map((x) => x.toJson())),
         "owner": owner == null ? null : owner.toJson(),
-    }..removeWhere((key, val) => val == null);
+        "animal_sub_category": animalSubCategory == null ? null : animalSubCategory.toJson(),
+    };
 }
-
-
-

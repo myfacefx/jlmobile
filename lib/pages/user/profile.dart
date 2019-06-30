@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
@@ -30,10 +31,11 @@ class _ProfilePageState extends State<ProfilePage>
     _tabController = TabController(length: 2, vsync: this);
     _getProdukKu();
     _getProdukLelang();
+    globals.getNotificationCount();
   }
 
   _getProdukKu() {
-    getUserAnimals("Token", globals.user.id).then((onValue) {
+    getUserUnauctionedAnimals("Token", globals.user.id).then((onValue) {
       animals = onValue;
       setState(() {
         isLoadingAnimals = false;
@@ -173,7 +175,7 @@ class _ProfilePageState extends State<ProfilePage>
                         animalId: animalId,
                       )));
         },
-        splashColor: Theme.of(context).primaryColor,
+        splashColor: globals.myColor("primary"),
         child: Container(
             width: 40,
             height: 40,
@@ -199,14 +201,14 @@ class _ProfilePageState extends State<ProfilePage>
       right: 10,
       child: InkWell(
         onTap: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) => ProductDetailPage(
-          //               animalId: animalId,
-          //             )));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ActivateAuctionPage(
+                        animalId: animalId,
+                      )));
         },
-        splashColor: Theme.of(context).primaryColor,
+        splashColor: globals.myColor("primary"),
         child: Container(
             width: 40,
             height: 40,
@@ -236,7 +238,14 @@ class _ProfilePageState extends State<ProfilePage>
       children: <Widget>[
         Container(
           margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-          child: Card(
+          child: GestureDetector(onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ActivateAuctionPage(
+                        animalId: animal.id,
+                      )));
+        }, child:Card(
             child: Container(
               padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
               child: Column(
@@ -253,7 +262,7 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
           ),
-        ),
+        )),
         _buildEditAnimal(animal.id)
       ],
     );
@@ -274,39 +283,69 @@ class _ProfilePageState extends State<ProfilePage>
       children: <Widget>[
         Container(
           margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-          child: Card(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 5,
-                  ),
-                  _buildTime(animal.auction.expiryDate),
-                  isNotError
-                      ? _buildImage(animal.animalImages[0].image)
-                      : globals.failLoadImage(),
-                  _buildDetail(animal.name, animal.owner.username,
-                      animal.gender, animal.dateOfBirth),
-                  _buildChips(
-                      "start",
-                      globals
-                          .convertToMoney(animal.auction.openBid.toDouble())),
-                  _buildChips(
-                      "multiplier",
-                      globals
-                          .convertToMoney(animal.auction.multiply.toDouble())),
-                  _buildChips(
-                      "bin",
-                      globals
-                          .convertToMoney(animal.auction.buyItNow.toDouble())),
-                  _buildChips("current", globals.convertToMoney(currentBid)),
-                ],
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ProductDetailPage(
+                            animalId: animal.id,
+                          )));
+            },
+            child: Card(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 5,
+                    ),
+                    _buildTime(animal.auction.expiryDate),
+                    isNotError
+                        ? _buildImage(animal.animalImages[0].image)
+                        : globals.failLoadImage(),
+                    _buildDetail(animal.name, animal.owner.username,
+                        animal.gender, animal.dateOfBirth),
+                    _buildChips(
+                        "Harga Awal",
+                        globals
+                            .convertToMoney(animal.auction.openBid.toDouble())),
+                    _buildChips(
+                        "Kelipatan",
+                        globals.convertToMoney(
+                            animal.auction.multiply.toDouble())),
+                    _buildChips(
+                        "Beli Sekarang",
+                        globals.convertToMoney(
+                            animal.auction.buyItNow.toDouble())),
+                    _buildChips("Saat Ini", globals.convertToMoney(currentBid)),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-        _buildEditAuction(animal.id)
+        _buildEditAuction(animal.id),
+        animal.auction.active == 0 ? Positioned(
+                bottom: 20,
+                left: 15,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      width: globals.mw(context) * 0.25,
+                      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                      decoration: BoxDecoration(
+                          color: globals.myColor("danger"),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: globals.myText(
+                          align: TextAlign.center,
+                          text: "BERAKHIR",
+                          color: "light",
+                          size: 10),
+                    )
+                  ],
+                )) : Container(),
       ],
     );
   }
@@ -325,23 +364,6 @@ class _ProfilePageState extends State<ProfilePage>
     return widget;
   }
 
-  Widget _buildcontChips(String text) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-      margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(5)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text(
-          text,
-          style: TextStyle(fontSize: 12),
-          textAlign: TextAlign.center,
-        )
-      ]),
-    );
-  }
-
   Widget _buildChips(String text, String value) {
     return Container(
       width: (globals.mw(context) * 0.5),
@@ -349,14 +371,149 @@ class _ProfilePageState extends State<ProfilePage>
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-              width: ((globals.mw(context) * 0.5) - 40) * 0.3,
+              padding: EdgeInsets.only(right: 10),
+              // width: ((globals.mw(context) * 0.5) - 40) * 0.3,
+              width: globals.mw(context) * 0.2,
               child: Text(text, style: Theme.of(context).textTheme.display2)),
-          _buildcontChips(value)
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(8, 2, 0, 2),
+              margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
+              decoration: BoxDecoration(
+                  color: text == 'Saat Ini'
+                      ? Color.fromRGBO(239, 192, 80, 1)
+                      : globals.myColor("primary"),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text(
+                  value,
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                )
+              ]),
+            ),
+          )
         ],
       ),
     );
   }
+
   // card animals
+  Widget _profile() {
+    return Container(
+      padding: EdgeInsets.all(5),
+      width: globals.mw(context),
+      child: Card(
+          child: Container(
+              padding: EdgeInsets.all(10),
+              child: Stack(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/edit-profile");
+                    },
+                    child: Container(
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.edit)),
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                          height: 100,
+                          child: CircleAvatar(
+                              radius: 100,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: globals.user.photo != null
+                                          ? FadeInImage.assetNetwork(
+                                              image: globals.user.photo,
+                                              placeholder:
+                                                  'assets/images/loading.gif',
+                                              fit: BoxFit.cover)
+                                          : Image.asset(
+                                              'assets/images/account.png'))))),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.star, size: 15),
+                          Text("4.5", style: TextStyle(color: Colors.grey))
+                        ],
+                      ),
+                      Text(globals.user.username,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500)),
+                      Text(globals.user.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.location_on,
+                              size: 18, color: globals.myColor("primary")),
+                          Text(globals.user.regency.name,
+                              style: TextStyle(color: Colors.grey))
+                        ],
+                      ),
+                      Container(
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          child: Text(
+                              globals.user.description != null
+                                  ? globals.user.description
+                                  : '',
+                              style: TextStyle(color: Colors.grey))),
+                      FlatButton(
+                          // shape: CircleBorder(),
+                          color: globals.myColor("primary"),
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/auction/create");
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Buat Lelang",
+                                  style: TextStyle(color: Colors.white)),
+                              Icon(Icons.add, color: Colors.white, size: 20),
+                            ],
+                          )),
+                    ],
+                  ),
+                ],
+              ))),
+    );
+  }
+
+  Widget _tabBarList() {
+    return Container(
+        padding: EdgeInsets.all(5),
+        width: globals.mw(context),
+        child: Card(
+            child: Container(
+                child: TabBar(
+                labelColor: globals.myColor("primary"),
+          indicatorColor: globals.myColor("primary"),
+          unselectedLabelColor: globals.myColor("primary"),
+          controller: _tabController,
+          tabs: <Widget>[
+            Tab(
+              child: Text("Produk-ku",
+                  style: TextStyle(color: Colors.black, fontSize: 11)),
+            ),
+            Tab(
+              child: Text("Produk Lelang",
+                  style: TextStyle(color: Colors.black, fontSize: 11)),
+            ),
+          ],
+        ))));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -368,123 +525,8 @@ class _ProfilePageState extends State<ProfilePage>
             body: SafeArea(
                 child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(5),
-                  width: globals.mw(context),
-                  child: Card(
-                      child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Stack(
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/edit-profile");
-                                },
-                                child: Container(
-                                    alignment: Alignment.centerRight,
-                                    child: Icon(Icons.edit)),
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Container(
-                                      padding:
-                                          EdgeInsets.fromLTRB(10, 0, 10, 5),
-                                      height: 100,
-                                      child: CircleAvatar(
-                                          radius: 100,
-                                          child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
-                                              child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: globals.user.photo != null ? FadeInImage.assetNetwork(
-                                image: globals.user.photo,
-                                placeholder: 'assets/images/loading.gif',
-                                fit: BoxFit.cover) : Image.asset('assets/images/account.png'))))),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(Icons.star, size: 15),
-                                      Text("4.5",
-                                          style: TextStyle(color: Colors.grey))
-                                    ],
-                                  ),
-                                  Text(globals.user.username,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500)),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(Icons.location_on,
-                                          size: 18,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      Text(globals.user.regency.name,
-                                          style: TextStyle(color: Colors.grey))
-                                    ],
-                                  ),
-                                  Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 15),
-                                      child: Text(globals.user.description != null ? globals.user.description : '',
-                                          style:
-                                              TextStyle(color: Colors.grey))),
-                                  FlatButton(
-                                      // shape: CircleBorder(),
-                                      color: Theme.of(context).primaryColor,
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, "/auction/create");
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text("Buat Lelang",
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                          Icon(Icons.add,
-                                              color: Colors.white, size: 20),
-                                        ],
-                                      )),
-                                ],
-                              ),
-                            ],
-                          ))),
-                ),
-                Container(
-                    padding: EdgeInsets.all(5),
-                    width: globals.mw(context),
-                    child: Card(
-                        child: Container(
-                            child: TabBar(
-                      indicatorColor: Theme.of(context).primaryColor,
-                      controller: _tabController,
-                      tabs: <Widget>[
-                        Tab(
-                          child: Text("Produk-ku",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 11)),
-                        ),
-                        Tab(
-                          child: Text("Produk Lelang",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 11)),
-                        ),
-                        // Tab(
-                        //   child: Text("Produk Jual",
-                        //       style:
-                        //           TextStyle(color: Colors.black, fontSize: 9)),
-                        // ),
-                        // Tab(
-                        //   child: Text("Tambahkan",
-                        //       style:
-                        //           TextStyle(color: Colors.black, fontSize: 9)),
-                        // )
-                      ],
-                    )))),
+                _profile(),
+                _tabBarList(),
                 Flexible(
                     child: Container(
                   padding: EdgeInsets.all(5),
@@ -499,14 +541,6 @@ class _ProfilePageState extends State<ProfilePage>
                           child: isLoadingAuctions
                               ? globals.isLoading()
                               : _buildAnimals(auctions, "produklelang")),
-                      // Container(
-                      //     child: isLoading
-                      //         ? globals.isLoading()
-                      //         : _buildAnimals()),
-                      // Container(
-                      //     child: isLoading
-                      //         ? globals.isLoading()
-                      //         : _buildAnimals()),
                     ],
                   ),
                 ))

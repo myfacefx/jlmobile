@@ -12,6 +12,7 @@ import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
 import 'package:jlf_mobile/pages/auction/create.dart';
+import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/user/notification.dart';
 
@@ -20,7 +21,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //SystemChrome.setEnabledSystemUIOverlays ([]);
+    // SystemChrome.setEnabledSystemUIOverlays ([]);
     return MaterialApp(
       title: 'JLF',
       debugShowCheckedModeBanner: false,
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         '/edit-profile': (BuildContext context) => EditProfilePage(),
         '/our-bid': (BuildContext context) => OurBidPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
+        '/auction/activate': (BuildContext context) => ActivateAuctionPage(),
         '/notification': (BuildContext context) => NotificationPage()
       },
     );

@@ -11,6 +11,13 @@ class _AboutPageState extends State<AboutPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    globals.getNotificationCount();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: globals.appBar(_scaffoldKey, context),

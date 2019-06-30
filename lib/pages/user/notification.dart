@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/history.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/history_services.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _NotificationPageState extends State<NotificationPage> {
   void initState() {
     super.initState();
     _getHistories();
+    globals.getNotificationCount();
   }
 
   _getHistories() {
@@ -47,7 +49,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 : SafeArea(
                     child: Column(children: <Widget>[
                       Container(
-                          padding: EdgeInsets.symmetric(vertical: 15),
+                          padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                           child: Center(
                               child: globals.myText(
                                   text: "NOTIFIKASI",
@@ -56,9 +58,41 @@ class _NotificationPageState extends State<NotificationPage> {
                                   size: 22))),
                       Flexible(
                         child: histories.length > 0 ? ListView.builder(
+                          padding: EdgeInsets.all(5),
+                          // shrinkWrap: true,
                           itemCount: histories.length,
                           itemBuilder: (BuildContext context, int i) {
-                            if (i.isOdd) return Divider();
+                            // if (i.isOdd) return Divider();
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) => ProductDetailPage(
+                                              animalId: histories[i].auction.animalId,
+                                            )));
+                              },
+                              child: Card(
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.only(top: 3, right: 3),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: <Widget>[
+                                      globals.myText(weight: "B", text: globals.convertFormatDateTimeProduct(histories[i].createdAt.toString())),
+
+                                      ],),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      child: globals.myText(text: histories[i].information, color: "dark"),
+                                    ),
+                                  ],
+                                )
+                              ),
+                            );
+
                             return ListTile(
                               leading: Icon(Icons.notifications_active),
                               title: globals.myText(text: histories[i].information, color: "dark")

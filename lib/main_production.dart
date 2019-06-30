@@ -5,13 +5,13 @@ import 'package:jlf_mobile/main.dart';
 
 void main() async {
   var configuredApp = AppConfig(
-    appName: 'Build flavors Prod',
+    appName: 'Jual Lelang Fauna',
     flavorName: 'production',
     baseUrl: 'http://api.juallelangfauna.com',
     apiUrl: '/api',
     child: MyApp(),
   );
-  SystemChrome.setEnabledSystemUIOverlays([]);
+  // SystemChrome.setEnabledSystemUIOverlays([]);
   await configuredApp.checkLocalData();
   runApp(configuredApp);
 }
