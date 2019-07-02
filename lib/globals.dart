@@ -103,11 +103,12 @@ Widget bottomNavigationBar(context) {
       },
       child: Container(
           height: 20,
-          color: Theme.of(context).primaryColor,
+          color: myColor("danger"),
           // color: Color.fromRGBO(201, 0, 0, 1),
           child: Center(
             child: Text(
-              "Take care of your product, avoid blacklist member | check here",
+              "Daftar Blacklist Member",
+              // "Take care of your product, avoid blacklist member | check here",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12),
             ),

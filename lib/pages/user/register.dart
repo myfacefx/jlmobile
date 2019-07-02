@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/models/regency.dart';
@@ -26,14 +27,17 @@ class _RegisterPageState extends State<RegisterPage> {
   bool lockEmailFromFacebook = false;
 
   FocusNode usernameFocusNode = FocusNode();
+  FocusNode nameFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
   FocusNode confirmPasswordFocusNode = FocusNode();
   FocusNode provinceFocusNode = FocusNode();
   FocusNode regencyFocusNode = FocusNode();
+  FocusNode phoneNumberFocusNode = FocusNode();
 
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
 
   User user;
 
@@ -43,6 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _password;
   String _photo;
   String _gender = "M";
+  String _phoneNumber;
   Province _province;
   Regency _regency;
 
@@ -125,6 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
       user.username = _username;
       user.password = _password;
       user.regencyId = _regency.id;
+      user.phoneNumber = _phoneNumber;
       user.roleId = 2;
 
       try {
@@ -222,7 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     onFieldSubmitted: (String value) {
                       if (value.length > 0) {
-                        FocusScope.of(context).requestFocus(passwordFocusNode);
+                        FocusScope.of(context).requestFocus(nameFocusNode);
                       }
                     },
                     validator: (value) {
@@ -247,13 +253,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
                     controller: nameController,
-                    // focusNode: usernameFocusNode,
+                    focusNode: nameFocusNode,
                     onSaved: (String value) {
                       _name = value;
                     },
                     onFieldSubmitted: (String value) {
                       if (value.length > 0) {
-                        FocusScope.of(context).requestFocus(passwordFocusNode);
+                        // FocusScope.of(context).requestFocus(passwordFocusNode);
                       }
                     },
                     validator: (value) {
@@ -289,6 +295,38 @@ class _RegisterPageState extends State<RegisterPage> {
                       groupValue: _gender),
                   Text("Perempuan", style: TextStyle(color: Colors.black))
                 ]),
+              Container(
+                  width: 300,
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: TextFormField(
+                    focusNode: phoneNumberFocusNode,
+                    onSaved: (String value) {
+                      _phoneNumber = value;
+                    },
+                    onFieldSubmitted: (String value) {
+                      if (value.length > 0) {
+                        FocusScope.of(context).requestFocus(passwordFocusNode);
+                      }
+                    },
+                    validator: (value) {
+                      if (value.isEmpty ||
+                          value.length < 10 ||
+                          value.length > 13) {
+                        return 'Silahkan masukkan digit yang sesuai 10-13 digit';
+                      }
+                    },
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(13),
+                        hintText: "Format 08xx",
+                        labelText: "Nomor Handphone (WA)", filled: true,
+                                  fillColor: Colors.white,
+                                  
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20))),
+                  )),
               Container(
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -449,11 +487,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Text("Kembali ke halaman login",
                           style: TextStyle(color: Colors.grey)))),
               SizedBox(height: 20),
-              FlatButton(
-                  onPressed: () => setState(() {
-                        registerLoading = false;
-                      }),
-                  child: Text("RESET"))
+              // FlatButton(
+              //     onPressed: () => setState(() {
+              //           registerLoading = false;
+              //         }),
+              //     child: Text("RESET"))
             ]),
           ),
         ]),
