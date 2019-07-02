@@ -129,3 +129,19 @@ Future<int> getHistoriesCount(int userId) async {
     throw Exception(res.body);
   }
 }
+
+Future<int> getUsersCount() async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/count";
+
+  print(url);
+
+  http.Response res = await http.get(url,
+      headers: header).timeout(Duration(seconds: getTimeOut()));
+  
+  if (res.statusCode == 200) {
+    return int.parse(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}

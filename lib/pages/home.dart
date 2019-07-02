@@ -24,13 +24,23 @@ class _HomePage extends State<HomePage> {
   bool isLoadingCategories = true;
   bool failedDataCategories = false;
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
+  int membersCount = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _refresh();
     _getListCategories();
     globals.getNotificationCount();
+  }
+
+  _refresh() {
+    getUsersCount().then((onValue) {
+      membersCount = onValue;
+    }).catchError((onError) {
+      globals.showDialogs(onError, context);
+    });
   }
 
   _HomePage() {
@@ -175,7 +185,7 @@ class _HomePage extends State<HomePage> {
           Expanded(
             child: Text("")
           ),
-          globals.myText(text: "51 PEMAIN", color: 'dark')
+          globals.myText(text: "$membersCount MEMBER", color: 'dark')
         ],
       ),
     );
