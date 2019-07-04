@@ -65,7 +65,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         isLoadingProvince = false;
       });
     });
-    
+
     globals.getNotificationCount();
   }
 
@@ -113,7 +113,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         margin: EdgeInsets.fromLTRB(10, 5, 0, 5),
         decoration: BoxDecoration(
             color: name.contains(currentSubCategory)
-                ? Color.fromRGBO(186, 39, 75, 1)
+                ? Colors.blueGrey
                 : Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(25)),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -238,10 +238,21 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               child: Row(
                 children: <Widget>[
                   Container(
+                    width: 30,
+                    height: 30,
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
                     margin: EdgeInsets.only(right: 5),
-                    height: 20,
-                    child: Image.asset("assets/images/icon_add.png"),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.blueGrey),
                   ),
+                  // Container(
+                  //   margin: EdgeInsets.only(right: 5),
+                  //   height: 20,
+                  //   child: Icon(Icons.add),
+                  // ),
                   Text(
                     "Buat Lelang",
                     style: TextStyle(
@@ -394,7 +405,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       height: 128,
-      color: Colors.black,
+      color: Colors.white,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
@@ -606,10 +617,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                       : Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(5)),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text(
-                  value,
-                  style: TextStyle(fontSize: 12),
-                  textAlign: TextAlign.center,
+                Container(
+                  width: (globals.mw(context) * 0.19),
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 12),
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 )
               ]),
             ),

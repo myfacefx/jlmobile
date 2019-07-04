@@ -26,6 +26,21 @@ class _HomePage extends State<HomePage> {
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   int membersCount = 0;
 
+  List<Widget> listImage = [
+    FadeInImage.assetNetwork(
+        placeholder: 'assets/images/loading.gif',
+        image: 'https://placeimg.com/520/200/animals?4'),
+    FadeInImage.assetNetwork(
+        placeholder: 'assets/images/loading.gif',
+        image: 'https://placeimg.com/420/200/animals?1'),
+    FadeInImage.assetNetwork(
+        placeholder: 'assets/images/loading.gif',
+        image: 'https://placeimg.com/420/200/animals?2'),
+    FadeInImage.assetNetwork(
+        placeholder: 'assets/images/loading.gif',
+        image: 'https://placeimg.com/420/200/animals?3')
+  ];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -54,13 +69,6 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  // _logOut() async {
-  //   deleteLocalData("user");
-  //   globals.state = "login";
-  //   Navigator.of(context).pop();
-  //   Navigator.of(context).pushNamed('/login');
-  // }
-
   void _getListCategories() {
     setState(() {
       failedDataCategories = false;
@@ -82,40 +90,13 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  Widget _buildDoted(int index) {
+  Widget _buildDoted(int index, int total) {
     return Container(
-      width: 8.0,
-      height: 8.0,
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: _current == index ? Colors.black : Colors.grey),
+      child: globals.myText(text: "$index / $total", color: "light", weight: "XB"),
     );
   }
 
   Widget _buildCarousel() {
-    List<Widget> listImage = [
-      FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/520/200/animals?4'
-            // 'https://media.mercola.com/imageserver/public/2011/May/two-cute-pet-puppies05.03.jpg',
-      ),
-      FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/420/200/animals?1'
-            // 'https://www.disktrend.com/wp-content/uploads/2017/03/Jack-Russell-Terrier-running.jpg',
-      ),
-      FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/420/200/animals?2'
-            // 'https://dbw4iivs1kce3.cloudfront.net/680x390/2014/05/Lactation-pregnant-dog.jpg',
-      ),
-      FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/420/200/animals?3'
-            // 'https://cdn.newsapi.com.au/image/v1/9ff9ff58d79063b90446a39560fdeaa2?width=650',
-      )
-    ];
     return Stack(
       children: <Widget>[
         Container(
@@ -136,14 +117,14 @@ class _HomePage extends State<HomePage> {
           ),
         ),
         Positioned(
-            bottom: 9,
+            bottom: 10,
             left: 0.0,
             right: 0.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [0, 1, 2, 3].map((i) {
-                return _buildDoted(i);
-              }).toList(),
+              children: <Widget>[
+                _buildDoted(_current + 1, listImage.length + 1)
+              ],
             ))
       ],
     );
@@ -182,9 +163,7 @@ class _HomePage extends State<HomePage> {
                 .headline
                 .copyWith(color: Color.fromRGBO(178, 178, 178, 1)),
           ),
-          Expanded(
-            child: Text("")
-          ),
+          Expanded(child: Text("")),
           globals.myText(text: "$membersCount MEMBER", color: 'dark')
         ],
       ),

@@ -17,10 +17,10 @@ ThemeData buildThemeData() {
       ),
       accentColor: kPrimaryColor,
       primaryColor: kPrimaryColor,
-      primaryColorDark: kPrimaryDark,
-      primaryColorLight: kPrimaryLight,
+      primaryColorDark: Colors.white,
+      // primaryColorLight: kPrimaryLight,
       scaffoldBackgroundColor: Color.fromRGBO(244, 244, 244, 1),
-      splashColor: kPrimaryLight,
+      splashColor: kPrimaryColor,
       buttonColor: kPrimaryColor,
       //dividerColor: Color.fromRGBO(242, 242, 242, 1),
       textTheme: TextTheme(

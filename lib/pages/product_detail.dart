@@ -11,7 +11,7 @@ import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart';
 import 'package:jlf_mobile/services/bid_services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final int animalId;
@@ -192,19 +192,46 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             ),
           ),
           SizedBox(width: 5),
-          Container(
-            width: globals.mw(context) * 0.3,
-            alignment: Alignment.center,
-            child: FlatButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                child: globals.myText(
-                    text: "PROFIL PELAPAK",
-                    color: "unprime",
-                    size: 10,
-                    align: TextAlign.center),
-                onPressed: () {},
-                color: Colors.white),
+          Column(
+            children: <Widget>[
+              Container(
+                width: globals.mw(context) * 0.3,
+                alignment: Alignment.center,
+                child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: globals.myText(
+                        text: "PROFIL PELAPAK",
+                        color: "unprime",
+                        size: 10,
+                        align: TextAlign.center),
+                    onPressed: () {},
+                    color: Colors.white),
+              ),
+              Container(
+                width: globals.mw(context) * 0.3,
+                alignment: Alignment.center,
+                child: FlatButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  child: globals.myText(
+                      text: "CHAT WA PELAPAK",
+                      color: "light",
+                      size: 10,
+                      align: TextAlign.center),
+                  onPressed: () async {
+                    const url =
+                        'https://api.whatsapp.com/send?phone=6287837696998&text=Halo%20mau%20order%20gan';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                  color: Color.fromRGBO(37, 211, 102, 1),
+                ),
+              )
+            ],
           )
         ],
       ),
@@ -600,7 +627,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           winnerName != null && winnerName.isNotEmpty
               ? _winnerSection(winnerName, winnerUserName, amount)
               : animal.ownerUserId == globals.user.id &&
-                      animal.auction.winnerBidId == null && animal.auction.active == 1
+                      animal.auction.winnerBidId == null &&
+                      animal.auction.active == 1
                   ? Container(
                       margin: EdgeInsets.symmetric(vertical: 15),
                       child: Column(
@@ -761,7 +789,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 globals.showDialogs("Tawaran tidak sesuai kelipatan", context);
                 return null;
               } else if (int.parse(bid) > animal.auction.buyItNow) {
-                globals.showDialogs("Tawaran lebih besar dari pada harga beli sekarang", context);
+                globals.showDialogs(
+                    "Tawaran lebih besar dari pada harga beli sekarang",
+                    context);
                 return null;
               } else {
                 _addBid(int.parse(bidController.text));
@@ -1086,22 +1116,31 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             SizedBox(
               height: 20,
             ),
-            animal.auction.active == 1 ? Form(key: _formKeyComment, child: textAddComment()) : Container(child: globals.myText(text: "Lelang tidak aktif", color: "dark", align: TextAlign.center)),
-            animal.auction.active == 1 ? Container(
-              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: SizedBox(
-                width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () {
-                    _addComment("UP");
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  child: globals.myText(text: "UP", color: "light", size: 15),
-                  color: globals.myColor("primary"),
-                ),
-              ),
-            ) : Container()
+            animal.auction.active == 1
+                ? Form(key: _formKeyComment, child: textAddComment())
+                : Container(
+                    child: globals.myText(
+                        text: "Lelang tidak aktif",
+                        color: "dark",
+                        align: TextAlign.center)),
+            animal.auction.active == 1
+                ? Container(
+                    margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RaisedButton(
+                        onPressed: () {
+                          _addComment("UP");
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: globals.myText(
+                            text: "UP", color: "light", size: 15),
+                        color: globals.myColor("primary"),
+                      ),
+                    ),
+                  )
+                : Container()
           ],
         ));
   }

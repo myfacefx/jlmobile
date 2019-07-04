@@ -78,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage>
           )
         : Container(
             child: GridView.count(
-                physics: ScrollPhysics(),
+                physics: ClampingScrollPhysics(),
                 shrinkWrap: true,
                 childAspectRatio: type == "produkku" ? 0.75 : 0.5,
                 crossAxisCount: 2,
@@ -131,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage>
     return Container(
       margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       height: 128,
-      color: Colors.black,
+      color: Colors.white,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
@@ -237,32 +237,34 @@ class _ProfilePageState extends State<ProfilePage>
     return Stack(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-          child: GestureDetector(onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ActivateAuctionPage(
-                        animalId: animal.id,
-                      )));
-        }, child:Card(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 5,
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => ActivateAuctionPage(
+                              animalId: animal.id,
+                            )));
+              },
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 5,
+                      ),
+                      isNotError
+                          ? _buildImage(animal.animalImages[0].image)
+                          : globals.failLoadImage(),
+                      _buildDetail(animal.name, animal.owner.username,
+                          animal.gender, animal.dateOfBirth),
+                    ],
                   ),
-                  isNotError
-                      ? _buildImage(animal.animalImages[0].image)
-                      : globals.failLoadImage(),
-                  _buildDetail(animal.name, animal.owner.username,
-                      animal.gender, animal.dateOfBirth),
-                ],
+                ),
               ),
-            ),
-          ),
-        )),
+            )),
         _buildEditAnimal(animal.id)
       ],
     );
@@ -326,7 +328,8 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         ),
         _buildEditAuction(animal.id),
-        animal.auction.active == 0 ? Positioned(
+        animal.auction.active == 0
+            ? Positioned(
                 bottom: 20,
                 left: 15,
                 child: Row(
@@ -345,7 +348,8 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 10),
                     )
                   ],
-                )) : Container(),
+                ))
+            : Container(),
       ],
     );
   }
@@ -385,10 +389,14 @@ class _ProfilePageState extends State<ProfilePage>
                       : globals.myColor("primary"),
                   borderRadius: BorderRadius.circular(5)),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text(
-                  value,
-                  style: TextStyle(fontSize: 12),
-                  textAlign: TextAlign.center,
+                Container(
+                  width: (globals.mw(context) * 0.15),
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 12),
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 )
               ]),
             ),
@@ -498,7 +506,7 @@ class _ProfilePageState extends State<ProfilePage>
         child: Card(
             child: Container(
                 child: TabBar(
-                labelColor: globals.myColor("primary"),
+          labelColor: globals.myColor("primary"),
           indicatorColor: globals.myColor("primary"),
           unselectedLabelColor: globals.myColor("primary"),
           controller: _tabController,
@@ -523,12 +531,13 @@ class _ProfilePageState extends State<ProfilePage>
             key: _scaffoldKey,
             drawer: drawer(context),
             body: SafeArea(
-                child: Column(
+                child: ListView(
+              physics: ClampingScrollPhysics(),
               children: <Widget>[
                 _profile(),
                 _tabBarList(),
-                Flexible(
-                    child: Container(
+                Container(
+                  height: 400,
                   padding: EdgeInsets.all(5),
                   child: TabBarView(
                     controller: _tabController,
@@ -543,7 +552,7 @@ class _ProfilePageState extends State<ProfilePage>
                               : _buildAnimals(auctions, "produklelang")),
                     ],
                   ),
-                ))
+                )
               ],
             ))));
   }
