@@ -61,9 +61,11 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   String _bidType;
   String _auctionExpiryDateType;
   String _gender = "M";
+  bool _innerIslandShippingBool = false;
+  int _innerIslandShipping = 0;
   DateTime _dateOfBirth;
 
-  List<String> auctionTypes = ["24 Jam", "48 Jam"];
+  List<String> auctionTypes = ["3", "6", "12", "24", "48"];
 
   List<Asset> images = List<Asset>();
   String _error;
@@ -285,6 +287,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       auction.expiryDate = _auctionExpiryDateType;
       auction.ownerUserId = globals.user.id;
       auction.active = 1;
+      auction.innerIslandShipping = _innerIslandShipping;
       auction.slug = 'test' + "-" + DateTime.now().toString();
 
       formData['auction'] = auction;
@@ -618,7 +621,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                               items: auctionTypes.map((String type) {
                                 return DropdownMenuItem<String>(
                                     value: type,
-                                    child: Text(type,
+                                    child: Text(type + " Jam",
                                         style: TextStyle(
                                             color: Colors.black)));
                               }).toList(),
@@ -739,6 +742,27 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                                           BorderRadius.circular(20))),
                             )),
                       ],
+                    ),
+                    Container(
+                      width: 300,
+                      child: CheckboxListTile(
+                        value: _innerIslandShippingBool,
+                        title: globals.myText(text: "Hanya melayani pengiriman dalam pulau", color: "dark", size: 13),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        onChanged: (bool value) {
+                          setState(()  {
+                            this._innerIslandShippingBool = value;
+                            switch (value) {
+                              case true:
+                                this._innerIslandShipping = 1;
+                                break;
+                              case false:
+                                this._innerIslandShipping = 0;
+                                break;
+                            }
+                          });
+                        } 
+                      )
                     ),
                     SizedBox(height: 20),
                     Container(

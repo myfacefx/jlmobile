@@ -27,6 +27,7 @@ class Auction {
     List<AuctionComment> auctionComments;
     List<Bid> bids;
     int ownerUserId;
+    int innerIslandShipping;
 
     Auction({
         this.id,
@@ -53,7 +54,8 @@ class Auction {
         this.auctionComments,
         this.bids,
         this.lastBid,
-        this.ownerUserId
+        this.ownerUserId,
+        this.innerIslandShipping
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -82,6 +84,7 @@ class Auction {
         currentBid: json["current_bid"] == null ? null : json["current_bid"],
         auctionComments: json["auction_comments"] == null ? null : new List<AuctionComment>.from(json["auction_comments"].map((x) => AuctionComment.fromJson(x))),
         bids: json["bids"] == null ? null : new List<Bid>.from(json["bids"].map((x) => Bid.fromJson(x))),
+        innerIslandShipping: json["inner_island_shipping"] == null ? null : json["inner_island_shipping"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -110,5 +113,6 @@ class Auction {
         "current_bid": currentBid == null ? null : currentBid,
         "auction_comments": auctionComments == null ? null : new List<dynamic>.from(auctionComments.map((x) => x.toJson())),
         "bids": bids == null ? null : new List<dynamic>.from(bids.map((x) => x.toJson())),
+        "inner_island_shipping": innerIslandShipping == null ? null : innerIslandShipping,
     };
 }

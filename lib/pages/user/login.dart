@@ -9,9 +9,6 @@ import 'package:jlf_mobile/services/user_services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPage createState() {
@@ -20,8 +17,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  //  final Firestore _db = Firestore.instance;
-  // final FirebaseMessaging _fcm = FirebaseMessaging();
   FacebookLogin facebookLogin = FacebookLogin();
 
   final _formKey = GlobalKey<FormState>();
@@ -43,38 +38,8 @@ class _LoginPage extends State<LoginPage> {
   void initState() {
     super.initState();
 
-    // _fcm.configure(
-    //   onMessage: (Map<String, dynamic> message) async {
-    //     print("onMessage: $message");
-
-    //     final snackbar = SnackBar(
-    //       content: Text(message['notification']['title']),
-    //       action: SnackBarAction(
-    //         label: 'Go',
-    //         onPressed: () => Null,
-    //       )
-    //     );
-
-    //     Scaffold.of(context).showSnackBar(snackbar);
-    //   }, 
-    //   onLaunch: (Map<String, dynamic> message) async {
-    //     print("onLaunch: $message");
-    //   },
-    //   onResume: (Map<String, dynamic> message) async {
-    //     print("onResume: $message");
-    //   }
-    // );
-
     // _checkFirebaseToken();
-    _retrieveToken();
-  }
-
-  _retrieveToken() async {
-    // String fcmToken = await _fcm.getToken();
-
-    // if (fcmToken != null) {
-    //   print("Firebase Token: $fcmToken");
-    // }
+    // _retrieveToken();
   }
 
   _logIn() async {

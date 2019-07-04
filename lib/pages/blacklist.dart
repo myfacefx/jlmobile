@@ -49,7 +49,7 @@ class _BlacklistPageState extends State<BlacklistPage> {
     blacklistedUserCard = List();
     for (var i = 0; i < blacklistedUser.length; i++) {
       blacklistedUserCard.add(Container(
-          height: 10,
+          height: 15,
           child: Card(
               child: Padding(
                   padding: EdgeInsets.all(8),
@@ -58,7 +58,7 @@ class _BlacklistPageState extends State<BlacklistPage> {
                     children: <Widget>[
                       // Expanded(
                       //   child:
-                      Text(blacklistedUser[i].name.toUpperCase(),
+                      Text(blacklistedUser[i].username.toUpperCase(),
                           style: TextStyle(color: Colors.black, fontSize: 11),
                           textAlign: TextAlign.left),
                       // ),
@@ -71,12 +71,12 @@ class _BlacklistPageState extends State<BlacklistPage> {
                               textAlign: TextAlign.left)
                           : Text(""),
                       Padding(padding: EdgeInsets.only(bottom: 5)),
-                      FadeInImage.assetNetwork(
+                      Flexible(child: blacklistedUser[i].photo != null ? FadeInImage.assetNetwork(
                           fit: BoxFit.fill,
                           placeholder: 'assets/images/loading.gif',
-                          image:
-                              'https://thenypost.files.wordpress.com/2018/10/102318-dogs-color-determine-disesases-life.jpg?quality=90&strip=all&w=618&h=410&crop=1'),
-                    ],
+                          image: blacklistedUser[i].photo) : Container())
+                          // image: 'https://thenypost.files.wordpress.com/2018/10/102318-dogs-color-determine-disesases-life.jpg?quality=90&strip=all&w=618&h=410&crop=1'),
+                  ],
                   )))));
     }
   }
@@ -111,7 +111,7 @@ class _BlacklistPageState extends State<BlacklistPage> {
                 : blacklistedUser.length > 0
                     ? Container(
                         child: GridView.count(
-                            childAspectRatio: 1.10,
+                            childAspectRatio: 1,
                             crossAxisCount: 2,
                             children: blacklistedUserCard))
                     : Container(

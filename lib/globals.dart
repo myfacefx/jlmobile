@@ -11,6 +11,9 @@ import 'package:jlf_mobile/services/user_services.dart';
 import 'package:validators/validators.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
   return MediaQuery.of(context).size.height;
@@ -36,6 +39,64 @@ int getTimeOut() {
 
 String getBaseUrl() {
   return baseUrl;
+}
+
+FirebaseMessaging _fcm = FirebaseMessaging();
+generateToken() async {
+  // Firestore _db = Firestore.instance;
+  
+  if (user.firebaseToken == null) {
+    String fcmToken = await _fcm.getToken();
+
+    if (fcmToken != null) {      
+      User updateToken = User();
+      updateToken.firebaseToken = fcmToken;
+
+      String result = await update(updateToken.toJson(), user.id);
+
+      if (result != null) {
+        user.firebaseToken = fcmToken;
+        print("User's Token updated: $fcmToken");
+      } else {
+        print("FAIL TO UPDATE USER'S TOKEN");
+        // globals.showDialogs("Terjadi error, silahkan ulangi", context);
+        // setState(() {
+        //   registerLoading = false;
+        //   autoValidate = true;
+        // });
+      }
+    } else {
+      print("GOT NULL FROM REQUEST TOKEN");
+    }
+  } else {
+    print("User Token has already set: ${user.firebaseToken}");
+  }
+}
+
+notificationListener(context) {
+  _fcm.configure(
+    onMessage: (Map<String, dynamic> message) async {
+      print("onMessage: $message");
+
+      showDialogs(message['notification']['body'], context);
+
+      // final snackbar = SnackBar(
+      //   content: Text(message['notification']['title']),
+      //   action: SnackBarAction(
+      //     label: 'Go',
+      //     onPressed: () => null,
+      //   )
+      // );
+
+      // Scaffold.of(context).showSnackBar(snackbar);
+    }, 
+    onLaunch: (Map<String, dynamic> message) async {
+      print("onLaunch: $message");
+    },
+    onResume: (Map<String, dynamic> message) async {
+      print("onResume: $message");
+    }
+  );
 }
 
 /// Global Function to return Alert Dialog
@@ -337,7 +398,7 @@ Color myColor([String color = "default"]) {
       returnedColor = Color.fromRGBO(239, 192, 80, 1);
       break;
     case "danger":
-      returnedColor = Colors.red[300];
+      returnedColor = Colors.red;
       break;
     case "warning":
       returnedColor = Colors.deepOrange;

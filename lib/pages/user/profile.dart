@@ -487,7 +487,7 @@ class _ProfilePageState extends State<ProfilePage>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Buat Lelang",
+                              Text("Buat Produk",
                                   style: TextStyle(color: Colors.white)),
                               Icon(Icons.add, color: Colors.white, size: 20),
                             ],
