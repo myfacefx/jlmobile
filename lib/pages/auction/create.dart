@@ -56,9 +56,11 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String _bidType;
   String _auctionExpiryDateType;
   String _gender = "M";
+  bool _innerIslandShippingBool = false;
+  int _innerIslandShipping = 0;
   DateTime _dateOfBirth;
 
-  List<String> auctionTypes = ["24 Jam", "48 Jam"];
+  List<String> auctionTypes = ["3", "6", "12", "24", "48"];
 
   List<Asset> images = List<Asset>();
   String _error;
@@ -252,6 +254,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         auction.expiryDate = _auctionExpiryDateType;
         auction.ownerUserId = globals.user.id;
         auction.active = 1;
+        auction.innerIslandShipping = _innerIslandShipping;
         auction.slug = 'test' + "-" + DateTime.now().toString();
 
         formData['auction'] = auction;
@@ -567,11 +570,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     items: auctionTypes.map((String type) {
                                       return DropdownMenuItem<String>(
                                           value: type,
-                                          child: Text(type,
+                                          child: Text(type + " Jam",
                                               style: TextStyle(
                                                   color: Colors.black)));
                                     }).toList(),
                                   )),
+                              Container(padding: EdgeInsets.only(bottom: 15), child: globals.myText(text: "Waktu dihitung saat Anda melakukan posting", color: "danger")),
                               Container(
                                   width: 300,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -690,6 +694,27 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                             ],
                           )
                         : Container(),
+                        Container(
+                          width: 300,
+                          child: CheckboxListTile(
+                            value: _innerIslandShippingBool,
+                            title: globals.myText(text: "Hanya melayani pengiriman dalam pulau", color: "dark", size: 13),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (bool value) {
+                              setState(()  {
+                                this._innerIslandShippingBool = value;
+                                switch (value) {
+                                  case true:
+                                    this._innerIslandShipping = 1;
+                                    break;
+                                  case false:
+                                    this._innerIslandShipping = 0;
+                                    break;
+                                }
+                              });
+                            } 
+                          )
+                        ),
                     SizedBox(height: 20),
                     Container(
                         width: 300,

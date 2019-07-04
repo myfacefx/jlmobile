@@ -48,6 +48,8 @@ class _HomePage extends State<HomePage> {
     _refresh();
     _getListCategories();
     globals.getNotificationCount();
+    globals.generateToken();
+    globals.notificationListener(context);
   }
 
   _refresh() {
@@ -164,7 +166,7 @@ class _HomePage extends State<HomePage> {
                 .copyWith(color: Color.fromRGBO(178, 178, 178, 1)),
           ),
           Expanded(child: Text("")),
-          globals.myText(text: "$membersCount MEMBER", color: 'dark')
+          membersCount > 0 ? globals.myText(text: "$membersCount MEMBER", color: 'dark') : Container()
         ],
       ),
     );

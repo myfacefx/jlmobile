@@ -141,6 +141,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           SizedBox(
             height: 8,
           ),
+          globals.myText(
+              text: "Lelang berakhir pada ${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}", color: "dark", size: 13),
+          SizedBox(
+            height: 8,
+          ),
+          animal.auction.innerIslandShipping != null && animal.auction.innerIslandShipping == 0 ? globals.myText(
+              text: "Pengiriman ke seluruh nusantara", color: "dark", size: 13) : globals.myText(
+              text: "Pengiriman dalam pulau saja", color: "dark", size: 13),
         ],
       ),
     );
@@ -829,7 +837,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 textAlign: TextAlign.center),
             content: Text(
                 "Yakin memasang bid Rp. ${globals.convertToMoney(amountDouble)} ?" +
-                    (biddingBIN ? " (Beli Sekarang)" : ""),
+                    (biddingBIN ? " (Beli Sekarang)" : "") + " " + (animal.auction.innerIslandShipping != null && animal.auction.innerIslandShipping == 1 ? "(Pengiriman dalam pulau saja)" : ""),
                 style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton(

@@ -34,6 +34,7 @@ class User {
     int historiesCount;
     Role role;
     Regency regency;
+    String firebaseToken;
 
     User({
         this.id,
@@ -57,6 +58,7 @@ class User {
         this.historiesCount,
         this.role,
         this.regency,
+        this.firebaseToken
     });
 
     factory User.fromJson(Map<String, dynamic> json) => new User(
@@ -81,6 +83,7 @@ class User {
         historiesCount: json["histories_count"] == null ? null : json["histories_count"],
         role: json["role"] == null ? null : Role.fromJson(json["role"]),
         regency: json["regency"] == null ? null : Regency.fromJson(json["regency"]),
+        firebaseToken: json["firebase_token"] == null ? null : json["firebase_token"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -105,48 +108,9 @@ class User {
         "histories_count": historiesCount == null ? null : historiesCount,
         "role": role == null ? null : role.toJson(),
         "regency": regency == null ? null : regency.toJson(),
+        "firebase_token": firebaseToken == null ? null : firebaseToken,
     }..removeWhere((key, val) => val == null);
 }
-
-// class Regency {
-//     int id;
-//     String name;
-//     String slug;
-//     int provinceId;
-//     dynamic createdAt;
-//     dynamic updatedAt;
-//     dynamic deletedAt;
-
-//     Regency({
-//         this.id,
-//         this.name,
-//         this.slug,
-//         this.provinceId,
-//         this.createdAt,
-//         this.updatedAt,
-//         this.deletedAt,
-//     });
-
-//     factory Regency.fromJson(Map<String, dynamic> json) => new Regency(
-//         id: json["id"] == null ? null : json["id"],
-//         name: json["name"] == null ? null : json["name"],
-//         slug: json["slug"] == null ? null : json["slug"],
-//         provinceId: json["province_id"] == null ? null : json["province_id"],
-//         createdAt: json["created_at"],
-//         updatedAt: json["updated_at"],
-//         deletedAt: json["deleted_at"],
-//     );
-
-//     Map<String, dynamic> toJson() => {
-//         "id": id == null ? null : id,
-//         "name": name == null ? null : name,
-//         "slug": slug == null ? null : slug,
-//         "province_id": provinceId == null ? null : provinceId,
-//         "created_at": createdAt,
-//         "updated_at": updatedAt,
-//         "deleted_at": deletedAt,
-//     };
-// }
 
 class Role {
     int id;
