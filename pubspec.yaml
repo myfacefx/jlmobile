@@ -39,6 +39,8 @@ dependencies:
   # firebase_auth:
   cloud_firestore: ^0.12.5+2
   firebase_messaging: ^5.0.4
+  
+  url_launcher: ^5.0.3
 
 dev_dependencies:
   flutter_test:
