@@ -28,6 +28,7 @@ class Auction {
     List<Bid> bids;
     int ownerUserId;
     int innerIslandShipping;
+    int duration;
 
     Auction({
         this.id,
@@ -55,7 +56,8 @@ class Auction {
         this.bids,
         this.lastBid,
         this.ownerUserId,
-        this.innerIslandShipping
+        this.innerIslandShipping,
+        this.duration
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -85,6 +87,7 @@ class Auction {
         auctionComments: json["auction_comments"] == null ? null : new List<AuctionComment>.from(json["auction_comments"].map((x) => AuctionComment.fromJson(x))),
         bids: json["bids"] == null ? null : new List<Bid>.from(json["bids"].map((x) => Bid.fromJson(x))),
         innerIslandShipping: json["inner_island_shipping"] == null ? null : json["inner_island_shipping"],
+        duration: json["duration"] == null ? null : json["duration"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -114,5 +117,6 @@ class Auction {
         "auction_comments": auctionComments == null ? null : new List<dynamic>.from(auctionComments.map((x) => x.toJson())),
         "bids": bids == null ? null : new List<dynamic>.from(bids.map((x) => x.toJson())),
         "inner_island_shipping": innerIslandShipping == null ? null : innerIslandShipping,
-    };
+        "duration": duration == null ? null : duration
+    }..removeWhere( (key, val) => val == null);
 }

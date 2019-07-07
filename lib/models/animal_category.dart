@@ -59,6 +59,6 @@ class AnimalCategory {
         "deleted_at": deletedAt,
         "animals_count": animalsCount == null ? null : animalsCount,
         "animal_sub_categories": animalSubCategories == null ? null : new List<dynamic>.from(animalSubCategories.map((x) => x.toJson())),
-    };
+    }..removeWhere( (key, val) => val == null);
 }
 

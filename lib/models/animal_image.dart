@@ -35,5 +35,5 @@ class AnimalImage {
         "created_at": createdAt,
         "updated_at": updatedAt,
         "deleted_at": deletedAt,
-    };
+    }..removeWhere( (key, val) => val == null);
 }
