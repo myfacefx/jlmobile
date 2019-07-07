@@ -26,15 +26,36 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   _getHistories() {
+    List<int> listOfHistoryId = List<int>();
+
     getHistories("Token", globals.user.id).then((onValue) {
       histories = onValue;
-      print(histories);
+      
+      for (var history in histories) {
+        // Iterate, if found 'read' = 0, add it to listOfHistoryId
+        if (history.read == 0) {
+          listOfHistoryId.add(history.id);
+        }
+      }
+      
       setState(() {
         isLoading = false;
       });
+
+      if (listOfHistoryId.length > 0) {
+        _setHistories(listOfHistoryId);
+      }
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
     });
+  }
+
+  _setHistories(listOfHistoryId) {
+    setHistories("Token", listOfHistoryId).then((onValue) {
+
+    }).catchError((onError) {
+      print(onError.toString());
+    }); 
   }
 
   @override
@@ -73,6 +94,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                             )));
                               },
                               child: Card(
+                                color: histories[i].read == 0 ? Colors.white : Colors.grey[150],
                                 child: Column(
                                   children: <Widget>[
                                     Container(
@@ -85,7 +107,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                       ],),
                                     ),
                                     Container(
-                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      padding: EdgeInsets.fromLTRB(8, 5, 8, 8),
                                       child: globals.myText(text: histories[i].information, color: "dark"),
                                     ),
                                   ],

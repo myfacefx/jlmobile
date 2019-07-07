@@ -54,13 +54,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String _bin;
   String _multiply;
   String _bidType;
-  String _auctionExpiryDateType;
+  int _auctionDuration;
   String _gender = "M";
   bool _innerIslandShippingBool = false;
   int _innerIslandShipping = 0;
   DateTime _dateOfBirth;
 
-  List<String> auctionTypes = ["3", "6", "12", "24", "48"];
+  List<int> durations = [3, 6, 12, 24, 48];
 
   List<Asset> images = List<Asset>();
   String _error;
@@ -232,6 +232,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
       Map<String, dynamic> formData = Map<String, dynamic>();
 
+      String message = 'Berhasil menambah data hewan';
+
       Animal animal = Animal();
       animal.animalSubCategoryId = _animalSubCategory.id;
       animal.name = _name;
@@ -245,13 +247,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       formData['animal'] = animal;
 
       if (_postToAuction == 1) {
+        message = 'Berhasil menambah data hewan, dan memulai lelang';
         // If user want to start the auction of the animal
         Auction auction = Auction();
 
         auction.openBid = int.parse(_openBid);
         auction.multiply = int.parse(_multiply);
         auction.buyItNow = int.parse(_bin);
-        auction.expiryDate = _auctionExpiryDateType;
+        auction.duration = _auctionDuration;
         auction.ownerUserId = globals.user.id;
         auction.active = 1;
         auction.innerIslandShipping = _innerIslandShipping;
@@ -263,16 +266,16 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       formData['images'] = images_base64;
 
       try {
-        String response = await create(formData);
+        bool response = await create(formData);
         print(response);
 
-        Map<String, dynamic> finalResponse = jsonDecode(response);
+        // Map<String, dynamic> finalResponse = jsonDecode(response);
 
         setState(() {
           isLoading = false;
         });
 
-        await globals.showDialogs(finalResponse['message'], context);
+        await globals.showDialogs(message, context);
         Navigator.pop(context);
         Navigator.pushNamed(context, "/profile");
       } catch (e) {
@@ -480,7 +483,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                             _description = value;
                           },
                           keyboardType: TextInputType.multiline,
-                          maxLines: 5,
+                          maxLines: 8,
                           onFieldSubmitted: (String value) {
                             // if (value.length > 0) {
                             //   FocusScope.of(context).requestFocus(passwordFocusNode);
@@ -495,7 +498,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(13),
-                              hintText: "Deskripsi",
+                              hintText: "Tuliskan deskripsi hewan, jenis pengiriman dan catatan penting lainnya",
                               labelText: "Deskripsi",
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
@@ -547,41 +550,42 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                               Container(
                                   width: 300,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                                  child: DropdownButtonFormField<String>(
+                                  child: DropdownButtonFormField<int>(
                                     decoration: InputDecoration(
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20)),
                                         contentPadding: EdgeInsets.all(13),
-                                        hintText: "Tipe Lelang",
-                                        labelText: "Tipe Lelang"),
-                                    value: _auctionExpiryDateType,
+                                        hintText: "Durasi Lelang",
+                                        labelText: "Durasi Lelang"),
+                                    value: _auctionDuration,
                                     validator: (value) {
                                       if (value == null) {
-                                        return 'Silahkan pilih tipe lelang';
+                                        return 'Silahkan pilih durasi lelang';
                                       }
                                     },
-                                    onChanged: (String value) {
+                                    onChanged: (int value) {
                                       setState(() {
-                                        _auctionExpiryDateType = value;
+                                        _auctionDuration = value;
                                       });
                                     },
-                                    items: auctionTypes.map((String type) {
-                                      return DropdownMenuItem<String>(
+                                    items: durations.map((int type) {
+                                      return DropdownMenuItem<int>(
                                           value: type,
-                                          child: Text(type + " Jam",
+                                          child: Text("$type Jam",
                                               style: TextStyle(
                                                   color: Colors.black)));
                                     }).toList(),
                                   )),
-                              Container(padding: EdgeInsets.only(bottom: 15), child: globals.myText(text: "Waktu dihitung saat Anda melakukan posting", color: "danger")),
+                              Container(padding: EdgeInsets.only(bottom: 15), child: globals.myText(text: "Waktu dimulai setelah Anda melakukan posting", color: "danger")),
                               Container(
                                   width: 300,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
                                     controller: openBidController,
+                                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                                     // initialValue: _openBid,
                                     // focusNode: usernameFocusNode,
                                     onSaved: (String value) {
@@ -602,6 +606,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                             int.parse(binController.text)) {
                                           return 'Harga awal tidak boleh lebih atau sama dengan harga beli sekarang';
                                         }
+                                        
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
@@ -619,6 +624,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
+                                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                                     controller: binController,
                                     // initialValue: _bin,
                                     // focusNode: usernameFocusNode,
@@ -634,10 +640,22 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                       if (value.isEmpty) {
                                         return 'Harga Beli Sekarang wajib diisi';
                                       }
+                                      
+
                                       if (openBidController.text.isNotEmpty) {
                                         if (int.parse(value) <=
                                             int.parse(openBidController.text)) {
                                           return 'Harga Beli Sekarang tidak boleh kurang atau sama dengan harga awal';
+                                        }
+                                        
+                                        if (multiplyController.text.isNotEmpty) {
+                                          if (int.parse(multiplyController.text) == 0) {
+                                            return 'Kelipatan tidak valid';
+                                          }
+                                      
+                                          if ((int.parse(value) - int.parse(openBidController.text)) % int.parse(multiplyController.text) != 0 ) {
+                                            return 'BIN harus sesuai kelipatan';
+                                          }
                                         }
                                       }
                                     },
@@ -658,6 +676,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
                                     controller: multiplyController,
+                                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                                     // initialValue: _multiply,
                                     // focusNode: usernameFocusNode,
                                     onSaved: (String value) {
@@ -672,11 +691,22 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                       if (value.isEmpty) {
                                         return 'Harga kelipatan wajib diisi';
                                       }
+                                      
+                                      if (int.parse(value) == 0) {
+                                        return 'Kelipatan tidak valid';
+                                      }
 
                                       if (binController.text.isNotEmpty) {
+
                                         if (int.parse(value) >=
                                             int.parse(binController.text)) {
                                           return 'Harga kelipatan tidak boleh melebihi atau sama dengan harga beli sekarang';
+                                        }
+
+                                        if (openBidController.text.isNotEmpty) {
+                                          if ((int.parse(binController.text) - int.parse(openBidController.text)) % int.parse(value) != 0 ) {
+                                            return 'Nilai kelipatan tidak sesuai';
+                                          }
                                         }
                                       }
                                     },
