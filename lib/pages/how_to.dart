@@ -12,7 +12,6 @@ class _HowToPageState extends State<HowToPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     globals.getNotificationCount();
   }

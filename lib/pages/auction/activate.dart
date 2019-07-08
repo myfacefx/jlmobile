@@ -9,10 +9,8 @@ import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
-import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
-import 'package:jlf_mobile/services/animal_sub_category_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class ActivateAuctionPage extends StatefulWidget {
@@ -51,7 +49,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   List<AnimalSubCategory> animalSubCategories = List<AnimalSubCategory>();
   // AnimalSubCategory _animalSubCategory;
 
-  var images_base64 = List<String>();
+  var imagesBase64 = List<String>();
 
   String _name;
   String _description;
@@ -125,26 +123,26 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     });
   }
 
-  Widget _buildGridViewImages() {
-    return Container(
-      padding: EdgeInsets.all(5),
-      child: GridView.count(
-        shrinkWrap: true,
-        crossAxisCount: 3,
-        children: List.generate(images.length, (index) {
-          Asset asset = images[index];
-          return Container(
-            padding: EdgeInsets.all(5),
-            child: AssetThumb(
-              asset: asset,
-              width: 300,
-              height: 300,
-            ),
-          );
-        }),
-      ),
-    );
-  }
+  // Widget _buildGridViewImages() {
+  //   return Container(
+  //     padding: EdgeInsets.all(5),
+  //     child: GridView.count(
+  //       shrinkWrap: true,
+  //       crossAxisCount: 3,
+  //       children: List.generate(images.length, (index) {
+  //         Asset asset = images[index];
+  //         return Container(
+  //           padding: EdgeInsets.all(5),
+  //           child: AssetThumb(
+  //             asset: asset,
+  //             width: 300,
+  //             height: 300,
+  //           ),
+  //         );
+  //       }),
+  //     ),
+  //   );
+  // }
 
   Future<void> loadAssets() async {
     setState(() {
@@ -176,7 +174,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   }
 
   _generateImageBase64() async {
-    images_base64 = List<String>();
+    imagesBase64 = List<String>();
 
     for (int i = 0; i < images.length; i++) {
       ByteData byteData = await images[i].requestOriginal(quality: 75);
@@ -184,7 +182,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       List<int> imageData = byteData.buffer.asUint8List();
       // byteData.buffer.asByteData();
 
-      images_base64.add(base64Encode(imageData));
+      imagesBase64.add(base64Encode(imageData));
     }
   }
 
@@ -196,7 +194,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     //   return;
     // }
 
-    // if (images_base64.length == 0) {
+    // if (imagesBase64.length == 0) {
     //   globals.showDialogs("Wajib upload foto hewan 1-3 foto", context);
     //   return;
     // }
@@ -248,17 +246,17 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     }
   }
 
-  void _handlePostToAuctionChange(int value) {
-    setState(() {
-      _postToAuction = value;
-    });
-  }
+  // void _handlePostToAuctionChange(int value) {
+  //   setState(() {
+  //     _postToAuction = value;
+  //   });
+  // }
 
-  void _handleGenderChange(String value) {
-    setState(() {
-      _gender = value;
-    });
-  }
+  // void _handleGenderChange(String value) {
+  //   setState(() {
+  //     _gender = value;
+  //   });
+  // }
 
   Widget _buildAnimalImages(List<AnimalImage> animalImages) {
     

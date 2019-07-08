@@ -12,7 +12,6 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     globals.getNotificationCount();
   }

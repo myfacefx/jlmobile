@@ -12,7 +12,6 @@ import 'package:validators/validators.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
@@ -322,7 +321,6 @@ String convertFormatDateTimeProduct(String date) {
 }
 
 String convertToAge(DateTime birthDate) {
-  final birthday = birthDate;
   final date2 = DateTime.now();
   final year = date2.year - birthDate.year;
   var month = date2.month - birthDate.month;

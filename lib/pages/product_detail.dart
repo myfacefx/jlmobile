@@ -344,70 +344,70 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  Widget _startAuction() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.red[900], borderRadius: BorderRadius.circular(30)),
-      child: FlatButton(
-        onPressed: () {
-          return showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Mulai Lelang",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
-                      textAlign: TextAlign.center),
-                  content: Text("Mulai lelang ini?",
-                      style: TextStyle(color: Colors.black)),
-                  actions: <Widget>[
-                    FlatButton(
-                        child: Text("Batal",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor)),
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        }),
-                    FlatButton(
-                        color: Theme.of(context).primaryColor,
-                        child:
-                            Text("Ya", style: TextStyle(color: Colors.white)),
-                        onPressed: () async {
-                          try {
-                            globals.loadingModel(context);
-                            final result =
-                                await startAuction("Token", animal.auction.id);
-                            Navigator.pop(context);
-                            if (result) {
-                              await globals.showDialogs(
-                                  "Berhasil memulai lelang", context);
-                            } else {
-                              await globals.showDialogs(
-                                  "Gagal, silahkan coba kembali", context);
-                            }
+  // Widget _startAuction() {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         color: Colors.red[900], borderRadius: BorderRadius.circular(30)),
+  //     child: FlatButton(
+  //       onPressed: () {
+  //         return showDialog(
+  //             context: context,
+  //             builder: (context) {
+  //               return AlertDialog(
+  //                 title: Text("Mulai Lelang",
+  //                     style:
+  //                         TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
+  //                     textAlign: TextAlign.center),
+  //                 content: Text("Mulai lelang ini?",
+  //                     style: TextStyle(color: Colors.black)),
+  //                 actions: <Widget>[
+  //                   FlatButton(
+  //                       child: Text("Batal",
+  //                           style: TextStyle(
+  //                               color: Theme.of(context).primaryColor)),
+  //                       onPressed: () {
+  //                         Navigator.of(context).pop(true);
+  //                       }),
+  //                   FlatButton(
+  //                       color: Theme.of(context).primaryColor,
+  //                       child:
+  //                           Text("Ya", style: TextStyle(color: Colors.white)),
+  //                       onPressed: () async {
+  //                         try {
+  //                           globals.loadingModel(context);
+  //                           final result =
+  //                               await startAuction("Token", animal.auction.id);
+  //                           Navigator.pop(context);
+  //                           if (result) {
+  //                             await globals.showDialogs(
+  //                                 "Berhasil memulai lelang", context);
+  //                           } else {
+  //                             await globals.showDialogs(
+  //                                 "Gagal, silahkan coba kembali", context);
+  //                           }
 
-                            bidController.text = '';
-                            Navigator.pop(context);
-                            loadAnimal(animal.id);
-                          } catch (e) {
-                            Navigator.pop(context);
-                            globals.showDialogs(e.toString(), context);
-                          }
-                        })
-                  ],
-                );
-              });
-        },
-        child: Text(
-          "Mulai Lelang",
-          style: Theme.of(context)
-              .textTheme
-              .title
-              .copyWith(color: Colors.white, fontSize: 16),
-        ),
-      ),
-    );
-  }
+  //                           bidController.text = '';
+  //                           Navigator.pop(context);
+  //                           loadAnimal(animal.id);
+  //                         } catch (e) {
+  //                           Navigator.pop(context);
+  //                           globals.showDialogs(e.toString(), context);
+  //                         }
+  //                       })
+  //                 ],
+  //               );
+  //             });
+  //       },
+  //       child: Text(
+  //         "Mulai Lelang",
+  //         style: Theme.of(context)
+  //             .textTheme
+  //             .title
+  //             .copyWith(color: Colors.white, fontSize: 16),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildRule(String title, double nominal) {
     return Container(

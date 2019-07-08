@@ -12,7 +12,6 @@ class _FAQPageState extends State<FAQPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     globals.getNotificationCount();
   }

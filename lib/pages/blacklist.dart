@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
@@ -21,7 +19,6 @@ class _BlacklistPageState extends State<BlacklistPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getListBlacklistedUser();
     globals.getNotificationCount();

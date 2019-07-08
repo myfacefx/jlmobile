@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
@@ -207,14 +205,14 @@ class _OurBidPageState extends State<OurBidPage> {
   // sort and search
 
   //build top name
-  Widget _buildTopCont() {
-    return Container(
-      width: globals.mw(context),
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-      color: Colors.white,
-      child: globals.myText(text: "Lelang Diikuti", size: 16, weight: "SB"),
-    );
-  }
+  // Widget _buildTopCont() {
+  //   return Container(
+  //     width: globals.mw(context),
+  //     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+  //     color: Colors.white,
+  //     child: globals.myText(text: "Lelang Diikuti", size: 16, weight: "SB"),
+  //   );
+  // }
   //build top name
 
 // build listview
@@ -315,22 +313,22 @@ class _OurBidPageState extends State<OurBidPage> {
   }
   //detail
 
-  Widget _buildcontChips(String text) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-      margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(5)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text(
-          text,
-          style: TextStyle(fontSize: 10),
-          textAlign: TextAlign.center,
-        )
-      ]),
-    );
-  }
+  // Widget _buildcontChips(String text) {
+  //   return Container(
+  //     padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+  //     margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
+  //     decoration: BoxDecoration(
+  //         color: Theme.of(context).primaryColor,
+  //         borderRadius: BorderRadius.circular(5)),
+  //     child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+  //       Text(
+  //         text,
+  //         style: TextStyle(fontSize: 10),
+  //         textAlign: TextAlign.center,
+  //       )
+  //     ]),
+  //   );
+  // }
 
   Widget _buildChips(String text, String value) {
     return Container(

@@ -2,9 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
@@ -46,7 +43,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   List<AnimalSubCategory> animalSubCategories = List<AnimalSubCategory>();
   AnimalSubCategory _animalSubCategory;
 
-  var images_base64 = List<String>();
+  var imagesBase64 = List<String>();
 
   String _name;
   String _description;
@@ -202,7 +199,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   }
 
   _generateImageBase64() async {
-    images_base64 = List<String>();
+    imagesBase64 = List<String>();
 
     for (int i = 0; i < images.length; i++) {
       ByteData byteData = await images[i].requestOriginal(quality: 75);
@@ -210,7 +207,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       List<int> imageData = byteData.buffer.asUint8List();
       // byteData.buffer.asByteData();
 
-      images_base64.add(base64Encode(imageData));
+      imagesBase64.add(base64Encode(imageData));
     }
   }
 
@@ -222,7 +219,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       return;
     }
 
-    if (images_base64.length == 0) {
+    if (imagesBase64.length == 0) {
       globals.showDialogs("Wajib upload foto hewan 1-3 foto", context);
       return;
     }
@@ -267,7 +264,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         formData['auction'] = auction;
       }
 
-      formData['images'] = images_base64;
+      formData['images'] = imagesBase64;
 
       try {
         bool response = await create(formData);
