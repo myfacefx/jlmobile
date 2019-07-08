@@ -56,7 +56,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
       margin: EdgeInsets.fromLTRB(2, 2, 2, 0),
       height: 180,
-      color: Colors.black,
+      color: Colors.white,
       child: ClipRRect(
           borderRadius: BorderRadius.circular(1), child: _buildCarousel()),
     );
@@ -70,9 +70,33 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       indexImage.add(count);
       count++;
       listImage.add(
-        FadeInImage.assetNetwork(
-          placeholder: 'assets/images/loading.gif',
-          image: image.image,
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Foto", style: TextStyle(color: Colors.black)),
+                  content: FadeInImage.assetNetwork(
+                    placeholder: 'assets/images/loading.gif',
+                    image: image.image,
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: FadeInImage.assetNetwork(
+            placeholder: 'assets/images/loading.gif',
+            image: image.image,
+          ),
         ),
       );
     });
@@ -82,7 +106,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         Container(
           child: CarouselSlider(
             autoPlay: true,
-            enlargeCenterPage: true,
             viewportFraction: 1.0,
             height: 153,
             onPageChanged: (index) {
@@ -94,27 +117,21 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
         ),
         Positioned(
-            bottom: 0,
+            bottom: 10,
             left: 0.0,
             right: 0.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: indexImage.map((i) {
-                return _buildDoted(i);
-              }).toList(),
+              children: <Widget>[_buildDoted(_current + 1, listImage.length)],
             ))
       ],
     );
   }
 
-  Widget _buildDoted(int index) {
+  Widget _buildDoted(int index, int total) {
     return Container(
-      width: 8.0,
-      height: 8.0,
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: _current == index ? Colors.black : Colors.grey),
+      child:
+          globals.myText(text: "$index / $total", color: "light", weight: "XB"),
     );
   }
 

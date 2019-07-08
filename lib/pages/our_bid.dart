@@ -4,22 +4,80 @@ import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/bid.dart';
+import 'package:jlf_mobile/models/choice.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 
-class OurBidPage extends StatefulWidget {
+class OurBidTopPage extends StatefulWidget {
   @override
-  _OurBidPageState createState() => _OurBidPageState();
+  _OurBidPageTopState createState() => _OurBidPageTopState();
+}
+
+class _OurBidPageTopState extends State<OurBidTopPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: choices.length,
+      child: Scaffold(
+          appBar: globals.appBar(_scaffoldKey, context),
+          body: Scaffold(
+              key: _scaffoldKey,
+              appBar: tabBar(context),
+              drawer: drawer(context),
+              body: SafeArea(
+                child: tabView(),
+              ))),
+    );
+  }
+}
+
+const List<Choice> choices = const <Choice>[
+  const Choice(title: 'Tawaran Ku'),
+  const Choice(title: 'Komentar Ku'),
+];
+
+Widget tabView() {
+  List<Choice> tamp = choices;
+  return TabBarView(
+    children: tamp.map((Choice choice) {
+      return Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: OurBidPage(
+          tab: choice.title,
+        ),
+      );
+    }).toList(),
+  );
+}
+
+Widget tabBar(context) {
+  return TabBar(
+      unselectedLabelColor: Colors.grey,
+      indicatorColor: Theme.of(context).primaryColor,
+      labelColor: Theme.of(context).primaryColor,
+      tabs: choices.map((Choice choice) {
+        return Tab(
+          text: choice.title,
+        );
+      }).toList());
+}
+
+class OurBidPage extends StatefulWidget {
+  final String tab;
+  const OurBidPage({Key key, this.tab}) : super(key: key);
+  @override
+  _OurBidPageState createState() => _OurBidPageState(tab);
 }
 
 class _OurBidPageState extends State<OurBidPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   TextEditingController searchController = TextEditingController();
 
   String selectedSortBy = "Terbaru";
   String searchQuery;
+  String selectedTab;
 
   List<Animal> animals = List<Animal>();
   bool isLoading = true;
@@ -33,12 +91,38 @@ class _OurBidPageState extends State<OurBidPage> {
   @override
   void initState() {
     super.initState();
-    _getOurBid();
     globals.getNotificationCount();
+  }
+
+  _OurBidPageState(String tab) {
+    selectedTab = tab;
+    if (tab == "Tawaran Ku") {
+      _getOurBid();
+    } else {
+      _getOurComment();
+    }
   }
 
   _getOurBid() {
     getUserBidsAnimals("Token", globals.user.id, selectedSortBy)
+        .then((onValue) {
+      animals = onValue;
+      setState(() {
+        isLoading = false;
+      });
+    }).catchError((onError) {
+      globals.showDialogs(onError, context);
+    });
+
+    searchController.addListener(() {
+      setState(() {
+        searchQuery = searchController.text;
+      });
+    });
+  }
+
+  _getOurComment() {
+    getUserCommentAnimals("Token", globals.user.id, selectedSortBy)
         .then((onValue) {
       animals = onValue;
       setState(() {
@@ -73,7 +157,11 @@ class _OurBidPageState extends State<OurBidPage> {
           setState(() {
             selectedSortBy = value;
             isLoading = true;
-            _getOurBid();
+            if (selectedTab == "Tawaran Ku") {
+              _getOurBid();
+            } else {
+              _getOurComment();
+            }
           });
         });
   }
@@ -131,30 +219,29 @@ class _OurBidPageState extends State<OurBidPage> {
 
 // build listview
   Widget _buildListView() {
-    return Flexible(
-      child: animals.length == 0
-          ? Center(
-              child: Text(
-                "Data tidak ditemukan",
-                style: Theme.of(context).textTheme.title,
-              ),
-            )
-          : ListView.builder(
-              shrinkWrap: true,
-              itemCount: animals.length,
-              itemBuilder: (BuildContext context, int index) {
-                String textSearch =
-                    "${animals[index].name} ${animals[index].description} ${animals[index].gender}";
-                return (searchQuery == null || searchQuery == "")
-                    ? _buildCard(animals[index])
-                    : (textSearch)
-                            .toLowerCase()
-                            .contains(searchQuery.toLowerCase())
-                        ? _buildCard(animals[index])
-                        : Container();
-              },
+    return animals.length == 0
+        ? Center(
+            child: Text(
+              "Data tidak ditemukan",
+              style: Theme.of(context).textTheme.title,
             ),
-    );
+          )
+        : ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemCount: animals.length,
+            itemBuilder: (BuildContext context, int index) {
+              String textSearch =
+                  "${animals[index].name} ${animals[index].description} ${animals[index].gender}";
+              return (searchQuery == null || searchQuery == "")
+                  ? _buildCard(animals[index])
+                  : (textSearch)
+                          .toLowerCase()
+                          .contains(searchQuery.toLowerCase())
+                      ? _buildCard(animals[index])
+                      : Container();
+            },
+          );
   }
 
   Widget _buildStatus(String status) {
@@ -261,7 +348,9 @@ class _OurBidPageState extends State<OurBidPage> {
               padding: EdgeInsets.fromLTRB(8, 2, 0, 2),
               margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
               decoration: BoxDecoration(
-                  color: text == 'Saat Ini' ? globals.myColor("mimosa") : Theme.of(context).primaryColor,
+                  color: text == 'Saat Ini'
+                      ? globals.myColor("mimosa")
+                      : Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(5)),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Text(
@@ -288,8 +377,8 @@ class _OurBidPageState extends State<OurBidPage> {
           color: "unprime",
           size: 10);
     } else if (status == "Menang") {
-      widget =
-          globals.myText(text: 'Dimenangkan oleh Anda', color: "unprime", size: 10);
+      widget = globals.myText(
+          text: 'Dimenangkan oleh Anda', color: "unprime", size: 10);
     } else if (status == "Terkonfirmasi") {
       widget = Container(
         padding: EdgeInsets.fromLTRB(3, 2, 3, 1),
@@ -315,7 +404,7 @@ class _OurBidPageState extends State<OurBidPage> {
 
     Bid lastBid;
     if (animal.auction.bids.length > 0) {
-      lastBid = animal.auction.bids[animal.auction.bids.length-1];
+      lastBid = animal.auction.bids[animal.auction.bids.length - 1];
     }
 
     if (animal.auction.winnerBidId != null &&
@@ -401,27 +490,14 @@ class _OurBidPageState extends State<OurBidPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
-        body: Scaffold(
-            key: _scaffoldKey,
-            drawer: drawer(context),
-            body: SafeArea(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 8,
-                  ),
-                  _buildTopCont(),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  _buildSearch(),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  isLoading ? globals.isLoading() : _buildListView()
-                ],
-              ),
-            )));
+        body: ListView(
+      children: <Widget>[
+        _buildSearch(),
+        SizedBox(
+          height: 8,
+        ),
+        isLoading ? globals.isLoading() : _buildListView()
+      ],
+    ));
   }
 }
