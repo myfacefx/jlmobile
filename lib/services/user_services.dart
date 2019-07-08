@@ -33,8 +33,27 @@ Future<bool> logout(String token) async {
 
 Future<User> register(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
-  http.Response res = await http.post(getBaseUrl() + "/register",
-      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+  http.Response res = await http
+      .post(getBaseUrl() + "/register",
+          headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return userFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<User> get(int userId) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/$userId";
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  print(res.body);
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);
@@ -49,8 +68,9 @@ Future<String> update(Map<String, dynamic> _data, int userId) async {
 
   print(url);
 
-  http.Response res = await http.put(url,
-      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+  http.Response res = await http
+      .put(url, headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 202) {
     return json.decode(res.body)['content'];
@@ -94,9 +114,10 @@ deleteLocalData(String key) async {
 
 Future<List<User>> getBlacklistedUser() async {
   final header = {"Content-Type": "application/json"};
-  
-  http.Response res = await http.get(getBaseUrl() + "/blacklists",
-      headers: header).timeout(Duration(seconds: getTimeOut()));
+
+  http.Response res = await http
+      .get(getBaseUrl() + "/blacklists", headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
     return listUserFromJson(res.body);
   } else {
@@ -106,8 +127,10 @@ Future<List<User>> getBlacklistedUser() async {
 
 Future<List<User>> getByEmail(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
-  http.Response res = await http.post(getBaseUrl() + "/users/search/email",
-      headers: header, body: json.encode(_data)).timeout(Duration(seconds: getTimeOut()));
+  http.Response res = await http
+      .post(getBaseUrl() + "/users/search/email",
+          headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {
     return listUserFromJson(res.body);
@@ -120,9 +143,10 @@ Future<int> getHistoriesCount(int userId) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/users/$userId/histories/count";
 
-  http.Response res = await http.get(url,
-      headers: header).timeout(Duration(seconds: getTimeOut()));
-  
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
   if (res.statusCode == 200) {
     return int.parse(res.body);
   } else {
@@ -136,9 +160,10 @@ Future<int> getUsersCount() async {
 
   print(url);
 
-  http.Response res = await http.get(url,
-      headers: header).timeout(Duration(seconds: getTimeOut()));
-  
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
   if (res.statusCode == 200) {
     return int.parse(res.body);
   } else {

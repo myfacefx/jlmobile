@@ -4,7 +4,9 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/history.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/history_services.dart';
+import 'dart:convert';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class _NotificationPageState extends State<NotificationPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<History> histories = List<History>();
-  
+
   bool isLoading = true;
 
   @override
@@ -30,14 +32,14 @@ class _NotificationPageState extends State<NotificationPage> {
 
     getHistories("Token", globals.user.id).then((onValue) {
       histories = onValue;
-      
+
       for (var history in histories) {
         // Iterate, if found 'read' = 0, add it to listOfHistoryId
         if (history.read == 0) {
           listOfHistoryId.add(history.id);
         }
       }
-      
+
       setState(() {
         isLoading = false;
       });
@@ -51,11 +53,11 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   _setHistories(listOfHistoryId) {
-    setHistories("Token", listOfHistoryId).then((onValue) {
-
-    }).catchError((onError) {
+    setHistories("Token", listOfHistoryId)
+        .then((onValue) {})
+        .catchError((onError) {
       print(onError.toString());
-    }); 
+    });
   }
 
   @override
@@ -78,51 +80,100 @@ class _NotificationPageState extends State<NotificationPage> {
                                   color: "dark",
                                   size: 22))),
                       Flexible(
-                        child: histories.length > 0 ? ListView.builder(
-                          padding: EdgeInsets.all(5),
-                          // shrinkWrap: true,
-                          itemCount: histories.length,
-                          itemBuilder: (BuildContext context, int i) {
-                            // if (i.isOdd) return Divider();
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) => ProductDetailPage(
-                                              animalId: histories[i].auction.animalId,
-                                            )));
-                              },
-                              child: Card(
-                                color: histories[i].read == 0 ? Colors.white : Colors.grey[150],
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      padding: EdgeInsets.only(top: 3, right: 3),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: <Widget>[
-                                      globals.myText(weight: "B", text: globals.convertFormatDateTimeProduct(histories[i].createdAt.toString())),
+                        child: histories.length > 0
+                            ? ListView.builder(
+                                padding: EdgeInsets.all(5),
+                                itemCount: histories.length,
+                                itemBuilder: (BuildContext context, int i) {
+                                  List<Widget> informationBuild =
+                                      List<Widget>();
 
-                                      ],),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.fromLTRB(8, 5, 8, 8),
-                                      child: globals.myText(text: histories[i].information, color: "dark"),
-                                    ),
-                                  ],
-                                )
-                              ),
-                            );
+                                  var informationConvert =
+                                      json.decode(histories[i].information);
 
-                            return ListTile(
-                              leading: Icon(Icons.notifications_active),
-                              title: globals.myText(text: histories[i].information, color: "dark")
-                            );
-                          },
-                        ) : Container(
-                          child: globals.myText(text: "Tidak ada notifikasi", color: "dark")
-                        ),
+                                  if (informationConvert is String) {
+                                    informationBuild.add(globals.myText(
+                                          text: informationConvert, color: "dark"));
+                                  } else {
+                                    for (var value in informationConvert) {
+                                      Widget output;
+                                      if (value is String) {
+                                        output = globals.myText(
+                                            text: value, color: "dark");
+                                      } else {
+                                        var valueConvert = value;
+
+                                        int userId = valueConvert['id'];
+
+                                        output = GestureDetector(
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          ProfilePage(
+                                                              userId: userId))),
+                                          child: globals.myText(
+                                              text: valueConvert['username'],
+                                              color: "primary",
+                                              weight: "B"),
+                                        );
+                                      }
+
+                                      informationBuild.add(output);
+                                    }
+                                  }
+
+
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  ProductDetailPage(
+                                                    animalId: histories[i]
+                                                        .auction
+                                                        .animalId,
+                                                  )));
+                                    },
+                                    child: Card(
+                                        color: histories[i].read == 0
+                                            ? Colors.white
+                                            : Colors.grey[150],
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  top: 3, right: 3),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: <Widget>[
+                                                  globals.myText(
+                                                      weight: "B",
+                                                      text: globals
+                                                          .convertFormatDateTimeProduct(
+                                                              histories[i]
+                                                                  .createdAt
+                                                                  .toString())),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    8, 5, 8, 8),
+                                                child: Wrap(
+                                                    children: informationBuild))
+                                          ],
+                                        )),
+                                  );
+                                },
+                              )
+                            : Container(
+                                child: globals.myText(
+                                    text: "Tidak ada notifikasi",
+                                    color: "dark")),
                       )
                     ]),
                   )));
