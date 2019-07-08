@@ -6,6 +6,7 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart';
@@ -142,13 +143,21 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             height: 8,
           ),
           globals.myText(
-              text: "Lelang berakhir pada ${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}", color: "dark", size: 13),
+              text:
+                  "Lelang berakhir pada ${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
+              color: "dark",
+              size: 13),
           SizedBox(
             height: 8,
           ),
-          animal.auction.innerIslandShipping != null && animal.auction.innerIslandShipping == 0 ? globals.myText(
-              text: "Pengiriman ke seluruh nusantara", color: "dark", size: 13) : globals.myText(
-              text: "Pengiriman dalam pulau saja", color: "dark", size: 13),
+          animal.auction.innerIslandShipping != null &&
+                  animal.auction.innerIslandShipping == 0
+              ? globals.myText(
+                  text: "Pengiriman ke seluruh nusantara",
+                  color: "dark",
+                  size: 13)
+              : globals.myText(
+                  text: "Pengiriman dalam pulau saja", color: "dark", size: 13),
         ],
       ),
     );
@@ -205,7 +214,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               Container(
                 width: globals.mw(context) * 0.3,
                 alignment: Alignment.center,
-                child: FlatButton(
+                child: RaisedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ProfilePage(userId: animal.owner.id))),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
                     child: globals.myText(
@@ -213,7 +227,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         color: "unprime",
                         size: 10,
                         align: TextAlign.center),
-                    onPressed: () {},
                     color: Colors.white),
               ),
               Container(
@@ -793,7 +806,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     "Tawaran terlalu kecil atau sama dengan harga saat ini",
                     context);
                 return null;
-              } else if (((int.parse(bid) - animal.auction.openBid) % animal.auction.multiply) != 0) {
+              } else if (((int.parse(bid) - animal.auction.openBid) %
+                      animal.auction.multiply) !=
+                  0) {
                 globals.showDialogs("Tawaran tidak sesuai kelipatan", context);
                 return null;
               } else if (int.parse(bid) > animal.auction.buyItNow) {
@@ -837,7 +852,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 textAlign: TextAlign.center),
             content: Text(
                 "Yakin memasang bid Rp. ${globals.convertToMoney(amountDouble)} ?" +
-                    (biddingBIN ? " (Beli Sekarang)" : "") + " " + (animal.auction.innerIslandShipping != null && animal.auction.innerIslandShipping == 1 ? "(Pengiriman dalam pulau saja)" : ""),
+                    (biddingBIN ? " (Beli Sekarang)" : "") +
+                    " " +
+                    (animal.auction.innerIslandShipping != null &&
+                            animal.auction.innerIslandShipping == 1
+                        ? "(Pengiriman dalam pulau saja)"
+                        : ""),
                 style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton(
@@ -854,7 +874,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       globals.loadingModel(context);
                       final result = await placeBid("Token", newBid);
                       Navigator.pop(context);
-                      
+
                       if (result) {
                         await globals.showDialogs("Tawaran terpasang", context);
                       } else {

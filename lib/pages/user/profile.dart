@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 
 class ProfilePage extends StatefulWidget {
+  final int userId;
+
+  ProfilePage({Key key, this.userId}) : super(key: key);
+
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState(userId);
 }
 
 class _ProfilePageState extends State<ProfilePage>
@@ -21,9 +27,31 @@ class _ProfilePageState extends State<ProfilePage>
   String _username;
   bool isLoadingAnimals = true;
   bool isLoadingAuctions = true;
+  bool isLoading = true;
 
   List<Animal> animals = List<Animal>();
   List<Animal> auctions = List<Animal>();
+
+  int _userId;
+  User user;
+
+  _ProfilePageState(int userId) {
+    if (userId == null || userId <= 0) {
+      // _userId = globals.user.id;
+      user = globals.user;
+      _userId = globals.user.id;
+      isLoading = false;
+    } else {
+      _userId = userId;
+      get(_userId).then((onValue) {
+        user = onValue;
+        isLoading = false;
+      }).catchError((onError) {
+        print(onError.toString());
+        globals.showDialogs(onError.toString(), context);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -35,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukKu() {
-    getUserUnauctionedAnimals("Token", globals.user.id).then((onValue) {
+    getUserUnauctionedAnimals("Token", _userId).then((onValue) {
       animals = onValue;
       setState(() {
         isLoadingAnimals = false;
@@ -46,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukLelang() {
-    getUserAuctionAnimals("Token", globals.user.id).then((onValue) {
+    getUserAuctionAnimals("Token", _userId).then((onValue) {
       auctions = onValue;
       setState(() {
         isLoadingAuctions = false;
@@ -56,8 +84,7 @@ class _ProfilePageState extends State<ProfilePage>
     });
   }
 
-  // card animals
-
+  // Card Animals
   Widget _buildAnimals(List<Animal> data, String type) {
     List<Widget> listMyWidgets() {
       List<Widget> list = List();
@@ -196,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _buildEditAnimal(int animalId) {
-    return Positioned(
+    return user.id == globals.user.id ? Positioned(
       bottom: 4,
       right: 10,
       child: InkWell(
@@ -225,7 +252,7 @@ class _ProfilePageState extends State<ProfilePage>
                 ]),
             child: Center(child: Icon(Icons.edit))),
       ),
-    );
+    ) : Container();
   }
 
   Widget _buildProdukKu(Animal animal) {
@@ -240,12 +267,12 @@ class _ProfilePageState extends State<ProfilePage>
             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
+                user.id == globals.user.id ? Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => ActivateAuctionPage(
                               animalId: animal.id,
-                            )));
+                            ))) : null;
               },
               child: Card(
                 child: Container(
@@ -416,14 +443,14 @@ class _ProfilePageState extends State<ProfilePage>
               padding: EdgeInsets.all(10),
               child: Stack(
                 children: <Widget>[
-                  GestureDetector(
+                  user.id == globals.user.id ? GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, "/edit-profile");
                     },
                     child: Container(
                         alignment: Alignment.centerRight,
                         child: Icon(Icons.edit)),
-                  ),
+                  ) : Container(),
                   Column(
                     children: <Widget>[
                       Container(
@@ -435,9 +462,9 @@ class _ProfilePageState extends State<ProfilePage>
                                   borderRadius: BorderRadius.circular(100),
                                   child: ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
-                                      child: globals.user.photo != null
+                                      child: user.photo != null
                                           ? FadeInImage.assetNetwork(
-                                              image: globals.user.photo,
+                                              image: user.photo,
                                               placeholder:
                                                   'assets/images/loading.gif',
                                               fit: BoxFit.cover)
@@ -450,48 +477,53 @@ class _ProfilePageState extends State<ProfilePage>
                           Text("4.5", style: TextStyle(color: Colors.grey))
                         ],
                       ),
-                      Text(globals.user.username,
+                      Text(user.username != null ? user.username : "",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w500)),
-                      Text(globals.user.name,
+                      Text(user.name != null ? user.name : "",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w500)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
+                        // alignment: Alignment.center,
+                        // crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Icon(Icons.location_on,
                               size: 18, color: globals.myColor("primary")),
-                          Text(globals.user.regency.name,
+                          Text(
+                              user.regency.name != null
+                                  ? user.regency.name
+                                  : "",
                               style: TextStyle(color: Colors.grey))
                         ],
                       ),
                       Container(
                           padding: EdgeInsets.symmetric(vertical: 15),
                           child: Text(
-                              globals.user.description != null
-                                  ? globals.user.description
-                                  : '',
+                              user.description != null ? user.description : '',
                               style: TextStyle(color: Colors.grey))),
-                      FlatButton(
-                          // shape: CircleBorder(),
-                          color: globals.myColor("primary"),
-                          onPressed: () {
-                            Navigator.pushNamed(context, "/auction/create");
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Buat Produk",
-                                  style: TextStyle(color: Colors.white)),
-                              Icon(Icons.add, color: Colors.white, size: 20),
-                            ],
-                          )),
+                      user.id == globals.user.id
+                          ? FlatButton(
+                              // shape: CircleBorder(),
+                              color: globals.myColor("primary"),
+                              onPressed: () {
+                                Navigator.pushNamed(context, "/auction/create");
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text("Buat Produk",
+                                      style: TextStyle(color: Colors.white)),
+                                  Icon(Icons.add,
+                                      color: Colors.white, size: 20),
+                                ],
+                              ))
+                          : Container(),
                     ],
                   ),
                 ],
@@ -530,30 +562,32 @@ class _ProfilePageState extends State<ProfilePage>
         body: Scaffold(
             key: _scaffoldKey,
             drawer: drawer(context),
-            body: SafeArea(
-                child: ListView(
-              physics: ClampingScrollPhysics(),
-              children: <Widget>[
-                _profile(),
-                _tabBarList(),
-                Container(
-                  height: 400,
-                  padding: EdgeInsets.all(5),
-                  child: TabBarView(
-                    controller: _tabController,
+            body: isLoading
+                ? globals.isLoading()
+                : SafeArea(
+                    child: ListView(
+                    physics: ClampingScrollPhysics(),
                     children: <Widget>[
+                      _profile(),
+                      _tabBarList(),
                       Container(
-                          child: isLoadingAnimals
-                              ? globals.isLoading()
-                              : _buildAnimals(animals, "produkku")),
-                      Container(
-                          child: isLoadingAuctions
-                              ? globals.isLoading()
-                              : _buildAnimals(auctions, "produklelang")),
+                        height: 400,
+                        padding: EdgeInsets.all(5),
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: <Widget>[
+                            Container(
+                                child: isLoadingAnimals
+                                    ? globals.isLoading()
+                                    : _buildAnimals(animals, "produkku")),
+                            Container(
+                                child: isLoadingAuctions
+                                    ? globals.isLoading()
+                                    : _buildAnimals(auctions, "produklelang")),
+                          ],
+                        ),
+                      )
                     ],
-                  ),
-                )
-              ],
-            ))));
+                  ))));
   }
 }

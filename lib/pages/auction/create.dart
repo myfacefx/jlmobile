@@ -94,7 +94,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         isLoading = false;
       });
     });
-    
+
     globals.getNotificationCount();
   }
 
@@ -114,7 +114,11 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     if (picked != null) {
       setState(() {
         _dateOfBirth = picked;
-        dateOfBirthController.text = _dateOfBirth.day.toString() + "-" + _dateOfBirth.month.toString() + "-" + _dateOfBirth.year.toString();
+        dateOfBirthController.text = _dateOfBirth.day.toString() +
+            "-" +
+            _dateOfBirth.month.toString() +
+            "-" +
+            _dateOfBirth.year.toString();
       });
     }
   }
@@ -439,26 +443,27 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     //   ]),
                     // ),
                     Container(
-                      width: 300,
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: TextFormField(
-                        controller: dateOfBirthController,
-                        validator: (String value) {
-                          if (value.isEmpty) return 'Tanggal lahir masih kosong';
-                        },
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                            suffixIcon: GestureDetector(
-                              onTap: () => _selectDate(context),
-                              child: Icon(Icons.calendar_today),
-                            ),
-                            contentPadding: EdgeInsets.all(13),
-                            hintText: "Tanggal Lahir",
-                            labelText: "Tanggal Lahir",
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20))),
-                      )),
+                        width: 300,
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: TextFormField(
+                          controller: dateOfBirthController,
+                          validator: (String value) {
+                            if (value.isEmpty)
+                              return 'Tanggal lahir masih kosong';
+                          },
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () => _selectDate(context),
+                                child: Icon(Icons.calendar_today),
+                              ),
+                              contentPadding: EdgeInsets.all(13),
+                              hintText: "Tanggal Lahir",
+                              labelText: "Tanggal Lahir",
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20))),
+                        )),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -498,7 +503,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(13),
-                              hintText: "Tuliskan deskripsi hewan, jenis pengiriman dan catatan penting lainnya",
+                              hintText:
+                                  "Tuliskan deskripsi hewan, jenis pengiriman dan catatan penting lainnya",
                               labelText: "Deskripsi",
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
@@ -578,14 +584,21 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                                   color: Colors.black)));
                                     }).toList(),
                                   )),
-                              Container(padding: EdgeInsets.only(bottom: 15), child: globals.myText(text: "Waktu dimulai setelah Anda melakukan posting", color: "danger")),
+                              Container(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: globals.myText(
+                                      text:
+                                          "Waktu dimulai setelah Anda melakukan posting",
+                                      color: "danger")),
                               Container(
                                   width: 300,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
                                     controller: openBidController,
-                                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      WhitelistingTextInputFormatter.digitsOnly
+                                    ],
                                     // initialValue: _openBid,
                                     // focusNode: usernameFocusNode,
                                     onSaved: (String value) {
@@ -606,7 +619,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                             int.parse(binController.text)) {
                                           return 'Harga awal tidak boleh lebih atau sama dengan harga beli sekarang';
                                         }
-                                        
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
@@ -624,7 +636,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
-                                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      WhitelistingTextInputFormatter.digitsOnly
+                                    ],
                                     controller: binController,
                                     // initialValue: _bin,
                                     // focusNode: usernameFocusNode,
@@ -640,20 +654,28 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                       if (value.isEmpty) {
                                         return 'Harga Beli Sekarang wajib diisi';
                                       }
-                                      
 
                                       if (openBidController.text.isNotEmpty) {
                                         if (int.parse(value) <=
                                             int.parse(openBidController.text)) {
                                           return 'Harga Beli Sekarang tidak boleh kurang atau sama dengan harga awal';
                                         }
-                                        
-                                        if (multiplyController.text.isNotEmpty) {
-                                          if (int.parse(multiplyController.text) == 0) {
+
+                                        if (multiplyController
+                                            .text.isNotEmpty) {
+                                          if (int.parse(
+                                                  multiplyController.text) ==
+                                              0) {
                                             return 'Kelipatan tidak valid';
                                           }
-                                      
-                                          if ((int.parse(value) - int.parse(openBidController.text)) % int.parse(multiplyController.text) != 0 ) {
+
+                                          if ((int.parse(value) -
+                                                      int.parse(
+                                                          openBidController
+                                                              .text)) %
+                                                  int.parse(multiplyController
+                                                      .text) !=
+                                              0) {
                                             return 'BIN harus sesuai kelipatan';
                                           }
                                         }
@@ -676,7 +698,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
                                     controller: multiplyController,
-                                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      WhitelistingTextInputFormatter.digitsOnly
+                                    ],
                                     // initialValue: _multiply,
                                     // focusNode: usernameFocusNode,
                                     onSaved: (String value) {
@@ -691,20 +715,24 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                       if (value.isEmpty) {
                                         return 'Harga kelipatan wajib diisi';
                                       }
-                                      
+
                                       if (int.parse(value) == 0) {
                                         return 'Kelipatan tidak valid';
                                       }
 
                                       if (binController.text.isNotEmpty) {
-
                                         if (int.parse(value) >=
                                             int.parse(binController.text)) {
                                           return 'Harga kelipatan tidak boleh melebihi atau sama dengan harga beli sekarang';
                                         }
 
                                         if (openBidController.text.isNotEmpty) {
-                                          if ((int.parse(binController.text) - int.parse(openBidController.text)) % int.parse(value) != 0 ) {
+                                          if ((int.parse(binController.text) -
+                                                      int.parse(
+                                                          openBidController
+                                                              .text)) %
+                                                  int.parse(value) !=
+                                              0) {
                                             return 'Nilai kelipatan tidak sesuai';
                                           }
                                         }
@@ -724,14 +752,17 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                             ],
                           )
                         : Container(),
-                        Container(
-                          width: 300,
-                          child: CheckboxListTile(
+                    Container(
+                        width: 300,
+                        child: CheckboxListTile(
                             value: _innerIslandShippingBool,
-                            title: globals.myText(text: "Hanya melayani pengiriman dalam pulau", color: "dark", size: 13),
+                            title: globals.myText(
+                                text: "Hanya melayani pengiriman dalam pulau",
+                                color: "dark",
+                                size: 13),
                             controlAffinity: ListTileControlAffinity.leading,
                             onChanged: (bool value) {
-                              setState(()  {
+                              setState(() {
                                 this._innerIslandShippingBool = value;
                                 switch (value) {
                                   case true:
@@ -742,9 +773,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     break;
                                 }
                               });
-                            } 
-                          )
-                        ),
+                            })),
                     SizedBox(height: 20),
                     Container(
                         width: 300,
@@ -772,8 +801,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 ),
               ]),
               !isLoading
-                ? Container()
-                : Center(child: CircularProgressIndicator()),
+                  ? Container()
+                  : Center(child: CircularProgressIndicator()),
             ])),
       ),
     );
