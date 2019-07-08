@@ -31,14 +31,19 @@ class AppConfig extends InheritedWidget {
     globals.baseUrl = baseUrl;
     globals.flavor = flavorName;
     try {
-      String userData = await readLocalData("user");
-      if (userData != null) {
-        User newUser = userFromJson(userData);
-        print("User Found = ${newUser.username}");
-        globals.user = newUser;
-        globals.state = "home";
+      String firstInstall = await readLocalData("isNew");
+      if (firstInstall != null) {
+        String userData = await readLocalData("user");
+        if (userData != null) {
+          User newUser = userFromJson(userData);
+          print("User Found = ${newUser.username}");
+          globals.user = newUser;
+          globals.state = "home";
+        } else {
+          globals.state = "login";
+        }
       } else {
-        globals.state = "login";
+        globals.state = "intro";
       }
     } catch (e) {
       globals.state = "login";

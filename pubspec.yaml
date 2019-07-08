@@ -74,6 +74,12 @@ flutter:
     - assets/images/logo.png
     - assets/images/image_not_found.png
     - assets/images/comment.png
+    - assets/images/intro/intro1.jpg
+    - assets/images/intro/intro2.jpg
+    - assets/images/intro/intro3.jpg
+    - assets/images/intro/intro4.jpg
+    - assets/images/intro/intro5.jpg
+    - assets/images/intro/intro6.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

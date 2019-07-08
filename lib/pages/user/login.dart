@@ -274,6 +274,7 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     return WillPopScope(
       onWillPop: () {
         _exitDialog();
@@ -398,8 +399,9 @@ class _LoginPage extends State<LoginPage> {
                 child: Align(
                   alignment: Alignment.center,
                   child: !loginLoading
-                    ? Container()
-                    : Container(child: Center(child: CircularProgressIndicator())),
+                      ? Container()
+                      : Container(
+                          child: Center(child: CircularProgressIndicator())),
                 ),
               )
             ],

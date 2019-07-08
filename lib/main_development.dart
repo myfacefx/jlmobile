@@ -11,7 +11,6 @@ void main() async {
     child: MyApp(),
   );
 
-  //SystemChrome.setEnabledSystemUIOverlays([]);
   await configuredApp.checkLocalData();
   runApp(configuredApp);
 }
