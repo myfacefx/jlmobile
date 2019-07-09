@@ -123,8 +123,6 @@ class _NotificationPageState extends State<NotificationPage> {
                                       informationBuild.add(output);
                                     }
                                   }
-
-
                                   return InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -140,7 +138,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                     child: Card(
                                         color: histories[i].read == 0
                                             ? Colors.white
-                                            : Colors.grey[150],
+                                            : Colors.grey,
                                         child: Column(
                                           children: <Widget>[
                                             Container(
