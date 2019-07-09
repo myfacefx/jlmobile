@@ -143,7 +143,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-              "${animal.name} / ${animal.gender} / ${globals.convertToAge(animal.dateOfBirth)}",
+              //"${animal.name} / ${animal.gender} / ${globals.convertToAge(animal.dateOfBirth)}",
+              "${animal.name}",
               style: Theme.of(context)
                   .textTheme
                   .title
@@ -259,7 +260,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       align: TextAlign.center),
                   onPressed: () async {
                     const url =
-                        'https://api.whatsapp.com/send?phone=6287837696998&text=Halo%20mau%20order%20gan';
+                        'https://api.whatsapp.com/send?phone=6281229755091&text=Halo%20mau%20order%20gan';
                     if (await canLaunch(url)) {
                       await launch(url);
                     } else {

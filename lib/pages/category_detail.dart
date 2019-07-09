@@ -419,14 +419,15 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildDetail(String name, String username, String regency,
       String gender, DateTime birthDate) {
-    String ageNow = globals.convertToAge(birthDate);
+    //String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "$name $gender - $ageNow",
+            // "$name $gender - $ageNow",
+            "$name",
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
           ),

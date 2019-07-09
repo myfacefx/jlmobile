@@ -508,12 +508,12 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                       child: globals.myText(text: "${animal != null ? animal.description : ""}", color: 'dark', align: TextAlign.center)
                     ),
                     SizedBox(height: 10),
-                    Container(
-                      child: globals.myText(text: "Jenis Kelamin", weight: "B", color: 'dark')
-                    ),
-                    Container(
-                      child: globals.myText(text: "${animal != null ? animal.gender == 'M' ? 'Jantan' : 'Betina' : ""}", color: 'dark')
-                    ), 
+                    // Container(
+                    //   child: globals.myText(text: "Jenis Kelamin", weight: "B", color: 'dark')
+                    // ),
+                    // Container(
+                    //   child: globals.myText(text: "${animal != null ? animal.gender == 'M' ? 'Jantan' : 'Betina' : ""}", color: 'dark')
+                    // ), 
                     SizedBox(height: 10),
                     Container(
                       child: globals.myText(text: "Foto", weight: "B", color: 'dark')

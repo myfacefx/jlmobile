@@ -95,30 +95,30 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     globals.getNotificationCount();
   }
 
-  Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        lastDate: DateTime.now(),
-        firstDate: DateTime(2000, 1),
-        builder: (BuildContext context, Widget child) {
-          return Theme(
-            data: ThemeData.dark(),
-            child: child,
-          );
-        });
+  // Future<Null> _selectDate(BuildContext context) async {
+  //   final DateTime picked = await showDatePicker(
+  //       context: context,
+  //       initialDate: DateTime.now(),
+  //       lastDate: DateTime.now(),
+  //       firstDate: DateTime(2000, 1),
+  //       builder: (BuildContext context, Widget child) {
+  //         return Theme(
+  //           data: ThemeData.dark(),
+  //           child: child,
+  //         );
+  //       });
 
-    if (picked != null) {
-      setState(() {
-        _dateOfBirth = picked;
-        dateOfBirthController.text = _dateOfBirth.day.toString() +
-            "-" +
-            _dateOfBirth.month.toString() +
-            "-" +
-            _dateOfBirth.year.toString();
-      });
-    }
-  }
+  //   if (picked != null) {
+  //     setState(() {
+  //       _dateOfBirth = picked;
+  //       dateOfBirthController.text = _dateOfBirth.day.toString() +
+  //           "-" +
+  //           _dateOfBirth.month.toString() +
+  //           "-" +
+  //           _dateOfBirth.year.toString();
+  //     });
+  //   }
+  // }
 
   _getAnimalSubCategories() {
     setState(() {
@@ -238,8 +238,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       Animal animal = Animal();
       animal.animalSubCategoryId = _animalSubCategory.id;
       animal.name = _name;
-      animal.gender = _gender;
-      animal.dateOfBirth = _dateOfBirth;
+
+      // animal.gender = _gender;
+      animal.gender = "M";
+      // animal.dateOfBirth = _dateOfBirth;
+      animal.dateOfBirth = DateTime.now();
+
       animal.description = _description;
       animal.ownerUserId = globals.user.id;
       animal.regencyId = globals.user.regencyId;
@@ -439,42 +443,42 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     //     ),
                     //   ]),
                     // ),
-                    Container(
-                        width: 300,
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: TextFormField(
-                          controller: dateOfBirthController,
-                          validator: (String value) {
-                            if (value.isEmpty)
-                              return 'Tanggal lahir masih kosong';
-                          },
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                              suffixIcon: GestureDetector(
-                                onTap: () => _selectDate(context),
-                                child: Icon(Icons.calendar_today),
-                              ),
-                              contentPadding: EdgeInsets.all(13),
-                              hintText: "Tanggal Lahir",
-                              labelText: "Tanggal Lahir",
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20))),
-                        )),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Radio(
-                              value: "M",
-                              onChanged: _handleGenderChange,
-                              groupValue: _gender),
-                          Text("Jantan", style: TextStyle(color: Colors.black)),
-                          Radio(
-                              value: "F",
-                              onChanged: _handleGenderChange,
-                              groupValue: _gender),
-                          Text("Betina", style: TextStyle(color: Colors.black))
-                        ]),
+                    // Container(
+                    //     width: 300,
+                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    //     child: TextFormField(
+                    //       controller: dateOfBirthController,
+                    //       validator: (String value) {
+                    //         if (value.isEmpty)
+                    //           return 'Tanggal lahir masih kosong';
+                    //       },
+                    //       style: TextStyle(color: Colors.black),
+                    //       decoration: InputDecoration(
+                    //           suffixIcon: GestureDetector(
+                    //             onTap: () => _selectDate(context),
+                    //             child: Icon(Icons.calendar_today),
+                    //           ),
+                    //           contentPadding: EdgeInsets.all(13),
+                    //           hintText: "Tanggal Lahir",
+                    //           labelText: "Tanggal Lahir",
+                    //           fillColor: Colors.white,
+                    //           border: OutlineInputBorder(
+                    //               borderRadius: BorderRadius.circular(20))),
+                    //     )),
+                    // Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: <Widget>[
+                    //       Radio(
+                    //           value: "M",
+                    //           onChanged: _handleGenderChange,
+                    //           groupValue: _gender),
+                    //       Text("Jantan", style: TextStyle(color: Colors.black)),
+                    //       Radio(
+                    //           value: "F",
+                    //           onChanged: _handleGenderChange,
+                    //           groupValue: _gender),
+                    //       Text("Betina", style: TextStyle(color: Colors.black))
+                    //     ]),
                     Container(
                         width: 300,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
