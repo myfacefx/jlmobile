@@ -20,7 +20,7 @@ class User {
     String description;
     String username;
     String password;
-    dynamic phoneNumber;
+    String phoneNumber;
     dynamic address;
     String photo;
     int roleId;

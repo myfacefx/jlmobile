@@ -64,7 +64,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       provinces = value;
       provinces.forEach((province) {
         if (province.id == globals.user.regency.provinceId) {
-          _province = province;
+          setState(() {
+            _province = province;
+          });
         }
       });
       setState(() {
@@ -78,7 +80,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         regencies = onValue;
         regencies.forEach((regency) {
           if (regency.id == globals.user.regency.id) {
-            _regency = regency;
+            setState(() {
+              _regency = regency;
+            });
           }
         });
 
