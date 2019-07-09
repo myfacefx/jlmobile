@@ -223,12 +223,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            "${widget.animalCategory.name} - $currentSubCategory",
-            style: Theme.of(context)
-                .textTheme
-                .title
-                .copyWith(fontWeight: FontWeight.w500),
+          Container(
+            width: globals.mw(context)*0.5,
+            child: Text(
+              "${widget.animalCategory.name} - $currentSubCategory",
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context)
+                  .textTheme
+                  .title
+                  .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
+            ),
           ),
           GestureDetector(
               onTap: () {

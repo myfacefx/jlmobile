@@ -179,7 +179,8 @@ class _ProfilePageState extends State<ProfilePage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "$name $gender - $ageNow",
+            // "$name $gender - $ageNow",
+            "$name",
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
           ),

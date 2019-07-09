@@ -451,7 +451,8 @@ class _OurBidPageState extends State<OurBidPage> {
                       globals.myText(
                           text: animal.owner.name, color: "unprime", size: 10),
                       Text(
-                        "${animal.name} ${animal.gender} - $ageNow",
+                        // "${animal.name} ${animal.gender} - $ageNow",
+                        "${animal.name}",
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context)
                             .textTheme
