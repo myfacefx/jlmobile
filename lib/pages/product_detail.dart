@@ -6,6 +6,7 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
@@ -72,30 +73,41 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       listImage.add(
         GestureDetector(
           onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("Foto", style: TextStyle(color: Colors.black)),
-                  content: FadeInImage.assetNetwork(
-                    placeholder: 'assets/images/loading.gif',
-                    image: image.image,
-                  ),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text("Close"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) {
+            //     return AlertDialog(
+            //       title: Text("Foto", style: TextStyle(color: Colors.black)),
+            //       content: FadeInImage.assetNetwork(
+            //         placeholder: 'assets/images/loading.gif',
+            //         image: image.image,
+            //       ),
+            //       actions: <Widget>[
+            //         FlatButton(
+            //           child: Text("Close"),
+            //           onPressed: () {
+            //             Navigator.of(context).pop();
+            //           },
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // );
+
+            Navigator.push(context, MaterialPageRoute(builder: (_) {
+              return ImagePopupPage(
+                image: image.image,
+                tagCount: "image$count",
+                animalName: animal.name,
+              );
+            }));
           },
-          child: FadeInImage.assetNetwork(
-            placeholder: 'assets/images/loading.gif',
-            image: image.image,
+          child: Hero(
+            tag: "image$count",
+            child: FadeInImage.assetNetwork(
+              placeholder: 'assets/images/loading.gif',
+              image: image.image,
+            ),
           ),
         ),
       );
