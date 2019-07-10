@@ -38,40 +38,47 @@ class _IntroPageState extends State<IntroPage> {
       child: Scaffold(
         body: Builder(
             builder: (BuildContext context) => Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  padding: EdgeInsets.all(16),
                   child: Stack(
                     children: <Widget>[
-                      TabBarView(
-                        children: intros.map((f) {
-                          count++;
-                          if (count == intros.length) {
-                            return Stack(
-                              children: <Widget>[
-                                _image(f),
-                                Positioned(
-                                  bottom: 20,
-                                  left: 50,
-                                  right: 50,
-                                  child: RaisedButton(
-                                    child: Text("Next"),
-                                    color: Colors.white,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      saveLocalData('isNew', "true");
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  LoginPage()));
-                                    },
-                                  ),
-                                )
-                              ],
-                            );
-                          } else {
-                            return _image(f);
-                          }
-                        }).toList(),
+                      Container(
+                        padding: EdgeInsets.only(bottom: 26),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16.0),
+                          child: TabBarView(
+                            children: intros.map((f) {
+                              count++;
+                              if (count == intros.length) {
+                                return Stack(
+                                  children: <Widget>[
+                                    _image(f),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 50,
+                                      right: 50,
+                                      child: RaisedButton(
+                                        child: Text("Next"),
+                                        color: Colors.white,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          saveLocalData('isNew', "true");
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          LoginPage()));
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                );
+                              } else {
+                                return _image(f);
+                              }
+                            }).toList(),
+                          ),
+                        ),
                       ),
                       Positioned(
                         bottom: 0,

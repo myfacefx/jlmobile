@@ -139,7 +139,7 @@ class _OurBidPageState extends State<OurBidPage> {
 
   // sort and search
   Widget dropdownSortBy() {
-    List<String> item = <String>['Terbaru', 'Populer'];
+    List<String> item = <String>['Terbaru', 'Selesai', 'Dimenangkan', 'Gagal'];
     return DropdownButton<String>(
         value: selectedSortBy,
         items: item.map((String value) {
@@ -246,7 +246,7 @@ class _OurBidPageState extends State<OurBidPage> {
     String currentStatus = "Berjalan";
     Color colorBox = Colors.green;
     if (status != "Aktif") {
-      currentStatus = "Dibatalkan";
+      currentStatus = "Selesai";
       colorBox = Colors.black;
     }
 
