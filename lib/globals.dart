@@ -178,7 +178,7 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
         Navigator.popUntil(context, ModalRoute.withName("/"));
       },
       child:
-          Container(child: Image.asset("assets/images/logo.png", height: 30)),
+          Container(child: Image.asset("assets/images/logo.png", height: 40)),
     ),
     leading: IconButton(
         icon: Icon(Icons.menu),
@@ -270,9 +270,19 @@ Future<ImageProvider> imageUrlProvider(String link,
 void getNotificationCount() async {
   if (user.id != null) {
     int historiesCount = await getHistoriesCount(user.id);
-    user.historiesCount = historiesCount;
+    
+    if (user.historiesCount != null) {
+      user.historiesCount = historiesCount;
+    }
+
+    int bidsCount = await getBidsCount(user.id);
+        
+    if (user.bidsCount != null) {
+      user.bidsCount = bidsCount;
+    }
+    
+    return null;
   }
-  return null;
 }
 
 String convertToMoney(double number) {
@@ -330,6 +340,27 @@ String convertToAge(DateTime birthDate) {
     month = month * -1;
   }
   return "$year THN $month";
+}
+
+String convertMonthFromDigit(int monthDigit) {
+  String month = 'Januari';
+
+  switch (monthDigit) {
+    case 2: month = 'Februari'; break;
+    case 3: month = 'Maret'; break;
+    case 4: month = 'April'; break;
+    case 5: month = 'Mei'; break;
+    case 6: month = 'Juni'; break;
+    case 7: month = 'Juli'; break;
+    case 8: month = 'Agustus'; break;
+    case 9: month = 'September'; break;
+    case 10: month = 'Oktober'; break;
+    case 11: month = 'November'; break;
+    case 12: month = 'Desember'; break;
+    default:
+  }
+
+  return month;
 }
 
 Widget isLoading() {

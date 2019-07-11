@@ -154,6 +154,45 @@ Future<int> getHistoriesCount(int userId) async {
   }
 }
 
+Future<int> getBidsCount(int userId) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/$userId/bids/count";
+
+  print(url);
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return int.parse(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<Map<String, int>> getHistoriesAndBidsCount(int userId) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/$userId/historiesAndBids/count";
+
+  final Map<String, int> response = Map<String, int>();
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    
+    // return json.decode(res.body).map((x) => 
+      // response.
+    // );
+    // return res.body;
+    // return int.parse(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 Future<int> getUsersCount() async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/users/count";

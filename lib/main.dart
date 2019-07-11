@@ -16,6 +16,8 @@ import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/user/notification.dart';
+import 'package:jlf_mobile/pages/rekber.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/login': (BuildContext context) => LoginPage(),
         '/register': (BuildContext context) => RegisterPage(),
         '/blacklist': (BuildContext context) => BlacklistPage(),
+        '/rekber': (BuildContext context) => RekberPage(),
         '/about': (BuildContext context) => AboutPage(),
         '/how-to': (BuildContext context) => HowToPage(),
         '/faq': (BuildContext context) => FAQPage(),

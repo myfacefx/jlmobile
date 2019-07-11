@@ -33,7 +33,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   String selectedProvince = "All";
   String selectedSortBy = "Populer";
-
   List<Province> provinces = List<Province>();
   List<String> itemProvince = <String>['All'];
 
@@ -435,7 +434,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _buildDetail(String name, String username, String regency,
+  Widget _buildDetail(String name, String username, String regency, String province,
       String gender, DateTime birthDate) {
     //String ageNow = globals.convertToAge(birthDate);
     return Container(
@@ -453,21 +452,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               padding: EdgeInsets.symmetric(vertical: 3),
               child:
                   globals.myText(text: username, color: "unprime", size: 10)),
-          Text(
-            regency,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.title.copyWith(fontSize: 10),
-          ),
-          // Container(
-          //   width: double.infinity,
-          //   child: Row(
-          //     children: <Widget>[
-          //       Icon(Icons.location_on,
-          //           size: 15, color: Theme.of(context).primaryColor),
-          //       // globals.myText(text: regency, color: 'black', size: 10),
-          //     ],
-          //   ),
-          // ),
+          globals.myText(text: regency, size: 10),
+          globals.myText(text:  province, size: 10)
+
         ],
       ),
     );
@@ -475,7 +462,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildChat(String countComments, int animalId) {
     return Positioned(
-      bottom: 4,
+      bottom: 0,
       right: 10,
       child: InkWell(
         onTap: () {},
@@ -540,7 +527,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       child: Stack(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Card(
               child: Container(
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
@@ -558,6 +545,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         animal.name,
                         animal.owner.username,
                         animal.owner.regency.name,
+                        animal.owner.province.name,
                         animal.gender,
                         animal.dateOfBirth),
                     _buildChips(

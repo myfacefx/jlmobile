@@ -224,36 +224,38 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _buildEditAnimal(int animalId) {
-    return user.id == globals.user.id ? Positioned(
-      bottom: 4,
-      right: 10,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ActivateAuctionPage(
-                        animalId: animalId,
-                      )));
-        },
-        splashColor: globals.myColor("primary"),
-        child: Container(
-            width: 40,
-            height: 40,
-            padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
-            margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 2.0,
-                  ),
-                ]),
-            child: Center(child: Icon(Icons.edit))),
-      ),
-    ) : Container();
+    return user.id == globals.user.id
+        ? Positioned(
+            bottom: 4,
+            right: 10,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => ActivateAuctionPage(
+                              animalId: animalId,
+                            )));
+              },
+              splashColor: globals.myColor("primary"),
+              child: Container(
+                  width: 40,
+                  height: 40,
+                  padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
+                  margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 2.0,
+                        ),
+                      ]),
+                  child: Center(child: Icon(Icons.edit))),
+            ),
+          )
+        : Container();
   }
 
   Widget _buildProdukKu(Animal animal) {
@@ -268,12 +270,15 @@ class _ProfilePageState extends State<ProfilePage>
             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             child: GestureDetector(
               onTap: () {
-                user.id == globals.user.id ? Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => ActivateAuctionPage(
-                              animalId: animal.id,
-                            ))) : null;
+                user.id == globals.user.id
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ActivateAuctionPage(
+                                  animalId: animal.id,
+                                )))
+                    : null;
               },
               child: Card(
                 child: Container(
@@ -436,6 +441,8 @@ class _ProfilePageState extends State<ProfilePage>
 
   // card animals
   Widget _profile() {
+    var registeredDate = DateTime.parse(user.createdAt.toString());
+
     return Container(
       padding: EdgeInsets.all(5),
       width: globals.mw(context),
@@ -444,14 +451,16 @@ class _ProfilePageState extends State<ProfilePage>
               padding: EdgeInsets.all(10),
               child: Stack(
                 children: <Widget>[
-                  user.id == globals.user.id ? GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/edit-profile");
-                    },
-                    child: Container(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.edit)),
-                  ) : Container(),
+                  user.id == globals.user.id
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, "/edit-profile");
+                          },
+                          child: Container(
+                              alignment: Alignment.centerRight,
+                              child: Icon(Icons.edit)),
+                        )
+                      : Container(),
                   Column(
                     children: <Widget>[
                       Container(
@@ -471,43 +480,74 @@ class _ProfilePageState extends State<ProfilePage>
                                               fit: BoxFit.cover)
                                           : Image.asset(
                                               'assets/images/account.png'))))),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
                         children: <Widget>[
-                          Icon(Icons.star, size: 15),
-                          Text("4.5", style: TextStyle(color: Colors.grey))
+                          globals.myText(
+                              text: user.name != null ? user.name + ' - ' : '',
+                              textOverflow: TextOverflow.ellipsis,
+                              color: "dark",
+                              weight: "B",
+                              size: 18),
+                          Icon(Icons.star, size: 18),
+                          globals.myText(
+                              text: '4.5',
+                              textOverflow: TextOverflow.ellipsis,
+                              color: "dark",
+                              weight: "B",
+                              size: 18),
                         ],
                       ),
-                      Text(user.username != null ? user.username : "",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500)),
-                      Text(user.name != null ? user.name : "",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500)),
+                      SizedBox(height: 3),
+                      globals.myText(
+                          text: user.username != null ? user.username : '',
+                          textOverflow: TextOverflow.ellipsis,
+                          color: "dark",
+                          weight: ":",
+                          size: 12),
+                      SizedBox(height: 3),
+                      globals.myText(
+                          text: "Bergabung sejak " +
+                              "${registeredDate.day} ${globals.convertMonthFromDigit(registeredDate.month)} ${registeredDate.year}",
+                          textOverflow: TextOverflow.ellipsis,
+                          color: "dark",
+                          size: 12),
+                      SizedBox(height: 3),
+                      globals.myText(
+                          text:
+                              user.phoneNumber != null ? user.phoneNumber : "",
+                          textOverflow: TextOverflow.ellipsis,
+                          color: "dark",
+                          size: 12),
+                      SizedBox(height: 3),
                       Wrap(
-                        // alignment: Alignment.center,
-                        // crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Icon(Icons.location_on,
-                              size: 18, color: globals.myColor("primary")),
-                          Text(
-                              user.regency.name != null
+                              size: 12, color: globals.myColor("primary")),
+                          globals.myText(
+                              text: user.regency.name != null
                                   ? user.regency.name
                                   : "",
-                              style: TextStyle(color: Colors.grey))
+                              textOverflow: TextOverflow.ellipsis,
+                              color: "dark",
+                              size: 12),
+                          globals.myText(
+                              text: user.province.name != null
+                                  ? ", " + user.province.name
+                                  : "",
+                              textOverflow: TextOverflow.ellipsis,
+                              color: "dark",
+                              size: 12),
                         ],
                       ),
-                      Container(
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          child: Text(
-                              user.description != null ? user.description : '',
-                              style: TextStyle(color: Colors.grey))),
+                      user.description != null && user.description.isNotEmpty
+                          ? Container(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Text(
+                                  user.description != null
+                                      ? user.description
+                                      : '',
+                                  style: TextStyle(color: Colors.grey)))
+                          : Container(),
                       user.id == globals.user.id
                           ? FlatButton(
                               // shape: CircleBorder(),
@@ -545,12 +585,42 @@ class _ProfilePageState extends State<ProfilePage>
           controller: _tabController,
           tabs: <Widget>[
             Tab(
-              child: Text("Produk-ku",
-                  style: TextStyle(color: Colors.black, fontSize: 11)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Produk-ku ", size: 11),
+                  animals.length > 0 ? Container(
+                    constraints: BoxConstraints(
+                      minWidth: 10,
+                      minHeight: 10
+                    ),
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                    child: globals.myText(text: "${animals.length}", weight: "B", color: 'light', size: 10)) : Container()
+                ],
+              )
             ),
             Tab(
-              child: Text("Produk Lelang",
-                  style: TextStyle(color: Colors.black, fontSize: 11)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Produk Lelang ", size: 11),
+                  auctions.length > 0 ? Container(
+                    constraints: BoxConstraints(
+                      minWidth: 10,
+                      minHeight: 10
+                    ),
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                    child: globals.myText(text: "${auctions.length}", weight: "B", color: 'light', size: 10)) : Container()
+                ],
+              )
             ),
           ],
         ))));

@@ -23,7 +23,7 @@ class _IntroPageState extends State<IntroPage> {
   Widget _image(String assetPath) {
     return Image.asset(
       assetPath,
-      fit: BoxFit.cover,
+      fit: BoxFit.fill,
       height: double.infinity,
       width: double.infinity,
       alignment: Alignment.center,
@@ -32,63 +32,71 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) {
+    count = 0;
     SystemChrome.setEnabledSystemUIOverlays([]);
-    return DefaultTabController(
-      length: intros.length,
-      child: Scaffold(
-        body: Builder(
-            builder: (BuildContext context) => Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(bottom: 26),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: TabBarView(
-                            children: intros.map((f) {
-                              count++;
-                              if (count == intros.length) {
-                                return Stack(
-                                  children: <Widget>[
-                                    _image(f),
-                                    Positioned(
-                                      bottom: 0,
-                                      left: 50,
-                                      right: 50,
-                                      child: RaisedButton(
-                                        child: Text("Next"),
-                                        color: Colors.white,
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          saveLocalData('isNew', "true");
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          LoginPage()));
-                                        },
-                                      ),
-                                    )
-                                  ],
-                                );
-                              } else {
-                                return _image(f);
-                              }
-                            }).toList(),
+    return WillPopScope(
+      onWillPop: () {
+        SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+        return;
+      },
+      child: DefaultTabController(
+        length: intros.length,
+        child: Scaffold(
+          body: Builder(
+              builder: (BuildContext context) => Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(bottom: 26),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: TabBarView(
+                              children: intros.map((f) {
+                                count++;
+                                print("$count == ${intros.length}");
+                                if (count == intros.length) {
+                                  return Stack(
+                                    children: <Widget>[
+                                      _image(f),
+                                      Positioned(
+                                        bottom: 20,
+                                        left: 50,
+                                        right: 50,
+                                        child: RaisedButton(
+                                          child: Text("Mulai"),
+                                          color: Colors.white,
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            saveLocalData('isNew', "true");
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder:
+                                                        (BuildContext context) =>
+                                                            LoginPage()));
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                } else {
+                                  return _image(f);
+                                }
+                              }).toList(),
+                            ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: 50,
-                        right: 50,
-                        child: Center(child: TabPageSelector()),
-                      )
-                    ],
-                  ),
-                )),
+                        Positioned(
+                          bottom: 0,
+                          left: 50,
+                          right: 50,
+                          child: Center(child: TabPageSelector()),
+                        )
+                      ],
+                    ),
+                  )),
+        ),
       ),
     );
   }
