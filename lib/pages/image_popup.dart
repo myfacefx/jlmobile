@@ -27,11 +27,6 @@ class ImagePopupPage extends StatelessWidget {
                 image: image,
               ),
             ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(child: Icon(Icons.close)),
-            )
           ],
         ),
       ),
