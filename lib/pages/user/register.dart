@@ -143,18 +143,22 @@ class _RegisterPageState extends State<RegisterPage> {
           globals.state = "home";
 
           Navigator.of(context).pop();
-          Navigator.pushNamed(context, "/home");
+          Navigator.pushNamed(context, "/");
         }
       } catch (e) {
         print(e);
-        globals.showDialogs("Username/email sudah terdaftar, silahkan ganti yang lain", context);
+        globals.showDialogs(
+            "Username/email sudah terdaftar, silahkan ganti yang lain",
+            context);
         setState(() {
           registerLoading = false;
           autoValidate = true;
         });
       }
     } else {
-      globals.showDialogs("Form kurang lengkap/masih kurang sesuai, silahkan cek kembali", context);
+      globals.showDialogs(
+          "Form kurang lengkap/masih kurang sesuai, silahkan cek kembali",
+          context);
       setState(() {
         autoValidate = true;
       });
@@ -177,11 +181,13 @@ class _RegisterPageState extends State<RegisterPage> {
             autovalidate: autoValidate,
             key: _formKey,
             child: Column(children: <Widget>[
-              _photo != null ? FadeInImage.assetNetwork(
-                height: 150,
-                fit: BoxFit.fill,
-                placeholder: 'assets/images/loading.gif',
-                image: _photo) : Container(),
+              _photo != null
+                  ? FadeInImage.assetNetwork(
+                      height: 150,
+                      fit: BoxFit.fill,
+                      placeholder: 'assets/images/loading.gif',
+                      image: _photo)
+                  : Container(),
               Container(
                   alignment: Alignment.center,
                   width: 300,
@@ -242,9 +248,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(13),
                         hintText: "Username",
-                        labelText: "Username",filled: true,
-                                  fillColor: Colors.white,
-                                  
+                        labelText: "Username",
+                        filled: true,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -263,8 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                     validator: (value) {
-                      if (value.isEmpty ||
-                          value.length < 3) {
+                      if (value.isEmpty || value.length < 3) {
                         return 'Silahkan isi nama lengkap Anda';
                       }
                     },
@@ -274,27 +279,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(13),
                         hintText: "Nama Lengkap",
-                        labelText: "Nama Lengkap",filled: true,
-                                  fillColor: Colors.white,
-                                  
+                        labelText: "Nama Lengkap",
+                        filled: true,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Radio(
-                      value: "M",
-                      onChanged: _handleGenderChange,
-                      groupValue: _gender),
-                  Text("Laki-Laki", style: TextStyle(color: Colors.black)),
-                  Radio(
-                      value: "F",
-                      onChanged: _handleGenderChange,
-                      groupValue: _gender),
-                  Text("Perempuan", style: TextStyle(color: Colors.black))
-                ]),
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Radio(
+                        value: "M",
+                        onChanged: _handleGenderChange,
+                        groupValue: _gender),
+                    Text("Laki-Laki", style: TextStyle(color: Colors.black)),
+                    Radio(
+                        value: "F",
+                        onChanged: _handleGenderChange,
+                        groupValue: _gender),
+                    Text("Perempuan", style: TextStyle(color: Colors.black))
+                  ]),
               Container(
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -316,14 +321,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                     keyboardType: TextInputType.number,
-                    inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(13),
-                        hintText: "Format 08xx",
-                        labelText: "Nomor Handphone (WA)", filled: true,
-                                  fillColor: Colors.white,
-                                  
+                        hintText: "Format 628xx",
+                        labelText: "Nomor Handphone (WA)",
+                        filled: true,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -364,9 +371,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               : Icons.visibility_off),
                         ),
                         hintText: "Password",
-                        labelText: "Password",filled: true,
-                                  fillColor: Colors.white,
-                                  
+                        labelText: "Password",
+                        filled: true,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -410,9 +417,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: DropdownButtonFormField<Province>(
-                    decoration: InputDecoration(filled: true,
-                                  fillColor: Colors.white,
-                                  
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20)),
                         contentPadding: EdgeInsets.all(13),
@@ -443,9 +450,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 300,
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: DropdownButtonFormField<Regency>(
-                    decoration: InputDecoration(filled: true,
-                                  fillColor: Colors.white,
-                                  
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20)),
                         contentPadding: EdgeInsets.all(13),
@@ -499,12 +506,11 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Align(
             alignment: Alignment.center,
             child: !registerLoading
-              ? Container()
-              : Container(child: Center(child: CircularProgressIndicator())),
+                ? Container()
+                : Container(child: Center(child: CircularProgressIndicator())),
           ),
         )
-      ])
-      ),
+      ])),
     );
   }
 }

@@ -32,7 +32,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   int allPlayerCounts = 0;
 
   String selectedProvince = "All";
-  String selectedSortBy = "Terbaru";
+  String selectedSortBy = "Populer";
 
   List<Province> provinces = List<Province>();
   List<String> itemProvince = <String>['All'];
@@ -106,6 +106,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   Widget _buildcontSub(String name, String count, int subCategory) {
     return GestureDetector(
       onTap: () {
+        currentIdSubCategory = subCategory;
+        currentSubCategory = name;
         _refresh(subCategory, name);
       },
       child: Container(
@@ -224,7 +226,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Container(
-            width: globals.mw(context)*0.5,
+            width: globals.mw(context) * 0.5,
             child: Text(
               "${widget.animalCategory.name} - $currentSubCategory",
               overflow: TextOverflow.ellipsis,
@@ -274,7 +276,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   // sort and search
   Widget dropdownSortBy() {
-    List<String> item = <String>['Terbaru', 'Populer'];
+    List<String> item = <String>['Populer', 'Terbaru'];
     return DropdownButton<String>(
         value: selectedSortBy,
         items: item.map((String value) {
@@ -289,6 +291,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         onChanged: (value) {
           setState(() {
             selectedSortBy = value;
+            currentIdSubCategory = currentIdSubCategory;
+            currentSubCategory = currentSubCategory;
             _refresh(currentIdSubCategory, currentSubCategory);
           });
         });
@@ -335,6 +339,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           fontSize: 12,
         ),
         onSubmitted: (String text) {
+          currentIdSubCategory = currentIdSubCategory;
+          currentSubCategory = currentSubCategory;
           _refresh(currentIdSubCategory, currentSubCategory);
         },
         decoration: InputDecoration(
@@ -389,19 +395,27 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 children: listMyWidgets()));
   }
 
-  Widget _buildTime(String expiryTime) {
-    List<String> splitText = expiryTime.split(" ");
-    String date = splitText[0];
-
-    return Container(
-      width: globals.mw(context) * 0.5,
-      child: Text(
-        "${globals.convertTimer(expiryTime)} Remaining - ${globals.convertFormatDate(date)}",
-        style: Theme.of(context).textTheme.display1.copyWith(
-              fontSize: 10,
-            ),
-        textAlign: TextAlign.left,
-      ),
+  Widget _buildTime(String expiryTime, int duration) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          "${globals.convertTimer(expiryTime)} Remaining",
+          style: Theme.of(context).textTheme.display1.copyWith(
+                fontSize: 10,
+              ),
+          textAlign: TextAlign.left,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Theme.of(context).primaryColor,
+          ),
+          padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+          child:
+              globals.myText(text: "1x$duration jam", size: 10, color: "light"),
+        )
+      ],
     );
   }
 
@@ -464,14 +478,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       bottom: 4,
       right: 10,
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ProductDetailPage(
-                        animalId: animalId,
-                      )));
-        },
+        onTap: () {},
         splashColor: Theme.of(context).primaryColor,
         child: Container(
             width: 40,
@@ -520,19 +527,20 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     if (animal.auction != null) {
       currentBid = animal.auction.currentBid.toDouble();
     }
-    return Stack(
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => ProductDetailPage(
-                            animalId: animal.id,
-                          )));
-            },
+    return GestureDetector(
+      onTap: () async {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => ProductDetailPage(
+                      animalId: animal.id,
+                    )));
+        _refresh(currentIdSubCategory, currentSubCategory);
+      },
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             child: Card(
               child: Container(
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
@@ -541,7 +549,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     SizedBox(
                       height: 5,
                     ),
-                    _buildTime(animal.auction.expiryDate),
+                    _buildTime(
+                        animal.auction.expiryDate, animal.auction.duration),
                     isNotError
                         ? _buildImage(animal.animalImages[0].image)
                         : globals.failLoadImage(),
@@ -569,31 +578,31 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               ),
             ),
           ),
-        ),
-        _buildChat(animal.auction.countComments.toString(), animal.id),
-        myProduct
-            ? Positioned(
-                bottom: 20,
-                left: 15,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Container(
-                      width: globals.mw(context) * 0.3,
-                      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: globals.myText(
-                          align: TextAlign.center,
-                          text: "PRODUK ANDA",
-                          color: "light",
-                          size: 10),
-                    )
-                  ],
-                ))
-            : Container(),
-      ],
+          _buildChat(animal.auction.countComments.toString(), animal.id),
+          myProduct
+              ? Positioned(
+                  bottom: 20,
+                  left: 15,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        width: globals.mw(context) * 0.3,
+                        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: globals.myText(
+                            align: TextAlign.center,
+                            text: "PRODUK ANDA",
+                            color: "light",
+                            size: 10),
+                      )
+                    ],
+                  ))
+              : Container(),
+        ],
+      ),
     );
   }
 

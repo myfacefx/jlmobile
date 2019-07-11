@@ -27,12 +27,12 @@ class MyApp extends StatelessWidget {
       title: 'JLF',
       debugShowCheckedModeBanner: false,
       theme: buildThemeData(),
-      home: globals.state == "intro"
-          ? IntroPage()
-          : (globals.state == "home" ? HomePage() : LoginPage()),
+      initialRoute: globals.state == "intro"
+          ? "/intro"
+          : (globals.state == "home" ? "/" : "/login"),
       routes: <String, WidgetBuilder>{
         //Root Page
-        '/home': (BuildContext context) => HomePage(),
+        '/': (BuildContext context) => HomePage(),
         '/login': (BuildContext context) => LoginPage(),
         '/register': (BuildContext context) => RegisterPage(),
         '/blacklist': (BuildContext context) => BlacklistPage(),
@@ -46,7 +46,8 @@ class MyApp extends StatelessWidget {
         '/our-bid': (BuildContext context) => OurBidTopPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
         '/auction/activate': (BuildContext context) => ActivateAuctionPage(),
-        '/notification': (BuildContext context) => NotificationPage()
+        '/notification': (BuildContext context) => NotificationPage(),
+        '/intro': (BuildContext context) => IntroPage()
       },
     );
   }

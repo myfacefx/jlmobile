@@ -1,5 +1,6 @@
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
+import 'package:jlf_mobile/models/winner_bid.dart';
 
 class Auction {
     int id;
@@ -29,6 +30,7 @@ class Auction {
     int ownerUserId;
     int innerIslandShipping;
     int duration;
+    WinnerBid winnerBid;
 
     Auction({
         this.id,
@@ -57,7 +59,8 @@ class Auction {
         this.lastBid,
         this.ownerUserId,
         this.innerIslandShipping,
-        this.duration
+        this.duration,
+        this.winnerBid,
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -88,6 +91,7 @@ class Auction {
         bids: json["bids"] == null ? null : new List<Bid>.from(json["bids"].map((x) => Bid.fromJson(x))),
         innerIslandShipping: json["inner_island_shipping"] == null ? null : json["inner_island_shipping"],
         duration: json["duration"] == null ? null : json["duration"],
+        winnerBid: json["winner_bid"] == null ? null : WinnerBid.fromJson(json["winner_bid"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -117,6 +121,7 @@ class Auction {
         "auction_comments": auctionComments == null ? null : new List<dynamic>.from(auctionComments.map((x) => x.toJson())),
         "bids": bids == null ? null : new List<dynamic>.from(bids.map((x) => x.toJson())),
         "inner_island_shipping": innerIslandShipping == null ? null : innerIslandShipping,
-        "duration": duration == null ? null : duration
+        "duration": duration == null ? null : duration,
+        "winner_bid": winnerBid == null ? null : winnerBid.toJson(),
     }..removeWhere( (key, val) => val == null);
 }

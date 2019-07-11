@@ -43,11 +43,11 @@ String getBaseUrl() {
 FirebaseMessaging _fcm = FirebaseMessaging();
 generateToken() async {
   // Firestore _db = Firestore.instance;
-  
+
   if (user.firebaseToken == null) {
     String fcmToken = await _fcm.getToken();
 
-    if (fcmToken != null) {      
+    if (fcmToken != null) {
       User updateToken = User();
       updateToken.firebaseToken = fcmToken;
 
@@ -73,29 +73,25 @@ generateToken() async {
 }
 
 notificationListener(context) {
-  _fcm.configure(
-    onMessage: (Map<String, dynamic> message) async {
-      print("onMessage: $message");
+  _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+    print("onMessage: $message");
 
-      showDialogs(message['notification']['body'], context);
+    showDialogs(message['notification']['body'], context);
 
-      // final snackbar = SnackBar(
-      //   content: Text(message['notification']['title']),
-      //   action: SnackBarAction(
-      //     label: 'Go',
-      //     onPressed: () => null,
-      //   )
-      // );
+    // final snackbar = SnackBar(
+    //   content: Text(message['notification']['title']),
+    //   action: SnackBarAction(
+    //     label: 'Go',
+    //     onPressed: () => null,
+    //   )
+    // );
 
-      // Scaffold.of(context).showSnackBar(snackbar);
-    }, 
-    onLaunch: (Map<String, dynamic> message) async {
-      print("onLaunch: $message");
-    },
-    onResume: (Map<String, dynamic> message) async {
-      print("onResume: $message");
-    }
-  );
+    // Scaffold.of(context).showSnackBar(snackbar);
+  }, onLaunch: (Map<String, dynamic> message) async {
+    print("onLaunch: $message");
+  }, onResume: (Map<String, dynamic> message) async {
+    print("onResume: $message");
+  });
 }
 
 /// Global Function to return Alert Dialog
@@ -177,7 +173,13 @@ Widget bottomNavigationBar(context) {
 
 Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
   return AppBar(
-    title: Container(child: Image.asset("assets/images/logo.png", height: 30)),
+    title: GestureDetector(
+      onTap: () {
+        Navigator.popUntil(context, ModalRoute.withName("/"));
+      },
+      child:
+          Container(child: Image.asset("assets/images/logo.png", height: 30)),
+    ),
     leading: IconButton(
         icon: Icon(Icons.menu),
         onPressed: () {
@@ -384,14 +386,14 @@ Color myColor([String color = "default"]) {
     case "primary":
       // red pink
       // returnedColor = Color.fromRGBO(255, 77, 77, 1);
-      
+
       // light blue
       // returnedColor = Color.fromRGBO(73, 187, 255, 1);
-      
+
       // blue navy
-      returnedColor = Color.fromRGBO(60,90,153,1);
+      returnedColor = Color.fromRGBO(60, 90, 153, 1);
       break;
-    case "mimosa": 
+    case "mimosa":
       // for current bid
       returnedColor = Color.fromRGBO(239, 192, 80, 1);
       break;
