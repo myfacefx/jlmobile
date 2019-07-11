@@ -93,7 +93,8 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildDoted(int index, int total) {
     return Container(
-      child: globals.myText(text: "$index / $total", color: "light", weight: "XB"),
+      child:
+          globals.myText(text: "$index / $total", color: "light", weight: "XB"),
     );
   }
 
@@ -133,16 +134,37 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildAsk() {
     return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
+      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       height: 64,
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(10)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(
-          "BINGUNG ? YUK SINI KAMI AJARIN",
-          textAlign: TextAlign.center,
-        )
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        globals.myText(
+            text: "BACA PANDUAN DAN TIPS TRIK LENGKAP JLF DI SINI",
+            color: "light",
+            size: 16,
+            align: TextAlign.center),
+      ]),
+    );
+  }
+
+   Widget _buildNumberMember() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
+      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+      height: 35,
+      decoration: BoxDecoration(
+          color: Color.fromRGBO(73, 187, 255, 1),
+          borderRadius: BorderRadius.circular(10)),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        globals.myText(
+            text: "$membersCount Orang telah bergabung bersama JLF saat ini",
+            color: "light",
+            size: 12,
+            weight: "N",
+            align: TextAlign.center),
       ]),
     );
   }
@@ -153,7 +175,7 @@ class _HomePage extends State<HomePage> {
       child: Row(
         children: <Widget>[
           Text(
-            "BID",
+            "LELANG",
             style: Theme.of(context).textTheme.headline,
           ),
           Text("  |  ", style: Theme.of(context).textTheme.headline),
@@ -165,7 +187,9 @@ class _HomePage extends State<HomePage> {
                 .copyWith(color: Color.fromRGBO(178, 178, 178, 1)),
           ),
           Expanded(child: Text("")),
-          membersCount > 0 ? globals.myText(text: "$membersCount MEMBER", color: 'dark') : Container()
+          // membersCount > 0
+          //     ? globals.myText(text: "$membersCount MEMBER", color: 'dark')
+          //     : Container()
         ],
       ),
     );
@@ -358,6 +382,7 @@ class _HomePage extends State<HomePage> {
               children: <Widget>[
                 _buildCarousel(),
                 _buildAsk(),
+                _buildNumberMember(),
                 _buildTitle(),
                 _buildGridCategory(animalCategories),
                 Padding(

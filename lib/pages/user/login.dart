@@ -70,7 +70,7 @@ class _LoginPage extends State<LoginPage> {
           globals.state = "home";
 
           Navigator.of(context).pop();
-          Navigator.pushNamed(context, "/home");
+          Navigator.pushNamed(context, "/");
         } else {
           globals.showDialogs("Login gagal, silahkan coba kembali", context);
         }
@@ -122,7 +122,7 @@ class _LoginPage extends State<LoginPage> {
           globals.user = users[0];
           globals.state = "home";
 
-          Navigator.pushNamed(context, "/home");
+          Navigator.pushNamed(context, "/");
         } else {
           User registerUser = User();
           registerUser.email = profile['email'];

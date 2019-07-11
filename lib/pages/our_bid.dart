@@ -274,10 +274,10 @@ class _OurBidPageState extends State<OurBidPage> {
     var colorText = "light";
     String text = globals.convertTimer(expiryTime) + " left";
 
-    if (status == "Selesai") {
-      colorBox = Colors.grey;
+    if (status == "Gagal") {
+      colorBox = Colors.red;
       colorText = "light";
-      text = "Selesai";
+      text = "Gagal";
     } else if (status == "Menang" || status == "Terkonfirmasi") {
       colorBox = Colors.green;
       text = "Anda Menang";
@@ -369,7 +369,7 @@ class _OurBidPageState extends State<OurBidPage> {
         text: "Penawaran terakhir oleh ${animal.auction.lastBid}",
         color: "unprime",
         size: 10);
-    if (status == "Selesai") {
+    if (status == "Gagal") {
       widget = globals.myText(
           text: "Dimenangkan oleh ${animal.auction.lastBid}",
           color: "unprime",
@@ -379,7 +379,7 @@ class _OurBidPageState extends State<OurBidPage> {
           text: 'Dimenangkan oleh Anda', color: "unprime", size: 10);
     } else if (status == "Terkonfirmasi") {
       widget = Container(
-        padding: EdgeInsets.fromLTRB(3, 2, 3, 1),
+        padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
         decoration: BoxDecoration(
             border: Border.all(width: 1, color: globals.myColor("primary"))),
         child: globals.myText(
@@ -396,24 +396,32 @@ class _OurBidPageState extends State<OurBidPage> {
       isNotError = true;
     }
 
-    String ageNow = globals.convertToAge(animal.dateOfBirth);
+    //String ageNow = globals.convertToAge(animal.dateOfBirth);
+
+    // Bid lastBid;
+
+    int winnerUserId = 0;
+
+    if (animal.auction.winnerBid != null) {
+      winnerUserId = animal.auction.winnerBid.userId;
+    }
+
+    // if (animal.auction.bids.length > 0) {
+    //   lastBid = animal.auction.bids[animal.auction.bids.length - 1];
+    // }
 
     String status = "Aktif";
 
-    Bid lastBid;
-    if (animal.auction.bids.length > 0) {
-      lastBid = animal.auction.bids[animal.auction.bids.length - 1];
-    }
-
-    if (animal.auction.winnerBidId != null &&
-        lastBid.userId != globals.user.id) {
-      status = "Selesai";
-    } else if (animal.auction.winnerBidId != null &&
-        lastBid.userId == globals.user.id) {
-      status = "Menang";
-    } else if (animal.auction.winnerConfirmation != null &&
-        lastBid.userId == globals.user.id) {
-      status = "Terkonfirmasi";
+    if (animal.auction.active == 0) {
+      if (winnerUserId == globals.user.id) {
+        if (animal.auction.winnerConfirmation != null) {
+          status = "Terkonfirmasi";
+        } else {
+          status = "Menang";
+        }
+      } else if (winnerUserId != globals.user.id) {
+        status = "Gagal";
+      }
     }
 
     return GestureDetector(
@@ -443,7 +451,7 @@ class _OurBidPageState extends State<OurBidPage> {
                     ? _buildImage(animal.animalImages[0].image)
                     : globals.failLoadImage(),
                 Container(
-                  height: 95,
+                  height: 110,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,

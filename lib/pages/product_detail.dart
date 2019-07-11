@@ -271,8 +271,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       size: 10,
                       align: TextAlign.center),
                   onPressed: () async {
-                    const url =
-                        'https://api.whatsapp.com/send?phone=6281229755091&text=Halo%20mau%20order%20gan';
+                    String phone = animal.owner.phoneNumber;
+                    String url =
+                        'https://api.whatsapp.com/send?phone=$phone&text=Halo%20mau%20order%20gan';
                     if (await canLaunch(url)) {
                       await launch(url);
                     } else {
