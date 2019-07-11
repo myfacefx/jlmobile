@@ -93,7 +93,8 @@ class _NotificationPageState extends State<NotificationPage> {
 
                                   if (informationConvert is String) {
                                     informationBuild.add(globals.myText(
-                                          text: informationConvert, color: "dark"));
+                                        text: informationConvert,
+                                        color: "dark"));
                                   } else {
                                     for (var value in informationConvert) {
                                       Widget output;

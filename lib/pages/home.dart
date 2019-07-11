@@ -160,7 +160,7 @@ class _HomePage extends State<HomePage> {
           borderRadius: BorderRadius.circular(10)),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         globals.myText(
-            text: "$membersCount Orang telah bergabung bersama JLF saat ini",
+            text: "$membersCount orang telah bergabung bersama JLF saat ini",
             color: "light",
             size: 12,
             weight: "N",
@@ -336,32 +336,6 @@ class _HomePage extends State<HomePage> {
 
   _exitDialog() {
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-    // return;
-    // return showDialog(
-    //     context: context,
-    //     builder: (context) {
-    //       return AlertDialog(
-    //         title: Text("Perhatian",
-    //             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
-    //             textAlign: TextAlign.center),
-    //         content: Text("Log out dari aplikasi?",
-    //             style: TextStyle(color: Colors.black)),
-    //         actions: <Widget>[
-    //           FlatButton(
-    //               child: Text("Batal",
-    //                   style: TextStyle(color: Theme.of(context).primaryColor)),
-    //               onPressed: () {
-    //                 Navigator.of(context).pop(true);
-    //               }),
-    //           FlatButton(
-    //               color: Theme.of(context).primaryColor,
-    //               child: Text("Ya", style: TextStyle(color: Colors.white)),
-    //               onPressed: () {
-    //                 _logOut();
-    //               })
-    //         ],
-    //       );
-    //     });
   }
 
   @override

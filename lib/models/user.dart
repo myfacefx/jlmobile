@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/models/regency.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
@@ -34,6 +35,7 @@ class User {
     int historiesCount;
     Role role;
     Regency regency;
+    Province province;
     String firebaseToken;
 
     User({
@@ -58,6 +60,7 @@ class User {
         this.historiesCount,
         this.role,
         this.regency,
+        this.province,
         this.firebaseToken
     });
 
@@ -83,6 +86,7 @@ class User {
         historiesCount: json["histories_count"] == null ? null : json["histories_count"],
         role: json["role"] == null ? null : Role.fromJson(json["role"]),
         regency: json["regency"] == null ? null : Regency.fromJson(json["regency"]),
+        province: json["province"] == null ? null : Province.fromJson(json["province"]),
         firebaseToken: json["firebase_token"] == null ? null : json["firebase_token"],
     );
 
@@ -108,6 +112,7 @@ class User {
         "histories_count": historiesCount == null ? null : historiesCount,
         "role": role == null ? null : role.toJson(),
         "regency": regency == null ? null : regency.toJson(),
+        "province": province == null ? null : province.toJson(),
         "firebase_token": firebaseToken == null ? null : firebaseToken,
     }..removeWhere((key, val) => val == null);
 }

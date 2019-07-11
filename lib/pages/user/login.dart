@@ -66,6 +66,8 @@ class _LoginPage extends State<LoginPage> {
         if (userResult != null) {
           saveLocalData('user', userToJson(userResult));
 
+          print(userToJson(userResult));
+
           globals.user = userResult;
           globals.state = "home";
 

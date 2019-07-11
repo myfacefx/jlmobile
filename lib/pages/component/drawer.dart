@@ -115,7 +115,7 @@ Widget drawer(context) {
                 // _buildDrawerNavigationButtonBig("Our Carts", context),
                 // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 globals.spacePadding(),
-                _buildDrawerNavigationButtonSmall("RekBer", "/about", context),
+                _buildDrawerNavigationButtonSmall("RekBer", "/rekber", context),
                 _buildDrawerNavigationButtonSmall("About", "/about", context),
                 _buildDrawerNavigationButtonSmall("How To", "/how-to", context),
                 _buildDrawerNavigationButtonSmall("FAQ", "/faq", context),

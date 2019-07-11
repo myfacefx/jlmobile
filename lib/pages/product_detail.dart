@@ -28,6 +28,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   final _formKeyComment = GlobalKey<FormState>();
   final _formKeyBid = GlobalKey<FormState>();
 
+  var auctionHasExpired = false;
+
   // final bidController = MoneyMaskedTextController(leftSymbol: "Rp. ", precision: 0);
 
   int _current = 0;
@@ -42,10 +44,28 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     globals.getNotificationCount();
   }
 
+  _checkAuctionActivity() {
+    var expiry_date = DateTime.parse(animal.auction.expiryDate);
+    var now = DateTime.now();
+    
+    if (now.year >= expiry_date.year &&
+        now.month >= expiry_date.month &&
+        now.day >= expiry_date.day &&
+        now.hour >= expiry_date.hour &&
+        now.minute >= expiry_date.minute &&
+        now.second >= expiry_date.second) {
+      print("AUCTION EXPIRED");
+      setState(() {
+        auctionHasExpired = true;
+      });
+    }
+  }
+
   void loadAnimal(int animalId) async {
     isLoading = true;
     getAnimalById("token", animalId).then((onValue) {
       animal = onValue;
+      _checkAuctionActivity();
       setState(() {
         isLoading = false;
       });
@@ -221,16 +241,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 Text(animal.owner.username),
                 globals.myText(
                     text: animal.owner.regency.name, color: "light", size: 10),
+                globals.myText(
+                    text: animal.owner.province.name, color: "light", size: 10),
                 Row(
                   children: <Widget>[
-                    Icon(Icons.star),
-                    globals.myText(text: "4.0/5.0", color: "light", size: 10)
+                    Icon(Icons.star, size: 10, color: Colors.yellow),
+                    globals.myText(text: "4.5", color: "light", size: 10)
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     globals.myText(text: "1000", color: "light", size: 10),
-                    globals.myText(text: " |", color: "light", size: 10),
+                    globals.myText(text: " | ", color: "light", size: 10),
                     globals.myText(
                         text: "10 Barang Terjual", color: "light", size: 10),
                   ],
@@ -635,14 +657,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildBidRule() {
+  Widget _buildWinnerPicker() {
     String winnerName;
     String winnerUserName;
     int amount;
 
     if (animal.auction.winnerBidId != null) {
       for (var i = 0; i < animal.auction.bids.length - 1; i++) {
-        // print("${animal.auction.bids[i].id} - ${animal.auction.winnerBidId}");
         if (animal.auction.bids[i].id == animal.auction.winnerBidId) {
           winnerName = animal.auction.bids[i].user.name;
           winnerUserName = animal.auction.bids[i].user.username;
@@ -652,8 +673,99 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       }
     }
 
-    // winnerName != null ? print("Winner = $winnerName") : print("");
+    return winnerName != null && winnerName.isNotEmpty
+        ? _winnerSection(winnerName, winnerUserName, amount)
+        : animal.ownerUserId == globals.user.id &&
+                animal.auction.winnerBidId == null &&
+                animal.auction.active == 1
+            ? Container(
+                margin: EdgeInsets.symmetric(vertical: 15),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: FlatButton(
+                        onPressed: () {
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("Pilih Pemenang Lelang",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 25),
+                                      textAlign: TextAlign.center),
+                                  content: Text(
+                                      "Ambil pemenang lelang dengan tawaran tertinggi?",
+                                      style: TextStyle(color: Colors.black)),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                        child: Text("Batal",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor)),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(true);
+                                        }),
+                                    FlatButton(
+                                        color: Theme.of(context).primaryColor,
+                                        child: Text("Ya",
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        onPressed: () async {
+                                          try {
+                                            globals.loadingModel(context);
+                                            final result = await setWinner(
+                                                "Token", animal.auction.id);
+                                            Navigator.pop(context);
+                                            if (result) {
+                                              await globals.showDialogs(
+                                                  "Berhasil memilih pemenang",
+                                                  context);
+                                            } else {
+                                              await globals.showDialogs(
+                                                  "Gagal, silahkan coba kembali",
+                                                  context);
+                                            }
 
+                                            bidController.text = '';
+                                            Navigator.pop(context);
+                                            loadAnimal(animal.id);
+                                          } catch (e) {
+                                            Navigator.pop(context);
+                                            globals.showDialogs(
+                                                e.toString(), context);
+                                            print(e);
+                                            print("######################");
+                                            print(e.toString());
+                                          }
+                                        })
+                                  ],
+                                );
+                              });
+                        },
+                        child: Text(
+                          "Ambil Pemenang",
+                          style: Theme.of(context)
+                              .textTheme
+                              .title
+                              .copyWith(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    animal.auction.cancellationDate == null
+                        ? _cancelAuction()
+                        : Container()
+                  ],
+                ),
+              )
+            : Container();
+  }
+
+  Widget _buildBidRule() {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.fromLTRB(0, 10, 20, 10),
@@ -676,101 +788,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             height: 20,
           ),
           _buildBidStatus(),
-          winnerName != null && winnerName.isNotEmpty
-              ? _winnerSection(winnerName, winnerUserName, amount)
-              : animal.ownerUserId == globals.user.id &&
-                      animal.auction.winnerBidId == null &&
-                      animal.auction.active == 1
-                  ? Container(
-                      margin: EdgeInsets.symmetric(vertical: 15),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(30)),
-                            child: FlatButton(
-                              onPressed: () {
-                                return showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text("Pilih Pemenang Lelang",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w800,
-                                                fontSize: 25),
-                                            textAlign: TextAlign.center),
-                                        content: Text(
-                                            "Ambil pemenang lelang dengan tawaran tertinggi?",
-                                            style:
-                                                TextStyle(color: Colors.black)),
-                                        actions: <Widget>[
-                                          FlatButton(
-                                              child: Text("Batal",
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor)),
-                                              onPressed: () {
-                                                Navigator.of(context).pop(true);
-                                              }),
-                                          FlatButton(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              child: Text("Ya",
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                              onPressed: () async {
-                                                try {
-                                                  globals.loadingModel(context);
-                                                  final result =
-                                                      await setWinner("Token",
-                                                          animal.auction.id);
-                                                  Navigator.pop(context);
-                                                  if (result) {
-                                                    await globals.showDialogs(
-                                                        "Berhasil memilih pemenang",
-                                                        context);
-                                                  } else {
-                                                    await globals.showDialogs(
-                                                        "Gagal, silahkan coba kembali",
-                                                        context);
-                                                  }
-
-                                                  bidController.text = '';
-                                                  Navigator.pop(context);
-                                                  loadAnimal(animal.id);
-                                                } catch (e) {
-                                                  Navigator.pop(context);
-                                                  globals.showDialogs(
-                                                      e.toString(), context);
-                                                  print(e);
-                                                  print(
-                                                      "######################");
-                                                  print(e.toString());
-                                                }
-                                              })
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Text(
-                                "Ambil Pemenang",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .title
-                                    .copyWith(
-                                        color: Colors.white, fontSize: 16),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          animal.auction.cancellationDate == null
-                              ? _cancelAuction()
-                              : Container()
-                        ],
-                      ),
-                    )
-                  : Container()
+          // _buildWinnerPicker(),
         ],
       ),
     );
@@ -1176,14 +1194,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             SizedBox(
               height: 20,
             ),
-            animal.auction.active == 1
+            animal.auction.active == 1 && auctionHasExpired == false
                 ? Form(key: _formKeyComment, child: textAddComment())
                 : Container(
                     child: globals.myText(
-                        text: "Lelang tidak aktif",
+                        text: "Lelang berakhir",
                         color: "dark",
                         align: TextAlign.center)),
-            animal.auction.active == 1
+            animal.auction.active == 1 && auctionHasExpired == false
                 ? Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: SizedBox(
@@ -1245,7 +1263,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                     0) || // Or the currentBid is equal or more than buy it now
                             (animal.auction.buyItNow.toInt() <=
                                 animal.auction.currentBid.toInt()) ||
-                            animal.auction.winnerBidId != null
+                            animal.auction.winnerBidId != null ||
+                            auctionHasExpired == true
                         ? Container()
                         : _buildPutBid(),
                     SizedBox(
