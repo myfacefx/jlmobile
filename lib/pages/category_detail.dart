@@ -43,8 +43,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   _CategoryDetailPage(AnimalCategory animalCategory) {
     this.animalCategory = animalCategory;
 
-    getAnimalByCategory(
-            "Token", animalCategory.id, selectedSortBy, searchController.text)
+    getAnimalByCategory("Token", animalCategory.id, selectedSortBy,
+            searchController.text, globals.user.id)
         .then((onValue) {
       animals = onValue;
       setState(() {
@@ -75,8 +75,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
     if (subCategoryId != null) {
       currentSubCategory = subCategoryName;
-      getAnimalBySubCategory(
-              "Token", subCategoryId, selectedSortBy, searchController.text)
+      getAnimalBySubCategory("Token", subCategoryId, selectedSortBy,
+              searchController.text, globals.user.id)
           .then((onValue) {
         animals = onValue;
         setState(() {
@@ -89,7 +89,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       currentSubCategory = "ALL";
       currentIdSubCategory = null;
       getAnimalByCategory("Token", widget.animalCategory.id, selectedSortBy,
-              searchController.text)
+              searchController.text, globals.user.id)
           .then((onValue) {
         animals = onValue;
         setState(() {
@@ -434,8 +434,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _buildDetail(String name, String username, String regency, String province,
-      String gender, DateTime birthDate) {
+  Widget _buildDetail(String name, String username, String regency,
+      String province, String gender, DateTime birthDate) {
     //String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: double.infinity,
@@ -453,8 +453,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               child:
                   globals.myText(text: username, color: "unprime", size: 10)),
           globals.myText(text: regency, size: 10),
-          globals.myText(text:  province, size: 10)
-
+          globals.myText(text: province, size: 10)
         ],
       ),
     );

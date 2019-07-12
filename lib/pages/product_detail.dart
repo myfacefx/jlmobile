@@ -47,7 +47,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   _checkAuctionActivity() {
     var expiry_date = DateTime.parse(animal.auction.expiryDate);
     var now = DateTime.now();
-    
+
     if (now.year >= expiry_date.year &&
         now.month >= expiry_date.month &&
         now.day >= expiry_date.day &&
@@ -293,7 +293,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       size: 10,
                       align: TextAlign.center),
                   onPressed: () async {
-                    String phone = animal.owner.phoneNumber;
+                    String phone = "62${animal.owner.phoneNumber.substring(1)}";
+
                     String url =
                         'https://api.whatsapp.com/send?phone=$phone&text=Halo%20mau%20order%20gan';
                     if (await canLaunch(url)) {
