@@ -300,6 +300,7 @@ class _OurBidPageState extends State<OurBidPage> {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
       height: 100,
+      width: 120,
       color: Colors.white,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
@@ -424,6 +425,7 @@ class _OurBidPageState extends State<OurBidPage> {
       }
     }
 
+    
     return GestureDetector(
       onTap: () {
         Navigator.push(

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/animal.dart';
 
 Future<List<Animal>> getAnimalByCategory(String token, int animalCategoryId,
-    String sortBy, String filterName) async {
+    String sortBy, String filterName, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?animal_category_id=$animalCategoryId";
@@ -16,9 +16,9 @@ Future<List<Animal>> getAnimalByCategory(String token, int animalCategoryId,
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() + "/animals$params");
+  print(getBaseUrl() + "/animals/filter/$userId$params");
   http.Response res =
-      await http.get(getBaseUrl() + "/animals$params", headers: header);
+      await http.get(getBaseUrl() + "/animals/filter/$userId$params", headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
   } else {
@@ -26,8 +26,12 @@ Future<List<Animal>> getAnimalByCategory(String token, int animalCategoryId,
   }
 }
 
-Future<List<Animal>> getAnimalBySubCategory(String token,
-    int animalSubCategoryId, String sortBy, String filterName) async {
+Future<List<Animal>> getAnimalBySubCategory(
+    String token,
+    int animalSubCategoryId,
+    String sortBy,
+    String filterName,
+    int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?animal_sub_category_id=$animalSubCategoryId";
@@ -38,9 +42,9 @@ Future<List<Animal>> getAnimalBySubCategory(String token,
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() + "/animals$params");
+  print(getBaseUrl() + "/animals/filter/$userId$params");
   http.Response res =
-      await http.get(getBaseUrl() + "/animals$params", headers: header);
+      await http.get(getBaseUrl() + "/animals/filter/$userId$params", headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
   } else {

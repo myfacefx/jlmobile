@@ -6,6 +6,8 @@ import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
+import 'package:jlf_mobile/services/promo_services.dart';
+import 'package:jlf_mobile/services/slider_service.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,33 +24,75 @@ class _HomePage extends State<HomePage> {
 
   int _current = 0;
   bool isLoadingCategories = true;
+  bool isLoadingSlider = true;
+  bool isLoadingPromo = true;
   bool failedDataCategories = false;
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   int membersCount = 0;
-
-  List<Widget> listImage = [
-    FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/520/200/animals?4'),
-    FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/420/200/animals?1'),
-    FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/420/200/animals?2'),
-    FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/420/200/animals?3')
-  ];
+  List<Widget> listImage = [];
+  List<Widget> listPromo = [];
 
   @override
   void initState() {
     super.initState();
     _refresh();
     _getListCategories();
+    _loadSliders();
+    _loadPromos();
     globals.getNotificationCount();
     globals.generateToken();
     globals.notificationListener(context);
+  }
+
+  _loadSliders() {
+    getAllSliders("token").then((onValue) {
+      if (onValue.length != 0) {
+        listImage = [];
+        onValue.forEach((slider) {
+          listImage.add(
+            FadeInImage.assetNetwork(
+                placeholder: 'assets/images/loading.gif', image: slider.link),
+          );
+        });
+      } else {
+        listImage = getTemplateSlider();
+      }
+
+      setState(() {
+        isLoadingSlider = false;
+      });
+    }).catchError((onError) {
+      listImage = getTemplateSlider();
+      setState(() {
+        isLoadingSlider = false;
+      });
+    });
+  }
+
+  _loadPromos() {
+    getAllPromos("").then((onValue) {
+      if (onValue.length != 0) {
+        listPromo = [];
+        onValue.forEach((promo) {
+          listPromo.add(FadeInImage.assetNetwork(
+            placeholder: 'assets/images/loading.gif',
+            image: promo.link,
+            fit: BoxFit.fill,
+          ));
+        });
+      } else {
+        listPromo = getTemplatePromo();
+      }
+
+      setState(() {
+        isLoadingPromo = false;
+      });
+    }).catchError((onError) {
+      listPromo = getTemplatePromo();
+      setState(() {
+        isLoadingPromo = false;
+      });
+    });
   }
 
   _refresh() {
@@ -57,6 +101,40 @@ class _HomePage extends State<HomePage> {
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
+  }
+
+  List<Widget> getTemplatePromo() {
+    return [
+      FadeInImage.assetNetwork(
+        placeholder: 'assets/images/loading.gif',
+        image: 'https://placeimg.com/520/200/animals?4',
+      ),
+      FadeInImage.assetNetwork(
+        placeholder: 'assets/images/loading.gif',
+        image: 'https://placeimg.com/520/200/animals?4',
+      ),
+      FadeInImage.assetNetwork(
+        placeholder: 'assets/images/loading.gif',
+        image: 'https://placeimg.com/520/200/animals?4',
+      ),
+    ];
+  }
+
+  List<Widget> getTemplateSlider() {
+    return [
+      FadeInImage.assetNetwork(
+          placeholder: 'assets/images/loading.gif',
+          image: 'https://placeimg.com/520/200/animals?4'),
+      FadeInImage.assetNetwork(
+          placeholder: 'assets/images/loading.gif',
+          image: 'https://placeimg.com/420/200/animals?1'),
+      FadeInImage.assetNetwork(
+          placeholder: 'assets/images/loading.gif',
+          image: 'https://placeimg.com/420/200/animals?2'),
+      FadeInImage.assetNetwork(
+          placeholder: 'assets/images/loading.gif',
+          image: 'https://placeimg.com/420/200/animals?3')
+    ];
   }
 
   _HomePage() {
@@ -150,7 +228,7 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-   Widget _buildNumberMember() {
+  Widget _buildNumberMember() {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -270,10 +348,7 @@ class _HomePage extends State<HomePage> {
             Container(
               color: Colors.white,
               width: globals.mw(context),
-              child: FadeInImage.assetNetwork(
-                placeholder: 'assets/images/loading.gif',
-                image: 'http://hd.wallpaperswide.com/thumbs/animal_8-t2.jpg',
-              ),
+              child: listPromo[0],
             ),
             SizedBox(
               height: 5,
@@ -284,24 +359,12 @@ class _HomePage extends State<HomePage> {
                 Container(
                   color: Colors.white,
                   width: globals.mw(context) * 0.47,
-                  child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/images/loading.gif',
-                    image:
-                        'http://hd.wallpaperswide.com/thumbs/animal_8-t2.jpg',
-                  ),
+                  child: listPromo[1],
                 ),
-                // SizedBox(
-                //   width: 10,
-                // ),
                 Container(
-                  color: Colors.white,
-                  width: globals.mw(context) * 0.47,
-                  child: FadeInImage.assetNetwork(
-                    placeholder: 'assets/images/loading.gif',
-                    image:
-                        'http://hd.wallpaperswide.com/thumbs/animal_8-t2.jpg',
-                  ),
-                ),
+                    color: Colors.white,
+                    width: globals.mw(context) * 0.47,
+                    child: listPromo[2]),
               ],
             )
           ],
@@ -354,7 +417,7 @@ class _HomePage extends State<HomePage> {
           body: SafeArea(
             child: ListView(
               children: <Widget>[
-                _buildCarousel(),
+                isLoadingSlider ? globals.isLoading() : _buildCarousel(),
                 _buildAsk(),
                 _buildNumberMember(),
                 _buildTitle(),
@@ -363,7 +426,7 @@ class _HomePage extends State<HomePage> {
                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: Divider(color: Colors.black),
                 ),
-                _buildPromotion()
+                isLoadingPromo ? globals.isLoading() : _buildPromotion()
               ],
             ),
           ),
