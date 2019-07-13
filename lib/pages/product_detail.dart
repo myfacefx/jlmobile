@@ -5,6 +5,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
+import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
@@ -213,6 +214,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
+  _sendWhatsApp(phone, message) async {
+    if (phone.isNotEmpty && message.isNotEmpty) {
+      String url =
+          'https://api.whatsapp.com/send?phone=$phone&text=$message';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    } 
+  }
+
   Widget _buildOwnerDetail() {
     return Container(
       color: Theme.of(context).primaryColor,
@@ -292,16 +305,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       color: "light",
                       size: 10,
                       align: TextAlign.center),
-                  onPressed: () async {
+                  onPressed: () {
                     String phone = "62${animal.owner.phoneNumber.substring(1)}";
-
-                    String url =
-                        'https://api.whatsapp.com/send?phone=$phone&text=Halo%20mau%20order%20gan';
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    } else {
-                      throw 'Could not launch $url';
-                    }
+                    String message = "Halo";
+                    _sendWhatsApp(phone, message);
                   },
                   color: Color.fromRGBO(37, 211, 102, 1),
                 ),
@@ -603,43 +610,125 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             ));
   }
 
-  Widget _winnerSection(winnerName, winnerUserName, amount) {
-    return Container(
-        padding: EdgeInsets.symmetric(vertical: 15),
-        child: Column(
-          children: <Widget>[
-            globals.myText(
-                text: "- PEMENANG LELANG -",
-                weight: "B",
-                color: "dark",
-                size: 16),
-            SizedBox(height: 10),
-            globals.myText(
-                text: "$winnerName",
-                size: 20,
-                color: 'primary',
-                align: TextAlign.center),
-            globals.myText(
-                text: "($winnerUserName)",
-                size: 20,
-                color: 'primary',
-                align: TextAlign.center),
-            SizedBox(height: 8),
-            globals.myText(
-                text:
-                    "Tawaran: Rp. ${globals.convertToMoney(amount.toDouble())}",
-                size: 15,
-                align: TextAlign.center),
-            SizedBox(height: 8),
-            globals.myText(
-                text: "Tanggal: ${animal.auction.winnerAcceptedDate}",
-                size: 15,
-                align: TextAlign.center),
+  Widget _buildWinnerSection() {
+    User winner;
+    int amount;
 
-            // If the logged in user is the owner, show owner confirmation
-            // animal.ownerUserId == globals.user.id ?
-          ],
-        ));
+    bool winnerFound = false;
+    bool isOwner = false;
+    bool isWinner = false;
+
+    if (animal.auction.winnerBidId != null) {
+      for (var i = 0; i < animal.auction.bids.length - 1; i++) {
+        if (animal.auction.bids[i].id == animal.auction.winnerBidId) {
+          winner = animal.auction.bids[i].user;
+          amount = animal.auction.bids[i].amount;
+          winnerFound = true;
+          if (winner.id == globals.user.id) isWinner = true;
+          break;
+        }
+      }
+    }
+    if (animal.auction.ownerUserId == globals.user.id) isOwner = true;
+    
+    return winnerFound
+        ? Container(
+            padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+            child: Column(
+              children: <Widget>[
+                globals.myText(
+                    text: isWinner ? "LELANG INI TELAH ANDA MENANGKAN" : "LELANG DIMENANGKAN OLEH", color: "dark", size: 16),
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ProfilePage(userId: winner.id))),
+                  child: Container(
+                      height: 90,
+                      child: CircleAvatar(
+                          radius: 40,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: winner.photo != null &&
+                                      winner.photo.isNotEmpty
+                                  ? FadeInImage.assetNetwork(
+                                      image: winner.photo,
+                                      placeholder: 'assets/images/loading.gif',
+                                      fit: BoxFit.cover)
+                                  : Image.network('assets/images/account.png')))),
+                ),
+                globals.myText(
+                    text: "${winner.username}",
+                    size: 20,
+                    color: 'primary',
+                    align: TextAlign.center),
+                SizedBox(height: 4),
+                globals.myText(text: winner.regency.name, size: 13),
+                SizedBox(height: 4),
+                globals.myText(text: winner.province.name, size: 13),
+                SizedBox(height: 4),
+                globals.myText(text: winner.phoneNumber, size: 15),
+                SizedBox(height: 4),
+                globals.myText(
+                    text:
+                        "Bid Terpasang: Rp. ${globals.convertToMoney(amount.toDouble())}",
+                    size: 15,
+                    align: TextAlign.center),
+                SizedBox(height: 4),
+                globals.myText(
+                    text: "Tanggal: ${animal.auction.winnerAcceptedDate}",
+                    size: 15,
+                    align: TextAlign.center),
+                SizedBox(height: 4),
+                Container(
+                  padding: EdgeInsets.fromLTRB(40, 10, 40, 0),
+                  child: Card(
+                    color: Colors.grey[100],
+                    child: Container(
+                      padding: EdgeInsets.all(15),
+                      child: Column(children: <Widget>[
+                        globals.myText(text: animal.auction.verificationCode != null ? animal.auction.verificationCode : "19191", weight: "B", size: 30, letterSpacing: 3, color: "dark"),
+                        globals.myText(text: "Ini adalah kode unik yang dimiliki oleh pemilik lelang dan pemenang lelang, gunakan kode unik ini untuk melakukan pengecekan", align: TextAlign.center, color: "dark", size: 13)
+                      ],),
+                    )
+                  )
+                ),
+                // Wrap(children: <Widget>[
+                //   globals.myText(text: "Kode Verifikasi: ", size: 16),
+                // ],),
+                globals.user.id == winner.id || isOwner
+                    ? Container(
+                        width: 300,
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        child: FlatButton(
+                            onPressed: () {
+                              String phone;
+                              String message = "Halo";
+                              
+                              if (isOwner) {
+                                phone = "62${animal.owner.phoneNumber.substring(1)}";
+                                _sendWhatsApp(phone, message);  
+                              } else if (isWinner) {
+                                phone = "62${winner.phoneNumber.substring(1)}";
+                                _sendWhatsApp(phone, message);
+                              } else {
+                                return null;
+                              }
+                            },
+                            color: globals.myColor('primary'),
+                            child: globals.myText(
+                                text: isOwner
+                                    ? "HUBUNGI PEMENANG"
+                                    : "HUBUNGI PELELANG",
+                                color: 'light',
+                                weight: "B"),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20))))
+                    : Container(),
+              ],
+            ))
+        : Container();
   }
 
   Widget _cancelledAuctionSection() {
@@ -659,111 +748,96 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildWinnerPicker() {
-    String winnerName;
-    String winnerUserName;
-    int amount;
+    // return winnerName != null && winnerName.isNotEmpty
+    //     ? _winnerSection(winnerName, winnerUserName, amount)
+    //     : animal.ownerUserId == globals.user.id &&
+    //             animal.auction.winnerBidId == null &&
+    //             animal.auction.active == 1
+    //         ? Container(
+    //             margin: EdgeInsets.symmetric(vertical: 15),
+    //             child: Column(
+    //               children: <Widget>[
+    //                 Container(
+    //                   decoration: BoxDecoration(
+    //                       color: Theme.of(context).primaryColor,
+    //                       borderRadius: BorderRadius.circular(30)),
+    //                   child: FlatButton(
+    //                     onPressed: () {
+    //                       return showDialog(
+    //                           context: context,
+    //                           builder: (context) {
+    //                             return AlertDialog(
+    //                               title: Text("Pilih Pemenang Lelang",
+    //                                   style: TextStyle(
+    //                                       fontWeight: FontWeight.w800,
+    //                                       fontSize: 25),
+    //                                   textAlign: TextAlign.center),
+    //                               content: Text(
+    //                                   "Ambil pemenang lelang dengan tawaran tertinggi?",
+    //                                   style: TextStyle(color: Colors.black)),
+    //                               actions: <Widget>[
+    //                                 FlatButton(
+    //                                     child: Text("Batal",
+    //                                         style: TextStyle(
+    //                                             color: Theme.of(context)
+    //                                                 .primaryColor)),
+    //                                     onPressed: () {
+    //                                       Navigator.of(context).pop(true);
+    //                                     }),
+    //                                 FlatButton(
+    //                                     color: Theme.of(context).primaryColor,
+    //                                     child: Text("Ya",
+    //                                         style:
+    //                                             TextStyle(color: Colors.white)),
+    //                                     onPressed: () async {
+    //                                       try {
+    //                                         globals.loadingModel(context);
+    //                                         final result = await setWinner(
+    //                                             "Token", animal.auction.id);
+    //                                         Navigator.pop(context);
+    //                                         if (result) {
+    //                                           await globals.showDialogs(
+    //                                               "Berhasil memilih pemenang",
+    //                                               context);
+    //                                         } else {
+    //                                           await globals.showDialogs(
+    //                                               "Gagal, silahkan coba kembali",
+    //                                               context);
+    //                                         }
 
-    if (animal.auction.winnerBidId != null) {
-      for (var i = 0; i < animal.auction.bids.length - 1; i++) {
-        if (animal.auction.bids[i].id == animal.auction.winnerBidId) {
-          winnerName = animal.auction.bids[i].user.name;
-          winnerUserName = animal.auction.bids[i].user.username;
-          amount = animal.auction.bids[i].amount;
-          break;
-        }
-      }
-    }
-
-    return winnerName != null && winnerName.isNotEmpty
-        ? _winnerSection(winnerName, winnerUserName, amount)
-        : animal.ownerUserId == globals.user.id &&
-                animal.auction.winnerBidId == null &&
-                animal.auction.active == 1
-            ? Container(
-                margin: EdgeInsets.symmetric(vertical: 15),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: FlatButton(
-                        onPressed: () {
-                          return showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Pilih Pemenang Lelang",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 25),
-                                      textAlign: TextAlign.center),
-                                  content: Text(
-                                      "Ambil pemenang lelang dengan tawaran tertinggi?",
-                                      style: TextStyle(color: Colors.black)),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                        child: Text("Batal",
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .primaryColor)),
-                                        onPressed: () {
-                                          Navigator.of(context).pop(true);
-                                        }),
-                                    FlatButton(
-                                        color: Theme.of(context).primaryColor,
-                                        child: Text("Ya",
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        onPressed: () async {
-                                          try {
-                                            globals.loadingModel(context);
-                                            final result = await setWinner(
-                                                "Token", animal.auction.id);
-                                            Navigator.pop(context);
-                                            if (result) {
-                                              await globals.showDialogs(
-                                                  "Berhasil memilih pemenang",
-                                                  context);
-                                            } else {
-                                              await globals.showDialogs(
-                                                  "Gagal, silahkan coba kembali",
-                                                  context);
-                                            }
-
-                                            bidController.text = '';
-                                            Navigator.pop(context);
-                                            loadAnimal(animal.id);
-                                          } catch (e) {
-                                            Navigator.pop(context);
-                                            globals.showDialogs(
-                                                e.toString(), context);
-                                            print(e);
-                                            print("######################");
-                                            print(e.toString());
-                                          }
-                                        })
-                                  ],
-                                );
-                              });
-                        },
-                        child: Text(
-                          "Ambil Pemenang",
-                          style: Theme.of(context)
-                              .textTheme
-                              .title
-                              .copyWith(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    animal.auction.cancellationDate == null
-                        ? _cancelAuction()
-                        : Container()
-                  ],
-                ),
-              )
-            : Container();
+    //                                         bidController.text = '';
+    //                                         Navigator.pop(context);
+    //                                         loadAnimal(animal.id);
+    //                                       } catch (e) {
+    //                                         Navigator.pop(context);
+    //                                         globals.showDialogs(
+    //                                             e.toString(), context);
+    //                                         print(e);
+    //                                         print("######################");
+    //                                         print(e.toString());
+    //                                       }
+    //                                     })
+    //                               ],
+    //                             );
+    //                           });
+    //                     },
+    //                     child: Text(
+    //                       "Ambil Pemenang",
+    //                       style: Theme.of(context)
+    //                           .textTheme
+    //                           .title
+    //                           .copyWith(color: Colors.white, fontSize: 16),
+    //                     ),
+    //                   ),
+    //                 ),
+    //                 SizedBox(height: 10),
+    //                 animal.auction.cancellationDate == null
+    //                     ? _cancelAuction()
+    //                     : Container()
+    //               ],
+    //             ),
+    //           )
+    //         : Container();
   }
 
   Widget _buildBidRule() {
@@ -789,7 +863,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             height: 20,
           ),
           _buildBidStatus(),
-          // _buildWinnerPicker(),
+          _buildWinnerSection()
         ],
       ),
     );

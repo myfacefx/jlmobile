@@ -80,6 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _updateRegencies() {
+    _regency = null;
     regencies = List<Regency>();
     this.registerLoading = true;
     getRegenciesByProvinceId("token", _province.id).then((onValue) {
@@ -219,8 +220,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               contentPadding: EdgeInsets.all(13),
                               hintText: "Email",
                               labelText: "Email",
-                              filled: true,
-                              fillColor: Colors.white,
+                              // filled: true,
+                              // fillColor: Colors.white,
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20))),
                         )),
@@ -249,8 +250,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         contentPadding: EdgeInsets.all(13),
                         hintText: "Username",
                         labelText: "Username",
-                        filled: true,
-                        fillColor: Colors.white,
+                        // filled: true,
+                        // fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -280,8 +281,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         contentPadding: EdgeInsets.all(13),
                         hintText: "Nama Lengkap",
                         labelText: "Nama Lengkap",
-                        filled: true,
-                        fillColor: Colors.white,
+                        // filled: true,
+                        // fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -327,10 +328,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(13),
-                        hintText: "Format 628xx",
+                        hintText: "Format 08xx",
                         labelText: "Nomor Handphone (WA)",
-                        filled: true,
-                        fillColor: Colors.white,
+                        // filled: true,
+                        // fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -372,8 +373,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         hintText: "Password",
                         labelText: "Password",
-                        filled: true,
-                        fillColor: Colors.white,
+                        // filled: true,
+                        // fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -408,8 +409,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         hintText: "Ulangi Password",
                         labelText: "Ulangi Password",
-                        filled: true,
-                        fillColor: Colors.white,
+                        // filled: true,
+                        // fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   )),
@@ -418,8 +419,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: DropdownButtonFormField<Province>(
                     decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
+                        // filled: true,
+                        // fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20)),
                         contentPadding: EdgeInsets.all(13),
@@ -451,8 +452,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: DropdownButtonFormField<Regency>(
                     decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
+                        // filled: true,
+                        // fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20)),
                         contentPadding: EdgeInsets.all(13),
@@ -472,8 +473,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     items: regencies.map((Regency regency) {
                       return DropdownMenuItem<Regency>(
                           value: regency,
-                          child: Text(regency.name,
-                              style: TextStyle(color: Colors.black)));
+                          child: Container(
+                              child: globals.myText(
+                                  text: regency.name,
+                                  size: 16,
+                                  textOverflow: TextOverflow.ellipsis)));
+                      // child: Text(regency.name,
+                      // style: TextStyle(color: Colors.black)));
                     }).toList(),
                   )),
               Container(

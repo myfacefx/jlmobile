@@ -31,6 +31,7 @@ class Auction {
     int innerIslandShipping;
     int duration;
     WinnerBid winnerBid;
+    String verificationCode;
 
     Auction({
         this.id,
@@ -61,6 +62,7 @@ class Auction {
         this.innerIslandShipping,
         this.duration,
         this.winnerBid,
+        this.verificationCode
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -92,6 +94,7 @@ class Auction {
         innerIslandShipping: json["inner_island_shipping"] == null ? null : json["inner_island_shipping"],
         duration: json["duration"] == null ? null : json["duration"],
         winnerBid: json["winner_bid"] == null ? null : WinnerBid.fromJson(json["winner_bid"]),
+        verificationCode: json["verification_code"] == null ? null : json["verification_code"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -123,5 +126,6 @@ class Auction {
         "inner_island_shipping": innerIslandShipping == null ? null : innerIslandShipping,
         "duration": duration == null ? null : duration,
         "winner_bid": winnerBid == null ? null : winnerBid.toJson(),
+        "verification_code": verificationCode == null ? null : verificationCode
     }..removeWhere( (key, val) => val == null);
 }

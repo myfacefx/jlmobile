@@ -44,7 +44,7 @@ FirebaseMessaging _fcm = FirebaseMessaging();
 generateToken() async {
   // Firestore _db = Firestore.instance;
 
-  if (user.firebaseToken == null) {
+  if (user != null && user.firebaseToken == null) {
     String fcmToken = await _fcm.getToken();
 
     if (fcmToken != null) {
@@ -67,7 +67,7 @@ generateToken() async {
     } else {
       print("GOT NULL FROM REQUEST TOKEN");
     }
-  } else {
+  } else if (user != null && user.firebaseToken != null) {
     print("User Token has already set: ${user.firebaseToken}");
   }
 }
@@ -208,7 +208,7 @@ Widget myAppBarIcon(context) {
                 color: Colors.white,
                 size: 30,
               ),
-              user.historiesCount != null && user.historiesCount > 0
+              user != null && user.historiesCount != null && user.historiesCount > 0
                   ? Container(
                       width: 30,
                       height: 30,
@@ -268,7 +268,7 @@ Future<ImageProvider> imageUrlProvider(String link,
 }
 
 void getNotificationCount() async {
-  if (user.id != null) {
+  if (user != null && user.id != null) {
     int historiesCount = await getHistoriesCount(user.id);
     
     if (user.historiesCount != null) {
@@ -512,13 +512,15 @@ Text myText(
     String weight = "N",
     TextDecoration decoration = TextDecoration.none,
     TextAlign align = TextAlign.start,
-    TextOverflow textOverflow = TextOverflow.visible}) {
+    TextOverflow textOverflow = TextOverflow.visible,
+    double letterSpacing = 0}) {
   if (text == null || text == "") text = "-";
   return Text(
     text,
     textAlign: align,
     overflow: textOverflow,
     style: TextStyle(
+      letterSpacing: letterSpacing,
       decoration: decoration,
       decorationColor: myColor(color),
       color: myColor(color),
