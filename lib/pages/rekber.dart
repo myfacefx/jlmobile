@@ -31,7 +31,7 @@ class _RekberPageState extends State<RekberPage>
               physics: ClampingScrollPhysics(),
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
+                  padding: EdgeInsets.all(10),
                   child: Column(children: <Widget>[
                     Container(
                       width: globals.mw(context),

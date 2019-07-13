@@ -87,7 +87,7 @@ Widget drawer(context) {
                         radius: 100,
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
-                            child: globals.user.photo != null ? FadeInImage.assetNetwork(
+                            child: globals.user != null && globals.user.photo != null ? FadeInImage.assetNetwork(
                                 image: globals.user.photo,
                                 placeholder: 'assets/images/loading.gif',
                                 fit: BoxFit.cover) : Image.asset('assets/images/account.png')))),
@@ -111,7 +111,7 @@ Widget drawer(context) {
                 _buildDrawerNavigationButtonBig("Lelangku", '/profile', null, context),
                 // _buildDrawerNavigationButtonBig("Our Shop Products", context),
                 _buildDrawerNavigationButtonBig(
-                    "Lelang Diikuti", '/our-bid', globals.user.bidsCount, context),
+                    "Lelang Diikuti", '/our-bid', globals.user != null ? globals.user.bidsCount : 0, context),
                 // _buildDrawerNavigationButtonBig("Our Carts", context),
                 // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 globals.spacePadding(),

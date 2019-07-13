@@ -37,9 +37,6 @@ class _LoginPage extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-
-    // _checkFirebaseToken();
-    // _retrieveToken();
   }
 
   _logIn() async {
@@ -317,8 +314,8 @@ class _LoginPage extends State<LoginPage> {
                               style: TextStyle(color: Colors.black),
                               controller: usernameController,
                               decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
+                                  // filled: true,
+                                  // fillColor: Colors.white,
                                   contentPadding: EdgeInsets.all(13),
                                   hintText: "Username",
                                   labelText: "Username",
@@ -355,8 +352,8 @@ class _LoginPage extends State<LoginPage> {
                                   contentPadding: EdgeInsets.all(13),
                                   hintText: "Password",
                                   labelText: "Password",
-                                  filled: true,
-                                  fillColor: Colors.white,
+                                  // filled: true,
+                                  // fillColor: Colors.white,
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20))),
                             )),
@@ -373,10 +370,6 @@ class _LoginPage extends State<LoginPage> {
                                     : Theme.of(context).primaryColor,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)))),
-                        // FlatButton(
-                        //   onPressed: () => setState(() {loginLoading = false;}),
-                        //   child: Text("RESET")
-                        // ),
                         Container(
                           width: 300,
                           child: Center(

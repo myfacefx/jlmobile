@@ -10,6 +10,8 @@ import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/slider_service.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,6 +25,7 @@ class _HomePage extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _current = 0;
+
   bool isLoadingCategories = true;
   bool isLoadingSlider = true;
   bool isLoadingPromo = true;
@@ -31,6 +34,27 @@ class _HomePage extends State<HomePage> {
   int membersCount = 0;
   List<Widget> listImage = [];
   List<Widget> listPromo = [];
+
+  int _currentArticle = 0;
+
+  List<Widget> _articlesImages = [
+    FadeInImage.assetNetwork(
+      placeholder: 'assets/images/loading.gif', image: "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
+    FadeInImage.assetNetwork(
+      placeholder: 'assets/images/loading.gif', image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
+    FadeInImage.assetNetwork(
+      placeholder: 'assets/images/loading.gif', image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
+  ];
+  List<String> _articlesLinks = [
+    "https://www.liputan6.com/health/read/3082433/punya-kura-kura-di-rumah-ini-bahaya-yang-bisa-mengintai-anak?utm_expid=.9Z4i5ypGQeGiS7w9arwTvQ.0&utm_referrer=https%3A%2F%2Fwww.google.com%2F",
+    "https://www.tribunnews.com/travel/2016/03/24/bertahan-hidup-184-tahun-kura-kura-jonathan-ini-akhirnya-untuk-pertama-kali-mandi",
+    "https://www.tribunnews.com/sains/2018/04/12/kura-kura-berambut-hijau-yang-bernapas-melalui-alat-kelaminnya-terancam-punah"
+  ];
+  List<String> _articlesTitle = [
+    "Punya Kura-Kura di Rumah? Ini Bahaya yang Bisa Mengintai Anak",
+    "Bertahan Hidup 184 Tahun, Kura-kura Jonathan Ini Akhirnya Untuk Pertama Kali Mandi",
+    "Kura-kura Berambut Hijau yang Bernapas Melalui Alat Kelaminnya Terancam Punah"
+  ];
 
   @override
   void initState() {
@@ -401,6 +425,184 @@ class _HomePage extends State<HomePage> {
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
+  Widget _buildDonation() {
+    return Container(
+        margin: EdgeInsets.all(5),
+        child: Card(
+            color: globals.myColor('primary'),
+            child: Container(
+                padding: EdgeInsets.all(12),
+                child: Row(children: <Widget>[
+                  Image.asset('assets/images/donation.png', height: 55),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(left: 15),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            globals.myText(
+                                text: "DONASI ANDA SANGAT BERARTI BAGI KAMI",
+                                color: "light",
+                                weight: "B"),
+                            SizedBox(height: 5),
+                            globals.myText(
+                                text:
+                                    "JLF terus tumbuh dan berusahan menjadi tempat yang nyaman bagi pemain fauna, dengan donasi Anda akan sangat membantu kami bertumbuh lebih cepat",
+                                color: "light",
+                                size: 12),
+                            SizedBox(height: 5),
+                            OutlineButton(
+                              padding: EdgeInsets.all(0),
+                              onPressed: () => null,
+                              color: Colors.transparent,
+                              highlightColor: Colors.white10,
+                              highlightedBorderColor: Colors.white,
+                              borderSide: BorderSide(color: Colors.white),
+                              child: Text("DONASI",
+                                  style: Theme.of(context).textTheme.display4),
+                            )
+                          ]),
+                    ),
+                  )
+                ]))));
+  }
+
+  Widget _buildPartner() {
+    return Container(
+        margin: EdgeInsets.all(5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+                padding: EdgeInsets.all(5),
+                child: globals.myText(
+                    text: "PARTNER JLF", color: 'dark', size: 15)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                FadeInImage.assetNetwork(
+                    width: globals.mw(context) * 0.23,
+                    placeholder: 'assets/images/loading.gif',
+                    image: 'https://via.placeholder.com/150/92c952'),
+                FadeInImage.assetNetwork(
+                    width: globals.mw(context) * 0.23,
+                    placeholder: 'assets/images/loading.gif',
+                    image: 'https://via.placeholder.com/150/92c952'),
+                FadeInImage.assetNetwork(
+                    width: globals.mw(context) * 0.23,
+                    placeholder: 'assets/images/loading.gif',
+                    image: 'https://via.placeholder.com/150/92c952'),
+                FadeInImage.assetNetwork(
+                    width: globals.mw(context) * 0.23,
+                    placeholder: 'assets/images/loading.gif',
+                    image: 'https://via.placeholder.com/150/92c952'),
+              ],
+            )
+          ],
+        ));
+  }
+
+  Widget _buildArticle() {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: CarouselSlider(
+            aspectRatio: 3,
+            autoPlay: true,
+            viewportFraction: 3.0,
+            height: 200,
+            enableInfiniteScroll: true,
+            onPageChanged: (index) {
+              setState(() {
+                _currentArticle = index;
+              });
+            },
+            items: _articlesImages,
+          ),
+        ),
+        Positioned(
+          top: 20,
+          left: 20,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              globals.myText(text: "JLF", color: 'light', weight: "XB", size: 25)
+            ],
+        )),
+        Positioned(
+          bottom: 10,
+          left: 0.0,
+          right: 0.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _buildDoted(_currentArticle + 1, _articlesImages.length)
+            ],
+        )),
+        Positioned(
+          bottom: 20,
+          left: 20,
+          right: 0.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: globals.mw(context) * 0.6,
+                child: globals.myText(text: _articlesTitle[_currentArticle], color: "light")
+              ),
+              Container(
+                width: globals.mw(context) * 0.3,
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 10), 
+                child: FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => WebviewScaffold(
+                            url: _articlesLinks[_currentArticle],
+                            appBar: globals.appBar(_scaffoldKey, context)
+                          )
+                        )
+                      );
+                    },
+                    child: globals.myText(text: "BACA"),
+                    color: globals.myColor('light'),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)))
+              ),
+            ],
+          )
+        )
+      ],
+    );
+
+    return Container(
+      margin: EdgeInsets.all(5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.all(5),
+              child: globals.myText(
+                  text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
+          Container(
+            width: globals.mw(context),
+            child: Card(
+                child: Stack(
+              children: <Widget>[
+                FadeInImage.assetNetwork(
+                    width: globals.mw(context) * 0.23,
+                    placeholder: 'assets/images/loading.gif',
+                    image: 'https://via.placeholder.com/150/92c952'),
+                // globals.myText(text: "AWKAWKAWK")
+              ],
+            )),
+          )
+        ],
+      ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -426,7 +628,11 @@ class _HomePage extends State<HomePage> {
                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: Divider(color: Colors.black),
                 ),
-                isLoadingPromo ? globals.isLoading() : _buildPromotion()
+                isLoadingPromo ? globals.isLoading() : _buildPromotion(),
+                _buildArticle(),
+                _buildPartner(),
+                Divider(),
+                _buildDonation()
               ],
             ),
           ),

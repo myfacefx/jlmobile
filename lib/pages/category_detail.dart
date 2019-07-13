@@ -467,35 +467,32 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         onTap: () {},
         splashColor: Theme.of(context).primaryColor,
         child: Container(
-            width: 40,
-            height: 40,
-            padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-            margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 2.0,
-                  ),
-                ]),
-            child: Stack(
-              children: <Widget>[
-                Container(
-                    alignment: Alignment.center,
-                    child: Center(
-                        child: Image.asset('assets/images/comment.png',
-                            height: 80, width: 80))),
-                Center(
-                  child: Text(
-                    countComments,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 10),
-                  ),
+          width: 40,
+          height: 40,
+          padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
+          margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 2.0,
                 ),
-              ],
-            )),
+              ]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              globals.myText(text: countComments, color: 'primary', size: 10),
+              Container(
+                padding: EdgeInsets.only(left: 2),
+                  alignment: Alignment.center,
+                  child: Center(
+                      child: Image.asset('assets/images/comment.png',
+                          height: 10, width: 10))),
+            ],
+          ),
+        ),
       ),
     );
   }

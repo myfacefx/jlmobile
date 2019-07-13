@@ -41,7 +41,8 @@ dependencies:
   firebase_messaging: ^5.0.4
   
   url_launcher: ^5.0.3
-  
+
+  flutter_webview_plugin: ^0.3.5
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +76,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/image_not_found.png
     - assets/images/comment.png
+    - assets/images/donation.png
     - assets/images/intro/intro1.jpg
     - assets/images/intro/intro2.jpg
     - assets/images/intro/intro3.jpg
