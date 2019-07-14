@@ -633,8 +633,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     
     return winnerFound
         ? Container(
-            padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+            padding: EdgeInsets.fromLTRB(15, 25, 0, 0),
+            width: globals.mw(context),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 globals.myText(
                     text: isWinner ? "LELANG INI TELAH ANDA MENANGKAN" : "LELANG DIMENANGKAN OLEH", color: "dark", size: 16),

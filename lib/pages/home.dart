@@ -101,7 +101,7 @@ class _HomePage extends State<HomePage> {
           listPromo.add(FadeInImage.assetNetwork(
             placeholder: 'assets/images/loading.gif',
             image: promo.link,
-            fit: BoxFit.fill,
+            // fit: BoxFit.cover,
           ));
         });
       } else {
@@ -382,11 +382,13 @@ class _HomePage extends State<HomePage> {
               children: <Widget>[
                 Container(
                   color: Colors.white,
+                  height: 125,
                   width: globals.mw(context) * 0.47,
                   child: listPromo[1],
                 ),
                 Container(
                     color: Colors.white,
+                    height: 125,
                     width: globals.mw(context) * 0.47,
                     child: listPromo[2]),
               ],
@@ -504,77 +506,88 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildArticle() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: CarouselSlider(
-            aspectRatio: 3,
-            autoPlay: true,
-            viewportFraction: 3.0,
-            height: 200,
-            enableInfiniteScroll: true,
-            onPageChanged: (index) {
-              setState(() {
-                _currentArticle = index;
-              });
-            },
-            items: _articlesImages,
+    return Container(
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(5),
+            child: globals.myText(
+                text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
+          Stack(
+            children: <Widget>[
+              Container(
+                child: CarouselSlider(
+                  aspectRatio: 3,
+                  autoPlay: true,
+                  viewportFraction: 3.0,
+                  height: 200,
+                  enableInfiniteScroll: true,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentArticle = index;
+                    });
+                  },
+                  items: _articlesImages,
+                ),
+              ),
+              Positioned(
+                top: 10,
+                left: 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    globals.myText(text: "JLF", color: 'light', weight: "XB", size: 25)
+                  ],
+              )),
+              Positioned(
+                bottom: 10,
+                left: 0.0,
+                right: 0.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _buildDoted(_currentArticle + 1, _articlesImages.length)
+                  ],
+              )),
+              Positioned(
+                bottom: 30,
+                left: 10,
+                right: 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      width: globals.mw(context) * 0.55,
+                      child: globals.myText(text: _articlesTitle[_currentArticle], color: "light")
+                    ),
+                    Container(
+                      width: globals.mw(context) * 0.2,
+                      // padding: EdgeInsets.fromLTRB(10, 0, 10, 10), 
+                      child: FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => WebviewScaffold(
+                                  url: _articlesLinks[_currentArticle],
+                                  appBar: globals.appBar(_scaffoldKey, context)
+                                )
+                              )
+                            );
+                          },
+                          child: globals.myText(text: "BACA"),
+                          color: globals.myColor('light'),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)))
+                    ),
+                  ],
+                )
+              )
+            ],
           ),
-        ),
-        Positioned(
-          top: 20,
-          left: 20,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              globals.myText(text: "JLF", color: 'light', weight: "XB", size: 25)
-            ],
-        )),
-        Positioned(
-          bottom: 10,
-          left: 0.0,
-          right: 0.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _buildDoted(_currentArticle + 1, _articlesImages.length)
-            ],
-        )),
-        Positioned(
-          bottom: 20,
-          left: 20,
-          right: 0.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                width: globals.mw(context) * 0.6,
-                child: globals.myText(text: _articlesTitle[_currentArticle], color: "light")
-              ),
-              Container(
-                width: globals.mw(context) * 0.3,
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 10), 
-                child: FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => WebviewScaffold(
-                            url: _articlesLinks[_currentArticle],
-                            appBar: globals.appBar(_scaffoldKey, context)
-                          )
-                        )
-                      );
-                    },
-                    child: globals.myText(text: "BACA"),
-                    color: globals.myColor('light'),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)))
-              ),
-            ],
-          )
-        )
-      ],
+        ],
+      ),
     );
 
     return Container(
