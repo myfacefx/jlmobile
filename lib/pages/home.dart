@@ -39,11 +39,17 @@ class _HomePage extends State<HomePage> {
 
   List<Widget> _articlesImages = [
     FadeInImage.assetNetwork(
-      placeholder: 'assets/images/loading.gif', image: "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
+        placeholder: 'assets/images/loading.gif',
+        image:
+            "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
     FadeInImage.assetNetwork(
-      placeholder: 'assets/images/loading.gif', image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
+        placeholder: 'assets/images/loading.gif',
+        image:
+            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
     FadeInImage.assetNetwork(
-      placeholder: 'assets/images/loading.gif', image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
+        placeholder: 'assets/images/loading.gif',
+        image:
+            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
   ];
   List<String> _articlesLinks = [
     "https://www.liputan6.com/health/read/3082433/punya-kura-kura-di-rumah-ini-bahaya-yang-bisa-mengintai-anak?utm_expid=.9Z4i5ypGQeGiS7w9arwTvQ.0&utm_referrer=https%3A%2F%2Fwww.google.com%2F",
@@ -178,7 +184,7 @@ class _HomePage extends State<HomePage> {
       isLoadingCategories = true;
     });
 
-    getAnimalCategory("token").then((onValue) {
+    getNotUserAnimalCategory("token", globals.user.id).then((onValue) {
       animalCategories = onValue;
       setState(() {
         isLoadingCategories = false;
@@ -512,9 +518,9 @@ class _HomePage extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.all(5),
-            child: globals.myText(
-                text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
+              padding: EdgeInsets.all(5),
+              child: globals.myText(
+                  text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
           Stack(
             children: <Widget>[
               Container(
@@ -533,57 +539,54 @@ class _HomePage extends State<HomePage> {
                 ),
               ),
               Positioned(
-                top: 10,
-                left: 10,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    globals.myText(text: "JLF", color: 'light', weight: "XB", size: 25)
-                  ],
-              )),
+                  top: 10,
+                  left: 10,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      globals.myText(
+                          text: "JLF", color: 'light', weight: "XB", size: 25)
+                    ],
+                  )),
               Positioned(
-                bottom: 10,
-                left: 0.0,
-                right: 0.0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _buildDoted(_currentArticle + 1, _articlesImages.length)
-                  ],
-              )),
+                  bottom: 10,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _buildDoted(_currentArticle + 1, _articlesImages.length)
+                    ],
+                  )),
               Positioned(
-                bottom: 30,
-                left: 10,
-                right: 10,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      width: globals.mw(context) * 0.55,
-                      child: globals.myText(text: _articlesTitle[_currentArticle], color: "light")
-                    ),
-                    Container(
-                      width: globals.mw(context) * 0.2,
-                      // padding: EdgeInsets.fromLTRB(10, 0, 10, 10), 
-                      child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => WebviewScaffold(
-                                  url: _articlesLinks[_currentArticle],
-                                  appBar: globals.appBar(_scaffoldKey, context)
-                                )
-                              )
-                            );
-                          },
-                          child: globals.myText(text: "BACA"),
-                          color: globals.myColor('light'),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)))
-                    ),
-                  ],
-                )
-              )
+                  bottom: 30,
+                  left: 10,
+                  right: 10,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                          width: globals.mw(context) * 0.55,
+                          child: globals.myText(
+                              text: _articlesTitle[_currentArticle],
+                              color: "light")),
+                      Container(
+                          width: globals.mw(context) * 0.2,
+                          // padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                          child: FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => WebviewScaffold(
+                                        url: _articlesLinks[_currentArticle],
+                                        appBar: globals.appBar(
+                                            _scaffoldKey, context))));
+                              },
+                              child: globals.myText(text: "BACA"),
+                              color: globals.myColor('light'),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)))),
+                    ],
+                  ))
             ],
           ),
         ],
@@ -591,29 +594,29 @@ class _HomePage extends State<HomePage> {
     );
 
     return Container(
-      margin: EdgeInsets.all(5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-              padding: EdgeInsets.all(5),
-              child: globals.myText(
-                  text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
-          Container(
-            width: globals.mw(context),
-            child: Card(
-                child: Stack(
-              children: <Widget>[
-                FadeInImage.assetNetwork(
-                    width: globals.mw(context) * 0.23,
-                    placeholder: 'assets/images/loading.gif',
-                    image: 'https://via.placeholder.com/150/92c952'),
-                // globals.myText(text: "AWKAWKAWK")
-              ],
-            )),
-          )
-        ],
-      ));
+        margin: EdgeInsets.all(5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+                padding: EdgeInsets.all(5),
+                child: globals.myText(
+                    text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
+            Container(
+              width: globals.mw(context),
+              child: Card(
+                  child: Stack(
+                children: <Widget>[
+                  FadeInImage.assetNetwork(
+                      width: globals.mw(context) * 0.23,
+                      placeholder: 'assets/images/loading.gif',
+                      image: 'https://via.placeholder.com/150/92c952'),
+                  // globals.myText(text: "AWKAWKAWK")
+                ],
+              )),
+            )
+          ],
+        ));
   }
 
   @override

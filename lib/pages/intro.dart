@@ -54,7 +54,6 @@ class _IntroPageState extends State<IntroPage> {
                             child: TabBarView(
                               children: intros.map((f) {
                                 count++;
-                                print("$count == ${intros.length}");
                                 if (count == intros.length) {
                                   return Stack(
                                     children: <Widget>[
