@@ -19,6 +19,95 @@ class _RekberPageState extends State<RekberPage>
     globals.getNotificationCount();
   }
 
+  Widget _buildTutorial() {
+    return Container(
+        padding: EdgeInsets.all(10),
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 4),
+              child: globals.myText(
+                  text: "STEP 1", size: 15, weight: "XB", color: "primary"),
+            ),
+            Container(
+                padding: EdgeInsets.all(0),
+                height: 200,
+                child: Card(
+                    color: globals.myColor("primary"), child: Container())),
+            Divider(),
+            Container(
+              padding: EdgeInsets.only(left: 4),
+              child: globals.myText(
+                  text: "STEP 2", size: 15, weight: "XB", color: "primary"),
+            ),
+            Container(
+                padding: EdgeInsets.all(0),
+                height: 200,
+                child: Card(
+                    color: globals.myColor("primary"), child: Container())),
+            Divider(),
+            Container(
+              padding: EdgeInsets.only(left: 4),
+              child: globals.myText(
+                  text: "STEP 3", size: 15, weight: "XB", color: "primary"),
+            ),
+            Container(
+                padding: EdgeInsets.all(0),
+                height: 200,
+                child: Card(
+                    color: globals.myColor("primary"), child: Container())),
+            Divider(),
+            Container(
+              padding: EdgeInsets.only(left: 4),
+              child: globals.myText(
+                  text: "STEP 4", size: 15, weight: "XB", color: "primary"),
+            ),
+            Container(
+                padding: EdgeInsets.all(0),
+                height: 200,
+                child:
+                    Card(color: globals.myColor("primary"), child: Container()))
+          ],
+        ));
+  }
+
+  Widget _buildListRekber() {
+    return Container(
+        child: ListView(
+      children: <Widget>[
+        ListTile(
+          title: globals.myText(text: "Rekber Jakarta"),
+        ),
+        ListTile(
+          title: globals.myText(text: "Rekber Yogyakarta"),
+        )
+      ],
+    ));
+  }
+
+  Widget _buildQuestionAnswers() {
+    return Container(
+        child: ListView(
+      children: <Widget>[
+        ExpansionTile(
+          title: globals.myText(
+              text: "Kenapa Saya harus menggunakan Rekber?", color: "primary"),
+          children: <Widget>[globals.myText(text: "TEST", color: "primary")],
+        ),
+        ExpansionTile(
+          title: globals.myText(
+              text: "Berapa biaya jasa untuk menggunakan rekber?",
+              color: "primary"),
+          children: <Widget>[
+            globals.myText(
+                text: "Kami tidak pernah menerima biaya", color: "danger")
+          ],
+        )
+      ],
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,10 +136,11 @@ class _RekberPageState extends State<RekberPage>
                                   color: "primary",
                                   size: 25,
                                   align: TextAlign.left),
-                              globals.spacePadding(),
+                              Divider(),
                               globals.myText(
+                                  color: "dark",
                                   text:
-                                      "Rekber atau kepanjangannya adalah Rekening Bersama, merupakan salah satu jasa pihak ketiga yang sering digunakan dalam transaksi jual - beli secara online. Dengan menggunakan rekber maka transaksi jual beli online akan lebih mudah dan saling mempercayai antara penjual dan pembeli.")
+                                      "Rekening Bersama (RekBer) merupakan salah satu jasa pihak ketiga yang sering digunakan dalam transaksi jual - beli secara online. Dengan menggunakan rekber maka transaksi jual beli online akan lebih mudah dan saling mempercayai antara penjual dan pembeli.")
                             ],
                           ),
                         ),
@@ -69,16 +159,25 @@ class _RekberPageState extends State<RekberPage>
                             controller: _tabController,
                             tabs: <Widget>[
                               Tab(
-                                child:
-                                    globals.myText(text: "Tutorial", size: 12),
+                                child: globals.myText(
+                                    text: "Tutorial",
+                                    size: 12,
+                                    color: "primary",
+                                    weight: "B"),
                               ),
                               Tab(
                                 child: globals.myText(
-                                    text: "List Rekber", size: 12),
+                                    text: "List Rekber",
+                                    size: 12,
+                                    color: "primary",
+                                    weight: "B"),
                               ),
                               Tab(
                                 child: globals.myText(
-                                    text: "Tanya Jawab", size: 12),
+                                    text: "Tanya Jawab",
+                                    size: 12,
+                                    color: "primary",
+                                    weight: "B"),
                               )
                             ],
                           )),
@@ -88,18 +187,9 @@ class _RekberPageState extends State<RekberPage>
                             child: TabBarView(
                               controller: _tabController,
                               children: <Widget>[
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: globals.myText(
-                                        text: "Stay Tune di JLF", size: 12)),
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: globals.myText(
-                                        text: "Stay Tune di JLF", size: 12)),
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: globals.myText(
-                                        text: "Stay Tune di JLF", size: 12)),
+                                _buildTutorial(),
+                                _buildListRekber(),
+                                _buildQuestionAnswers()
                               ],
                             ),
                           )

@@ -566,7 +566,9 @@ class _HomePage extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Container(
-                          width: globals.mw(context) * 0.55,
+                        padding: EdgeInsets.all(4),
+                        color: Color.fromRGBO(0, 0, 0, 0.4),
+                          width: globals.mw(context) * 0.6,
                           child: globals.myText(
                               text: _articlesTitle[_currentArticle],
                               color: "light")),
@@ -584,7 +586,8 @@ class _HomePage extends State<HomePage> {
                               child: globals.myText(text: "BACA"),
                               color: globals.myColor('light'),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)))),
+                                  borderRadius: BorderRadius.circular(20)
+                                  ))),
                     ],
                   ))
             ],
