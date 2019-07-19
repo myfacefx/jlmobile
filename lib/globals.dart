@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_advanced_networkimage/provider.dart'
-    show AdvancedNetworkImage;
+// import 'package:flutter_advanced_networkimage/provider.dart'
+    // show AdvancedNetworkImage;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/services/user_services.dart';
@@ -12,6 +12,8 @@ import 'package:validators/validators.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'package:share/share.dart';
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
@@ -21,6 +23,10 @@ double mh(BuildContext context) {
 /// Global Function to return Screen Width
 double mw(BuildContext context) {
   return MediaQuery.of(context).size.width;
+}
+
+void share() {
+  Share.share('Bergabung bersama JLF - https://juallelangfauna.com');
 }
 
 String baseUrl = "http://192.168.100.119:8000";
@@ -254,27 +260,27 @@ Widget spacePadding() {
   return Padding(padding: EdgeInsets.only(bottom: 20));
 }
 
-Future<ImageProvider> imageUrlProvider(String link,
-    [ImageProvider defaultPic =
-        const AssetImage("assets/images/error.png")]) async {
-  /// Variable to hold Image Provider to be returned later
-  ImageProvider retImg;
-  // check if the link is valid link or not
-  link = isURL(link) ? link : "-";
-  // if link is invalid, do not proceed
-  if (link == "-") {
-    retImg = defaultPic;
-  } else {
-    /// load local image as [ByteData] from bundle to be used as alternative on network failure
-    /// or a valid link does not provide a valid image
-    ByteData bytes = await rootBundle.load('assets/images/account.png');
+// Future<ImageProvider> imageUrlProvider(String link,
+//     [ImageProvider defaultPic =
+//         const AssetImage("assets/images/error.png")]) async {
+//   /// Variable to hold Image Provider to be returned later
+//   ImageProvider retImg;
+//   // check if the link is valid link or not
+//   link = isURL(link) ? link : "-";
+//   // if link is invalid, do not proceed
+//   if (link == "-") {
+//     retImg = defaultPic;
+//   } else {
+//     /// load local image as [ByteData] from bundle to be used as alternative on network failure
+//     /// or a valid link does not provide a valid image
+//     ByteData bytes = await rootBundle.load('assets/images/account.png');
 
-    /// buffer [bytes] as [Uint8List] to be used on [AdvancedNetworkImage] alternative
-    Uint8List list = bytes.buffer.asUint8List();
-    retImg = AdvancedNetworkImage(link, fallbackImage: list);
-  }
-  return retImg;
-}
+//     /// buffer [bytes] as [Uint8List] to be used on [AdvancedNetworkImage] alternative
+//     Uint8List list = bytes.buffer.asUint8List();
+//     retImg = AdvancedNetworkImage(link, fallbackImage: list);
+//   }
+//   return retImg;
+// }
 
 void getNotificationCount() async {
   if (user != null && user.id != null) {
