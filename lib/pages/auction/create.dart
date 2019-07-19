@@ -320,10 +320,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
+        appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
         body: Scaffold(
-            drawer: drawer(context),
-            key: _scaffoldKey,
             body: Stack(children: <Widget>[
               ListView(children: <Widget>[
                 Form(

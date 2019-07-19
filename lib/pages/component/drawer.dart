@@ -140,12 +140,13 @@ Widget drawer(context) {
                 // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 globals.spacePadding(),
                 _buildDrawerNavigationButtonSmall("RekBer", "/rekber", context),
-                _buildDrawerNavigationButtonSmall("Tentang", "/about", context),
-                _buildDrawerNavigationButtonSmall("How To", "/how-to", context),
-                _buildDrawerNavigationButtonSmall("FAQ", "/faq", context),
+                _buildDrawerNavigationButtonSmall("Tentang JLF", "/about", context),
+                _buildDrawerNavigationButtonSmall("Langkah - Langkah", "/how-to", context),
+                _buildDrawerNavigationButtonSmall("Tanya Jawab", "/faq", context),
                 _buildDrawerNavigationButtonSmall(
                     "Pengaturan", "/setting", context),
-                _buildDrawerNavigationButtonSmall("Keluar", "/logout", context),
+                _buildDrawerNavigationButtonSmall(
+                    "Keluar", "/logout", context),
                 globals.spacePadding()
                 // Container()
               ],
