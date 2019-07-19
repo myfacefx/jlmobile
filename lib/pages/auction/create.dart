@@ -57,6 +57,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   int _innerIslandShipping = 0;
   DateTime _dateOfBirth;
 
+  bool _agreeTerms = false;
+
   List<int> durations = [3, 6, 12, 24, 48];
 
   List<Asset> images = List<Asset>();
@@ -213,6 +215,11 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
   _save() async {
     if (isLoading) return;
+
+    if (!_agreeTerms) {
+      globals.showDialogs("Anda harus menyetujui konsekuensi yang akan Anda terima apabila menjual binatang langka/tidak sesuai Undang-Undang", context);
+      return;
+    }
 
     if (_gender == null) {
       globals.showDialogs("Gender belum dipilih", context);
@@ -754,7 +761,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           )
                         : Container(),
                     Container(
-                        width: 300,
+                        width: globals.mw(context) * 0.92,
+                        padding: EdgeInsets.only(right: 20),
                         child: CheckboxListTile(
                             value: _innerIslandShippingBool,
                             title: globals.myText(
@@ -773,6 +781,21 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                     this._innerIslandShipping = 0;
                                     break;
                                 }
+                              });
+                            })),
+                    Container(
+                        width: globals.mw(context) * 0.92,
+                        padding: EdgeInsets.only(right: 20),
+                        child: CheckboxListTile(
+                            value: _agreeTerms,
+                            title: globals.myText(
+                                text: "Saya siap menerima konsekuensi apabila menjual binatang langka / tidak sesuai Undang-Undang Republik Indonesia",
+                                color: "dark",
+                                size: 13),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (bool value) {
+                              setState(() {
+                                this._agreeTerms = value;
                               });
                             })),
                     SizedBox(height: 20),
