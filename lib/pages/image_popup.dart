@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ImagePopupPage extends StatelessWidget {
   final String image;
@@ -21,12 +22,10 @@ class ImagePopupPage extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Hero(
-              tag: tagCount,
-              child: FadeInImage.assetNetwork(
-                placeholder: 'assets/images/loading.gif',
-                image: image,
-              ),
-            ),
+                tag: tagCount,
+                child: PhotoView(
+                  imageProvider: NetworkImage(image),
+                )),
           ],
         ),
       ),

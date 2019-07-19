@@ -171,7 +171,8 @@ Widget bottomNavigationBar(context) {
           )));
 }
 
-Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
+Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
+    {bool isSubMenu = false}) {
   return AppBar(
     title: GestureDetector(
       onTap: () {
@@ -180,14 +181,20 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context) {
       child:
           Container(child: Image.asset("assets/images/logo.png", height: 40)),
     ),
-    leading: IconButton(
-        icon: Icon(Icons.menu),
-        onPressed: () {
-          if (scaffoldKey.currentState.isDrawerOpen)
-            scaffoldKey.currentState.openEndDrawer();
-          else
-            scaffoldKey.currentState.openDrawer();
-        }),
+    leading: isSubMenu
+        ? IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            })
+        : IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              if (scaffoldKey.currentState.isDrawerOpen)
+                scaffoldKey.currentState.openEndDrawer();
+              else
+                scaffoldKey.currentState.openDrawer();
+            }),
     actions: <Widget>[myAppBarIcon(context)],
     centerTitle: true,
   );
@@ -208,7 +215,9 @@ Widget myAppBarIcon(context) {
                 color: Colors.white,
                 size: 30,
               ),
-              user != null && user.historiesCount != null && user.historiesCount > 0
+              user != null &&
+                      user.historiesCount != null &&
+                      user.historiesCount > 0
                   ? Container(
                       width: 30,
                       height: 30,
@@ -270,17 +279,17 @@ Future<ImageProvider> imageUrlProvider(String link,
 void getNotificationCount() async {
   if (user != null && user.id != null) {
     int historiesCount = await getHistoriesCount(user.id);
-    
+
     if (user.historiesCount != null) {
       user.historiesCount = historiesCount;
     }
 
     int bidsCount = await getBidsCount(user.id);
-        
+
     if (user.bidsCount != null) {
       user.bidsCount = bidsCount;
     }
-    
+
     return null;
   }
 }
@@ -346,17 +355,39 @@ String convertMonthFromDigit(int monthDigit) {
   String month = 'Januari';
 
   switch (monthDigit) {
-    case 2: month = 'Februari'; break;
-    case 3: month = 'Maret'; break;
-    case 4: month = 'April'; break;
-    case 5: month = 'Mei'; break;
-    case 6: month = 'Juni'; break;
-    case 7: month = 'Juli'; break;
-    case 8: month = 'Agustus'; break;
-    case 9: month = 'September'; break;
-    case 10: month = 'Oktober'; break;
-    case 11: month = 'November'; break;
-    case 12: month = 'Desember'; break;
+    case 2:
+      month = 'Februari';
+      break;
+    case 3:
+      month = 'Maret';
+      break;
+    case 4:
+      month = 'April';
+      break;
+    case 5:
+      month = 'Mei';
+      break;
+    case 6:
+      month = 'Juni';
+      break;
+    case 7:
+      month = 'Juli';
+      break;
+    case 8:
+      month = 'Agustus';
+      break;
+    case 9:
+      month = 'September';
+      break;
+    case 10:
+      month = 'Oktober';
+      break;
+    case 11:
+      month = 'November';
+      break;
+    case 12:
+      month = 'Desember';
+      break;
     default:
   }
 

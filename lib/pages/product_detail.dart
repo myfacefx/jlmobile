@@ -1304,10 +1304,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(_scaffoldKey, context),
+      appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
       body: Scaffold(
-        key: _scaffoldKey,
-        drawer: drawer(context),
         body: isLoading
             ? globals.isLoading()
             : SafeArea(

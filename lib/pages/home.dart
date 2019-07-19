@@ -403,6 +403,64 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
+  Widget _buildLaranganBinatang() {
+    return Container(
+        padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              color: Color.fromRGBO(68, 182, 236, 1),
+              width: globals.mw(context),
+              height: 120,
+            ),
+            Positioned(
+              top: 10,
+              left: 10,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: globals.mw(context) * 0.6,
+                    child: globals.myText(
+                        text: "Daftar binatang yang tidak boleh dijual di JLF",
+                        color: "light",
+                        size: 17,
+                        weight: "B"),
+                  )
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 10,
+              left: 10,
+              child: OutlineButton(
+                padding: EdgeInsets.only(left: 12, right: 8),
+                borderSide: BorderSide(color: Colors.white),
+                highlightColor: Colors.white10,
+                highlightedBorderColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
+                onPressed: () {},
+                child: Row(
+                  children: <Widget>[
+                    Text("Lihat selengkapnya", style: TextStyle(color: Colors.white, fontSize: 12)),
+                    Icon(Icons.chevron_right, color: Colors.white,size: 28,),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              right: 10,
+              top: 10,
+              bottom: 10,
+              child: Container(
+                height: 90,
+                child: Image.asset("assets/images/larangan_binatang.png"),
+              ),
+            )
+          ],
+        ));
+  }
+
   Widget _buildGridCategory(List<AnimalCategory> animals) {
     List<Widget> listMyWidgets() {
       List<Widget> list = List();
@@ -640,6 +698,7 @@ class _HomePage extends State<HomePage> {
                 _buildNumberMember(),
                 _buildTitle(),
                 _buildGridCategory(animalCategories),
+                _buildLaranganBinatang(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: Divider(color: Colors.black),
