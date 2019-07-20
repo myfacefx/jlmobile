@@ -589,11 +589,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       ),
     );
   }
-
-  // Widget _buildcontChips(String text) {
-  //   return
-  // }
-
+  
   Widget _buildChips(String text, String value) {
     return Container(
       width: (globals.mw(context) * 0.5),

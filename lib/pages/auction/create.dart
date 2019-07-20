@@ -181,7 +181,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 3,
+        maxImages: 2,
       );
     } on PlatformException catch (e) {
       error = e.message;
@@ -227,7 +227,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     }
 
     if (imagesBase64.length == 0) {
-      globals.showDialogs("Wajib upload foto hewan 1-3 foto", context);
+      globals.showDialogs("Wajib upload foto hewan max 2 foto", context);
       return;
     }
 
@@ -341,13 +341,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           ),
                         )),
                     Container(
-                        width: 300,
+                        width: globals.mw(context) * 0.95,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                         child: DropdownButtonFormField<AnimalCategory>(
                           decoration: InputDecoration(
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(5)),
                               contentPadding: EdgeInsets.all(13),
                               hintText: "Kategori Hewan",
                               labelText: "Kategori Hewan"),
@@ -372,13 +372,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           }).toList(),
                         )),
                     Container(
-                        width: 300,
+                        width: globals.mw(context) * 0.95,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                         child: DropdownButtonFormField<AnimalSubCategory>(
                           decoration: InputDecoration(
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(5)),
                               contentPadding: EdgeInsets.all(13),
                               hintText: "Sub Kategori Hewan",
                               labelText: "Sub Kategori Hewan"),
@@ -403,7 +403,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                         )),
 
                     Container(
-                        width: 300,
+                        width: globals.mw(context) * 0.95,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                         child: TextFormField(
                           onSaved: (String value) {
@@ -427,10 +427,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                               labelText: "Nama Hewan",
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20))),
+                                  borderRadius: BorderRadius.circular(5))),
                         )),
                     // Container(
-                    //   width: 300,
+                    //   width: globals.mw(context) * 0.95,
                     //   child: Row(children: <Widget>[
                     //     GestureDetector(
                     //         onTap: () => _selectDate(context),
@@ -449,7 +449,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     //   ]),
                     // ),
                     // Container(
-                    //     width: 300,
+                    //     width: globals.mw(context) * 0.95,
                     //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     //     child: TextFormField(
                     //       controller: dateOfBirthController,
@@ -468,7 +468,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     //           labelText: "Tanggal Lahir",
                     //           fillColor: Colors.white,
                     //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(20))),
+                    //               borderRadius: BorderRadius.circular(5))),
                     //     )),
                     // Row(
                     //     mainAxisAlignment: MainAxisAlignment.center,
@@ -485,7 +485,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     //       Text("Betina", style: TextStyle(color: Colors.black))
                     //     ]),
                     Container(
-                        width: 300,
+                        width: globals.mw(context) * 0.95,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                         child: TextFormField(
                           // initialValue: _description,
@@ -514,17 +514,17 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                               labelText: "Deskripsi",
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20))),
+                                  borderRadius: BorderRadius.circular(5))),
                         )),
                     Container(
                       width: 150,
                       child: RaisedButton(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(5)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Foto", style: TextStyle(color: Colors.white)),
+                            Text("Foto (Max 2)", style: TextStyle(color: Colors.white)),
                             Icon(Icons.add_photo_alternate,
                                 color: Colors.white),
                           ],
@@ -560,14 +560,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                         ? Column(
                             children: <Widget>[
                               Container(
-                                  width: 300,
+                                  width: globals.mw(context) * 0.95,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: DropdownButtonFormField<int>(
                                     decoration: InputDecoration(
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(20)),
+                                                BorderRadius.circular(5)),
                                         contentPadding: EdgeInsets.all(13),
                                         hintText: "Durasi Lelang",
                                         labelText: "Durasi Lelang"),
@@ -597,7 +597,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                           "Waktu dimulai setelah Anda melakukan posting",
                                       color: "danger")),
                               Container(
-                                  width: 300,
+                                  width: globals.mw(context) * 0.95,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
@@ -635,10 +635,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(20))),
+                                                BorderRadius.circular(5))),
                                   )),
                               Container(
-                                  width: 300,
+                                  width: globals.mw(context) * 0.95,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
@@ -696,10 +696,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(20))),
+                                                BorderRadius.circular(5))),
                                   )),
                               Container(
-                                  width: 300,
+                                  width: globals.mw(context) * 0.95,
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
@@ -745,7 +745,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                       }
                                     },
                                     style: TextStyle(color: Colors.black),
-                                    // keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(13),
                                         hintText: "Harga Kelipatan",
@@ -753,52 +752,50 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                         fillColor: Colors.white,
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(20))),
+                                                BorderRadius.circular(5))),
                                   )),
+                              Container(
+                                width: globals.mw(context),
+                                child: CheckboxListTile(
+                                    value: _innerIslandShippingBool,
+                                    title: globals.myText(
+                                        text: "Hanya melayani pengiriman dalam pulau",
+                                        color: "dark",
+                                        size: 13),
+                                    controlAffinity: ListTileControlAffinity.leading,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this._innerIslandShippingBool = value;
+                                        switch (value) {
+                                          case true:
+                                            this._innerIslandShipping = 1;
+                                            break;
+                                          case false:
+                                            this._innerIslandShipping = 0;
+                                            break;
+                                        }
+                                      });
+                                    })),
+                            Container(
+                                width: globals.mw(context),
+                                child: CheckboxListTile(
+                                    value: _agreeTerms,
+                                    title: globals.myText(
+                                        text: "Saya siap menerima konsekuensi apabila menjual binatang langka / tidak sesuai Undang-Undang Republik Indonesia",
+                                        color: "dark",
+                                        size: 13),
+                                    controlAffinity: ListTileControlAffinity.leading,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this._agreeTerms = value;
+                                      });
+                                    })),
                             ],
                           )
                         : Container(),
-                    Container(
-                        width: globals.mw(context) * 0.92,
-                        padding: EdgeInsets.only(right: 20),
-                        child: CheckboxListTile(
-                            value: _innerIslandShippingBool,
-                            title: globals.myText(
-                                text: "Hanya melayani pengiriman dalam pulau",
-                                color: "dark",
-                                size: 13),
-                            controlAffinity: ListTileControlAffinity.leading,
-                            onChanged: (bool value) {
-                              setState(() {
-                                this._innerIslandShippingBool = value;
-                                switch (value) {
-                                  case true:
-                                    this._innerIslandShipping = 1;
-                                    break;
-                                  case false:
-                                    this._innerIslandShipping = 0;
-                                    break;
-                                }
-                              });
-                            })),
-                    Container(
-                        width: globals.mw(context) * 0.92,
-                        padding: EdgeInsets.only(right: 20),
-                        child: CheckboxListTile(
-                            value: _agreeTerms,
-                            title: globals.myText(
-                                text: "Saya siap menerima konsekuensi apabila menjual binatang langka / tidak sesuai Undang-Undang Republik Indonesia",
-                                color: "dark",
-                                size: 13),
-                            controlAffinity: ListTileControlAffinity.leading,
-                            onChanged: (bool value) {
-                              setState(() {
-                                this._agreeTerms = value;
-                              });
-                            })),
                     SizedBox(height: 20),
                     Container(
-                        width: 300,
+                        width: globals.mw(context) * 0.95,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                         child: FlatButton(
                             onPressed: () => isLoading ? null : _save(),
@@ -809,7 +806,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                                 ? Colors.grey
                                 : Theme.of(context).primaryColor,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)))),
+                                borderRadius: BorderRadius.circular(5)))),
                     SizedBox(height: 20),
                     // FlatButton(
                     //   child: Text("Restart Request"),

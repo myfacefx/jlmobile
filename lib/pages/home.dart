@@ -38,18 +38,9 @@ class _HomePage extends State<HomePage> {
   int _currentArticle = 0;
 
   List<Widget> _articlesImages = [
-    FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image:
-            "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
-    FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image:
-            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
-    FadeInImage.assetNetwork(
-        placeholder: 'assets/images/loading.gif',
-        image:
-            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
+    ImageOverlay(image: "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
+    ImageOverlay(image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
+    ImageOverlay(image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
   ];
   List<String> _articlesLinks = [
     "https://www.liputan6.com/health/read/3082433/punya-kura-kura-di-rumah-ini-bahaya-yang-bisa-mengintai-anak?utm_expid=.9Z4i5ypGQeGiS7w9arwTvQ.0&utm_referrer=https%3A%2F%2Fwww.google.com%2F",
@@ -442,8 +433,13 @@ class _HomePage extends State<HomePage> {
                 onPressed: () {},
                 child: Row(
                   children: <Widget>[
-                    Text("Lihat selengkapnya", style: TextStyle(color: Colors.white, fontSize: 12)),
-                    Icon(Icons.chevron_right, color: Colors.white,size: 28,),
+                    Text("Lihat selengkapnya",
+                        style: TextStyle(color: Colors.white, fontSize: 12)),
+                    Icon(
+                      Icons.chevron_right,
+                      color: Colors.white,
+                      size: 28,
+                    ),
                   ],
                 ),
               ),
@@ -576,7 +572,7 @@ class _HomePage extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.only(bottom: 5),
               child: globals.myText(
                   text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
           Stack(
@@ -606,46 +602,85 @@ class _HomePage extends State<HomePage> {
                           text: "JLF", color: 'light', weight: "XB", size: 25)
                     ],
                   )),
+              // Positioned(
+              //     bottom: 10,
+              //     left: 0.0,
+              //     right: 0.0,
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: <Widget>[
+              //         _buildDoted(_currentArticle + 1, _articlesImages.length)
+              //       ],
+              //     )),
               Positioned(
                   bottom: 10,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      _buildDoted(_currentArticle + 1, _articlesImages.length)
-                    ],
-                  )),
-              Positioned(
-                  bottom: 30,
                   left: 10,
                   right: 10,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.all(4),
-                        color: Color.fromRGBO(0, 0, 0, 0.4),
                           width: globals.mw(context) * 0.6,
                           child: globals.myText(
                               text: _articlesTitle[_currentArticle],
                               color: "light")),
-                      Container(
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => WebviewScaffold(
+                                  url: _articlesLinks[_currentArticle],
+                                  appBar: globals.appBar(
+                                      _scaffoldKey, context, isSubMenu: true, showNotification: false)
+                                      )));
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 5),
                           width: globals.mw(context) * 0.2,
-                          // padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                          child: FlatButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => WebviewScaffold(
-                                        url: _articlesLinks[_currentArticle],
-                                        appBar: globals.appBar(
-                                            _scaffoldKey, context))));
-                              },
-                              child: globals.myText(text: "BACA"),
-                              color: globals.myColor('light'),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)
-                                  ))),
+                          // Button
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Container(
+                            child: globals.myText(text: "BACA", weight: "B", align: TextAlign.center)
+                          )
+                        ),
+                      )
+                      // Container(
+                      //     width: globals.mw(context) * 0.2,
+                      //     // padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      //     child: RawMaterialButton(
+                      //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      //       padding: EdgeInsets.all(0),
+                      //       child: Container(
+                      //         padding: EdgeInsets.all(0),
+                      //         child: globals.myText(text: "BACA", weight: "B"),
+                      //       ) ,
+                      //       fillColor: Colors.white,
+                      //       onPressed: () {
+                      //         Navigator.of(context).push(MaterialPageRoute(
+                      //             builder: (context) => WebviewScaffold(
+                      //                 url: _articlesLinks[_currentArticle],
+                      //                 appBar: globals.appBar(
+                      //                     _scaffoldKey, context))));
+                      //       },
+                      //     )
+                      // )
+
+                          // child: FlatButton(
+                          //   padding: EdgeInsets.all(10),
+                          //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          //     onPressed: () {
+                          //       Navigator.of(context).push(MaterialPageRoute(
+                          //           builder: (context) => WebviewScaffold(
+                          //               url: _articlesLinks[_currentArticle],
+                          //               appBar: globals.appBar(
+                          //                   _scaffoldKey, context))));
+                          //     },
+                          //     child: globals.myText(text: "BACA"),
+                          //     color: globals.myColor('light'),
+                          //     shape: RoundedRectangleBorder(
+                          //         borderRadius: BorderRadius.circular(10)))),
                     ],
                   ))
             ],
@@ -716,6 +751,31 @@ class _HomePage extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ImageOverlay extends StatefulWidget {
+  final String image;
+  ImageOverlay({this.image});
+  @override
+  _ImageOverlayState createState() => _ImageOverlayState();
+}
+
+class _ImageOverlayState extends State<ImageOverlay> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Container(
+        height: 200,
+        color: Color.fromRGBO(0, 0, 0, 0.6)
+      ),
+      height: 200,
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: new NetworkImage(
+                  this.widget.image),
+              fit: BoxFit.contain)),
     );
   }
 }

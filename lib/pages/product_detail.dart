@@ -185,30 +185,45 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           SizedBox(
             height: 8,
           ),
-          Text(
-            "${animal.description}",
-            style: Theme.of(context).textTheme.display2,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 8,
-          ),
           globals.myText(
-              text:
-                  "Lelang berakhir pada ${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
-              color: "dark",
-              size: 13),
+              text: "${animal.description}", color: "dark", size: 13),
           SizedBox(
             height: 8,
           ),
-          animal.auction.innerIslandShipping != null &&
+          Divider(),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              children: <Widget>[
+                globals.myText(
+                    text:
+                        "Lelang berakhir pada ",
+                    color: "dark",
+                    size: 13),
+                globals.myText(
+                    text:
+                        "${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
+                    color: "dark",
+                    weight: "B",
+                    size: 13),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Divider(),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: animal.auction.innerIslandShipping != null &&
                   animal.auction.innerIslandShipping == 0
               ? globals.myText(
                   text: "Pengiriman ke seluruh nusantara",
                   color: "dark",
                   size: 13)
               : globals.myText(
-                  text: "Pengiriman dalam pulau saja", color: "dark", size: 13),
+                  text: "Pengiriman dalam pulau saja", color: "dark", size: 13)
+          ),
         ],
       ),
     );
@@ -216,14 +231,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
   _sendWhatsApp(phone, message) async {
     if (phone.isNotEmpty && message.isNotEmpty) {
-      String url =
-          'https://api.whatsapp.com/send?phone=$phone&text=$message';
+      String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';
       if (await canLaunch(url)) {
         await launch(url);
       } else {
         throw 'Could not launch $url';
       }
-    } 
+    }
   }
 
   Widget _buildOwnerDetail() {
@@ -277,7 +291,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           Column(
             children: <Widget>[
               Container(
-                width: globals.mw(context) * 0.3,
+                width: globals.mw(context) * 0.22,
                 alignment: Alignment.center,
                 child: RaisedButton(
                     onPressed: () => Navigator.push(
@@ -295,7 +309,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     color: Colors.white),
               ),
               Container(
-                width: globals.mw(context) * 0.3,
+                width: globals.mw(context) * 0.22,
                 alignment: Alignment.center,
                 child: FlatButton(
                   shape: RoundedRectangleBorder(
@@ -630,7 +644,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       }
     }
     if (animal.auction.ownerUserId == globals.user.id) isOwner = true;
-    
+
     return winnerFound
         ? Container(
             padding: EdgeInsets.fromLTRB(15, 25, 0, 0),
@@ -640,13 +654,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 globals.myText(
-                    text: isWinner ? "LELANG INI TELAH ANDA MENANGKAN" : "LELANG DIMENANGKAN OLEH", color: "dark", size: 16),
+                    text: isWinner
+                        ? "LELANG INI TELAH ANDA MENANGKAN"
+                        : "LELANG DIMENANGKAN OLEH",
+                    color: "dark",
+                    size: 16),
                 GestureDetector(
                   onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ProfilePage(userId: winner.id))),
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ProfilePage(userId: winner.id))),
                   child: Container(
                       height: 90,
                       child: CircleAvatar(
@@ -659,7 +677,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                       image: winner.photo,
                                       placeholder: 'assets/images/loading.gif',
                                       fit: BoxFit.cover)
-                                  : Image.network('assets/images/account.png')))),
+                                  : Image.network(
+                                      'assets/images/account.png')))),
                 ),
                 globals.myText(
                     text: "${winner.username}",
@@ -685,18 +704,30 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     align: TextAlign.center),
                 SizedBox(height: 4),
                 Container(
-                  padding: EdgeInsets.fromLTRB(40, 10, 40, 0),
-                  child: Card(
-                    color: Colors.grey[100],
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      child: Column(children: <Widget>[
-                        globals.myText(text: animal.auction.verificationCode != null ? animal.auction.verificationCode : "19191", weight: "B", size: 30, letterSpacing: 3, color: "dark"),
-                        globals.myText(text: "Ini adalah kode unik yang dimiliki oleh pemilik lelang dan pemenang lelang, gunakan kode unik ini untuk melakukan pengecekan", align: TextAlign.center, color: "dark", size: 13)
-                      ],),
-                    )
-                  )
-                ),
+                    padding: EdgeInsets.fromLTRB(40, 10, 40, 0),
+                    child: Card(
+                        color: Colors.grey[100],
+                        child: Container(
+                          padding: EdgeInsets.all(15),
+                          child: Column(
+                            children: <Widget>[
+                              globals.myText(
+                                  text: animal.auction.verificationCode != null
+                                      ? animal.auction.verificationCode
+                                      : "19191",
+                                  weight: "B",
+                                  size: 30,
+                                  letterSpacing: 3,
+                                  color: "dark"),
+                              globals.myText(
+                                  text:
+                                      "Ini adalah kode unik yang dimiliki oleh pemilik lelang dan pemenang lelang, gunakan kode unik ini untuk melakukan pengecekan",
+                                  align: TextAlign.center,
+                                  color: "dark",
+                                  size: 13)
+                            ],
+                          ),
+                        ))),
                 // Wrap(children: <Widget>[
                 //   globals.myText(text: "Kode Verifikasi: ", size: 16),
                 // ],),
@@ -708,10 +739,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             onPressed: () {
                               String phone;
                               String message = "Halo";
-                              
+
                               if (isOwner) {
-                                phone = "62${animal.owner.phoneNumber.substring(1)}";
-                                _sendWhatsApp(phone, message);  
+                                phone =
+                                    "62${animal.owner.phoneNumber.substring(1)}";
+                                _sendWhatsApp(phone, message);
                               } else if (isWinner) {
                                 phone = "62${winner.phoneNumber.substring(1)}";
                                 _sendWhatsApp(phone, message);
@@ -879,11 +911,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         Form(
           key: _formKeyBid,
           child: Container(
-            width: globals.mw(context) - 138,
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
+            width: globals.mw(context) * 0.65,
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            padding: EdgeInsets.fromLTRB(20, 5, 0, 5),
             decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(30)),
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(30),
+                  bottomLeft: const Radius.circular(30),
+                )),
             child: TextFormField(
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
@@ -913,9 +949,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
         ),
         Container(
+          padding: EdgeInsets.all(0),
           decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(30)),
+              borderRadius: BorderRadius.only(
+                topRight: const Radius.circular(30),
+                bottomRight: const Radius.circular(30),
+              )),
           child: FlatButton(
             onPressed: () {
               _formKeyBid.currentState.save();
@@ -952,7 +992,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               style: Theme.of(context)
                   .textTheme
                   .title
-                  .copyWith(color: Colors.white, fontSize: 16),
+                  .copyWith(color: Colors.white, fontSize: 14),
             ),
           ),
         ),
@@ -1027,7 +1067,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildPutBid() {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.fromLTRB(0, 10, 20, 20),
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: Column(
         children: <Widget>[
           globals.myText(
@@ -1042,11 +1082,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
           SizedBox(height: 10),
           textField(),
-          SizedBox(
-            height: 8,
-          ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: SizedBox(
               width: double.infinity,
               child: RaisedButton(
@@ -1056,7 +1093,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
                 child: globals.myText(
-                    text: "Beli Sekarang", color: "light", size: 15),
+                    text: "Beli Sekarang / BIN", color: "light", size: 15),
                 color: globals.myColor("primary"),
               ),
             ),
@@ -1173,10 +1210,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         Container(
           width: globals.mw(context) * 0.65,
           margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          padding: EdgeInsets.fromLTRB(20, 3, 20, 3),
           decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(30)),
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(30),
+                bottomLeft: const Radius.circular(30),
+              )),
           child: TextFormField(
             textInputAction: TextInputAction.newline,
             controller: commentController,
@@ -1199,9 +1239,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
         ),
         Container(
+          padding: EdgeInsets.all(0),
           decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(30)),
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.only(
+              topRight: const Radius.circular(30),
+              bottomRight: const Radius.circular(30),
+            ),
+          ),
           child: FlatButton(
             onPressed: () {
               _formKeyComment.currentState.save();
@@ -1210,11 +1255,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               }
             },
             child: Text(
-              "Pasang",
+              "PASANG",
               style: Theme.of(context)
                   .textTheme
                   .title
-                  .copyWith(color: Colors.white, fontSize: 16),
+                  .copyWith(color: Colors.white, fontSize: 14),
             ),
           ),
         ),
