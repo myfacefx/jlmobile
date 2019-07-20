@@ -178,7 +178,7 @@ Widget bottomNavigationBar(context) {
 }
 
 Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
-    {bool isSubMenu = false}) {
+    {bool isSubMenu = false, bool showNotification = true}) {
   return AppBar(
     title: GestureDetector(
       onTap: () {
@@ -201,7 +201,7 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
               else
                 scaffoldKey.currentState.openDrawer();
             }),
-    actions: <Widget>[myAppBarIcon(context)],
+    actions: <Widget>[ showNotification ? myAppBarIcon(context) : Container()],
     centerTitle: true,
   );
 }

@@ -128,7 +128,7 @@ Widget drawer(context) {
                         ))),
                 globals.spacePadding(),
                 _buildDrawerNavigationButtonBig(
-                    "Daftar Lelang", '/', null, context),
+                    "Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Lelangku", '/profile', null, context),
                 // _buildDrawerNavigationButtonBig("Our Shop Products", context),

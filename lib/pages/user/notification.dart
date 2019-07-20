@@ -63,7 +63,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
+        appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true, showNotification: false),
         body: Scaffold(
             key: _scaffoldKey,
             drawer: drawer(context),
