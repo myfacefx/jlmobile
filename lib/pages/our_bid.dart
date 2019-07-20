@@ -153,12 +153,14 @@ class _OurBidPageState extends State<OurBidPage> {
         }).toList(),
         onChanged: (value) {
           setState(() {
-            selectedSortBy = value;
-            isLoading = true;
-            if (selectedTab == "Tawaran Ku") {
-              _getOurBid();
-            } else {
-              _getOurComment();
+            if (selectedSortBy != value) {
+              selectedSortBy = value;
+              isLoading = true;
+              if (selectedTab == "Tawaran Ku") {
+                _getOurBid();
+              } else {
+                _getOurComment();
+              }
             }
           });
         });
@@ -425,7 +427,6 @@ class _OurBidPageState extends State<OurBidPage> {
       }
     }
 
-    
     return GestureDetector(
       onTap: () {
         Navigator.push(

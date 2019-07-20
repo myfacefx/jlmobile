@@ -1,17 +1,16 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/slider_service.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,13 +33,20 @@ class _HomePage extends State<HomePage> {
   int membersCount = 0;
   List<Widget> listImage = [];
   List<Widget> listPromo = [];
+  String statusCount = "LELANG";
 
   int _currentArticle = 0;
 
   List<Widget> _articlesImages = [
-    ImageOverlay(image: "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
-    ImageOverlay(image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
-    ImageOverlay(image: "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
+    ImageOverlay(
+        image:
+            "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
+    ImageOverlay(
+        image:
+            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
+    ImageOverlay(
+        image:
+            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
   ];
   List<String> _articlesLinks = [
     "https://www.liputan6.com/health/read/3082433/punya-kura-kura-di-rumah-ini-bahaya-yang-bisa-mengintai-anak?utm_expid=.9Z4i5ypGQeGiS7w9arwTvQ.0&utm_referrer=https%3A%2F%2Fwww.google.com%2F",
@@ -57,7 +63,7 @@ class _HomePage extends State<HomePage> {
   void initState() {
     super.initState();
     _refresh();
-    _getListCategories();
+    _getListCategoriesAuction();
     _loadSliders();
     _loadPromos();
     globals.getNotificationCount();
@@ -169,13 +175,34 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  void _getListCategories() {
+  void _getListCategoriesAuction() {
     setState(() {
       failedDataCategories = false;
       isLoadingCategories = true;
     });
 
     getNotUserAnimalCategory("token", globals.user.id).then((onValue) {
+      animalCategories = onValue;
+      setState(() {
+        isLoadingCategories = false;
+      });
+    }).catchError((onError) {
+      failedDataCategories = true;
+    }).then((_) {
+      isLoadingCategories = false;
+
+      if (!mounted) return;
+      setState(() {});
+    });
+  }
+
+  void _getListCategoriesProduct() {
+    setState(() {
+      failedDataCategories = false;
+      isLoadingCategories = true;
+    });
+
+    getNotProductUserAnimalCategory("token", globals.user.id).then((onValue) {
       animalCategories = onValue;
       setState(() {
         isLoadingCategories = false;
@@ -273,22 +300,32 @@ class _HomePage extends State<HomePage> {
       margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
       child: Row(
         children: <Widget>[
-          Text(
-            "LELANG",
-            style: Theme.of(context).textTheme.headline,
+          GestureDetector(
+            onTap: () {
+              if (statusCount != "LELANG") {
+                statusCount = "LELANG";
+                _getListCategoriesAuction();
+              }
+            },
+            child: globals.myText(
+                text: "LELANG",
+                size: 16,
+                color: statusCount == "LELANG" ? null : "disabled"),
           ),
           Text("  |  ", style: Theme.of(context).textTheme.headline),
-          Text(
-            "PASAR HEWAN",
-            style: Theme.of(context)
-                .textTheme
-                .headline
-                .copyWith(color: Color.fromRGBO(178, 178, 178, 1)),
+          GestureDetector(
+            onTap: () {
+              if (statusCount != "PASAR HEWAN") {
+                statusCount = "PASAR HEWAN";
+                _getListCategoriesProduct();
+              }
+            },
+            child: globals.myText(
+                text: "PASAR HEWAN",
+                size: 16,
+                color: statusCount == "PASAR HEWAN" ? null : "disabled"),
           ),
           Expanded(child: Text("")),
-          // membersCount > 0
-          //     ? globals.myText(text: "$membersCount MEMBER", color: 'dark')
-          //     : Container()
         ],
       ),
     );
@@ -341,6 +378,7 @@ class _HomePage extends State<HomePage> {
             MaterialPageRoute(
                 builder: (BuildContext context) => CategoryDetailPage(
                       animalCategory: category,
+                      from: statusCount,
                     )));
       },
       child: Card(
@@ -470,7 +508,7 @@ class _HomePage extends State<HomePage> {
     }
 
     return failedDataCategories
-        ? globals.buildFailedLoadingData(context, _getListCategories)
+        ? globals.buildFailedLoadingData(context, _getListCategoriesAuction)
         : isLoadingCategories
             ? Container(child: Center(child: CircularProgressIndicator()))
             : Container(
@@ -629,22 +667,22 @@ class _HomePage extends State<HomePage> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => WebviewScaffold(
                                   url: _articlesLinks[_currentArticle],
-                                  appBar: globals.appBar(
-                                      _scaffoldKey, context, isSubMenu: true, showNotification: false)
-                                      )));
+                                  appBar: globals.appBar(_scaffoldKey, context,
+                                      isSubMenu: true,
+                                      showNotification: false))));
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 5),
-                          width: globals.mw(context) * 0.2,
-                          // Button
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Container(
-                            child: globals.myText(text: "BACA", weight: "B", align: TextAlign.center)
-                          )
-                        ),
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            width: globals.mw(context) * 0.2,
+                            // Button
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Container(
+                                child: globals.myText(
+                                    text: "BACA",
+                                    weight: "B",
+                                    align: TextAlign.center))),
                       )
                       // Container(
                       //     width: globals.mw(context) * 0.2,
@@ -667,20 +705,20 @@ class _HomePage extends State<HomePage> {
                       //     )
                       // )
 
-                          // child: FlatButton(
-                          //   padding: EdgeInsets.all(10),
-                          //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          //     onPressed: () {
-                          //       Navigator.of(context).push(MaterialPageRoute(
-                          //           builder: (context) => WebviewScaffold(
-                          //               url: _articlesLinks[_currentArticle],
-                          //               appBar: globals.appBar(
-                          //                   _scaffoldKey, context))));
-                          //     },
-                          //     child: globals.myText(text: "BACA"),
-                          //     color: globals.myColor('light'),
-                          //     shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(10)))),
+                      // child: FlatButton(
+                      //   padding: EdgeInsets.all(10),
+                      //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      //     onPressed: () {
+                      //       Navigator.of(context).push(MaterialPageRoute(
+                      //           builder: (context) => WebviewScaffold(
+                      //               url: _articlesLinks[_currentArticle],
+                      //               appBar: globals.appBar(
+                      //                   _scaffoldKey, context))));
+                      //     },
+                      //     child: globals.myText(text: "BACA"),
+                      //     color: globals.myColor('light'),
+                      //     shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(10)))),
                     ],
                   ))
             ],
@@ -689,30 +727,30 @@ class _HomePage extends State<HomePage> {
       ),
     );
 
-    return Container(
-        margin: EdgeInsets.all(5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-                padding: EdgeInsets.all(5),
-                child: globals.myText(
-                    text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
-            Container(
-              width: globals.mw(context),
-              child: Card(
-                  child: Stack(
-                children: <Widget>[
-                  FadeInImage.assetNetwork(
-                      width: globals.mw(context) * 0.23,
-                      placeholder: 'assets/images/loading.gif',
-                      image: 'https://via.placeholder.com/150/92c952'),
-                  // globals.myText(text: "AWKAWKAWK")
-                ],
-              )),
-            )
-          ],
-        ));
+    // return Container(
+    //     margin: EdgeInsets.all(5),
+    //     child: Column(
+    //       crossAxisAlignment: CrossAxisAlignment.start,
+    //       children: <Widget>[
+    //         Container(
+    //             padding: EdgeInsets.all(5),
+    //             child: globals.myText(
+    //                 text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
+    //         Container(
+    //           width: globals.mw(context),
+    //           child: Card(
+    //               child: Stack(
+    //             children: <Widget>[
+    //               FadeInImage.assetNetwork(
+    //                   width: globals.mw(context) * 0.23,
+    //                   placeholder: 'assets/images/loading.gif',
+    //                   image: 'https://via.placeholder.com/150/92c952'),
+    //               // globals.myText(text: "AWKAWKAWK")
+    //             ],
+    //           )),
+    //         )
+    //       ],
+    //     ));
   }
 
   @override
@@ -766,16 +804,11 @@ class _ImageOverlayState extends State<ImageOverlay> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Container(
-        height: 200,
-        color: Color.fromRGBO(0, 0, 0, 0.6)
-      ),
+      child: Container(height: 200, color: Color.fromRGBO(0, 0, 0, 0.6)),
       height: 200,
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: new NetworkImage(
-                  this.widget.image),
-              fit: BoxFit.contain)),
+              image: new NetworkImage(this.widget.image), fit: BoxFit.contain)),
     );
   }
 }

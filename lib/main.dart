@@ -48,7 +48,6 @@ class MyApp extends StatelessWidget {
         '/edit-profile': (BuildContext context) => EditProfilePage(),
         '/our-bid': (BuildContext context) => OurBidTopPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
-        '/auction/activate': (BuildContext context) => ActivateAuctionPage(),
         '/notification': (BuildContext context) => NotificationPage(),
         '/intro': (BuildContext context) => IntroPage()
       },
