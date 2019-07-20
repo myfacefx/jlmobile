@@ -276,14 +276,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     globals.myText(text: "4.5", color: "light", size: 10)
                   ],
                 ),
-                Row(
-                  children: <Widget>[
-                    globals.myText(text: "1000", color: "light", size: 10),
-                    globals.myText(text: " | ", color: "light", size: 10),
-                    globals.myText(
-                        text: "10 Barang Terjual", color: "light", size: 10),
-                  ],
-                )
+                // Row(
+                //   children: <Widget>[
+                //     globals.myText(text: "1000", color: "light", size: 10),
+                //     globals.myText(text: " | ", color: "light", size: 10),
+                //     globals.myText(
+                //         text: "10 Barang Terjual", color: "light", size: 10),
+                //   ],
+                // )
               ],
             ),
           ),

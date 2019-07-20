@@ -451,9 +451,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           Container(
               padding: EdgeInsets.symmetric(vertical: 3),
               child:
-                  globals.myText(text: username, color: "unprime", size: 10)),
-          globals.myText(text: regency, size: 10),
-          globals.myText(text: province, size: 10)
+                  globals.myText(text: username, color: "dark", size: 10, weight: "B")),
+          globals.myText(text: regency + ", " + province, textOverflow: TextOverflow.ellipsis, size: 10, color: "unprime", weight: "L"),
+          SizedBox(height: 5),
         ],
       ),
     );
