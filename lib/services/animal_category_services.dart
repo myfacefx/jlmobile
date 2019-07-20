@@ -26,3 +26,18 @@ Future<List<AnimalCategory>> getNotUserAnimalCategory(
     throw Exception(res.body);
   }
 }
+
+Future<List<AnimalCategory>> getNotProductUserAnimalCategory(
+    String token, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  print(getBaseUrl() + "/not/$userId/animal-categories/product");
+  http.Response res = await http
+      .get(getBaseUrl() + "/not/$userId/animal-categories/product", headers: header);
+  if (res.statusCode == 200) {
+    return animalCategoryFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+

@@ -6,19 +6,21 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/province.dart';
-import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final AnimalCategory animalCategory;
+  final String from;
 
-  CategoryDetailPage({Key key, @required this.animalCategory})
+  CategoryDetailPage(
+      {Key key, @required this.animalCategory, @required this.from})
       : super(key: key);
 
   @override
-  _CategoryDetailPage createState() => _CategoryDetailPage(animalCategory);
+  _CategoryDetailPage createState() =>
+      _CategoryDetailPage(animalCategory, from);
 }
 
 class _CategoryDetailPage extends State<CategoryDetailPage> {
@@ -40,19 +42,25 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   TextEditingController searchController = TextEditingController();
 
-  _CategoryDetailPage(AnimalCategory animalCategory) {
+  _CategoryDetailPage(AnimalCategory animalCategory, String from) {
     this.animalCategory = animalCategory;
+    var function;
+    if (from == "LELANG") {
+      function = getAnimalAuctionByCategory("Token", animalCategory.id,
+          selectedSortBy, searchController.text, globals.user.id);
+    } else if (from == "PASAR HEWAN") {
+      function = getAnimalProductByCategory("Token", animalCategory.id,
+          selectedSortBy, searchController.text, globals.user.id);
+    }
 
-    getAnimalByCategory("Token", animalCategory.id, selectedSortBy,
-            searchController.text, globals.user.id)
-        .then((onValue) {
+    function.then((onValue) {
       animals = onValue;
       setState(() {
         isLoading = false;
       });
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
-      print(onError);
+      print(onError.toString());
     });
 
     getProvinces("token").then((onValue) {
@@ -68,35 +76,66 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     globals.getNotificationCount();
   }
 
-  void _refresh(int subCategoryId, String subCategoryName) {
+  void _refresh(int subCategoryId, String subCategoryName, String from) {
     setState(() {
       isLoading = true;
     });
 
+    var functionCategory;
+    var functionSubCategory;
+
+    if (from == "LELANG") {
+      functionCategory = getAnimalAuctionByCategory(
+          "Token",
+          widget.animalCategory.id,
+          selectedSortBy,
+          searchController.text,
+          globals.user.id);
+      functionSubCategory = getAnimalAuctionBySubCategory(
+          "Token",
+          subCategoryId,
+          selectedSortBy,
+          searchController.text,
+          globals.user.id);
+    }
+
+    if (from == "PASAR HEWAN") {
+      functionCategory = getAnimalProductByCategory(
+          "Token",
+          widget.animalCategory.id,
+          selectedSortBy,
+          searchController.text,
+          globals.user.id);
+      functionSubCategory = getAnimalProductBySubCategory(
+          "Token",
+          subCategoryId,
+          selectedSortBy,
+          searchController.text,
+          globals.user.id);
+    }
+
     if (subCategoryId != null) {
       currentSubCategory = subCategoryName;
-      getAnimalBySubCategory("Token", subCategoryId, selectedSortBy,
-              searchController.text, globals.user.id)
-          .then((onValue) {
+      functionSubCategory.then((onValue) {
         animals = onValue;
         setState(() {
           isLoading = false;
         });
       }).catchError((onError) {
-        globals.showDialogs(onError, context);
+        print(onError.toString());
+        globals.showDialogs(onError.toString(), context);
       });
     } else {
       currentSubCategory = "ALL";
       currentIdSubCategory = null;
-      getAnimalByCategory("Token", widget.animalCategory.id, selectedSortBy,
-              searchController.text, globals.user.id)
-          .then((onValue) {
+      functionCategory.then((onValue) {
         animals = onValue;
         setState(() {
           isLoading = false;
         });
       }).catchError((onError) {
-        globals.showDialogs(onError, context);
+        print(onError.toString());
+        globals.showDialogs(onError.toString(), context);
       });
     }
   }
@@ -105,9 +144,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   Widget _buildcontSub(String name, String count, int subCategory) {
     return GestureDetector(
       onTap: () {
-        currentIdSubCategory = subCategory;
-        currentSubCategory = name;
-        _refresh(subCategory, name);
+        if (currentIdSubCategory != subCategory) {
+          currentIdSubCategory = subCategory;
+          currentSubCategory = name;
+          _refresh(subCategory, name, widget.from);
+        }
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -237,7 +278,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           ),
           GestureDetector(
               onTap: () {
-                Navigator.of(context).pop();
                 Navigator.of(context).pushNamed("/auction/create");
               },
               child: Row(
@@ -253,17 +293,12 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: Colors.blueGrey),
                   ),
-                  // Container(
-                  //   margin: EdgeInsets.only(right: 5),
-                  //   height: 20,
-                  //   child: Icon(Icons.add),
-                  // ),
-                  Text(
-                    "Buat Lelang",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w900),
-                  ),
+                  globals.myText(
+                      text: widget.from == "LELANG"
+                          ? "Buat Lelang"
+                          : "Jual Hewan",
+                      color: "primary",
+                      weight: "XB"),
                 ],
               ))
         ],
@@ -289,10 +324,12 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         }).toList(),
         onChanged: (value) {
           setState(() {
-            selectedSortBy = value;
-            currentIdSubCategory = currentIdSubCategory;
-            currentSubCategory = currentSubCategory;
-            _refresh(currentIdSubCategory, currentSubCategory);
+            if (selectedSortBy != value) {
+              selectedSortBy = value;
+              currentIdSubCategory = currentIdSubCategory;
+              currentSubCategory = currentSubCategory;
+              _refresh(currentIdSubCategory, currentSubCategory, widget.from);
+            }
           });
         });
   }
@@ -340,7 +377,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         onSubmitted: (String text) {
           currentIdSubCategory = currentIdSubCategory;
           currentSubCategory = currentSubCategory;
-          _refresh(currentIdSubCategory, currentSubCategory);
+          _refresh(currentIdSubCategory, currentSubCategory, widget.from);
         },
         decoration: InputDecoration(
             border: InputBorder.none,
@@ -389,7 +426,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             child: GridView.count(
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
-                childAspectRatio: 0.5,
+                childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.7,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }
@@ -450,9 +487,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           ),
           Container(
               padding: EdgeInsets.symmetric(vertical: 3),
-              child:
-                  globals.myText(text: username, color: "dark", size: 10, weight: "B")),
-          globals.myText(text: regency + ", " + province, textOverflow: TextOverflow.ellipsis, size: 10, color: "unprime", weight: "L"),
+              child: globals.myText(
+                  text: username, color: "dark", size: 10, weight: "B")),
+          globals.myText(
+              text: regency + ", " + province,
+              textOverflow: TextOverflow.ellipsis,
+              size: 10,
+              color: "unprime",
+              weight: "L"),
           SizedBox(height: 5),
         ],
       ),
@@ -485,7 +527,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             children: <Widget>[
               globals.myText(text: countComments, color: 'primary', size: 10),
               Container(
-                padding: EdgeInsets.only(left: 2),
+                  padding: EdgeInsets.only(left: 2),
                   alignment: Alignment.center,
                   child: Center(
                       child: Image.asset('assets/images/comment.png',
@@ -498,18 +540,12 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   Widget _buildCard(Animal animal) {
-    bool myProduct = animal.ownerUserId == globals.user.id;
-    // print("${animal.ownerUserId} == ${globals.user.id}");
     var isNotError = false;
     if (animal.animalImages.length > 0 &&
         animal.animalImages[0].image != null) {
       isNotError = true;
     }
 
-    double currentBid = 0.0;
-    if (animal.auction != null) {
-      currentBid = animal.auction.currentBid.toDouble();
-    }
     return GestureDetector(
       onTap: () async {
         await Navigator.push(
@@ -518,7 +554,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 builder: (BuildContext context) => ProductDetailPage(
                       animalId: animal.id,
                     )));
-        _refresh(currentIdSubCategory, currentSubCategory);
+        _refresh(currentIdSubCategory, currentSubCategory, widget.from);
       },
       child: Stack(
         children: <Widget>[
@@ -544,52 +580,46 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         animal.owner.province.name,
                         animal.gender,
                         animal.dateOfBirth),
-                    _buildChips(
-                        "Harga Awal",
-                        globals
-                            .convertToMoney(animal.auction.openBid.toDouble())),
-                    _buildChips(
-                        "Kelipatan",
-                        globals.convertToMoney(
-                            animal.auction.multiply.toDouble())),
-                    _buildChips(
-                        "Beli Sekarang",
-                        globals.convertToMoney(
-                            animal.auction.buyItNow.toDouble())),
-                    _buildChips("Saat Ini", globals.convertToMoney(currentBid)),
+                    widget.from == "LELANG"
+                        ? Column(
+                            children: <Widget>[
+                              _buildChips(
+                                  "Harga Awal",
+                                  globals.convertToMoney(
+                                      animal.auction.openBid.toDouble())),
+                              _buildChips(
+                                  "Kelipatan",
+                                  globals.convertToMoney(
+                                      animal.auction.multiply.toDouble())),
+                              _buildChips(
+                                  "Beli Sekarang",
+                                  globals.convertToMoney(
+                                      animal.auction.buyItNow.toDouble())),
+                              _buildChips(
+                                  "Saat Ini",
+                                  globals.convertToMoney(
+                                      animal.auction.currentBid.toDouble())),
+                            ],
+                          )
+                        : Column(
+                            children: <Widget>[
+                              _buildChips(
+                                  "Harga", globals.convertToMoney(10000.0)),
+                            ],
+                          ),
                   ],
                 ),
               ),
             ),
           ),
-          _buildChat(animal.auction.countComments.toString(), animal.id),
-          myProduct
-              ? Positioned(
-                  bottom: 20,
-                  left: 15,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Container(
-                        width: globals.mw(context) * 0.3,
-                        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: globals.myText(
-                            align: TextAlign.center,
-                            text: "PRODUK ANDA",
-                            color: "light",
-                            size: 10),
-                      )
-                    ],
-                  ))
+          widget.from == "LELANG"
+              ? _buildChat(animal.auction.countComments.toString(), animal.id)
               : Container(),
         ],
       ),
     );
   }
-  
+
   Widget _buildChips(String text, String value) {
     return Container(
       width: (globals.mw(context) * 0.5),
