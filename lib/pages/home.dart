@@ -138,11 +138,11 @@ class _HomePage extends State<HomePage> {
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/520/200/animals?4',
+        image: 'https://placeimg.com/520/200/animals?5',
       ),
       FadeInImage.assetNetwork(
         placeholder: 'assets/images/loading.gif',
-        image: 'https://placeimg.com/520/200/animals?4',
+        image: 'https://placeimg.com/520/200/animals?6',
       ),
     ];
   }
