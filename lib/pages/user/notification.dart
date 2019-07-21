@@ -134,6 +134,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                     animalId: histories[i]
                                                         .auction
                                                         .animalId,
+                                                        from: "LELANG",
                                                   )));
                                     },
                                     child: Card(

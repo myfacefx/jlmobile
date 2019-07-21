@@ -7,12 +7,12 @@ import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 
-class OurBidTopPage extends StatefulWidget {
+class OurProducTopPage extends StatefulWidget {
   @override
-  _OurBidPageTopState createState() => _OurBidPageTopState();
+  _OurProductTopState createState() => _OurProductTopState();
 }
 
-class _OurBidPageTopState extends State<OurBidTopPage> {
+class _OurProductTopState extends State<OurProducTopPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -33,8 +33,7 @@ class _OurBidPageTopState extends State<OurBidTopPage> {
 }
 
 const List<Choice> choices = const <Choice>[
-  const Choice(title: 'Tawaran Ku'),
-  const Choice(title: 'Komentar Ku'),
+  const Choice(title: 'Belanjaanku'),
 ];
 
 Widget tabView() {
@@ -43,7 +42,7 @@ Widget tabView() {
     children: tamp.map((Choice choice) {
       return Padding(
         padding: const EdgeInsets.all(0.0),
-        child: OurBidPage(
+        child: OurProductPage(
           tab: choice.title,
         ),
       );
@@ -63,14 +62,14 @@ Widget tabBar(context) {
       }).toList());
 }
 
-class OurBidPage extends StatefulWidget {
+class OurProductPage extends StatefulWidget {
   final String tab;
-  const OurBidPage({Key key, this.tab}) : super(key: key);
+  const OurProductPage({Key key, this.tab}) : super(key: key);
   @override
-  _OurBidPageState createState() => _OurBidPageState(tab);
+  _OurProductPageState createState() => _OurProductPageState(tab);
 }
 
-class _OurBidPageState extends State<OurBidPage> {
+class _OurProductPageState extends State<OurProductPage> {
   TextEditingController searchController = TextEditingController();
 
   String selectedSortBy = "Terbaru";
@@ -92,35 +91,13 @@ class _OurBidPageState extends State<OurBidPage> {
     globals.getNotificationCount();
   }
 
-  _OurBidPageState(String tab) {
+  _OurProductPageState(String tab) {
     selectedTab = tab;
-    if (tab == "Tawaran Ku") {
-      _getOurBid();
-    } else {
-      _getOurComment();
-    }
+    _getOurProduct();
   }
 
-  _getOurBid() {
-    getUserBidsAnimals("Token", globals.user.id, selectedSortBy)
-        .then((onValue) {
-      animals = onValue;
-      setState(() {
-        isLoading = false;
-      });
-    }).catchError((onError) {
-      globals.showDialogs(onError, context);
-    });
-
-    searchController.addListener(() {
-      setState(() {
-        searchQuery = searchController.text;
-      });
-    });
-  }
-
-  _getOurComment() {
-    getUserCommentAuctionAnimals("Token", globals.user.id, selectedSortBy)
+  _getOurProduct() {
+    getUserCommentProductAnimals("Token", globals.user.id, selectedSortBy)
         .then((onValue) {
       animals = onValue;
       setState(() {
@@ -139,7 +116,7 @@ class _OurBidPageState extends State<OurBidPage> {
 
   // sort and search
   Widget dropdownSortBy() {
-    List<String> item = <String>['Terbaru', 'Selesai', 'Dimenangkan', 'Gagal'];
+    List<String> item = <String>['Terbaru', 'Populer'];
     return DropdownButton<String>(
         value: selectedSortBy,
         items: item.map((String value) {
@@ -156,11 +133,7 @@ class _OurBidPageState extends State<OurBidPage> {
             if (selectedSortBy != value) {
               selectedSortBy = value;
               isLoading = true;
-              if (selectedTab == "Tawaran Ku") {
-                _getOurBid();
-              } else {
-                _getOurComment();
-              }
+              _getOurProduct();
             }
           });
         });
@@ -206,17 +179,6 @@ class _OurBidPageState extends State<OurBidPage> {
   }
   // sort and search
 
-  //build top name
-  // Widget _buildTopCont() {
-  //   return Container(
-  //     width: globals.mw(context),
-  //     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-  //     color: Colors.white,
-  //     child: globals.myText(text: "Lelang Diikuti", size: 16, weight: "SB"),
-  //   );
-  // }
-  //build top name
-
 // build listview
   Widget _buildListView() {
     return animals.length == 0
@@ -248,7 +210,7 @@ class _OurBidPageState extends State<OurBidPage> {
     String currentStatus = "Berjalan";
     Color colorBox = Colors.green;
     if (status != "Aktif") {
-      currentStatus = "Selesai";
+      currentStatus = "Tidak Aktif";
       colorBox = Colors.black;
     }
 
@@ -348,31 +310,6 @@ class _OurBidPageState extends State<OurBidPage> {
     );
   }
 
-  Widget _buildStatusAuction(Animal animal, String status) {
-    Widget widget = globals.myText(
-        text: "Penawaran terakhir oleh ${animal.auction.lastBid}",
-        color: "unprime",
-        size: 10);
-    if (status == "Gagal") {
-      widget = globals.myText(
-          text: "Dimenangkan oleh ${animal.auction.lastBid}",
-          color: "unprime",
-          size: 10);
-    } else if (status == "Menang") {
-      widget = globals.myText(
-          text: 'Dimenangkan oleh Anda', color: "unprime", size: 10);
-    } else if (status == "Terkonfirmasi") {
-      widget = Container(
-        padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-        decoration: BoxDecoration(
-            border: Border.all(width: 1, color: globals.myColor("primary"))),
-        child: globals.myText(
-            text: 'PROSES PERMINTAAN PENGIRIMAN', size: 10, weight: "B"),
-      );
-    }
-    return widget;
-  }
-
   Widget _buildCard(Animal animal) {
     var isNotError = false;
     if (animal.animalImages.length > 0 &&
@@ -380,32 +317,10 @@ class _OurBidPageState extends State<OurBidPage> {
       isNotError = true;
     }
 
-    //String ageNow = globals.convertToAge(animal.dateOfBirth);
+    String status = "Selesai";
 
-    // Bid lastBid;
-
-    int winnerUserId = 0;
-
-    if (animal.auction.winnerBid != null) {
-      winnerUserId = animal.auction.winnerBid.userId;
-    }
-
-    // if (animal.auction.bids.length > 0) {
-    //   lastBid = animal.auction.bids[animal.auction.bids.length - 1];
-    // }
-
-    String status = "Aktif";
-
-    if (animal.auction.active == 0) {
-      if (winnerUserId == globals.user.id) {
-        if (animal.auction.winnerConfirmation != null) {
-          status = "Terkonfirmasi";
-        } else {
-          status = "Menang";
-        }
-      } else if (winnerUserId != globals.user.id) {
-        status = "Gagal";
-      }
+    if (animal.product.status == "active") {
+      status = "Aktif";
     }
 
     return GestureDetector(
@@ -426,7 +341,6 @@ class _OurBidPageState extends State<OurBidPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 _buildStatus(status),
-                _buildTimer(status, animal.auction.expiryDate)
               ],
             ),
             //detail
@@ -444,7 +358,6 @@ class _OurBidPageState extends State<OurBidPage> {
                       globals.myText(
                           text: animal.owner.name, color: "unprime", size: 10),
                       Text(
-                        // "${animal.name} ${animal.gender} - $ageNow",
                         "${animal.name}",
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context)
@@ -456,17 +369,39 @@ class _OurBidPageState extends State<OurBidPage> {
                         height: 5,
                       ),
                       _buildChips(
-                          "Saat Ini",
-                          globals.convertToMoney(
-                              animal.auction.currentBid.toDouble())),
-                      _buildChips(
-                          "Beli Sekarang",
-                          globals.convertToMoney(
-                              animal.auction.buyItNow.toDouble())),
+                          "Harga Jual",
+                          globals
+                              .convertToMoney(animal.product.price.toDouble())),
                       SizedBox(
                         height: 5,
                       ),
-                      _buildStatusAuction(animal, status),
+                      globals.myText(
+                          text: "Jumlah Tersedia : ${animal.product.quantity}",
+                          size: 10),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      animal.product.innerIslandShipping == 1
+                          ? Container(
+                              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1,
+                                      color: globals.myColor("primary"))),
+                              child: globals.myText(
+                                  text: 'Pengiriman Dalam Pulau Saja',
+                                  size: 10,
+                                  weight: "B"),
+                            )
+                          : Container(
+                              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1,
+                                      color: globals.myColor("primary"))),
+                              child: globals.myText(
+                                  text: 'Nusantara', size: 10, weight: "B"),
+                            )
                     ],
                   ),
                 ),

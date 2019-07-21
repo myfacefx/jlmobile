@@ -27,17 +27,19 @@ class _ProfilePageState extends State<ProfilePage>
   String _username;
   bool isLoadingAnimals = true;
   bool isLoadingAuctions = true;
+  bool isLoadingProducts = true;
   bool isLoading = true;
 
   List<Animal> animals = List<Animal>();
   List<Animal> auctions = List<Animal>();
+  List<Animal> products = List<Animal>();
 
   int _userId;
   User user;
 
   _ProfilePageState(int userId) {
+    _tabController = TabController(length: userId == null ? 3 : 2, vsync: this);
     if (userId == null || userId <= 0) {
-      // _userId = globals.user.id;
       user = globals.user;
       _userId = globals.user.id;
       isLoading = false;
@@ -56,9 +58,10 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+
     _getProdukKu();
     _getProdukLelang();
+    _getProdukPasarHewan();
     globals.getNotificationCount();
   }
 
@@ -78,6 +81,17 @@ class _ProfilePageState extends State<ProfilePage>
       auctions = onValue;
       setState(() {
         isLoadingAuctions = false;
+      });
+    }).catchError((onError) {
+      globals.showDialogs(onError.toString(), context);
+    });
+  }
+
+  _getProdukPasarHewan() {
+    getUserProductAnimals("Token", _userId).then((onValue) {
+      products = onValue;
+      setState(() {
+        isLoadingProducts = false;
       });
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
@@ -107,7 +121,8 @@ class _ProfilePageState extends State<ProfilePage>
             child: GridView.count(
                 physics: ClampingScrollPhysics(),
                 shrinkWrap: true,
-                childAspectRatio: type == "produkku" ? 0.75 : 0.5,
+                childAspectRatio:
+                    (type == "produkku" || type == "pasarhewan") ? 0.78 : 0.5,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }
@@ -201,6 +216,7 @@ class _ProfilePageState extends State<ProfilePage>
               MaterialPageRoute(
                   builder: (BuildContext context) => ProductDetailPage(
                         animalId: animalId,
+                        from: "LELANG",
                       )));
         },
         splashColor: globals.myColor("primary"),
@@ -325,6 +341,7 @@ class _ProfilePageState extends State<ProfilePage>
                   MaterialPageRoute(
                       builder: (BuildContext context) => ProductDetailPage(
                             animalId: animal.id,
+                            from: "LELANG",
                           )));
             },
             child: Card(
@@ -387,6 +404,55 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  Widget _buildPasarHewan(Animal animal) {
+    var isNotError = false;
+    if (animal.animalImages.length > 0 &&
+        animal.animalImages[0].image != null) {
+      isNotError = true;
+    }
+    return Stack(
+      children: <Widget>[
+        Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+            child: GestureDetector(
+              onTap: () {
+                user.id == globals.user.id
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ActivateAuctionPage(
+                                  animalId: animal.id,
+                                )))
+                    : null;
+              },
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 12),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 5,
+                      ),
+                      isNotError
+                          ? _buildImage(animal.animalImages[0].image)
+                          : globals.failLoadImage(),
+                      _buildDetail(animal.name, animal.owner.username,
+                          animal.gender, animal.dateOfBirth),
+                      _buildChips(
+                          "Harga Jual",
+                          globals
+                              .convertToMoney(animal.product.price.toDouble())),
+                    ],
+                  ),
+                ),
+              ),
+            )),
+        _buildEditAnimal(animal.id)
+      ],
+    );
+  }
+
   Widget _buildCard(Animal animal, String type) {
     var widget;
     switch (type) {
@@ -395,6 +461,9 @@ class _ProfilePageState extends State<ProfilePage>
         break;
       case "produklelang":
         widget = _buildProdukLelang(animal);
+        break;
+      case "pasarhewan":
+        widget = _buildPasarHewan(animal);
         break;
       default:
     }
@@ -572,7 +641,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Widget _tabBarList() {
+  Widget _tabBarListVisitor() {
     return Container(
         padding: EdgeInsets.all(5),
         width: globals.mw(context),
@@ -585,43 +654,136 @@ class _ProfilePageState extends State<ProfilePage>
           controller: _tabController,
           tabs: <Widget>[
             Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  globals.myText(text: "Produk-ku ", size: 11),
-                  animals.length > 0 ? Container(
-                    constraints: BoxConstraints(
-                      minWidth: 10,
-                      minHeight: 10
-                    ),
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                    child: globals.myText(text: "${animals.length}", weight: "B", color: 'light', size: 10)) : Container()
-                ],
-              )
-            ),
-            Tab(
+                child: Padding(
+              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   globals.myText(text: "Produk Lelang ", size: 11),
-                  auctions.length > 0 ? Container(
-                    constraints: BoxConstraints(
-                      minWidth: 10,
-                      minHeight: 10
-                    ),
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                    child: globals.myText(text: "${auctions.length}", weight: "B", color: 'light', size: 10)) : Container()
+                  auctions.length > 0
+                      ? Container(
+                          constraints:
+                              BoxConstraints(minWidth: 10, minHeight: 10),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: globals.myText(
+                              text: "${auctions.length}",
+                              weight: "B",
+                              color: 'light',
+                              size: 10))
+                      : Container()
                 ],
-              )
-            ),
+              ),
+            )),
+            Tab(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                globals.myText(text: "Produk Pasar Hewan ", size: 11),
+                auctions.length > 0
+                    ? Container(
+                        constraints:
+                            BoxConstraints(minWidth: 10, minHeight: 10),
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: globals.myText(
+                            text: "${products.length}",
+                            weight: "B",
+                            color: 'light',
+                            size: 10))
+                    : Container()
+              ],
+            )),
+          ],
+        ))));
+  }
+
+  Widget _tabBarListMe() {
+    return Container(
+        padding: EdgeInsets.all(5),
+        width: globals.mw(context),
+        child: Card(
+            child: Container(
+                child: TabBar(
+          labelColor: globals.myColor("primary"),
+          indicatorColor: globals.myColor("primary"),
+          unselectedLabelColor: globals.myColor("primary"),
+          controller: _tabController,
+          isScrollable: true,
+          tabs: <Widget>[
+            Tab(
+                child: Padding(
+              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Produk-ku ", size: 11),
+                  animals.length > 0
+                      ? Container(
+                          constraints:
+                              BoxConstraints(minWidth: 10, minHeight: 10),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: globals.myText(
+                              text: "${animals.length}",
+                              weight: "B",
+                              color: 'light',
+                              size: 10))
+                      : Container()
+                ],
+              ),
+            )),
+            Tab(
+                child: Padding(
+              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Produk Lelang ", size: 11),
+                  auctions.length > 0
+                      ? Container(
+                          constraints:
+                              BoxConstraints(minWidth: 10, minHeight: 10),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: globals.myText(
+                              text: "${auctions.length}",
+                              weight: "B",
+                              color: 'light',
+                              size: 10))
+                      : Container()
+                ],
+              ),
+            )),
+            Tab(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                globals.myText(text: "Produk Pasar Hewan ", size: 11),
+                auctions.length > 0
+                    ? Container(
+                        constraints:
+                            BoxConstraints(minWidth: 10, minHeight: 10),
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: globals.myText(
+                            text: "${products.length}",
+                            weight: "B",
+                            color: 'light',
+                            size: 10))
+                    : Container()
+              ],
+            )),
           ],
         ))));
   }
@@ -640,25 +802,55 @@ class _ProfilePageState extends State<ProfilePage>
                     physics: ClampingScrollPhysics(),
                     children: <Widget>[
                       _profile(),
-                      _tabBarList(),
-                      Container(
-                        height: 400,
-                        padding: EdgeInsets.all(5),
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: <Widget>[
-                            Container(
-                                child: isLoadingAnimals
-                                    ? globals.isLoading()
-                                    : _buildAnimals(animals, "produkku")),
-                            Container(
-                                child: isLoadingAuctions
-                                    ? globals.isLoading()
-                                    : _buildAnimals(auctions, "produklelang")),
-                          ],
-                        ),
-                      )
+                      widget.userId == null
+                          ? _tabBarListMe()
+                          : _tabBarListVisitor(),
+                      widget.userId == null ? buildMe() : buildVisitor(),
                     ],
                   ))));
+  }
+
+  Container buildMe() {
+    return Container(
+      height: 400,
+      padding: EdgeInsets.all(5),
+      child: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+          Container(
+              child: isLoadingAnimals
+                  ? globals.isLoading()
+                  : _buildAnimals(animals, "produkku")),
+          Container(
+              child: isLoadingAuctions
+                  ? globals.isLoading()
+                  : _buildAnimals(auctions, "produklelang")),
+          Container(
+              child: isLoadingProducts
+                  ? globals.isLoading()
+                  : _buildAnimals(products, "pasarhewan")),
+        ],
+      ),
+    );
+  }
+
+  Container buildVisitor() {
+    return Container(
+      height: 400,
+      padding: EdgeInsets.all(5),
+      child: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+          Container(
+              child: isLoadingAuctions
+                  ? globals.isLoading()
+                  : _buildAnimals(auctions, "produklelang")),
+          Container(
+              child: isLoadingProducts
+                  ? globals.isLoading()
+                  : _buildAnimals(products, "pasarhewan")),
+        ],
+      ),
+    );
   }
 }

@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:jlf_mobile/models/auction.dart';
+import 'package:jlf_mobile/models/product.dart';
 import 'package:jlf_mobile/models/user.dart';
 
 List<Animal> animalFromJson(String str) => new List<Animal>.from(json.decode(str).map((x) => Animal.fromJson(x)));
@@ -32,6 +33,7 @@ class Animal {
     List<AnimalImage> animalImages;
     User owner;
     AnimalSubCategory animalSubCategory;
+    Product product;
 
     Animal({
         this.id,
@@ -50,6 +52,7 @@ class Animal {
         this.animalImages,
         this.owner,
         this.animalSubCategory,
+        this.product
     });
 
     factory Animal.fromJson(Map<String, dynamic> json) => new Animal(
@@ -69,6 +72,7 @@ class Animal {
         animalImages: json["animal_images"] == null ? null : new List<AnimalImage>.from(json["animal_images"].map((x) => AnimalImage.fromJson(x))),
         owner: json["owner"] == null ? null : User.fromJson(json["owner"]),
         animalSubCategory: json["animal_sub_category"] == null ? null : AnimalSubCategory.fromJson(json["animal_sub_category"]),
+        product: json["product"] == null ? null : Product.fromJson(json["product"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -88,5 +92,6 @@ class Animal {
         "animal_images": animalImages == null ? null : new List<dynamic>.from(animalImages.map((x) => x.toJson())),
         "owner": owner == null ? null : owner.toJson(),
         "animal_sub_category": animalSubCategory == null ? null : animalSubCategory.toJson(),
+        "product": product == null ? null : product.toJson(),
     }..removeWhere( (key, val) => val == null);
 }
