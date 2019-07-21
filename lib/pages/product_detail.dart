@@ -184,7 +184,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   ),
                   Container(
                     padding: EdgeInsets.all(3),
-                    width: globals.mw(context) * 0.3,
+                    width: globals.mw(context) * 0.27,
                     alignment: Alignment.centerRight,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
@@ -194,7 +194,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        globals.myText(text: "BAGIKAN", color: "light"),
+                        globals.myText(text: "BAGIKAN ", color: "light"),
                         Icon(Icons.share, size: 14, color: globals.myColor("light")),
                       ],
                     )),
@@ -225,9 +225,30 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               children: <Widget>[
                 globals.myText(
                     text:
-                        "Kategori: ${animal.animalSubCategory.name}, ${animal.animalSubCategory.animalCategory.name}",
+                        "Kategori: ",
                     color: "dark",
                     size: 13),
+                GestureDetector(
+                  child: globals.myText(
+                    text:
+                        "${animal.animalSubCategory.name}",
+                    color: "dark",
+                    size: 13,
+                    weight: "B"),
+                ),
+                globals.myText(
+                    text:
+                        " > ",
+                    color: "dark",
+                    size: 13),
+                GestureDetector(
+                  child: globals.myText(
+                    text:
+                        "${animal.animalSubCategory.animalCategory.name}",
+                    color: "dark",
+                    size: 13,
+                    weight: "B"),
+                )
               ],
             ),
           ),
