@@ -6,7 +6,6 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/user.dart';
-import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
@@ -43,6 +42,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   _ProductDetailPage(int animalId) {
     loadAnimal(animalId);
     globals.getNotificationCount();
+    globals.autoClose();
   }
 
   _checkAuctionActivity() {
@@ -175,6 +175,34 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          GestureDetector(
+              onTap: () => globals.share(),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container()
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(3),
+                    width: globals.mw(context) * 0.27,
+                    alignment: Alignment.centerRight,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: globals.myColor("primary"),
+                    ), 
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        globals.myText(text: "BAGIKAN ", color: "light"),
+                        Icon(Icons.share, size: 14, color: globals.myColor("light")),
+                      ],
+                    )),
+                ],
+              )),
+          SizedBox(
+            height: 8,
+          ),
           Text(
               //"${animal.name} / ${animal.gender} / ${globals.convertToAge(animal.dateOfBirth)}",
               "${animal.name}",
@@ -197,9 +225,43 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               children: <Widget>[
                 globals.myText(
                     text:
-                        "Lelang berakhir pada ",
+                        "Kategori: ",
                     color: "dark",
                     size: 13),
+                GestureDetector(
+                  child: globals.myText(
+                    text:
+                        "${animal.animalSubCategory.name}",
+                    color: "dark",
+                    size: 13,
+                    weight: "B"),
+                ),
+                globals.myText(
+                    text:
+                        " > ",
+                    color: "dark",
+                    size: 13),
+                GestureDetector(
+                  child: globals.myText(
+                    text:
+                        "${animal.animalSubCategory.animalCategory.name}",
+                    color: "dark",
+                    size: 13,
+                    weight: "B"),
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Divider(),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              children: <Widget>[
+                globals.myText(
+                    text: "Lelang berakhir pada ", color: "dark", size: 13),
                 globals.myText(
                     text:
                         "${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
@@ -214,16 +276,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
           Divider(),
           Container(
-            alignment: Alignment.centerLeft,
-            child: animal.auction.innerIslandShipping != null &&
-                  animal.auction.innerIslandShipping == 0
-              ? globals.myText(
-                  text: "Pengiriman ke seluruh nusantara",
-                  color: "dark",
-                  size: 13)
-              : globals.myText(
-                  text: "Pengiriman dalam pulau saja", color: "dark", size: 13)
-          ),
+              alignment: Alignment.centerLeft,
+              child: animal.auction.innerIslandShipping != null &&
+                      animal.auction.innerIslandShipping == 0
+                  ? globals.myText(
+                      text: "Pengiriman ke seluruh nusantara",
+                      color: "dark",
+                      size: 13)
+                  : globals.myText(
+                      text: "Pengiriman dalam pulau saja",
+                      color: "dark",
+                      size: 13)),
         ],
       ),
     );
@@ -686,9 +749,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     color: 'primary',
                     align: TextAlign.center),
                 SizedBox(height: 4),
-                globals.myText(text: winner.regency.name, size: 13),
-                SizedBox(height: 4),
-                globals.myText(text: winner.province.name, size: 13),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.location_on, size: 13),
+                    globals.myText(
+                        text: winner.regency.name + ", " + winner.province.name,
+                        size: 13,
+                        textOverflow: TextOverflow.ellipsis),
+                  ],
+                ),
                 SizedBox(height: 4),
                 globals.myText(text: winner.phoneNumber, size: 15),
                 SizedBox(height: 4),
