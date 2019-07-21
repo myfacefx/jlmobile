@@ -45,7 +45,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   TextEditingController searchController = TextEditingController();
 
   _CategoryDetailPage(AnimalCategory animalCategory, String from) {
-    // globals.autoClose();
+    globals.autoClose();
     this.animalCategory = animalCategory;
     var function;
     if (from == "LELANG") {

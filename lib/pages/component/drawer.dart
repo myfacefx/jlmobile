@@ -133,7 +133,7 @@ Widget drawer(context) {
                 _buildDrawerNavigationButtonBig("Lelang Diikuti", '/our-bid',
                     globals.user != null ? globals.user.bidsCount : 0, context),
                 _buildDrawerNavigationButtonBig("Belanjaanku", '/our-product',
-                    globals.user != null ? globals.user.bidsCount : 0, context),
+                    globals.user != null ? 0 : 0, context),
                 _buildDrawerNavigationButtonBig(
                     "Bagikan JLF", '/share', null, context),
                 globals.spacePadding(),

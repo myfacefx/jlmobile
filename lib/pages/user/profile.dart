@@ -122,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage>
                 physics: ClampingScrollPhysics(),
                 shrinkWrap: true,
                 childAspectRatio:
-                    (type == "produkku" || type == "pasarhewan") ? 0.78 : 0.5,
+                    (type == "produkku" || type == "pasarhewan") ? 0.69 : 0.5,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }
@@ -416,15 +416,13 @@ class _ProfilePageState extends State<ProfilePage>
             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             child: GestureDetector(
               onTap: () {
-                user.id == globals.user.id
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ActivateAuctionPage(
-                                  animalId: animal.id,
-                                )))
-                    : null;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => ProductDetailPage(
+                              animalId: animal.id,
+                              from: "PASAR HEWAN",
+                            )));
               },
               child: Card(
                 child: Container(
@@ -439,6 +437,16 @@ class _ProfilePageState extends State<ProfilePage>
                           : globals.failLoadImage(),
                       _buildDetail(animal.name, animal.owner.username,
                           animal.gender, animal.dateOfBirth),
+                          SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          globals.myText(
+                              text:
+                                  "Jumlah Tersedia  : ${animal.product.quantity}", size: 10, color: "unprime"),
+                        ],
+                      ),
                       _buildChips(
                           "Harga Jual",
                           globals
@@ -448,7 +456,7 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
               ),
             )),
-        _buildEditAnimal(animal.id)
+        _buildEditAuction(animal.id)
       ],
     );
   }

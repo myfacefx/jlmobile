@@ -47,7 +47,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   _ProductDetailPage(int animalId) {
     loadAnimal(animalId);
     globals.getNotificationCount();
-    //globals.autoClose();
+    globals.autoClose();
   }
 
   _checkAuctionActivity() {
