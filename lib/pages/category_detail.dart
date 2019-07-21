@@ -43,6 +43,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   TextEditingController searchController = TextEditingController();
 
   _CategoryDetailPage(AnimalCategory animalCategory, String from) {
+    globals.autoClose();
     this.animalCategory = animalCategory;
     var function;
     if (from == "LELANG") {
@@ -431,39 +432,59 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 children: listMyWidgets()));
   }
 
-  Widget _buildTime(String expiryTime, int duration) {
+  Widget _buildTime(String expiryTime, String username, String photo) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(
-          "${globals.convertTimer(expiryTime)} Remaining",
-          style: Theme.of(context).textTheme.display1.copyWith(
-                fontSize: 10,
-              ),
-          textAlign: TextAlign.left,
+        Row(
+          children: <Widget>[
+            Container(
+              height: 15,
+              child: CircleAvatar(
+                  radius: 10,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: photo != null &&
+                              photo.isNotEmpty
+                          ? FadeInImage.assetNetwork(
+                              image: photo,
+                              placeholder: 'assets/images/loading.gif',
+                              fit: BoxFit.cover)
+                          : Image.asset('assets/images/account.png')))),
+            Container(
+              child: globals.myText(text: "$username", size: 10, textOverflow: TextOverflow.ellipsis)
+            )
+          ]
         ),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Theme.of(context).primaryColor,
+            color: globals.myColor("primary")
           ),
           padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
           child:
-              globals.myText(text: "1x$duration jam", size: 10, color: "light"),
-        )
+            globals.myText(text: "${globals.convertTimer(expiryTime)}", size: 10, color: "light"),
+        ),
+        // Text(
+        //   "Sisa ${globals.convertTimer(expiryTime)}",
+        //   style: Theme.of(context).textTheme.display1.copyWith(
+        //         fontSize: 10,
+        //       ),
+        //   textAlign: TextAlign.left,
+        // ),
       ],
     );
   }
 
   Widget _buildImage(String image) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
       height: 128,
       color: Colors.white,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.cover,
           placeholder: 'assets/images/loading.gif',
           image: image,
         ),
@@ -472,30 +493,68 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   Widget _buildDetail(String name, String username, String regency,
-      String province, String gender, DateTime birthDate) {
+      String province, String gender, DateTime birthDate, int duration, int innerIslandShipping) {
     //String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Wrap(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: globals.myColor("primary")
+                ),
+                padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                child:
+                  globals.myText(text: "1x$duration jam", size: 10, color: "light", letterSpacing: 1.2),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 5),
+                child: innerIslandShipping == 1 ? Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: globals.myColor("primary")
+                  ),
+                  padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                  child:
+                    globals.myText(text: "Dalam Pulau", size: 10, color: "light", letterSpacing: 1.2),
+                ) : Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: globals.myColor("primary")
+                  ),
+                  padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                  child:
+                    globals.myText(text: "Nusantara", size: 10, color: "light", letterSpacing: 1.2),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
           Text(
             // "$name $gender - $ageNow",
-            "$name",
+            "${name.toUpperCase()}",
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
           ),
-          Container(
-              padding: EdgeInsets.symmetric(vertical: 3),
-              child: globals.myText(
-                  text: username, color: "dark", size: 10, weight: "B")),
-          globals.myText(
-              text: regency + ", " + province,
-              textOverflow: TextOverflow.ellipsis,
-              size: 10,
-              color: "unprime",
-              weight: "L"),
           SizedBox(height: 5),
+          Row(
+            children: <Widget>[
+              Icon(Icons.location_on, size: 10),
+              Flexible(
+                child: globals.myText(
+                  text: regency + ", " + province,
+                  textOverflow: TextOverflow.ellipsis,
+                  size: 10,
+                  color: "unprime",
+                  weight: "L"),
+              )
+            ],
+          ),
+          SizedBox(height: 5)
         ],
       ),
     );
@@ -569,7 +628,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                       height: 5,
                     ),
                     _buildTime(
-                        animal.auction.expiryDate, animal.auction.duration),
+                        animal.auction.expiryDate, animal.owner.username, animal.owner.photo),
                     isNotError
                         ? _buildImage(animal.animalImages[0].image)
                         : globals.failLoadImage(),
@@ -579,7 +638,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         animal.owner.regency.name,
                         animal.owner.province.name,
                         animal.gender,
-                        animal.dateOfBirth),
+                        animal.dateOfBirth,
+                        animal.auction.duration,
+                        animal.auction.innerIslandShipping),
                     widget.from == "LELANG"
                         ? Column(
                             children: <Widget>[

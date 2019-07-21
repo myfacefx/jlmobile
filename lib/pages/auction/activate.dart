@@ -8,9 +8,12 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
+import 'package:jlf_mobile/models/product.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
+import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
+import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class ActivateAuctionPage extends StatefulWidget {
@@ -19,12 +22,13 @@ class ActivateAuctionPage extends StatefulWidget {
   ActivateAuctionPage({@required this.animalId});
 
   @override
-  _ActivateAuctionPageState createState() => _ActivateAuctionPageState(animalId);
+  _ActivateAuctionPageState createState() =>
+      _ActivateAuctionPageState(animalId);
 }
 
 class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _formKey = GlobalKey<FormState>(); 
+  final _formKey = GlobalKey<FormState>();
 
   bool autoValidate = false;
   bool passwordVisibility = true;
@@ -32,9 +36,10 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
 
   bool isLoading = true;
 
-  FocusNode usernameFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
-  FocusNode confirmPasswordFocusNode = FocusNode();
+  FocusNode descriptionFocusNode = FocusNode();
+  FocusNode binFocusNode = FocusNode();
+  FocusNode multiplyFocusNode = FocusNode();
+  FocusNode quantityFocusNode = FocusNode();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -42,6 +47,8 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   TextEditingController multiplyController = TextEditingController();
   TextEditingController binController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
 
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   AnimalCategory _animalCategory;
@@ -70,7 +77,10 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   List<Asset> images = List<Asset>();
   String _error;
 
-  int _postToAuction = 1;
+  int _saveAs = 1;
+
+  String _price;
+  String _quantity;
 
   Animal animal;
   int animalId;
@@ -146,6 +156,12 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   //   );
   // }
 
+  void _handleSaveAs(int value) {
+    setState(() {
+      _saveAs = value;
+    });
+  }
+
   Future<void> loadAssets() async {
     setState(() {
       images = List<Asset>();
@@ -192,7 +208,9 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     if (isLoading) return;
 
     if (!_agreeTerms) {
-      globals.showDialogs("Anda harus menyetujui konsekuensi yang akan Anda terima apabila menjual binatang langka/tidak sesuai Undang-Undang", context);
+      globals.showDialogs(
+          "Anda harus menyetujui konsekuensi yang akan Anda terima apabila menjual binatang langka/tidak sesuai Undang-Undang",
+          context);
       return;
     }
 
@@ -214,38 +232,90 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       _formKey.currentState.save();
 
       Map<String, dynamic> formData = Map<String, dynamic>();
+      String message;
 
-      Auction auction = Auction();
+      if (_saveAs == 1) {
+        message = 'Berhasil memulai lelang hewan';
+        // If user want to start the auction of the animal
+        Auction auction = Auction();
 
-      auction.openBid = int.parse(_openBid);
-      auction.multiply = int.parse(_multiply);
-      auction.buyItNow = int.parse(_bin);
-      auction.duration = _auctionDuration;
-      auction.ownerUserId = globals.user.id;
-      auction.active = 1;
-      auction.innerIslandShipping = _innerIslandShipping;
-      auction.slug = 'test' + "-" + DateTime.now().toString();
+        auction.openBid = int.parse(_openBid);
+        auction.multiply = int.parse(_multiply);
+        auction.buyItNow = int.parse(_bin);
+        auction.duration = _auctionDuration;
+        auction.ownerUserId = globals.user.id;
+        auction.active = 1;
+        auction.innerIslandShipping = _innerIslandShipping;
+        auction.slug = 'lelang-jlf-' + DateTime.now().year.toString() + DateTime.now().month.toString() + DateTime.now().day.toString();
 
-      formData['auction'] = auction;
+        formData['auction'] = auction;
 
-      try {
-        bool response = await activate(formData, animal.id);
-        print(response);
-        if (response) {
-          await globals.showDialogs("Berhasil memulai lelang", context);
-        } else {
-          await globals.showDialogs("Gagal membuat lelang, silahkan ulangi kembali", context);
+        try {
+          bool response = await AuctionServices.create(formData, animal.id);
+          print(response);
+          if (response) {
+            await globals.showDialogs(message, context);
+          } else {
+            await globals.showDialogs(
+                "Gagal membuat lelang, silahkan ulangi kembali", context);
+          }
+
+          Navigator.pop(context);
+          Navigator.pushNamed(context, "/profile");
+        } catch (e) {
+          globals.showDialogs(e.toString(), context);
+          print(e);
+          setState(() {
+            isLoading = false;
+          });
         }
+      } else if (_saveAs == 2) {
+        message = 'Berhasil memasang hewan sebagai produk jual';
+        // If user want to start the auction of the animal
+        Product product = Product();
 
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "/profile");
-      } catch (e) {
-        globals.showDialogs(e.toString(), context);
-        print(e);
-        setState(() {
-          isLoading = false;
-        });
+        product.price = int.parse(_price);
+        product.quantity = int.parse(_quantity);
+        product.ownerUserId = globals.user.id;
+        product.status = 'active';
+        product.innerIslandShipping = _innerIslandShipping;
+        product.slug = 'produk-jlf-' + DateTime.now().year.toString() + DateTime.now().month.toString() + DateTime.now().day.toString();
+
+        formData['product'] = product;
+
+        try {
+          bool response = await ProductServices.create(formData, animal.id);
+          print(response);
+          if (response) {
+            await globals.showDialogs(message, context);
+          } else {
+            await globals.showDialogs(
+                "Gagal membuat lelang, silahkan ulangi kembali", context);
+          }
+
+          Navigator.pop(context);
+          Navigator.pushNamed(context, "/profile");
+        } catch (e) {
+          globals.showDialogs(e.toString(), context);
+          print(e);
+          setState(() {
+            isLoading = false;
+          });
+        }
       }
+
+      // Auction auction = Auction();
+
+      // auction.openBid = int.parse(_openBid);
+      // auction.multiply = int.parse(_multiply);
+      // auction.buyItNow = int.parse(_bin);
+      // auction.duration = _auctionDuration;
+      // auction.ownerUserId = globals.user.id;
+      // auction.active = 1;
+      // auction.innerIslandShipping = _innerIslandShipping;
+      // auction.slug = 'test' + "-" + DateTime.now().toString();
+
+      // formData['auction'] = auction;
     } else {
       setState(() {
         autoValidate = true;
@@ -266,7 +336,6 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   // }
 
   Widget _buildAnimalImages(List<AnimalImage> animalImages) {
-    
     return Container(
       padding: EdgeInsets.all(5),
       child: GridView.count(
@@ -277,19 +346,316 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
           // Asset asset = images[index];
 
           return Container(
-            padding: EdgeInsets.all(5),
-            child: Image.network(animalImages[index].image)
-            // child: AssetThumb(
-            //   asset: asset,
-            //   width: globals.mw(context) * 0.95,
-            //   height: 300,
-            // ),
-          );
+              padding: EdgeInsets.all(5),
+              child: Image.network(animalImages[index].image)
+              // child: AssetThumb(
+              //   asset: asset,
+              //   width: globals.mw(context) * 0.95,
+              //   height: 300,
+              // ),
+              );
         }),
       ),
     );
   }
-  
+
+  Widget _buildAuction() {
+    return Column(
+      children: <Widget>[
+        Container(
+            width: globals.mw(context) * 0.95,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: DropdownButtonFormField<int>(
+              decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  contentPadding: EdgeInsets.all(13),
+                  hintText: "Durasi Lelang",
+                  labelText: "Durasi Lelang"),
+              value: _auctionDuration,
+              validator: (value) {
+                if (value == null) {
+                  return 'Silahkan pilih durasi lelang';
+                }
+              },
+              onChanged: (int value) {
+                setState(() {
+                  _auctionDuration = value;
+                });
+              },
+              items: durations.map((int type) {
+                return DropdownMenuItem<int>(
+                    value: type,
+                    child: Text("$type Jam",
+                        style: TextStyle(color: Colors.black)));
+              }).toList(),
+            )),
+        Container(
+            padding: EdgeInsets.only(bottom: 15),
+            child: globals.myText(
+                text: "Waktu dimulai setelah Anda melakukan posting",
+                color: "danger")),
+        Container(
+            width: globals.mw(context) * 0.95,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              controller: openBidController,
+              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+              // initialValue: _openBid,
+              // focusNode: usernameFocusNode,
+              onSaved: (String value) {
+                _openBid = value;
+              },
+              onFieldSubmitted: (String value) {
+                if (value.length > 0) {
+                  FocusScope.of(context).requestFocus(binFocusNode);
+                }
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Harga awal wajib diisi';
+                }
+
+                if (binController.text.isNotEmpty) {
+                  if (int.parse(value) >= int.parse(binController.text)) {
+                    return 'Harga awal tidak boleh lebih atau sama dengan harga beli sekarang';
+                  }
+                }
+              },
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(13),
+                  hintText: "Harga Awal",
+                  labelText: "Harga Awal",
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5))),
+            )),
+        Container(
+            width: globals.mw(context) * 0.95,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+              controller: binController,
+              // initialValue: _bin,
+              focusNode: binFocusNode,
+              onSaved: (String value) {
+                _bin = value;
+              },
+              onFieldSubmitted: (String value) {
+                if (value.length > 0) {
+                  FocusScope.of(context).requestFocus(multiplyFocusNode);
+                }
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Harga Beli Sekarang wajib diisi';
+                }
+
+                if (openBidController.text.isNotEmpty) {
+                  if (int.parse(value) <= int.parse(openBidController.text)) {
+                    return 'Harga Beli Sekarang tidak boleh kurang atau sama dengan harga awal';
+                  }
+
+                  if (multiplyController.text.isNotEmpty) {
+                    if (int.parse(multiplyController.text) == 0) {
+                      return 'Kelipatan tidak valid';
+                    }
+
+                    if ((int.parse(value) - int.parse(openBidController.text)) %
+                            int.parse(multiplyController.text) !=
+                        0) {
+                      return 'BIN harus sesuai kelipatan';
+                    }
+                  }
+                }
+              },
+              style: TextStyle(color: Colors.black),
+              // keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(13),
+                  hintText: "Beli Sekarang (BIN)",
+                  labelText: "Beli Sekarang (BIN)",
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5))),
+            )),
+        Container(
+            width: globals.mw(context) * 0.95,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              controller: multiplyController,
+              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+              // initialValue: _multiply,
+              focusNode: multiplyFocusNode,
+              onSaved: (String value) {
+                _multiply = value;
+              },
+              onFieldSubmitted: (String value) {
+                if (value.length > 0) {
+                  _save();
+                }
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Harga kelipatan wajib diisi';
+                }
+
+                if (int.parse(value) == 0) {
+                  return 'Kelipatan tidak valid';
+                }
+
+                if (binController.text.isNotEmpty) {
+                  if (int.parse(value) >= int.parse(binController.text)) {
+                    return 'Harga kelipatan tidak boleh melebihi atau sama dengan harga beli sekarang';
+                  }
+
+                  if (openBidController.text.isNotEmpty) {
+                    if ((int.parse(binController.text) -
+                                int.parse(openBidController.text)) %
+                            int.parse(value) !=
+                        0) {
+                      return 'Nilai kelipatan tidak sesuai';
+                    }
+                  }
+                }
+              },
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(13),
+                  hintText: "Harga Kelipatan",
+                  labelText: "Harga Kelipatan",
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5))),
+            )),
+        Container(
+            width: globals.mw(context),
+            child: CheckboxListTile(
+                value: _innerIslandShippingBool,
+                title: globals.myText(
+                    text: "Hanya melayani pengiriman dalam pulau",
+                    color: "dark",
+                    size: 13),
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (bool value) {
+                  setState(() {
+                    this._innerIslandShippingBool = value;
+                    switch (value) {
+                      case true:
+                        this._innerIslandShipping = 1;
+                        break;
+                      case false:
+                        this._innerIslandShipping = 0;
+                        break;
+                    }
+                  });
+                }))
+      ],
+    );
+  }
+
+  Widget _buildSellProduct() {
+    return Column(
+      children: <Widget>[
+        Container(
+            width: globals.mw(context) * 0.95,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              controller: priceController,
+              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+              onSaved: (String value) {
+                _price = value;
+              },
+              onFieldSubmitted: (String value) {
+                if (value.length > 0) {
+                  FocusScope.of(context).requestFocus(quantityFocusNode);
+                }
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Harga awal wajib diisi';
+                }
+
+                if (int.parse(value) < 1) {
+                  return 'Harga tidak sesuai';
+                }
+              },
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(13),
+                  hintText: "Harga",
+                  labelText: "Harga",
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5))),
+            )),
+        Container(
+            width: globals.mw(context) * 0.95,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+              controller: quantityController,
+              focusNode: quantityFocusNode,
+              onSaved: (String value) {
+                _quantity = value;
+              },
+              onFieldSubmitted: (String value) {
+                // if (value.length > 0) {
+                //   FocusScope.of(context).requestFocus(multiplyFocusNode);
+                // }
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Harga Beli Sekarang wajib diisi';
+                }
+
+                if (int.parse(value) < 1) {
+                  return 'Stok tidak sesuai';
+                }
+              },
+              style: TextStyle(color: Colors.black),
+              // keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(13),
+                  hintText: "Stok",
+                  labelText: "Stok",
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5))),
+            )),
+        Container(
+            width: globals.mw(context),
+            child: CheckboxListTile(
+                value: _innerIslandShippingBool,
+                title: globals.myText(
+                    text: "Hanya melayani pengiriman dalam pulau",
+                    color: "dark",
+                    size: 13),
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (bool value) {
+                  setState(() {
+                    this._innerIslandShippingBool = value;
+                    switch (value) {
+                      case true:
+                        this._innerIslandShipping = 1;
+                        break;
+                      case false:
+                        this._innerIslandShipping = 0;
+                        break;
+                    }
+                  });
+                })),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -310,7 +676,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                         color: Theme.of(context).primaryColor,
                         child: Center(
                           child: Text(
-                            "Mulai Lelang",
+                            "Lelang / Jual Hewan",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
@@ -495,251 +861,77 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                     //     : Container(),
                     // SizedBox(height: 10),
                     Container(
-                      child: globals.myText(text: "Kategori", weight: "B", color: 'dark')
-                    ),
+                        child: globals.myText(
+                            text: "Kategori", weight: "B", color: 'dark')),
                     Container(
-                    child: globals.myText(text: "${animal != null ? animal.animalSubCategory.animalCategory.name : ""} - ${animal != null ? animal.animalSubCategory.name : ""}", color: 'dark')
-                    ), 
+                        child: globals.myText(
+                            text:
+                                "${animal != null ? animal.animalSubCategory.animalCategory.name : ""} - ${animal != null ? animal.animalSubCategory.name : ""}",
+                            color: 'dark')),
                     SizedBox(height: 10),
                     Container(
-                      child: globals.myText(text: "Nama Hewan", weight: "B", color: 'dark')
-                    ),
+                        child: globals.myText(
+                            text: "Nama Hewan", weight: "B", color: 'dark')),
                     Container(
-                      child: globals.myText(text: "${animal != null ? animal.name : ""}", color: 'dark')
-                    ), 
+                        child: globals.myText(
+                            text: "${animal != null ? animal.name : ""}",
+                            color: 'dark')),
                     SizedBox(height: 10),
                     Container(
-                      child: globals.myText(text: "Deskripsi", weight: "B", color: 'dark')
-                    ),
+                        child: globals.myText(
+                            text: "Deskripsi", weight: "B", color: 'dark')),
                     Container(
-                      child: globals.myText(text: "${animal != null ? animal.description : ""}", color: 'dark', align: TextAlign.center)
-                    ),
+                        child: globals.myText(
+                            text: "${animal != null ? animal.description : ""}",
+                            color: 'dark',
+                            align: TextAlign.center)),
                     SizedBox(height: 10),
                     // Container(
                     //   child: globals.myText(text: "Jenis Kelamin", weight: "B", color: 'dark')
                     // ),
                     // Container(
                     //   child: globals.myText(text: "${animal != null ? animal.gender == 'M' ? 'Jantan' : 'Betina' : ""}", color: 'dark')
-                    // ), 
-                    SizedBox(height: 10),
+                    // ),
+                    // SizedBox(height: 10),
                     Container(
-                      child: globals.myText(text: "Foto", weight: "B", color: 'dark')
-                    ),
-                    animal != null ? _buildAnimalImages(animal.animalImages) : Container(),
+                        child: globals.myText(
+                            text: "Foto", weight: "B", color: 'dark')),
+                    animal != null
+                        ? _buildAnimalImages(animal.animalImages)
+                        : Container(),
 
                     Divider(),
-
-                    Column(
-                      children: <Widget>[
-                        Container(
-                            width: globals.mw(context) * 0.95,
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                            child: DropdownButtonFormField<int>(
-                              decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(5)),
-                                  contentPadding: EdgeInsets.all(13),
-                                  hintText: "Tipe Lelang",
-                                  labelText: "Tipe Lelang"),
-                              value: _auctionDuration,
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Silahkan pilih tipe lelang';
-                                }
-                              },
-                              onChanged: (int value) {
-                                setState(() {
-                                  _auctionDuration = value;
-                                });
-                              },
-                              items: durations.map((int type) {
-                                return DropdownMenuItem<int>(
-                                    value: type,
-                                    child: Text("$type Jam",
-                                        style: TextStyle(
-                                            color: Colors.black)));
-                              }).toList(),
-                            )),
-                        Container(padding: EdgeInsets.only(bottom: 15), child: globals.myText(text: "Waktu dimulai setelah Anda melakukan posting", color: "danger")),
-                        Container(
-                            width: globals.mw(context) * 0.95,
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: openBidController,
-                              // initialValue: _openBid,
-                              // focusNode: usernameFocusNode,
-                              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                              onSaved: (String value) {
-                                _openBid = value;
-                              },
-                              onFieldSubmitted: (String value) {
-                                // if (value.length > 0) {
-                                //   FocusScope.of(context).requestFocus(passwordFocusNode);
-                                // }
-                              },
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Harga awal wajib diisi';
-                                }
-
-                                if (binController.text.isNotEmpty) {
-                                  if (int.parse(value) >=
-                                      int.parse(binController.text)) {
-                                    return 'Harga awal tidak boleh lebih atau sama dengan harga beli sekarang';
-                                  }
-                                }
-                              },
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(13),
-                                  hintText: "Harga Awal",
-                                  labelText: "Harga Awal",
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(5))),
-                            )),
-                        Container(
-                            width: globals.mw(context) * 0.95,
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: binController,
-                              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                              // initialValue: _bin,
-                              // focusNode: usernameFocusNode,
-                              onSaved: (String value) {
-                                _bin = value;
-                              },
-                              onFieldSubmitted: (String value) {
-                                // if (value.length > 0) {
-                                //   FocusScope.of(context).requestFocus(passwordFocusNode);
-                                // }
-                              },
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Harga Beli Sekarang wajib diisi';
-                                }
-                                
-                                if (openBidController.text.isNotEmpty) {
-                                  if (int.parse(value) <=
-                                      int.parse(openBidController.text)) {
-                                    return 'Harga Beli Sekarang tidak boleh kurang atau sama dengan harga awal';
-                                  }
-                                  
-                                  if (multiplyController.text.isNotEmpty) {
-                                    if (int.parse(multiplyController.text) == 0) {
-                                      return 'Kelipatan tidak valid';
-                                    }
-                                
-                                    if ((int.parse(value) - int.parse(openBidController.text)) % int.parse(multiplyController.text) != 0 ) {
-                                      return 'BIN harus sesuai kelipatan';
-                                    }
-                                  }
-                                }
-                              },
-                              style: TextStyle(color: Colors.black),
-                              // keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(13),
-                                  hintText: "Beli Sekarang (BIN)",
-                                  labelText: "Beli Sekarang (BIN)",
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(5))),
-                            )),
-                        Container(
-                            width: globals.mw(context) * 0.95,
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: multiplyController,
-                              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                              // initialValue: _multiply,
-                              // focusNode: usernameFocusNode,
-                              onSaved: (String value) {
-                                _multiply = value;
-                              },
-                              onFieldSubmitted: (String value) {
-                                // if (value.length > 0) {
-                                //   FocusScope.of(context).requestFocus(passwordFocusNode);
-                                // }
-                              },
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Harga kelipatan wajib diisi';
-                                }
-                                
-                                if (int.parse(value) == 0) {
-                                  return 'Kelipatan tidak valid';
-                                }
-
-                                if (binController.text.isNotEmpty) {
-                                  if (int.parse(value) >=
-                                      int.parse(binController.text)) {
-                                    return 'Harga kelipatan tidak boleh melebihi atau sama dengan harga beli sekarang';
-                                  }
-
-                                  if (openBidController.text.isNotEmpty) {
-                                    if ((int.parse(binController.text) - int.parse(openBidController.text)) % int.parse(value) != 0 ) {
-                                      return 'Nilai kelipatan tidak sesuai';
-                                    }
-                                  }
-                                }
-                              },
-                              style: TextStyle(color: Colors.black),
-                              // keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(13),
-                                  hintText: "Harga Kelipatan",
-                                  labelText: "Harga Kelipatan",
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(5))),
-                            )),
-                      ],
-                    ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Radio(
+                              value: 1,
+                              onChanged: _handleSaveAs,
+                              groupValue: _saveAs),
+                          Text("Lelang", style: TextStyle(color: Colors.black)),
+                          Radio(
+                              value: 2,
+                              onChanged: _handleSaveAs,
+                              groupValue: _saveAs),
+                          Text("Produk Jual",
+                              style: TextStyle(color: Colors.black))
+                        ]),
+                    _saveAs == 1 ? _buildAuction() : _buildSellProduct(),
                     Container(
-                      width: globals.mw(context),
-                      child: CheckboxListTile(
-                          value: _innerIslandShippingBool,
-                          title: globals.myText(
-                              text: "Hanya melayani pengiriman dalam pulau",
-                              color: "dark",
-                              size: 13),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (bool value) {
-                            setState(() {
-                              this._innerIslandShippingBool = value;
-                              switch (value) {
-                                case true:
-                                  this._innerIslandShipping = 1;
-                                  break;
-                                case false:
-                                  this._innerIslandShipping = 0;
-                                  break;
-                              }
-                            });
-                          })),
-                  Container(
-                      width: globals.mw(context),
-                      child: CheckboxListTile(
-                          value: _agreeTerms,
-                          title: globals.myText(
-                              text: "Saya siap menerima konsekuensi apabila menjual binatang langka / tidak sesuai Undang-Undang Republik Indonesia",
-                              color: "dark",
-                              size: 13),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (bool value) {
-                            setState(() {
-                              this._agreeTerms = value;
-                            });
-                          })),
+                        width: globals.mw(context),
+                        child: CheckboxListTile(
+                            value: _agreeTerms,
+                            title: globals.myText(
+                                text:
+                                    "Saya siap menerima konsekuensi apabila menjual binatang langka / tidak sesuai Undang-Undang Republik Indonesia",
+                                color: "dark",
+                                size: 13),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (bool value) {
+                              setState(() {
+                                this._agreeTerms = value;
+                              });
+                            })),
                     SizedBox(height: 20),
                     Container(
                         width: globals.mw(context) * 0.95,
@@ -747,7 +939,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                         child: FlatButton(
                             onPressed: () => isLoading ? null : _save(),
                             child: Text(
-                                !isLoading ? "Mulai Lelang" : "Mohon Tunggu",
+                                !isLoading ? _saveAs == 1 ? "Mulai Lelang" : "Mulai Jual" : "Mohon Tunggu",
                                 style: Theme.of(context).textTheme.display4),
                             color: isLoading
                                 ? Colors.grey
@@ -759,8 +951,8 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                 ),
               ]),
               !isLoading
-                ? Container()
-                : Center(child: CircularProgressIndicator()),
+                  ? Container()
+                  : Center(child: CircularProgressIndicator()),
             ])),
       ),
     );

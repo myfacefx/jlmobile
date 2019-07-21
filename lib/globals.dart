@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:validators/validators.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
@@ -282,6 +283,10 @@ Widget spacePadding() {
 //   return retImg;
 // }
 
+void autoClose() async {
+  bool response = await AuctionService.autoClose('a');
+}
+
 void getNotificationCount() async {
   if (user != null && user.id != null) {
     int historiesCount = await getHistoriesCount(user.id);
@@ -422,24 +427,24 @@ String convertTimer(String expiryTime) {
   final dateNow = DateTime.now();
   final differenceMinutes = (dateNow.difference(exptDate).inMinutes).abs();
   String def = "";
-  def = "${(dateNow.difference(exptDate).inSeconds).abs()} Sec";
+  def = "${(dateNow.difference(exptDate).inSeconds).abs()} Detik";
 
   //1 year
   if (differenceMinutes > 525600) {
-    def = "${differenceMinutes ~/ 525600} Year";
+    def = "${differenceMinutes ~/ 525600} Tahun";
   }
   //1 month
   else if (differenceMinutes > 43200) {
-    def = "${differenceMinutes ~/ 43200} Month";
+    def = "${differenceMinutes ~/ 43200} Bulan";
   }
   //1 day
   else if (differenceMinutes > 1440) {
-    def = "${differenceMinutes ~/ 1440} Day";
+    def = "${differenceMinutes ~/ 1440} Hari";
   }
 
   //1 hour
   else if (differenceMinutes > 60) {
-    def = "${differenceMinutes ~/ 60} Hour";
+    def = "${differenceMinutes ~/ 60} Jam";
   } else if (differenceMinutes > 1) {
     def = "$differenceMinutes Min";
   }
