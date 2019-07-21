@@ -231,10 +231,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 GestureDetector(
                   child: globals.myText(
                     text:
-                        "${animal.animalSubCategory.name}",
+                        "${animal.animalSubCategory.animalCategory.name}",
                     color: "dark",
-                    size: 13,
-                    weight: "B"),
+                    size: 13),
                 ),
                 globals.myText(
                     text:
@@ -244,10 +243,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 GestureDetector(
                   child: globals.myText(
                     text:
-                        "${animal.animalSubCategory.animalCategory.name}",
+                        "${animal.animalSubCategory.name}",
                     color: "dark",
-                    size: 13,
-                    weight: "B"),
+                    size: 13),
                 )
               ],
             ),
