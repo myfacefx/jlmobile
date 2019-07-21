@@ -127,26 +127,26 @@ Widget drawer(context) {
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 globals.spacePadding(),
-                _buildDrawerNavigationButtonBig(
-                    "Beranda", '/', null, context),
+                _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Lelangku", '/profile', null, context),
-                // _buildDrawerNavigationButtonBig("Our Shop Products", context),
                 _buildDrawerNavigationButtonBig("Lelang Diikuti", '/our-bid',
+                    globals.user != null ? globals.user.bidsCount : 0, context),
+                _buildDrawerNavigationButtonBig("Belanjaanku", '/our-product',
                     globals.user != null ? globals.user.bidsCount : 0, context),
                 _buildDrawerNavigationButtonBig(
                     "Bagikan JLF", '/share', null, context),
-                // _buildDrawerNavigationButtonBig("Our Carts", context),
-                // _buildDrawerNavigationButtonBig("Notification", '/notification', context),
                 globals.spacePadding(),
                 _buildDrawerNavigationButtonSmall("RekBer", "/rekber", context),
-                _buildDrawerNavigationButtonSmall("Tentang JLF", "/about", context),
-                _buildDrawerNavigationButtonSmall("Langkah - Langkah", "/how-to", context),
-                _buildDrawerNavigationButtonSmall("Tanya Jawab", "/faq", context),
+                _buildDrawerNavigationButtonSmall(
+                    "Tentang JLF", "/about", context),
+                _buildDrawerNavigationButtonSmall(
+                    "Langkah - Langkah", "/how-to", context),
+                _buildDrawerNavigationButtonSmall(
+                    "Tanya Jawab", "/faq", context),
                 _buildDrawerNavigationButtonSmall(
                     "Pengaturan", "/setting", context),
-                _buildDrawerNavigationButtonSmall(
-                    "Keluar", "/logout", context),
+                _buildDrawerNavigationButtonSmall("Keluar", "/logout", context),
                 globals.spacePadding()
                 // Container()
               ],

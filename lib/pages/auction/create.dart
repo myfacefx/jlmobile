@@ -263,7 +263,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       animal.description = _description;
       animal.ownerUserId = globals.user.id;
       animal.regencyId = globals.user.regencyId;
-      animal.slug = 'hewan-jlf-' + DateTime.now().year.toString() + DateTime.now().month.toString() + DateTime.now().day.toString();
+      animal.slug = "${globals.user.id}-" + 'hewan-jlf-' + DateTime.now().toString();
 
       formData['animal'] = animal;
 

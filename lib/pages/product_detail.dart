@@ -5,6 +5,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
+import 'package:jlf_mobile/models/product_comment.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
@@ -13,12 +14,16 @@ import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart';
 import 'package:jlf_mobile/services/bid_services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final int animalId;
 
-  ProductDetailPage({Key key, @required this.animalId}) : super(key: key);
+  final String from;
+
+  ProductDetailPage({Key key, @required this.animalId, @required this.from})
+      : super(key: key);
   @override
   _ProductDetailPage createState() => _ProductDetailPage(animalId);
 }
@@ -42,7 +47,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   _ProductDetailPage(int animalId) {
     loadAnimal(animalId);
     globals.getNotificationCount();
-    globals.autoClose();
+    //globals.autoClose();
   }
 
   _checkAuctionActivity() {
@@ -66,7 +71,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     isLoading = true;
     getAnimalById("token", animalId).then((onValue) {
       animal = onValue;
-      _checkAuctionActivity();
+      if (widget.from == "LELANG") {
+        _checkAuctionActivity();
+      }
       setState(() {
         isLoading = false;
       });
@@ -168,7 +175,20 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildDesc() {
+  Widget _buildDesc(bool isAuction) {
+    bool innerIslandShipping = true;
+    if (widget.from == "LELANG") {
+      if (animal.auction.innerIslandShipping != null &&
+          animal.auction.innerIslandShipping == 0) {
+        innerIslandShipping = false;
+      }
+    } else {
+      if (animal.product.innerIslandShipping != null &&
+          animal.product.innerIslandShipping == 0) {
+        innerIslandShipping = false;
+      }
+    }
+
     return Container(
       color: Colors.white,
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -179,25 +199,24 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               onTap: () => globals.share(),
               child: Row(
                 children: <Widget>[
-                  Expanded(
-                    child: Container()
-                  ),
+                  Expanded(child: Container()),
                   Container(
-                    padding: EdgeInsets.all(3),
-                    width: globals.mw(context) * 0.27,
-                    alignment: Alignment.centerRight,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: globals.myColor("primary"),
-                    ), 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        globals.myText(text: "BAGIKAN ", color: "light"),
-                        Icon(Icons.share, size: 14, color: globals.myColor("light")),
-                      ],
-                    )),
+                      padding: EdgeInsets.all(3),
+                      width: globals.mw(context) * 0.27,
+                      alignment: Alignment.centerRight,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: globals.myColor("primary"),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          globals.myText(text: "BAGIKAN ", color: "light"),
+                          Icon(Icons.share,
+                              size: 14, color: globals.myColor("light")),
+                        ],
+                      )),
                 ],
               )),
           SizedBox(
@@ -223,29 +242,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             alignment: Alignment.centerLeft,
             child: Wrap(
               children: <Widget>[
-                globals.myText(
-                    text:
-                        "Kategori: ",
-                    color: "dark",
-                    size: 13),
+                globals.myText(text: "Kategori: ", color: "dark", size: 13),
                 GestureDetector(
                   child: globals.myText(
-                    text:
-                        "${animal.animalSubCategory.animalCategory.name}",
-                    color: "dark",
-                    size: 13),
+                      text: "${animal.animalSubCategory.animalCategory.name}",
+                      color: "dark",
+                      size: 13),
                 ),
-                globals.myText(
-                    text:
-                        " > ",
-                    color: "dark",
-                    size: 13),
+                globals.myText(text: " > ", color: "dark", size: 13),
                 GestureDetector(
                   child: globals.myText(
-                    text:
-                        "${animal.animalSubCategory.name}",
-                    color: "dark",
-                    size: 13),
+                      text: "${animal.animalSubCategory.name}",
+                      color: "dark",
+                      size: 13),
                 )
               ],
             ),
@@ -254,29 +263,32 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             height: 8,
           ),
           Divider(),
-          Container(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              children: <Widget>[
-                globals.myText(
-                    text: "Lelang berakhir pada ", color: "dark", size: 13),
-                globals.myText(
-                    text:
-                        "${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
-                    color: "dark",
-                    weight: "B",
-                    size: 13),
-              ],
-            ),
-          ),
+          isAuction
+              ? Container(
+                  alignment: Alignment.centerLeft,
+                  child: Wrap(
+                    children: <Widget>[
+                      globals.myText(
+                          text: "Lelang berakhir pada ",
+                          color: "dark",
+                          size: 13),
+                      globals.myText(
+                          text:
+                              "${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
+                          color: "dark",
+                          weight: "B",
+                          size: 13),
+                    ],
+                  ),
+                )
+              : Container(),
           SizedBox(
             height: 8,
           ),
           Divider(),
           Container(
               alignment: Alignment.centerLeft,
-              child: animal.auction.innerIslandShipping != null &&
-                      animal.auction.innerIslandShipping == 0
+              child: innerIslandShipping
                   ? globals.myText(
                       text: "Pengiriman ke seluruh nusantara",
                       color: "dark",
@@ -944,7 +956,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     //         : Container();
   }
 
-  Widget _buildBidRule() {
+  Widget _buildBidRuleAuction() {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.fromLTRB(0, 10, 20, 10),
@@ -968,6 +980,35 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
           _buildBidStatus(),
           _buildWinnerSection()
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBidRuleProduct() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(0, 10, 20, 10),
+      child: Column(
+        children: <Widget>[
+          globals.myText(
+              text: "- TAWARAN -", weight: "B", color: "dark", size: 16),
+          SizedBox(
+            height: 16,
+          ),
+          Column(
+            children: <Widget>[
+              globals.myText(
+                  text: "Jumlah Tersedia  : ${animal.product.quantity}"),
+              SizedBox(
+                height: 8,
+              ),
+              _buildRule("Harga Jual", animal.product.price.toDouble()),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );
@@ -1249,7 +1290,84 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  void _addComment(String comment) async {
+  Widget _buildTextCommentProduct(ProductComment auctionComment, int sellerId) {
+    String username = sellerId != auctionComment.userId
+        ? auctionComment.user.username
+        : "SELLER";
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+      child: Column(
+        crossAxisAlignment: sellerId != auctionComment.userId
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.end,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: sellerId != auctionComment.userId
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.end,
+            children: <Widget>[
+              //avatar
+              sellerId != auctionComment.userId
+                  ? Container(
+                      height: 35,
+                      child: CircleAvatar(
+                          radius: 25,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: auctionComment.user.photo != null &&
+                                      auctionComment.user.photo.isNotEmpty
+                                  ? FadeInImage.assetNetwork(
+                                      image: auctionComment.user.photo,
+                                      placeholder: 'assets/images/loading.gif',
+                                      fit: BoxFit.cover)
+                                  : Image.network(
+                                      'assets/images/account.png'))))
+                  : Container(),
+              Container(
+                width: globals.mw(context) * 0.7,
+                child: Column(
+                  crossAxisAlignment: sellerId != auctionComment.userId
+                      ? CrossAxisAlignment.start
+                      : CrossAxisAlignment.end,
+                  children: <Widget>[
+                    globals.myText(
+                        text:
+                            "$username - ${globals.convertFormatDateTimeProduct(auctionComment.createdAt)}",
+                        color: "disabled",
+                        size: 10),
+                    auctionComment.comment != "UP"
+                        ? globals.myText(
+                            text: auctionComment.comment,
+                            color: "unprime",
+                            size: 13)
+                        : globals.myText(
+                            text: "UP", color: "danger", size: 16, weight: "XB")
+                  ],
+                ),
+              ),
+              sellerId == auctionComment.userId
+                  ? Container(
+                      height: 35,
+                      child: CircleAvatar(
+                          radius: 25,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: auctionComment.user.photo != null &&
+                                      auctionComment.user.photo.isNotEmpty
+                                  ? FadeInImage.assetNetwork(
+                                      image: auctionComment.user.photo,
+                                      placeholder: 'assets/images/loading.gif',
+                                      fit: BoxFit.cover)
+                                  : Image.asset('assets/images/account.png'))))
+                  : Container(),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  void _addCommentAuction(String comment) async {
     AuctionComment auctionComment = AuctionComment();
     auctionComment.comment = comment;
     auctionComment.auctionId = animal.auction.id;
@@ -1257,7 +1375,31 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
     try {
       globals.loadingModel(context);
-      final result = await addComment("token", auctionComment);
+      final result = await addCommentAuction("token", auctionComment);
+      Navigator.pop(context);
+      if (result) {
+        await globals.showDialogs("Comment Sended", context);
+        commentController.text = '';
+        setState(() {
+          isLoading = true;
+        });
+        loadAnimal(animal.id);
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      globals.showDialogs(e.toString(), context);
+    }
+  }
+
+  void _addCommentProduct(String comment) async {
+    ProductComment productComment = ProductComment();
+    productComment.comment = comment;
+    productComment.productId = animal.product.id;
+    productComment.userId = globals.user.id;
+
+    try {
+      globals.loadingModel(context);
+      final result = await addCommentProduct("token", productComment);
       Navigator.pop(context);
       if (result) {
         await globals.showDialogs("Comment Sended", context);
@@ -1320,7 +1462,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             onPressed: () {
               _formKeyComment.currentState.save();
               if (_formKeyComment.currentState.validate()) {
-                _addComment(commentController.text);
+                if (widget.from == "LELANG") {
+                  _addCommentAuction(commentController.text);
+                } else {
+                  _addCommentProduct(commentController.text);
+                }
               }
             },
             child: Text(
@@ -1337,6 +1483,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildForum() {
+    int countComments = 0;
+    if (widget.from == "LELANG") {
+      countComments = animal.auction.countComments;
+    } else {
+      countComments = animal.product.countComments;
+    }
     return Container(
         padding: EdgeInsets.only(top: 20, bottom: 20),
         color: Colors.white,
@@ -1349,7 +1501,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 globals.myText(
                     text: "FORUM PRODUK", color: "dark", size: 16, weight: "B"),
                 globals.myText(
-                    text: " (${animal.auction.countComments} comment)",
+                    text: " ($countComments comment)",
                     color: "disabled",
                     size: 16),
                 globals.myText(text: " -", color: "disabled", size: 16),
@@ -1363,16 +1515,22 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             //     return _buildTextComment(comment, animal.ownerUserId);
             //   }).toList(),
             // ),
-            animal.auction.countComments > 0
+            countComments > 0
                 ? Container(
                     height: globals.mh(context) * 0.4,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: animal.auction.countComments,
+                      itemCount: countComments,
                       itemBuilder: (context, int index) {
-                        return _buildTextComment(
-                            animal.auction.auctionComments[index],
-                            animal.ownerUserId);
+                        if (widget.from == "LELANG") {
+                          return _buildTextComment(
+                              animal.auction.auctionComments[index],
+                              animal.ownerUserId);
+                        } else {
+                          return _buildTextCommentProduct(
+                              animal.product.productComments[index],
+                              animal.ownerUserId);
+                        }
                       },
                     ),
                   )
@@ -1386,21 +1544,52 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             SizedBox(
               height: 20,
             ),
-            animal.auction.active == 1 && auctionHasExpired == false
+            widget.from == "PASAR HEWAN"
                 ? Form(key: _formKeyComment, child: textAddComment())
+                : Container(),
+            widget.from == "LELANG"
+                ? ((animal.auction.active == 1 && auctionHasExpired == false)
+                    ? Form(key: _formKeyComment, child: textAddComment())
+                    : Container(
+                        child: globals.myText(
+                            text: "Lelang berakhir",
+                            color: "dark",
+                            align: TextAlign.center)))
+                : Container(),
+            widget.from == "LELANG"
+                ? (animal.auction.active == 1 && auctionHasExpired == false)
+                    ? Container(
+                        margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: RaisedButton(
+                            onPressed: () {
+                              if (widget.from == "LELANG") {
+                                _addCommentAuction("UP");
+                              } else {
+                                _addCommentProduct("UP");
+                              }
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: globals.myText(
+                                text: "UP", color: "light", size: 15),
+                            color: globals.myColor("primary"),
+                          ),
+                        ),
+                      )
+                    : Container()
                 : Container(
-                    child: globals.myText(
-                        text: "Lelang berakhir",
-                        color: "dark",
-                        align: TextAlign.center)),
-            animal.auction.active == 1 && auctionHasExpired == false
-                ? Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: SizedBox(
                       width: double.infinity,
                       child: RaisedButton(
                         onPressed: () {
-                          _addComment("UP");
+                          if (widget.from == "LELANG") {
+                            _addCommentAuction("UP");
+                          } else {
+                            _addCommentProduct("UP");
+                          }
                         },
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
@@ -1410,7 +1599,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       ),
                     ),
                   )
-                : Container()
           ],
         ));
   }
@@ -1425,14 +1613,16 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             : SafeArea(
                 child: ListView(
                   children: <Widget>[
-                    animal.auction.cancellationDate != null
-                        ? _cancelledAuctionSection()
+                    widget.from == "LELANG"
+                        ? animal.auction.cancellationDate != null
+                            ? _cancelledAuctionSection()
+                            : Container()
                         : Container(),
                     _buildImage(),
                     SizedBox(
                       height: 8,
                     ),
-                    _buildDesc(),
+                    _buildDesc(widget.from == "LELANG"),
                     SizedBox(
                       height: 8,
                     ),
@@ -1443,20 +1633,24 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     SizedBox(
                       height: 8,
                     ),
-                    _buildBidRule(),
+                    widget.from == "LELANG"
+                        ? _buildBidRuleAuction()
+                        : _buildBidRuleProduct(),
                     SizedBox(
                       height: 16,
                     ),
                     // If the logged in was the auction owner or the auction has been inactive, hide element
-                    (animal.ownerUserId == globals.user.id ||
-                                animal.auction.active ==
-                                    0) || // Or the currentBid is equal or more than buy it now
-                            (animal.auction.buyItNow.toInt() <=
-                                animal.auction.currentBid.toInt()) ||
-                            animal.auction.winnerBidId != null ||
-                            auctionHasExpired == true
-                        ? Container()
-                        : _buildPutBid(),
+                    widget.from == "LELANG"
+                        ? ((animal.ownerUserId == globals.user.id ||
+                                    animal.auction.active ==
+                                        0) || // Or the currentBid is equal or more than buy it now
+                                (animal.auction.buyItNow.toInt() <=
+                                    animal.auction.currentBid.toInt()) ||
+                                animal.auction.winnerBidId != null ||
+                                auctionHasExpired == true)
+                            ? Container()
+                            : _buildPutBid()
+                        : Container(),
                     SizedBox(
                       height: 16,
                     ),

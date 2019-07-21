@@ -4,8 +4,8 @@ import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/animal.dart';
 
-Future<List<Animal>> getAnimalAuctionByCategory(String token, int animalCategoryId,
-    String sortBy, String filterName, int userId) async {
+Future<List<Animal>> getAnimalAuctionByCategory(String token,
+    int animalCategoryId, String sortBy, String filterName, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?animal_category_id=$animalCategoryId";
@@ -54,8 +54,8 @@ Future<List<Animal>> getAnimalAuctionBySubCategory(
   }
 }
 
-Future<List<Animal>> getAnimalProductByCategory(String token, int animalCategoryId,
-    String sortBy, String filterName, int userId) async {
+Future<List<Animal>> getAnimalProductByCategory(String token,
+    int animalCategoryId, String sortBy, String filterName, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?animal_category_id=$animalCategoryId";
@@ -132,7 +132,7 @@ Future<List<Animal>> getUserAnimals(String token, int userId) async {
 
 Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  final url = getBaseUrl() + "/users/$userId/animals/unauctioned";
+  final url = getBaseUrl() + "/users/$userId/animals/draft";
   print(url);
 
   http.Response res = await http.get(url, headers: header);
@@ -150,6 +150,19 @@ Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
   print(getBaseUrl() + "/users/$userId/auctions/animals");
   http.Response res = await http
       .get(getBaseUrl() + "/users/$userId/auctions/animals", headers: header);
+  if (res.statusCode == 200) {
+    return animalFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<List<Animal>> getUserProductAnimals(String token, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  print(getBaseUrl() + "/users/$userId/products/animals");
+  http.Response res = await http
+      .get(getBaseUrl() + "/users/$userId/products/animals", headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
   } else {
@@ -175,16 +188,34 @@ Future<List<Animal>> getUserBidsAnimals(
   }
 }
 
-Future<List<Animal>> getUserCommentAnimals(
+Future<List<Animal>> getUserCommentAuctionAnimals(
     String token, int userId, String sortBy) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   String params = "?";
 
   params = params + "sort_by=$sortBy";
 
-  print(getBaseUrl() + "/users/$userId/comments/animals$params");
+  print(getBaseUrl() + "/users/$userId/comments-auction/animals$params");
   http.Response res = await http.get(
-      getBaseUrl() + "/users/$userId/comments/animals$params",
+      getBaseUrl() + "/users/$userId/comments-auction/animals$params",
+      headers: header);
+  if (res.statusCode == 200) {
+    return animalFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<List<Animal>> getUserCommentProductAnimals(
+    String token, int userId, String sortBy) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  String params = "?";
+
+  params = params + "sort_by=$sortBy";
+
+  print(getBaseUrl() + "/users/$userId/comments-product/animals$params");
+  http.Response res = await http.get(
+      getBaseUrl() + "/users/$userId/comments-product/animals$params",
       headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);

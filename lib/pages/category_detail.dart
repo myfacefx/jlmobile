@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -43,7 +45,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   TextEditingController searchController = TextEditingController();
 
   _CategoryDetailPage(AnimalCategory animalCategory, String from) {
-    globals.autoClose();
+    // globals.autoClose();
     this.animalCategory = animalCategory;
     var function;
     if (from == "LELANG") {
@@ -427,7 +429,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             child: GridView.count(
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
-                childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.7,
+                childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.75,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }
@@ -436,34 +438,34 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Container(
+        Row(children: <Widget>[
+          Container(
               height: 15,
               child: CircleAvatar(
                   radius: 10,
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: photo != null &&
-                              photo.isNotEmpty
+                      child: photo != null && photo.isNotEmpty
                           ? FadeInImage.assetNetwork(
                               image: photo,
                               placeholder: 'assets/images/loading.gif',
                               fit: BoxFit.cover)
                           : Image.asset('assets/images/account.png')))),
-            Container(
-              child: globals.myText(text: "$username", size: 10, textOverflow: TextOverflow.ellipsis)
-            )
-          ]
-        ),
+          Container(
+              child: globals.myText(
+                  text: "$username",
+                  size: 10,
+                  textOverflow: TextOverflow.ellipsis))
+        ]),
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: globals.myColor("primary")
-          ),
+              borderRadius: BorderRadius.circular(5),
+              color: globals.myColor("primary")),
           padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-          child:
-            globals.myText(text: "${globals.convertTimer(expiryTime)}", size: 10, color: "light"),
+          child: globals.myText(
+              text: "${globals.convertTimer(expiryTime)}",
+              size: 10,
+              color: "light"),
         ),
         // Text(
         //   "Sisa ${globals.convertTimer(expiryTime)}",
@@ -492,8 +494,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _buildDetail(String name, String username, String regency,
-      String province, String gender, DateTime birthDate, int duration, int innerIslandShipping) {
+  Widget _buildDetail(
+      String name,
+      String username,
+      String regency,
+      String province,
+      String gender,
+      DateTime birthDate,
+      int duration,
+      int innerIslandShipping,
+      bool isAuction) {
     //String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: double.infinity,
@@ -502,34 +512,44 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         children: <Widget>[
           Wrap(
             children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: globals.myColor("primary")
-                ),
-                padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                child:
-                  globals.myText(text: "1x$duration jam", size: 10, color: "light", letterSpacing: 1.2),
-              ),
+              isAuction
+                  ? Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: globals.myColor("primary")),
+                      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                      child: globals.myText(
+                          text: "1x$duration jam",
+                          size: 10,
+                          color: "light",
+                          letterSpacing: 1.2),
+                    )
+                  : Container(),
               Container(
                 margin: EdgeInsets.only(left: 5),
-                child: innerIslandShipping == 1 ? Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: globals.myColor("primary")
-                  ),
-                  padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                  child:
-                    globals.myText(text: "Dalam Pulau", size: 10, color: "light", letterSpacing: 1.2),
-                ) : Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: globals.myColor("primary")
-                  ),
-                  padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                  child:
-                    globals.myText(text: "Nusantara", size: 10, color: "light", letterSpacing: 1.2),
-                ),
+                child: innerIslandShipping == 1
+                    ? Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: globals.myColor("primary")),
+                        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                        child: globals.myText(
+                            text: "Dalam Pulau",
+                            size: 10,
+                            color: "light",
+                            letterSpacing: 1.2),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: globals.myColor("primary")),
+                        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                        child: globals.myText(
+                            text: "Nusantara",
+                            size: 10,
+                            color: "light",
+                            letterSpacing: 1.2),
+                      ),
               ),
             ],
           ),
@@ -546,11 +566,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               Icon(Icons.location_on, size: 10),
               Flexible(
                 child: globals.myText(
-                  text: regency + ", " + province,
-                  textOverflow: TextOverflow.ellipsis,
-                  size: 10,
-                  color: "unprime",
-                  weight: "L"),
+                    text: regency + ", " + province,
+                    textOverflow: TextOverflow.ellipsis,
+                    size: 10,
+                    color: "unprime",
+                    weight: "L"),
               )
             ],
           ),
@@ -612,6 +632,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             MaterialPageRoute(
                 builder: (BuildContext context) => ProductDetailPage(
                       animalId: animal.id,
+                      from: widget.from,
                     )));
         _refresh(currentIdSubCategory, currentSubCategory, widget.from);
       },
@@ -627,8 +648,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     SizedBox(
                       height: 5,
                     ),
-                    _buildTime(
-                        animal.auction.expiryDate, animal.owner.username, animal.owner.photo),
+                    widget.from == "LELANG"
+                        ? _buildTime(animal.auction.expiryDate,
+                            animal.owner.username, animal.owner.photo)
+                        : Container(),
                     isNotError
                         ? _buildImage(animal.animalImages[0].image)
                         : globals.failLoadImage(),
@@ -639,8 +662,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         animal.owner.province.name,
                         animal.gender,
                         animal.dateOfBirth,
-                        animal.auction.duration,
-                        animal.auction.innerIslandShipping),
+                        animal.auction?.duration,
+                        widget.from == "LELANG"
+                            ? animal.auction.innerIslandShipping
+                            : animal.product.innerIslandShipping,
+                        widget.from == "LELANG"),
                     widget.from == "LELANG"
                         ? Column(
                             children: <Widget>[
@@ -665,7 +691,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         : Column(
                             children: <Widget>[
                               _buildChips(
-                                  "Harga", globals.convertToMoney(10000.0)),
+                                  "Harga Jual", globals.convertToMoney(10000.0)),
                             ],
                           ),
                   ],

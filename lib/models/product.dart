@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:jlf_mobile/models/product_comment.dart';
+
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
 String productToJson(Product data) => json.encode(data.toJson());
@@ -19,7 +21,9 @@ class Product {
     dynamic createdAt;
     dynamic updatedAt;
     dynamic deletedAt;
+    int countComments;
     String slug;
+    List<ProductComment> productComments;
 
     Product({
         this.id,
@@ -32,7 +36,9 @@ class Product {
         this.createdAt,
         this.updatedAt,
         this.deletedAt,
-        this.slug
+        this.slug,
+        this.countComments,
+        this.productComments,
     });
 
     factory Product.fromJson(Map<String, dynamic> json) => new Product(
@@ -47,6 +53,8 @@ class Product {
         updatedAt: json["updated_at"],
         deletedAt: json["deleted_at"],
         slug: json["slug"] == null ? null : json["slug"],
+        countComments: json["count_comments"] == null ? null : json["count_comments"],
+        productComments: json["product_comments"] == null ? null : new List<ProductComment>.from(json["product_comments"].map((x) => ProductComment.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -61,5 +69,7 @@ class Product {
         "updated_at": updatedAt,
         "deleted_at": deletedAt,
         "slug": slug == null ? null : slug,
+        "count_comments": countComments == null ? null : countComments,
+        "product_comments": productComments == null ? null : new List<dynamic>.from(productComments.map((x) => x.toJson())),
     }..removeWhere( (key, val) => val == null);
 }

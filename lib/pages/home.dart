@@ -33,7 +33,7 @@ class _HomePage extends State<HomePage> {
   int membersCount = 0;
   List<Widget> listImage = [];
   List<Widget> listPromo = [];
-  String statusCount = "LELANG";
+  String selectedType = "LELANG";
 
   int _currentArticle = 0;
 
@@ -302,28 +302,28 @@ class _HomePage extends State<HomePage> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              if (statusCount != "LELANG") {
-                statusCount = "LELANG";
+              if (selectedType != "LELANG") {
+                selectedType = "LELANG";
                 _getListCategoriesAuction();
               }
             },
             child: globals.myText(
                 text: "LELANG",
                 size: 16,
-                color: statusCount == "LELANG" ? null : "disabled"),
+                color: selectedType == "LELANG" ? null : "disabled"),
           ),
           Text("  |  ", style: Theme.of(context).textTheme.headline),
           GestureDetector(
             onTap: () {
-              if (statusCount != "PASAR HEWAN") {
-                statusCount = "PASAR HEWAN";
+              if (selectedType != "PASAR HEWAN") {
+                selectedType = "PASAR HEWAN";
                 _getListCategoriesProduct();
               }
             },
             child: globals.myText(
                 text: "PASAR HEWAN",
                 size: 16,
-                color: statusCount == "PASAR HEWAN" ? null : "disabled"),
+                color: selectedType == "PASAR HEWAN" ? null : "disabled"),
           ),
           Expanded(child: Text("")),
         ],
@@ -378,7 +378,7 @@ class _HomePage extends State<HomePage> {
             MaterialPageRoute(
                 builder: (BuildContext context) => CategoryDetailPage(
                       animalCategory: category,
-                      from: statusCount,
+                      from: selectedType,
                     )));
       },
       child: Card(

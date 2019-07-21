@@ -6,6 +6,7 @@ import 'package:jlf_mobile/pages/blacklist.dart';
 import 'package:jlf_mobile/pages/how_to.dart';
 import 'package:jlf_mobile/pages/intro.dart';
 import 'package:jlf_mobile/pages/our_bid.dart';
+import 'package:jlf_mobile/pages/our_product.dart';
 import 'package:jlf_mobile/pages/setting.dart';
 import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/themes.dart';
@@ -17,7 +18,6 @@ import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/user/notification.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/profile': (BuildContext context) => ProfilePage(),
         '/edit-profile': (BuildContext context) => EditProfilePage(),
         '/our-bid': (BuildContext context) => OurBidTopPage(),
+        '/our-product': (BuildContext context) => OurProducTopPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
         '/notification': (BuildContext context) => NotificationPage(),
         '/intro': (BuildContext context) => IntroPage()

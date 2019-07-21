@@ -246,7 +246,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         auction.ownerUserId = globals.user.id;
         auction.active = 1;
         auction.innerIslandShipping = _innerIslandShipping;
-        auction.slug = 'lelang-jlf-' + DateTime.now().year.toString() + DateTime.now().month.toString() + DateTime.now().day.toString();
+        auction.slug = "${globals.user.id}-" + 'hewan-jlf-' + DateTime.now().toString();
 
         formData['auction'] = auction;
 
