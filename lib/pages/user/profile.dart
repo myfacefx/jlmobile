@@ -122,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage>
                 physics: ClampingScrollPhysics(),
                 shrinkWrap: true,
                 childAspectRatio:
-                    (type == "produkku" || type == "pasarhewan") ? 0.69 : 0.5,
+                    (type == "produkku" || type == "pasarhewan") ? 0.6 : 0.5,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }

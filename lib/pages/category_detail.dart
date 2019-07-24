@@ -429,7 +429,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             child: GridView.count(
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
-                childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.75,
+                childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.68,
                 crossAxisCount: 2,
                 children: listMyWidgets()));
   }
