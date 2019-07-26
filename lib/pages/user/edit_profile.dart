@@ -213,6 +213,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           style: TextStyle(color: Colors.black),
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.multiline,
+          maxLines: 8,
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(13),
               hintText: "Deskripsi",
@@ -327,131 +328,124 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
+        appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
         body: Scaffold(
-            drawer: drawer(context),
-            key: _scaffoldKey,
             body: Stack(children: <Widget>[
-              // _buildBackground(),
-              // !registerLoading
-              //     ? Container()
-              //     : Center(child: CircularProgressIndicator()),
-              ListView(children: <Widget>[
-                Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Text("Edit Profil",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 23))),
-                Form(
-                  autovalidate: autoValidate,
-                  key: _formKey,
-                  child: Column(children: <Widget>[
-                    _fullname(),
-                    _descriptionInput(),
-                    _provinceInput(),
-                    regencyLoading ? globals.isLoading() : _regencyInput(),
-                    _phoneNumberInput(),
+          ListView(children: <Widget>[
+            Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Text("Edit Profil",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 23))),
+            Form(
+              autovalidate: autoValidate,
+              key: _formKey,
+              child: Column(children: <Widget>[
+                _fullname(),
+                _descriptionInput(),
+                _provinceInput(),
+                regencyLoading ? globals.isLoading() : _regencyInput(),
+                _phoneNumberInput(),
 
-                    // Container(
-                    //     width: 300,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: TextFormField(
-                    //       focusNode: passwordFocusNode,
-                    //       onSaved: (String value) {
-                    //         _password = value;
-                    //       },
-                    //       controller: passwordController,
-                    //       onFieldSubmitted: (String value) {
-                    //         if (value.length > 0) {
-                    //           FocusScope.of(context)
-                    //               .requestFocus(confirmPasswordFocusNode);
-                    //         }
-                    //       },
-                    //       validator: (value) {
-                    //         if (value.isEmpty ||
-                    //             value.length < 8 ||
-                    //             value.length > 12) {
-                    //           return 'Password minimal 8 maksimal 12 huruf';
-                    //         }
-                    //       },
-                    //       obscureText: passwordVisibility,
-                    //       style: TextStyle(color: Colors.black),
-                    //       decoration: InputDecoration(
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           suffixIcon: GestureDetector(
-                    //             onTap: () {
-                    //               setState(() {
-                    //                 passwordVisibility = !passwordVisibility;
-                    //               });
-                    //             },
-                    //             child: Icon(passwordVisibility
-                    //                 ? Icons.visibility
-                    //                 : Icons.visibility_off),
-                    //           ),
-                    //           hintText: "Password",
-                    //           labelText: "Password",
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(20))),
-                    //     )),
-                    // Container(
-                    //     width: 300,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: TextFormField(
-                    //       focusNode: confirmPasswordFocusNode,
-                    //       controller: confirmPasswordController,
-                    //       obscureText: confirmPasswordVisibility,
-                    //       validator: (value) {
-                    //         if (value != passwordController.text) {
-                    //           return 'Password tidak sesuai';
-                    //         }
-                    //       },
-                    //       onFieldSubmitted: (String value) {
-                    //         _register();
-                    //       },
-                    //       style: TextStyle(color: Colors.black),
-                    //       decoration: InputDecoration(
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           suffixIcon: GestureDetector(
-                    //             onTap: () {
-                    //               setState(() {
-                    //                 confirmPasswordVisibility =
-                    //                     !confirmPasswordVisibility;
-                    //               });
-                    //             },
-                    //             child: Icon(confirmPasswordVisibility
-                    //                 ? Icons.visibility
-                    //                 : Icons.visibility_off),
-                    //           ),
-                    //           hintText: "Ulangi Password",
-                    //           labelText: "Ulangi Password",
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(20))),
-                    //     )),
-                    Container(
-                        width: 300,
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                        child: FlatButton(
-                            onPressed: () =>
-                                registerLoading ? null : _register(),
-                            child: Text(
-                                !registerLoading
-                                    ? "Perbaharui Profil"
-                                    : "Mohon Tunggu",
-                                style: Theme.of(context).textTheme.display4),
-                            color: registerLoading
-                                ? Colors.grey
-                                : Theme.of(context).primaryColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)))),
-                  ]),
-                ),
-              ])
-            ])),
+                // Container(
+                //     width: 300,
+                //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                //     child: TextFormField(
+                //       focusNode: passwordFocusNode,
+                //       onSaved: (String value) {
+                //         _password = value;
+                //       },
+                //       controller: passwordController,
+                //       onFieldSubmitted: (String value) {
+                //         if (value.length > 0) {
+                //           FocusScope.of(context)
+                //               .requestFocus(confirmPasswordFocusNode);
+                //         }
+                //       },
+                //       validator: (value) {
+                //         if (value.isEmpty ||
+                //             value.length < 8 ||
+                //             value.length > 12) {
+                //           return 'Password minimal 8 maksimal 12 huruf';
+                //         }
+                //       },
+                //       obscureText: passwordVisibility,
+                //       style: TextStyle(color: Colors.black),
+                //       decoration: InputDecoration(
+                //           contentPadding: EdgeInsets.all(13),
+                //           suffixIcon: GestureDetector(
+                //             onTap: () {
+                //               setState(() {
+                //                 passwordVisibility = !passwordVisibility;
+                //               });
+                //             },
+                //             child: Icon(passwordVisibility
+                //                 ? Icons.visibility
+                //                 : Icons.visibility_off),
+                //           ),
+                //           hintText: "Password",
+                //           labelText: "Password",
+                //           fillColor: Colors.white,
+                //           border: OutlineInputBorder(
+                //               borderRadius: BorderRadius.circular(20))),
+                //     )),
+                // Container(
+                //     width: 300,
+                //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                //     child: TextFormField(
+                //       focusNode: confirmPasswordFocusNode,
+                //       controller: confirmPasswordController,
+                //       obscureText: confirmPasswordVisibility,
+                //       validator: (value) {
+                //         if (value != passwordController.text) {
+                //           return 'Password tidak sesuai';
+                //         }
+                //       },
+                //       onFieldSubmitted: (String value) {
+                //         _register();
+                //       },
+                //       style: TextStyle(color: Colors.black),
+                //       decoration: InputDecoration(
+                //           contentPadding: EdgeInsets.all(13),
+                //           suffixIcon: GestureDetector(
+                //             onTap: () {
+                //               setState(() {
+                //                 confirmPasswordVisibility =
+                //                     !confirmPasswordVisibility;
+                //               });
+                //             },
+                //             child: Icon(confirmPasswordVisibility
+                //                 ? Icons.visibility
+                //                 : Icons.visibility_off),
+                //           ),
+                //           hintText: "Ulangi Password",
+                //           labelText: "Ulangi Password",
+                //           fillColor: Colors.white,
+                //           border: OutlineInputBorder(
+                //               borderRadius: BorderRadius.circular(20))),
+                //     )),
+                Container(
+                    width: 300,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: FlatButton(
+                        onPressed: () => registerLoading ? null : _register(),
+                        child: Text(
+                            !registerLoading
+                                ? "Perbaharui Profil"
+                                : "Mohon Tunggu",
+                            style: Theme.of(context).textTheme.display4),
+                        color: registerLoading
+                            ? Colors.grey
+                            : Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)))),
+              ]),
+            ),
+          ])
+        ])),
       ),
     );
   }

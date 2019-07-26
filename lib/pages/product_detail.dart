@@ -95,51 +95,27 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     List<Widget> listImage = [];
     List<int> indexImage = [];
     int count = 0;
-    animal.animalImages.forEach((image) {
+    if (animal.animalImages.length == 0) {
       indexImage.add(count);
       count++;
       listImage.add(
-        GestureDetector(
-          onTap: () {
-            // showDialog(
-            //   context: context,
-            //   builder: (BuildContext context) {
-            //     return AlertDialog(
-            //       title: Text("Foto", style: TextStyle(color: Colors.black)),
-            //       content: FadeInImage.assetNetwork(
-            //         placeholder: 'assets/images/loading.gif',
-            //         image: image.image,
-            //       ),
-            //       actions: <Widget>[
-            //         FlatButton(
-            //           child: Text("Close"),
-            //           onPressed: () {
-            //             Navigator.of(context).pop();
-            //           },
-            //         ),
-            //       ],
-            //     );
-            //   },
-            // );
-
-            Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return ImagePopupPage(
-                image: image.image,
-                tagCount: "image$count",
-                animalName: animal.name,
-              );
-            }));
-          },
-          child: Hero(
+        Hero(tag: "image$count", child: globals.failLoadImage()),
+      );
+    } else {
+      animal.animalImages.forEach((image) {
+        indexImage.add(count);
+        count++;
+        listImage.add(
+          Hero(
             tag: "image$count",
             child: FadeInImage.assetNetwork(
               placeholder: 'assets/images/loading.gif',
               image: image.image,
             ),
           ),
-        ),
-      );
-    });
+        );
+      });
+    }
 
     return Stack(
       children: <Widget>[
@@ -169,6 +145,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildDoted(int index, int total) {
+    if (total == 0) {
+      total = 1;
+    }
     return Container(
       child:
           globals.myText(text: "$index / $total", color: "light", weight: "XB"),
@@ -189,115 +168,124 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       }
     }
 
+    var children2 = <Widget>[
+      GestureDetector(
+          onTap: () => globals.share(),
+          child: Row(
+            children: <Widget>[
+              Expanded(child: Container()),
+              Container(
+                  padding: EdgeInsets.all(3),
+                  width: globals.mw(context) * 0.27,
+                  alignment: Alignment.centerRight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: globals.myColor("primary"),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      globals.myText(text: "BAGIKAN ", color: "light"),
+                      Icon(Icons.share,
+                          size: 14, color: globals.myColor("light")),
+                    ],
+                  )),
+            ],
+          )),
+      SizedBox(
+        height: 8,
+      ),
+      Text(
+          //"${animal.name} / ${animal.gender} / ${globals.convertToAge(animal.dateOfBirth)}",
+          "${animal.name}",
+          style: Theme.of(context)
+              .textTheme
+              .title
+              .copyWith(color: Theme.of(context).primaryColor)),
+      SizedBox(
+        height: 8,
+      ),
+      globals.myText(text: "${animal.description}", color: "dark", size: 13),
+      SizedBox(
+        height: 8,
+      ),
+      Divider(),
+      Container(
+        alignment: Alignment.centerLeft,
+        child: Wrap(
+          children: <Widget>[
+            globals.myText(text: "Kategori: ", color: "dark", size: 13),
+            GestureDetector(
+              child: globals.myText(
+                  text: "${animal.animalSubCategory.animalCategory.name}",
+                  color: "dark",
+                  size: 13),
+            ),
+            globals.myText(text: " > ", color: "dark", size: 13),
+            GestureDetector(
+              child: globals.myText(
+                  text: "${animal.animalSubCategory.name}",
+                  color: "dark",
+                  size: 13),
+            )
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 8,
+      ),
+      Divider(),
+      isAuction
+          ? Container(
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                children: <Widget>[
+                  globals.myText(
+                      text: "Lelang berakhir pada ", color: "dark", size: 13),
+                  globals.myText(
+                      text:
+                          "${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
+                      color: "dark",
+                      weight: "B",
+                      size: 13),
+                ],
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildRuleProduct(
+                    "Jumlah Tersedia", animal.product.quantity, true),
+                SizedBox(
+                  height: 8,
+                ),
+                _buildRuleProduct(
+                    "Harga Jual", animal.product.price.toDouble(), false),
+              ],
+            ),
+      SizedBox(
+        height: 8,
+      ),
+      Divider(),
+      Container(
+          alignment: Alignment.centerLeft,
+          child: innerIslandShipping
+              ? globals.myText(
+                  text: "Pengiriman ke seluruh nusantara",
+                  color: "dark",
+                  size: 13)
+              : globals.myText(
+                  text: "Pengiriman dalam pulau saja",
+                  color: "dark",
+                  size: 13)),
+    ];
     return Container(
       color: Colors.white,
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          GestureDetector(
-              onTap: () => globals.share(),
-              child: Row(
-                children: <Widget>[
-                  Expanded(child: Container()),
-                  Container(
-                      padding: EdgeInsets.all(3),
-                      width: globals.mw(context) * 0.27,
-                      alignment: Alignment.centerRight,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: globals.myColor("primary"),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          globals.myText(text: "BAGIKAN ", color: "light"),
-                          Icon(Icons.share,
-                              size: 14, color: globals.myColor("light")),
-                        ],
-                      )),
-                ],
-              )),
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-              //"${animal.name} / ${animal.gender} / ${globals.convertToAge(animal.dateOfBirth)}",
-              "${animal.name}",
-              style: Theme.of(context)
-                  .textTheme
-                  .title
-                  .copyWith(color: Theme.of(context).primaryColor)),
-          SizedBox(
-            height: 8,
-          ),
-          globals.myText(
-              text: "${animal.description}", color: "dark", size: 13),
-          SizedBox(
-            height: 8,
-          ),
-          Divider(),
-          Container(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              children: <Widget>[
-                globals.myText(text: "Kategori: ", color: "dark", size: 13),
-                GestureDetector(
-                  child: globals.myText(
-                      text: "${animal.animalSubCategory.animalCategory.name}",
-                      color: "dark",
-                      size: 13),
-                ),
-                globals.myText(text: " > ", color: "dark", size: 13),
-                GestureDetector(
-                  child: globals.myText(
-                      text: "${animal.animalSubCategory.name}",
-                      color: "dark",
-                      size: 13),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Divider(),
-          isAuction
-              ? Container(
-                  alignment: Alignment.centerLeft,
-                  child: Wrap(
-                    children: <Widget>[
-                      globals.myText(
-                          text: "Lelang berakhir pada ",
-                          color: "dark",
-                          size: 13),
-                      globals.myText(
-                          text:
-                              "${globals.convertFormatDateTimeProduct(animal.auction.expiryDate)}",
-                          color: "dark",
-                          weight: "B",
-                          size: 13),
-                    ],
-                  ),
-                )
-              : Container(),
-          SizedBox(
-            height: 8,
-          ),
-          Divider(),
-          Container(
-              alignment: Alignment.centerLeft,
-              child: innerIslandShipping
-                  ? globals.myText(
-                      text: "Pengiriman ke seluruh nusantara",
-                      color: "dark",
-                      size: 13)
-                  : globals.myText(
-                      text: "Pengiriman dalam pulau saja",
-                      color: "dark",
-                      size: 13)),
-        ],
+        children: children2,
       ),
     );
   }
@@ -571,27 +559,39 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       .copyWith(color: Colors.white),
                 ),
               )),
+        ],
+      ),
+    );
+  }
 
-          // Text(
-          //   title,
-          //   style: Theme.of(context).textTheme.display3,
-          // ),
-          // SizedBox(
-          //   width: 5,
-          // ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //       color: Theme.of(context).primaryColor,
-          //       borderRadius: BorderRadius.circular(5)),
-          //   padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-          //   child: Text(
-          //     globals.convertToMoney(nominal),
-          //     style: Theme.of(context)
-          //         .textTheme
-          //         .display3
-          //         .copyWith(color: Colors.white),
-          //   ),
-          // )
+  Widget _buildRuleProduct(String title, nominal, bool isNotMoney) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 5),
+      child: Row(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(right: 10),
+            alignment: Alignment.centerLeft,
+            width: globals.mw(context) * 0.4,
+            child: globals.myText(text: title, color: "dark", size: 12),
+          ),
+          Container(
+              width: globals.mw(context) * 0.4,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.fromLTRB(10, 3, 5, 3),
+                child: Text(
+                  isNotMoney
+                      ? nominal.toString()
+                      : globals.convertToMoney(nominal),
+                  style: Theme.of(context)
+                      .textTheme
+                      .display3
+                      .copyWith(color: Colors.white),
+                ),
+              )),
         ],
       ),
     );
@@ -979,7 +979,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             height: 20,
           ),
           _buildBidStatus(),
-          _buildWinnerSection()
+          _buildWinnerSection(),
+          SizedBox(
+            height: 16,
+          ),
         ],
       ),
     );
@@ -1098,7 +1101,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               }
             },
             child: Text(
-              "PASANG",
+              "KIRIM",
               style: Theme.of(context)
                   .textTheme
                   .title
@@ -1178,6 +1181,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      margin: EdgeInsets.only(bottom: 16),
       child: Column(
         children: <Widget>[
           globals.myText(
@@ -1290,34 +1294,34 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildTextCommentProduct(ProductComment auctionComment, int sellerId) {
-    String username = sellerId != auctionComment.userId
-        ? auctionComment.user.username
+  Widget _buildTextCommentProduct(ProductComment productComment, int sellerId) {
+    String username = sellerId != productComment.userId
+        ? productComment.user.username
         : "SELLER";
     return Container(
       margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: Column(
-        crossAxisAlignment: sellerId != auctionComment.userId
+        crossAxisAlignment: sellerId != productComment.userId
             ? CrossAxisAlignment.start
             : CrossAxisAlignment.end,
         children: <Widget>[
           Row(
-            mainAxisAlignment: sellerId != auctionComment.userId
+            mainAxisAlignment: sellerId != productComment.userId
                 ? MainAxisAlignment.start
                 : MainAxisAlignment.end,
             children: <Widget>[
               //avatar
-              sellerId != auctionComment.userId
+              sellerId != productComment.userId
                   ? Container(
                       height: 35,
                       child: CircleAvatar(
                           radius: 25,
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: auctionComment.user.photo != null &&
-                                      auctionComment.user.photo.isNotEmpty
+                              child: productComment.user.photo != null &&
+                                      productComment.user.photo.isNotEmpty
                                   ? FadeInImage.assetNetwork(
-                                      image: auctionComment.user.photo,
+                                      image: productComment.user.photo,
                                       placeholder: 'assets/images/loading.gif',
                                       fit: BoxFit.cover)
                                   : Image.network(
@@ -1326,18 +1330,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               Container(
                 width: globals.mw(context) * 0.7,
                 child: Column(
-                  crossAxisAlignment: sellerId != auctionComment.userId
+                  crossAxisAlignment: sellerId != productComment.userId
                       ? CrossAxisAlignment.start
                       : CrossAxisAlignment.end,
                   children: <Widget>[
                     globals.myText(
                         text:
-                            "$username - ${globals.convertFormatDateTimeProduct(auctionComment.createdAt)}",
+                            "$username - ${globals.convertFormatDateTimeProduct(productComment.createdAt)}",
                         color: "disabled",
                         size: 10),
-                    auctionComment.comment != "UP"
+                    productComment.comment != "UP"
                         ? globals.myText(
-                            text: auctionComment.comment,
+                            text: productComment.comment,
                             color: "unprime",
                             size: 13)
                         : globals.myText(
@@ -1345,17 +1349,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   ],
                 ),
               ),
-              sellerId == auctionComment.userId
+              sellerId == productComment.userId
                   ? Container(
                       height: 35,
                       child: CircleAvatar(
                           radius: 25,
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: auctionComment.user.photo != null &&
-                                      auctionComment.user.photo.isNotEmpty
+                              child: productComment.user.photo != null &&
+                                      productComment.user.photo.isNotEmpty
                                   ? FadeInImage.assetNetwork(
-                                      image: auctionComment.user.photo,
+                                      image: productComment.user.photo,
                                       placeholder: 'assets/images/loading.gif',
                                       fit: BoxFit.cover)
                                   : Image.asset('assets/images/account.png'))))
@@ -1470,7 +1474,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               }
             },
             child: Text(
-              "PASANG",
+              "KIRIM",
               style: Theme.of(context)
                   .textTheme
                   .title
@@ -1635,10 +1639,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     ),
                     widget.from == "LELANG"
                         ? _buildBidRuleAuction()
-                        : _buildBidRuleProduct(),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        : Container(),
+
                     // If the logged in was the auction owner or the auction has been inactive, hide element
                     widget.from == "LELANG"
                         ? ((animal.ownerUserId == globals.user.id ||
@@ -1651,9 +1653,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             ? Container()
                             : _buildPutBid()
                         : Container(),
-                    SizedBox(
-                      height: 16,
-                    ),
+
                     _buildForum(),
                   ],
                 ),

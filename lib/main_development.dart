@@ -6,7 +6,7 @@ void main() async {
   var configuredApp = AppConfig(
     appName: 'flavors Dev',
     flavorName: 'development',
-    baseUrl: 'http://192.168.43.67:8000',
+    baseUrl: 'http://10.0.2.2:8000',
     apiUrl: '/api',
     child: MyApp(),
   );

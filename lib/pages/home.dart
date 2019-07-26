@@ -265,7 +265,7 @@ class _HomePage extends State<HomePage> {
       height: 64,
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(10)),
+          borderRadius: BorderRadius.circular(4)),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         globals.myText(
             text: "BACA PANDUAN DAN TIPS TRIK LENGKAP JLF DI SINI",
@@ -283,7 +283,7 @@ class _HomePage extends State<HomePage> {
       height: 35,
       decoration: BoxDecoration(
           color: Color.fromRGBO(73, 187, 255, 1),
-          borderRadius: BorderRadius.circular(10)),
+          borderRadius: BorderRadius.circular(4)),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         globals.myText(
             text: "$membersCount orang telah bergabung bersama JLF saat ini",
@@ -438,7 +438,10 @@ class _HomePage extends State<HomePage> {
         child: Stack(
           children: <Widget>[
             Container(
-              color: Color.fromRGBO(68, 182, 236, 1),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: Color.fromRGBO(68, 182, 236, 1),
+              ),
               width: globals.mw(context),
               height: 120,
             ),

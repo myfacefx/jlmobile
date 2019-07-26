@@ -186,7 +186,7 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
         Navigator.popUntil(context, ModalRoute.withName("/"));
       },
       child:
-          Container(child: Image.asset("assets/images/logo.png", height: 40)),
+          Container(child: Image.asset("assets/images/logo.png", height: 45)),
     ),
     leading: isSubMenu
         ? IconButton(
@@ -413,8 +413,8 @@ Widget isLoading() {
 
 Widget failLoadImage() {
   return Container(
-    margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-    height: 128,
+    margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+    height: 110,
     color: Colors.black,
     child: ClipRRect(
         borderRadius: BorderRadius.circular(1),

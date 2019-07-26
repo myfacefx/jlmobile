@@ -138,6 +138,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         });
       }).catchError((onError) {
         print(onError.toString());
+        if (!mounted) return;
         globals.showDialogs(onError.toString(), context);
       });
     }
@@ -690,8 +691,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                           )
                         : Column(
                             children: <Widget>[
-                              _buildChips(
-                                  "Harga Jual", globals.convertToMoney(10000.0)),
+                              _buildChips("Harga Jual",
+                                  globals.convertToMoney(10000.0)),
                             ],
                           ),
                   ],
