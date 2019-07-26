@@ -89,13 +89,6 @@ Widget drawer(context) {
             color: Theme.of(context).primaryColor,
             child: ListView(
               children: <Widget>[
-                GestureDetector(
-                  onTap: () => globals.share(),
-                  child: Container(
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.only(right: 5, top: 5),
-                      child: Icon(Icons.share, color: Colors.white)),
-                ),
                 // Avatar
                 Container(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
