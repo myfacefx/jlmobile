@@ -4,20 +4,6 @@ import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/auction.dart';
 
-// Future<Auction> create(Map<String, dynamic> _data) async {
-//   final header = {"Content-Type": "application/json"};
-//   http.Response res = await http
-//       .post(getBaseUrl() + "/auctions",
-//           headers: header, body: json.encode(_data))
-//       .timeout(Duration(seconds: getTimeOut()));
-
-//   if (res.statusCode == 200) {
-//     return Auction.fromJson(json.decode(res.body));
-//   } else {
-//     throw Exception(res.body);
-//   }
-// }
-
 Future<bool> create(Map<String, dynamic> _data, int animalId) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals/$animalId/auctions/create";
@@ -109,6 +95,43 @@ Future<bool> autoClose(String token) async {
     return true;
   } else if (res.statusCode == 406) {
     return false;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<String> checkFirebaseChatId(String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "/auctions/checkFirebaseChatId";
+
+  print(url);
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 202) {
+    return res.body;
+  } else if (res.statusCode == 406) {
+    return "";
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> updateFirebaseChatId(String token, Map<String, dynamic> _data, int id) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/auctions/$id/update";
+
+  print(url);
+  print(_data);
+
+  http.Response res = await http
+      .put(url, headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut() + 270));
+      
+  if (res.statusCode == 202) {
+    return true;
   } else {
     throw Exception(res.body);
   }

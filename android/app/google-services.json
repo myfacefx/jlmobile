@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "208593863257",
-    "firebase_url": "https://jual-lelang-faun-1558506228624.firebaseio.com",
-    "project_id": "jual-lelang-faun-1558506228624",
-    "storage_bucket": "jual-lelang-faun-1558506228624.appspot.com"
+    "project_number": "682382651442",
+    "firebase_url": "https://jual-lelang-fauna-be550.firebaseio.com",
+    "project_id": "jual-lelang-fauna-be550",
+    "storage_bucket": "jual-lelang-fauna-be550.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:208593863257:android:370e3b16d298649c",
+        "mobilesdk_app_id": "1:682382651442:android:370e3b16d298649c",
         "android_client_info": {
           "package_name": "com.jlf.mobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "208593863257-kett71dagho6fu7etilvpatqaso3smbg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.jlf.mobile",
-            "certificate_hash": "e932b06d5df6007ec61105232177362457a38d77"
-          }
-        },
-        {
-          "client_id": "208593863257-q285m2lkt17uaaf8vfkivkf10c5vh3hf.apps.googleusercontent.com",
+          "client_id": "682382651442-eumaf3ooijlu154kk7gl6nnci376u3m1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyABYipUD3wxAh1hoDk1Jp55Az1e8Ach-IU"
+          "current_key": "AIzaSyDa5rYilPvPWmHTizzSWwkTbh9rH8Xj_40"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "208593863257-q285m2lkt17uaaf8vfkivkf10c5vh3hf.apps.googleusercontent.com",
+              "client_id": "682382651442-eumaf3ooijlu154kk7gl6nnci376u3m1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -45,27 +37,27 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:208593863257:android:4c55ff2976bfd6cf",
+        "mobilesdk_app_id": "1:682382651442:android:4c55ff2976bfd6cf",
         "android_client_info": {
           "package_name": "com.jlf.mobile.dev"
         }
       },
       "oauth_client": [
         {
-          "client_id": "208593863257-q285m2lkt17uaaf8vfkivkf10c5vh3hf.apps.googleusercontent.com",
+          "client_id": "682382651442-eumaf3ooijlu154kk7gl6nnci376u3m1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyABYipUD3wxAh1hoDk1Jp55Az1e8Ach-IU"
+          "current_key": "AIzaSyDa5rYilPvPWmHTizzSWwkTbh9rH8Xj_40"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "208593863257-q285m2lkt17uaaf8vfkivkf10c5vh3hf.apps.googleusercontent.com",
+              "client_id": "682382651442-eumaf3ooijlu154kk7gl6nnci376u3m1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

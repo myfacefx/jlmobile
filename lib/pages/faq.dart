@@ -100,23 +100,7 @@ class _FAQPageState extends State<FAQPage> with SingleTickerProviderStateMixin {
                       ],
                     )),
                   ),
-                ],
-                // children: <Widget>[
-                //   // padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
-                //   child: TabBar(
-                //     controller: _tabController,
-                //     tabs: <Widget>[
-                //       Tab(
-                //         child: globals.myText(text: "FAQ", size: 12, color: "primary", weight: "B"),
-                //       ),
-                //       Tab(
-                //         child: globals.myText(text: "Whats's New", size: 12, color: "primary", weight: "B"),
-                //       ),
-                //       Tab(
-                //         child: globals.myText(text: "Credit", size: 12, color: "primary", weight: "B"),
-                //       )
-                //     ]),
-                // ],
+                ]
               ),
             )));
   }

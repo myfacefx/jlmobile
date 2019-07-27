@@ -18,6 +18,8 @@ import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/user/notification.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
+import 'package:jlf_mobile/pages/chat.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -50,7 +52,8 @@ class MyApp extends StatelessWidget {
         '/our-product': (BuildContext context) => OurProducTopPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
         '/notification': (BuildContext context) => NotificationPage(),
-        '/intro': (BuildContext context) => IntroPage()
+        '/intro': (BuildContext context) => IntroPage(),
+        '/chat': (BuildContext context) => ChatPage()
       },
     );
   }

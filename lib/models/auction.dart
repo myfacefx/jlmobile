@@ -32,6 +32,7 @@ class Auction {
     int duration;
     WinnerBid winnerBid;
     String verificationCode;
+    String firebaseChatId;
 
     Auction({
         this.id,
@@ -62,7 +63,8 @@ class Auction {
         this.innerIslandShipping,
         this.duration,
         this.winnerBid,
-        this.verificationCode
+        this.verificationCode,
+        this.firebaseChatId
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -95,6 +97,7 @@ class Auction {
         duration: json["duration"] == null ? null : json["duration"],
         winnerBid: json["winner_bid"] == null ? null : WinnerBid.fromJson(json["winner_bid"]),
         verificationCode: json["verification_code"] == null ? null : json["verification_code"],
+        firebaseChatId: json["firebase_chat_id"] == null ? null : json["firebase_chat_id"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -126,6 +129,7 @@ class Auction {
         "inner_island_shipping": innerIslandShipping == null ? null : innerIslandShipping,
         "duration": duration == null ? null : duration,
         "winner_bid": winnerBid == null ? null : winnerBid.toJson(),
-        "verification_code": verificationCode == null ? null : verificationCode
+        "verification_code": verificationCode == null ? null : verificationCode,
+        "firebase_chat_id": firebaseChatId == null ? null : firebaseChatId
     }..removeWhere( (key, val) => val == null);
 }

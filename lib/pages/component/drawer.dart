@@ -91,7 +91,7 @@ Widget drawer(context) {
               children: <Widget>[
                 // Avatar
                 Container(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                     height: 150,
                     child: CircleAvatar(
                         radius: 100,

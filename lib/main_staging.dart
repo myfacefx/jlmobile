@@ -6,7 +6,7 @@ void main() async {
   var configuredApp = AppConfig(
     appName: 'Build flavors Staging',
     flavorName: 'staging',
-    baseUrl: 'https://jlfdev.herokuapp.com/',
+    baseUrl: 'https://jlfbackend.xyz/jlf-backend-api/public',
     apiUrl: '/api',
     child: MyApp(),
   );
