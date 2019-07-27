@@ -3,19 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/product_comment.dart';
 import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
-import 'package:jlf_mobile/services/auction_services.dart';
+import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
 import 'package:jlf_mobile/services/bid_services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final int animalId;
@@ -349,47 +352,39 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             ),
           ),
           SizedBox(width: 5),
-          Column(
+          Row(
             children: <Widget>[
-              Container(
-                width: globals.mw(context) * 0.22,
-                alignment: Alignment.center,
-                child: RaisedButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ProfilePage(userId: animal.owner.id))),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    child: globals.myText(
-                        text: "PROFIL PELAPAK",
-                        color: "unprime",
-                        size: 10,
-                        align: TextAlign.center),
-                    color: Colors.white),
+              GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            ProfilePage(userId: animal.owner.id))),
+                child: Container(
+                    height: 35,
+                    child: CircleAvatar(
+                        radius: 25,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child:
+                                Icon(Icons.person, color: globals.myColor())))),
               ),
-              Container(
-                width: globals.mw(context) * 0.22,
-                alignment: Alignment.center,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                  child: globals.myText(
-                      text: "CHAT WA PELAPAK",
-                      color: "light",
-                      size: 10,
-                      align: TextAlign.center),
-                  onPressed: () {
-                    String phone = "62${animal.owner.phoneNumber.substring(1)}";
-                    String message = "Halo";
-                    _sendWhatsApp(phone, message);
-                  },
-                  color: Color.fromRGBO(37, 211, 102, 1),
-                ),
+              GestureDetector(
+                onTap: () {
+                  String phone = "62${animal.owner.phoneNumber.substring(1)}";
+                  String message = "Halo";
+                  _sendWhatsApp(phone, message);
+                },
+                child: Container(
+                    height: 35,
+                    child: CircleAvatar(
+                        radius: 25,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.asset('assets/images/whatsapp.png')))),
               )
             ],
-          )
+          ),
         ],
       ),
     );
@@ -427,7 +422,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                           try {
                             globals.loadingModel(context);
                             final result =
-                                await cancelAuction("Token", animal.auction.id);
+                                await AuctionServices.cancelAuction("Token", animal.auction.id);
                             Navigator.pop(context);
                             if (result) {
                               await globals.showDialogs(
@@ -705,13 +700,37 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     bool isOwner = false;
     bool isWinner = false;
 
+    String invoice;
+    print("WINNER SECTION");
+    print("WINNERBIDID : " + animal.auction.winnerBidId.toString());
+
     if (animal.auction.winnerBidId != null) {
-      for (var i = 0; i < animal.auction.bids.length - 1; i++) {
+      for (var i = 0; i < animal.auction.bids.length; i++) {
         if (animal.auction.bids[i].id == animal.auction.winnerBidId) {
           winner = animal.auction.bids[i].user;
           amount = animal.auction.bids[i].amount;
           winnerFound = true;
           if (winner.id == globals.user.id) isWinner = true;
+
+          invoice = "JLF/";
+          var acceptedDate = DateTime.parse(animal.auction.winnerAcceptedDate);
+          invoice += acceptedDate.year.toString().substring(2);
+          // invoice += acceptedDate.month.toString().substring(2);
+          if (acceptedDate.month < 10) {
+            invoice += "0${acceptedDate.month}";
+          } else {
+            invoice += "${acceptedDate.month}";
+          }
+
+          if (acceptedDate.day < 10) {
+            invoice += "0${acceptedDate.day}";
+          } else {
+            invoice += "${acceptedDate.day}";
+          }
+
+          invoice +=
+              "/AUC/${animal.auction.id}/${animal.auction.verificationCode}";
+
           break;
         }
       }
@@ -728,50 +747,60 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               children: <Widget>[
                 globals.myText(
                     text: isWinner
-                        ? "LELANG INI TELAH ANDA MENANGKAN"
+                        ? "ANDA TELAH MEMENANGKAN LELANG INI"
                         : "LELANG DIMENANGKAN OLEH",
                     color: "dark",
-                    size: 16),
-                GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              ProfilePage(userId: winner.id))),
-                  child: Container(
-                      height: 90,
-                      child: CircleAvatar(
-                          radius: 40,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: winner.photo != null &&
-                                      winner.photo.isNotEmpty
-                                  ? FadeInImage.assetNetwork(
-                                      image: winner.photo,
-                                      placeholder: 'assets/images/loading.gif',
-                                      fit: BoxFit.cover)
-                                  : Image.network(
-                                      'assets/images/account.png')))),
-                ),
-                globals.myText(
-                    text: "${winner.username}",
-                    size: 20,
-                    color: 'primary',
+                    size: 21,
+                    weight: "XB",
                     align: TextAlign.center),
-                SizedBox(height: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.location_on, size: 13),
-                    globals.myText(
-                        text: winner.regency.name + ", " + winner.province.name,
-                        size: 13,
-                        textOverflow: TextOverflow.ellipsis),
-                  ],
-                ),
-                SizedBox(height: 4),
-                globals.myText(text: winner.phoneNumber, size: 15),
+                globals.user.id == winner.id
+                    ? Container()
+                    : Column(
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ProfilePage(userId: winner.id))),
+                            child: Container(
+                                height: 90,
+                                child: CircleAvatar(
+                                    radius: 40,
+                                    child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        child: winner.photo != null &&
+                                                winner.photo.isNotEmpty
+                                            ? FadeInImage.assetNetwork(
+                                                image: winner.photo,
+                                                placeholder:
+                                                    'assets/images/loading.gif',
+                                                fit: BoxFit.cover)
+                                            : Image.network(
+                                                'assets/images/account.png')))),
+                          ),
+                          globals.myText(
+                              text: "${winner.username}",
+                              size: 20,
+                              color: 'primary',
+                              align: TextAlign.center),
+                          SizedBox(height: 4),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(Icons.location_on, size: 13),
+                              globals.myText(
+                                  text: winner.regency.name +
+                                      ", " +
+                                      winner.province.name,
+                                  size: 13,
+                                  textOverflow: TextOverflow.ellipsis),
+                            ],
+                          ),
+                        ],
+                      ),
                 SizedBox(height: 4),
                 globals.myText(
                     text:
@@ -784,63 +813,136 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     size: 15,
                     align: TextAlign.center),
                 SizedBox(height: 4),
-                Container(
-                    padding: EdgeInsets.fromLTRB(40, 10, 40, 0),
-                    child: Card(
-                        color: Colors.grey[100],
-                        child: Container(
-                          padding: EdgeInsets.all(15),
-                          child: Column(
-                            children: <Widget>[
-                              globals.myText(
-                                  text: animal.auction.verificationCode != null
-                                      ? animal.auction.verificationCode
-                                      : "19191",
-                                  weight: "B",
-                                  size: 30,
-                                  letterSpacing: 3,
-                                  color: "dark"),
-                              globals.myText(
-                                  text:
-                                      "Ini adalah kode unik yang dimiliki oleh pemilik lelang dan pemenang lelang, gunakan kode unik ini untuk melakukan pengecekan",
-                                  align: TextAlign.center,
-                                  color: "dark",
-                                  size: 13)
-                            ],
-                          ),
-                        ))),
-                // Wrap(children: <Widget>[
-                //   globals.myText(text: "Kode Verifikasi: ", size: 16),
-                // ],),
                 globals.user.id == winner.id || isOwner
-                    ? Container(
-                        width: 300,
-                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        child: FlatButton(
-                            onPressed: () {
-                              String phone;
-                              String message = "Halo";
+                    ? Column(
+                        children: <Widget>[
+                          Container(
+                              padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
+                              child: Card(
+                                  color: Colors.grey[100],
+                                  child: Container(
+                                    padding: EdgeInsets.all(15),
+                                    child: Column(
+                                      children: <Widget>[
+                                        globals.myText(
+                                            text: animal.auction
+                                                        .verificationCode !=
+                                                    null
+                                                ? animal
+                                                    .auction.verificationCode
+                                                : "19191",
+                                            weight: "B",
+                                            size: 30,
+                                            letterSpacing: 3,
+                                            color: "dark"),
+                                        globals.myText(
+                                            text:
+                                                "Ini adalah kode unik yang dimiliki oleh pemilik lelang dan pemenang lelang, gunakan kode unik ini untuk melakukan pengecekan",
+                                            align: TextAlign.center,
+                                            color: "dark",
+                                            size: 13),
+                                      ],
+                                    ),
+                                  ))),
+                          SizedBox(height: 10),
+                          globals.myText(text: "Nomor Invoice:"),
+                          globals.myText(
+                              text: invoice != null && invoice.length > 0
+                                  ? invoice
+                                  : "Invoice Gagal Dibuat"),
+                          Container(
+                              width: 300,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+                              child: FlatButton(
+                                  onPressed: () {
+                                    String phone;
+                                    String message = "Halo";
 
-                              if (isOwner) {
-                                phone =
-                                    "62${animal.owner.phoneNumber.substring(1)}";
-                                _sendWhatsApp(phone, message);
-                              } else if (isWinner) {
-                                phone = "62${winner.phoneNumber.substring(1)}";
-                                _sendWhatsApp(phone, message);
-                              } else {
-                                return null;
-                              }
-                            },
-                            color: globals.myColor('primary'),
-                            child: globals.myText(
-                                text: isOwner
-                                    ? "HUBUNGI PEMENANG"
-                                    : "HUBUNGI PELELANG",
-                                color: 'light',
-                                weight: "B"),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20))))
+                                    if (isOwner) {
+                                      phone =
+                                          "62${animal.owner.phoneNumber.substring(1)}";
+                                      _sendWhatsApp(phone, message);
+                                    } else if (isWinner) {
+                                      phone =
+                                          "62${winner.phoneNumber.substring(1)}";
+                                      _sendWhatsApp(phone, message);
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  color: globals.myColor('primary'),
+                                  child: globals.myText(
+                                      text: isOwner
+                                          ? "HUBUNGI PEMENANG"
+                                          : "HUBUNGI PELELANG",
+                                      color: 'light',
+                                      weight: "B"),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)))),
+                          Container(
+                              width: 300,
+                              padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                              child: FlatButton(
+                                  onPressed: () async {
+                                    if (animal.auction.firebaseChatId != null && animal.auction.firebaseChatId.length > 0) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                ChatPage(chatId: animal.auction.firebaseChatId)));
+                                    } else {
+                                      // return null;
+                                      var documentReference = Firestore.instance
+                                        .collection('chat_rooms');
+
+                                      String id;
+
+                                      DocumentReference temp = await documentReference.add({});
+                                      id = temp.documentID;
+
+                                      print(id);
+
+                                      Auction update = Auction();
+                                      update.firebaseChatId = id;
+                                      
+                                      bool response = await AuctionServices.updateFirebaseChatId("token", update.toJson(), animal.auction.id);
+                                      
+                                      if (response) {
+                                        animal.auction.firebaseChatId = id;
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  ChatPage(chatId: id)));
+                                      }
+
+                                      // Firestore.instance.runTransaction((transaction) async {
+                                      //   temp = await documentReference.add();
+
+                                      //   id = temp.documentID;
+
+                                      //   // setState(() {
+                                      //     // state = "Match not found, room created.\nID: ${temp.documentID}";
+                                      //     // matchId = temp.documentID;
+                                      //     // role = ROLE.HOST.index;
+                                      //   });
+                                        
+                                      //   // await prefs.setString('matchId', );
+                                      //   // await prefs.setInt('role', ROLE.HOST.index);
+
+                                      //   // _startTimer();
+                                      // });
+                                    }
+                                  },
+                                  color: globals.myColor('primary'),
+                                  child: globals.myText(
+                                      text: "CHAT",
+                                      color: 'light',
+                                      weight: "B"),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20))))
+                        ],
+                      )
                     : Container(),
               ],
             ))
