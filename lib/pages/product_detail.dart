@@ -1,3 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -15,10 +17,8 @@ import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
 import 'package:jlf_mobile/services/bid_services.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final int animalId;
@@ -109,11 +109,22 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         indexImage.add(count);
         count++;
         listImage.add(
-          Hero(
-            tag: "image$count",
-            child: FadeInImage.assetNetwork(
-              placeholder: 'assets/images/loading.gif',
-              image: image.image,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ImagePopupPage(
+                          image: image.image,
+                          tagCount: "image$count",
+                          animalName: animal.name)));
+            },
+            child: Hero(
+              tag: "image$count",
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/loading.gif',
+                image: image.image,
+              ),
             ),
           ),
         );
@@ -173,7 +184,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
     var children2 = <Widget>[
       GestureDetector(
-          onTap: () => globals.share(),
+          onTap: () => globals.share(widget.from, animal.id),
           child: Row(
             children: <Widget>[
               Expanded(child: Container()),
@@ -421,8 +432,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         onPressed: () async {
                           try {
                             globals.loadingModel(context);
-                            final result =
-                                await AuctionServices.cancelAuction("Token", animal.auction.id);
+                            final result = await AuctionServices.cancelAuction(
+                                "Token", animal.auction.id);
                             Navigator.pop(context);
                             if (result) {
                               await globals.showDialogs(
@@ -878,42 +889,53 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                       color: 'light',
                                       weight: "B"),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20)))),
+                                      borderRadius:
+                                          BorderRadius.circular(20)))),
                           Container(
                               width: 300,
                               padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
                               child: FlatButton(
                                   onPressed: () async {
-                                    if (animal.auction.firebaseChatId != null && animal.auction.firebaseChatId.length > 0) {
+                                    if (animal.auction.firebaseChatId != null &&
+                                        animal.auction.firebaseChatId.length >
+                                            0) {
                                       Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                ChatPage(chatId: animal.auction.firebaseChatId)));
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  ChatPage(
+                                                      chatId: animal.auction
+                                                          .firebaseChatId)));
                                     } else {
                                       // return null;
                                       var documentReference = Firestore.instance
-                                        .collection('chat_rooms');
+                                          .collection('chat_rooms');
 
                                       String id;
 
-                                      DocumentReference temp = await documentReference.add({});
+                                      DocumentReference temp =
+                                          await documentReference.add({});
                                       id = temp.documentID;
 
                                       print(id);
 
                                       Auction update = Auction();
                                       update.firebaseChatId = id;
-                                      
-                                      bool response = await AuctionServices.updateFirebaseChatId("token", update.toJson(), animal.auction.id);
-                                      
+
+                                      bool response = await AuctionServices
+                                          .updateFirebaseChatId(
+                                              "token",
+                                              update.toJson(),
+                                              animal.auction.id);
+
                                       if (response) {
                                         animal.auction.firebaseChatId = id;
                                         Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  ChatPage(chatId: id)));
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        ChatPage(chatId: id)));
                                       }
 
                                       // Firestore.instance.runTransaction((transaction) async {
@@ -926,7 +948,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                       //     // matchId = temp.documentID;
                                       //     // role = ROLE.HOST.index;
                                       //   });
-                                        
+
                                       //   // await prefs.setString('matchId', );
                                       //   // await prefs.setInt('role', ROLE.HOST.index);
 

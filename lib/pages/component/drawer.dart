@@ -17,7 +17,7 @@ Widget _buildDrawerNavigationButtonBig(
       color: Colors.white,
       onPressed: () {
         if (route == '/share') {
-          globals.share();
+          globals.share(null, null);
         } else {
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
