@@ -1,19 +1,12 @@
 import 'dart:async';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-// import 'package:flutter_advanced_networkimage/provider.dart'
-    // show AdvancedNetworkImage;
-import 'package:flutter/services.dart' show ByteData, rootBundle;
-import 'package:jlf_mobile/models/user.dart';
-import 'package:jlf_mobile/services/user_services.dart';
-import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
-import 'package:validators/validators.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
+import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
 
 /// Global Function to return Screen Height
@@ -26,8 +19,18 @@ double mw(BuildContext context) {
   return MediaQuery.of(context).size.width;
 }
 
-void share() {
-  Share.share('Bergabung bersama JLF - https://juallelangfauna.com');
+void share(String from, int animalId) {
+  String param;
+  if (from != null && animalId != null) {
+    if (from == "LELANG") {
+      param = "/type/animalf1-$animalId";
+    }
+    if (from == "PASAR HEWAN") {
+      param = "/type/animalf2-$animalId";
+    }
+  }
+
+  Share.share('Bergabung bersama JLF - https://juallelangfauna.com$param');
 }
 
 String baseUrl = "http://192.168.100.119:8000";
@@ -202,7 +205,7 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
               else
                 scaffoldKey.currentState.openDrawer();
             }),
-    actions: <Widget>[ showNotification ? myAppBarIcon(context) : Container()],
+    actions: <Widget>[showNotification ? myAppBarIcon(context) : Container()],
     centerTitle: true,
   );
 }

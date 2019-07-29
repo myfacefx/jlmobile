@@ -1,16 +1,23 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/how_to.dart';
+import 'package:jlf_mobile/pages/not_found.dart';
+import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/slider_service.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   SharedPreferences prefs;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  StreamSubscription _sub;
 
   int _current = 0;
 
@@ -69,6 +77,68 @@ class _HomePage extends State<HomePage> {
     globals.getNotificationCount();
     globals.generateToken();
     globals.notificationListener(context);
+    initUniLinks();
+    initUniLinksStream();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    if (_sub != null) _sub.cancel();
+  }
+
+  Future<Null> initUniLinks() async {
+    try {
+      Uri initialLink = await getInitialUri();
+      if (initialLink != null) {
+        checkAppLink(initialLink);
+      }
+    } on PlatformException {}
+  }
+
+  Future<Null> initUniLinksStream() async {
+    _sub = getUriLinksStream().listen((Uri link) {
+      if (!mounted) return;
+
+      if (link != null) {
+        checkAppLink(link);
+      } else {
+        pushToPage(null, null);
+      }
+    }, onError: (err) {
+      pushToPage(null, null);
+    });
+  }
+
+  void checkAppLink(Uri link) {
+    int animalId;
+    String from;
+
+    print(link.pathSegments);
+    List<String> tamp = link.pathSegments[1].split("f")[1].split("-");
+
+    if (tamp[0] == "1") {
+      from = "LELANG";
+    } else if (tamp[0] == "2") {
+      from = "PASAR HEWAN";
+    }
+    animalId = int.parse(tamp[1]);
+    pushToPage(animalId, from);
+  }
+
+  void pushToPage(animalId, from) {
+    if (animalId != null && from != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ProductDetailPage(
+                    animalId: animalId,
+                    from: from,
+                  )));
+    } else {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => NotFoundPage()));
+    }
   }
 
   _loadSliders() {
