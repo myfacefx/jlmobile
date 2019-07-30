@@ -136,3 +136,18 @@ Future<bool> updateFirebaseChatId(String token, Map<String, dynamic> _data, int 
     throw Exception(res.body);
   }
 }
+
+Future<List<Auction>> getAuctionsWithActiveChat(String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  String url = getBaseUrl() + "/auctions/active-chats";
+
+  print(url);
+
+  http.Response res = await http.get(url,
+      headers: header);
+  if (res.statusCode == 200) {
+    return auctionFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}

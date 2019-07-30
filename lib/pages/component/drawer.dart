@@ -120,6 +120,7 @@ Widget drawer(context) {
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 globals.spacePadding(),
+                globals.user.roleId == 1 ? _buildDrawerNavigationButtonBig("Admin", '/chat-list', null, context) : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Lelangku", '/profile', null, context),

@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatPage extends StatefulWidget {
   final String chatId;
@@ -16,6 +20,8 @@ class _ChatPageState extends State<ChatPage> {
 
   String chatId;
 
+  bool isLoading = false;
+
   int messagesCount = 0;
   bool hasNewMessage = false;
 
@@ -24,8 +30,12 @@ class _ChatPageState extends State<ChatPage> {
 
   ScrollController messagesScrollController = ScrollController();
 
+  File imageFile;
+  String imageUrl;
+
   _ChatPageState(String chatId) {
     this.chatId = chatId;
+    imageUrl = '';
   }
 
   Widget _buildMessages() {
@@ -45,11 +55,12 @@ class _ChatPageState extends State<ChatPage> {
                             globals.myColor("primary"))));
               } else {
                 if (messagesScrollController.hasClients) {
-                  if (messagesCount > 0 && messagesCount != snapshot.data.documents.length) {
+                  if (messagesCount > 0 &&
+                      messagesCount != snapshot.data.documents.length) {
                     hasNewMessage = true;
-                   }
+                  }
                 }
-                
+
                 messagesCount = snapshot.data.documents.length;
                 return ListView.builder(
                     shrinkWrap: false,
@@ -62,15 +73,42 @@ class _ChatPageState extends State<ChatPage> {
             }));
   }
 
+  Future getImage() async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (imageFile != null) {
+      // setState(() {
+      //   // isLoading = true;
+      // });
+      uploadFile();
+    }
+  }
+
+  Future uploadFile() async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
+    StorageUploadTask uploadTask = reference.putFile(imageFile);
+    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+    storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+      imageUrl = downloadUrl;
+      setState(() {
+        isLoading = false;
+        _sendMessage(imageUrl, 1);
+      });
+    }, onError: (err) {
+      setState(() {
+        isLoading = false;
+      });
+      globals.showDialogs("Hanya dapat mengunggah gambar", context);
+    });
+  }
+
   Widget _chatMessages(DocumentSnapshot document) {
     if (messagesScrollController.hasClients) {
       if (hasNewMessage == true) {
         double scrollTo = messagesScrollController.position.maxScrollExtent * 2;
-        messagesScrollController.animateTo(
-          scrollTo,
-          duration: Duration(milliseconds: 100),
-          curve: Curves.easeOut
-        );
+        messagesScrollController.animateTo(scrollTo,
+            duration: Duration(milliseconds: 100), curve: Curves.easeOut);
 
         hasNewMessage = false;
       }
@@ -79,10 +117,12 @@ class _ChatPageState extends State<ChatPage> {
     // return _rightChatMessages(document['type'], document['content']);
 
     // String timestamp = DateTime.fromMillisecondsSinceEpoch(int.parse(document['timestamp'].toString())).toString();
-    
-    DateTime unformattedDate = DateTime.fromMillisecondsSinceEpoch(int.parse(document['timestamp'].toString()));
 
-    String timestamp = "${unformattedDate.month.toString()}/${unformattedDate.day.toString()} ${unformattedDate.hour.toString()}:${unformattedDate.minute.toString()}";
+    DateTime unformattedDate = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(document['timestamp'].toString()));
+
+    String timestamp =
+        "${unformattedDate.month.toString()}/${unformattedDate.day.toString()} ${unformattedDate.hour.toString()}:${unformattedDate.minute.toString()}";
 
     return Row(
         mainAxisAlignment:
@@ -91,27 +131,57 @@ class _ChatPageState extends State<ChatPage> {
                 : MainAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.fromLTRB(10,3,10,3),
-            width: globals.mw(context) * 0.65,
-            decoration: BoxDecoration(
-                color:
-                    globals.user.id == int.parse(document['sender'].toString())
-                        ? globals.myColor("light")
-                        : Colors.blue[100],
-                borderRadius: BorderRadius.circular(8)),
-            margin: EdgeInsets.fromLTRB(0, 5, 10, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                globals.myText(text: document['content']),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: globals.myText(text: timestamp, size: 9, align: TextAlign.right, color: "dark")
-                ),
-              ],
-            ) 
-            
-          ),
+              padding: EdgeInsets.fromLTRB(3, 3, 10, 3),
+              width: globals.mw(context) * 0.65,
+              decoration: BoxDecoration(
+                  color: globals.user.id ==
+                          int.parse(document['sender'].toString())
+                      ? globals.myColor("light")
+                      : Colors.blue[100],
+                  borderRadius: BorderRadius.circular(8)),
+              margin: EdgeInsets.fromLTRB(0, 5, 10, 0),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      height: 35,
+                      child: CircleAvatar(
+                          radius: 25,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: document['photo'] != null &&
+                                      document['photo'].isNotEmpty
+                                  ? FadeInImage.assetNetwork(
+                                      image: document['photo'],
+                                      placeholder: 'assets/images/loading.gif',
+                                      fit: BoxFit.cover)
+                                  : Image.asset('assets/images/account.png')))),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        globals.myText(
+                            text: document['username'] != null
+                                ? document['username']
+                                : 'JLF User',
+                            weight: "B",
+                            decoration: TextDecoration.underline,
+                            size: 11),
+                        document['type'] == 1 ? FadeInImage.assetNetwork(
+                                      image: document['content'],
+                                      placeholder: 'assets/images/loading.gif',
+                                      fit: BoxFit.cover) : globals.myText(text: document['content']),                        
+                        Container(
+                            alignment: Alignment.centerRight,
+                            child: globals.myText(
+                                text: timestamp,
+                                size: 8,
+                                align: TextAlign.right,
+                                color: "dark")),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
         ]);
 
     // return document['sender'] == role ? _rightChatMessages(document['type'], document['content']) : _leftChatMessages(document['type'], document['content']);
@@ -131,10 +201,14 @@ class _ChatPageState extends State<ChatPage> {
       Firestore.instance.runTransaction((transaction) async {
         await transaction.set(documentReference, {
           'sender': globals.user.id,
+          'username': globals.user.username,
+          'photo': globals.user.photo,
           'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
           'content': content,
           'type': type
         });
+
+        print("Message sent");
       });
     }
   }
@@ -144,6 +218,18 @@ class _ChatPageState extends State<ChatPage> {
     return Container(
         child: Row(
       children: <Widget>[
+        Material(
+          child: Container(
+            color: Colors.transparent,
+            margin: EdgeInsets.symmetric(horizontal: 1.0),
+            child: IconButton(
+              icon: Icon(Icons.image),
+              onPressed: getImage,
+              color: Colors.black,
+            ),
+          ),
+          color: Colors.white,
+        ),
         Flexible(
           child: Container(
               child: TextField(

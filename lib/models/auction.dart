@@ -1,6 +1,9 @@
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/winner_bid.dart';
+import 'dart:convert';
+
+List<Auction> auctionFromJson(String str) => new List<Auction>.from(json.decode(str).map((x) => Auction.fromJson(x)));
 
 class Auction {
     int id;
