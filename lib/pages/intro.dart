@@ -2,19 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'package:jlf_mobile/globals.dart' as globals;
 
 class IntroPage extends StatefulWidget {
   @override
   _IntroPageState createState() => _IntroPageState();
 }
 
-const intros = <String>[
-  'assets/images/intro/intro1.jpg',
-  'assets/images/intro/intro2.jpg',
-  'assets/images/intro/intro3.jpg',
-  'assets/images/intro/intro4.jpg',
-  'assets/images/intro/intro5.jpg',
-  'assets/images/intro/intro6.jpg',
+List<Map<String, String>> intros = [
+  {
+    'title': 'Jual Lelang Fauna',
+    'description': 'Jual, Beli, dan Lelang Hewan dalam satu aplikasi',
+    'image': 'assets/images/intro/1.png'
+  },
+  {
+    'title': 'Lelang Hewan',
+    'description':
+        'Rasakan kemudahan melelang aneka hewan dengan ratusan pelelang dari seluruh Indonesia',
+    'image': 'assets/images/intro/2.png'
+  },
+  {
+    'title': 'Jual Beli Hewan',
+    'description':
+        'Jual ataupun beli aneka hewan dari ratusan penjual yang berasal dari seluruh nusantara',
+    'image': 'assets/images/intro/3.png'
+  },
+  {
+    'title': 'Rekening Bersama',
+    'description':
+        'Untuk kenyamanan bertransaksi, JLF menyediakan fasilitas rekening bersama yang ditangani langsung oleh tim JLF guna memastikan transaksi lelang maupun jual beli hewan aman dan praktis',
+    'image': 'assets/images/intro/4.png'
+  },
+  {
+    'title': 'Hewan Dilindungi',
+    'description':
+        'JLF mendukung penuh perlindungan hewan yang ditentukan oleh Undang-Undang Republik Indonesia, sehingga kami melarang keras perdagangan hewan terlarang di platform kami',
+    'image': 'assets/images/intro/5.png'
+  }
+];
+
+const x = <String>[
+  'assets/images/intro/1.png',
+  'assets/images/intro/2.png',
+  'assets/images/intro/3.png',
+  'assets/images/intro/4.png',
+  'assets/images/intro/5.png',
 ];
 
 class _IntroPageState extends State<IntroPage> {
@@ -23,8 +55,8 @@ class _IntroPageState extends State<IntroPage> {
   Widget _image(String assetPath) {
     return Image.asset(
       assetPath,
-      fit: BoxFit.fill,
-      height: double.infinity,
+      // fit: BoxFit.contain,
+      // height: double.infinity,
       width: double.infinity,
       alignment: Alignment.center,
     );
@@ -54,10 +86,60 @@ class _IntroPageState extends State<IntroPage> {
                             child: TabBarView(
                               children: intros.map((f) {
                                 count++;
+
+                                return Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                      child: _image(f['image']),
+                                    ),
+                                    // Caption
+                                    Positioned(
+                                      bottom: count == intros.length ? 10 : globals.mh(context) * 0.08,
+                                      child: Container(
+                                        width: globals.mw(context) * 0.9,
+                                        child: Column(
+                                          children: <Widget>[
+                                            globals.myText(
+                                                text: f['title'],
+                                                weight: "B",
+                                                size: 25),
+                                            SizedBox(height: 20),
+                                            globals.myText(
+                                                text: f['description'],
+                                                align: TextAlign.center),
+                                            count == intros.length
+                                                ? Container(
+                                                  margin: EdgeInsets.only(top: 10, bottom: 0),
+                                                  child: RaisedButton(
+                                                    child: globals.myText(text: "MULAI"),
+                                                    color: Colors.white,
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      saveLocalData(
+                                                          'isNew', "true");
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  LoginPage()));
+                                                    },
+                                                  )
+                                                )
+                                                : Container()
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                );
+
                                 if (count == intros.length) {
                                   return Stack(
                                     children: <Widget>[
-                                      _image(f),
+                                      // _image(f),
                                       Positioned(
                                         bottom: 20,
                                         left: 50,
@@ -71,17 +153,15 @@ class _IntroPageState extends State<IntroPage> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder:
-                                                        (BuildContext context) =>
-                                                            LoginPage()));
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        LoginPage()));
                                           },
                                         ),
                                       )
                                     ],
                                   );
-                                } else {
-                                  return _image(f);
-                                }
+                                } else {}
                               }).toList(),
                             ),
                           ),

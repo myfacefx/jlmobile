@@ -269,11 +269,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _buildRuleProduct(
-                    "Jumlah Tersedia", animal.product.quantity, true),
-                SizedBox(
-                  height: 8,
-                ),
+                // _buildRuleProduct(
+                //     "Jumlah Tersedia", animal.product.quantity, true),
+                // SizedBox(
+                //   height: 8,
+                // ),
                 _buildRuleProduct(
                     "Harga Jual", animal.product.price.toDouble(), false),
               ],
