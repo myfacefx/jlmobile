@@ -55,6 +55,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _description = globals.user.description;
       _id = globals.user.id;
       _phoneNumber = globals.user.phoneNumber;
+      _regency = globals.user.regency;
+      _province = globals.user.province;
     } else {
       Navigator.of(context).pop();
     }
@@ -138,7 +140,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
           globals.user.name = _name;
           globals.user.description = _description;
           globals.user.regencyId = _regency.id;
+          globals.user.regency.id = _regency.id;
+          globals.user.regency.name = _regency.name;
+          globals.user.regency.provinceId = _province.id;
+          globals.user.province.id = _province.id;
+          globals.user.province.name = _province.name;
           globals.user.phoneNumber = _phoneNumber;
+
+          setState(() {
+            
+          });
 
           Navigator.of(context).pop();
           globals.showDialogs(result, context);
@@ -186,7 +197,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               labelText: "Nama Pengguna",
               fillColor: Colors.white,
               border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
         ));
   }
 
@@ -220,7 +231,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               labelText: "Deskripsi",
               fillColor: Colors.white,
               border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
         ));
   }
 
@@ -230,10 +241,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
         child: DropdownButtonFormField<Province>(
           decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
               border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
               contentPadding: EdgeInsets.all(13),
               hintText: "Provinsi",
               labelText: "Provinsi"),
@@ -266,10 +275,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
         child: DropdownButtonFormField<Regency>(
           decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
               border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
               contentPadding: EdgeInsets.all(13),
               hintText: "Kota/Kabupaten",
               labelText: "Kota/Kabupaten"),
@@ -317,10 +324,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               contentPadding: EdgeInsets.all(13),
               hintText: "Format 08xx",
               labelText: "Nomor Handphone (WA)",
-              filled: true,
-              fillColor: Colors.white,
               border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
         ));
   }
 
@@ -390,7 +395,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 //           labelText: "Password",
                 //           fillColor: Colors.white,
                 //           border: OutlineInputBorder(
-                //               borderRadius: BorderRadius.circular(20))),
+                //               borderRadius: BorderRadius.circular(5))),
                 //     )),
                 // Container(
                 //     width: 300,
@@ -425,7 +430,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 //           labelText: "Ulangi Password",
                 //           fillColor: Colors.white,
                 //           border: OutlineInputBorder(
-                //               borderRadius: BorderRadius.circular(20))),
+                //               borderRadius: BorderRadius.circular(5))),
                 //     )),
                 Container(
                     width: 300,
@@ -441,7 +446,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ? Colors.grey
                             : Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)))),
+                            borderRadius: BorderRadius.circular(5)))),
               ]),
             ),
           ])

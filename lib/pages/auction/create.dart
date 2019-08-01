@@ -289,7 +289,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         Product product = Product();
 
         product.price = int.parse(_price);
-        product.quantity = int.parse(_quantity);
+        // product.quantity = int.parse(_quantity);
+        product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
         product.innerIslandShipping = _innerIslandShipping;
@@ -554,7 +555,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
               },
               onFieldSubmitted: (String value) {
                 if (value.length > 0) {
-                  FocusScope.of(context).requestFocus(quantityFocusNode);
+                  // FocusScope.of(context).requestFocus(quantityFocusNode);
                 }
               },
               validator: (value) {
@@ -575,41 +576,41 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5))),
             )),
-        Container(
-            width: globals.mw(context) * 0.95,
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-              controller: quantityController,
-              focusNode: quantityFocusNode,
-              onSaved: (String value) {
-                _quantity = value;
-              },
-              onFieldSubmitted: (String value) {
-                // if (value.length > 0) {
-                //   FocusScope.of(context).requestFocus(multiplyFocusNode);
-                // }
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Harga Beli Sekarang wajib diisi';
-                }
+        // Container(
+        //     width: globals.mw(context) * 0.95,
+        //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+        //     child: TextFormField(
+        //       keyboardType: TextInputType.number,
+        //       inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+        //       controller: quantityController,
+        //       focusNode: quantityFocusNode,
+        //       onSaved: (String value) {
+        //         _quantity = value;
+        //       },
+        //       onFieldSubmitted: (String value) {
+        //         // if (value.length > 0) {
+        //         //   FocusScope.of(context).requestFocus(multiplyFocusNode);
+        //         // }
+        //       },
+        //       validator: (value) {
+        //         if (value.isEmpty) {
+        //           return 'Harga Beli Sekarang wajib diisi';
+        //         }
 
-                if (int.parse(value) < 1) {
-                  return 'Stok tidak sesuai';
-                }
-              },
-              style: TextStyle(color: Colors.black),
-              // keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(13),
-                  hintText: "Stok",
-                  labelText: "Stok",
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5))),
-            )),
+        //         if (int.parse(value) < 1) {
+        //           return 'Stok tidak sesuai';
+        //         }
+        //       },
+        //       style: TextStyle(color: Colors.black),
+        //       // keyboardType: TextInputType.number,
+        //       decoration: InputDecoration(
+        //           contentPadding: EdgeInsets.all(13),
+        //           hintText: "Stok",
+        //           labelText: "Stok",
+        //           fillColor: Colors.white,
+        //           border: OutlineInputBorder(
+        //               borderRadius: BorderRadius.circular(5))),
+        //     )),
         Container(
             width: globals.mw(context),
             child: CheckboxListTile(

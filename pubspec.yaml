@@ -87,12 +87,11 @@ flutter:
     - assets/images/image_not_found.png
     - assets/images/comment.png
     - assets/images/donation.png
-    - assets/images/intro/intro1.jpg
-    - assets/images/intro/intro2.jpg
-    - assets/images/intro/intro3.jpg
-    - assets/images/intro/intro4.jpg
-    - assets/images/intro/intro5.jpg
-    - assets/images/intro/intro6.jpg
+    - assets/images/intro/1.png
+    - assets/images/intro/2.png
+    - assets/images/intro/3.png
+    - assets/images/intro/4.png
+    - assets/images/intro/5.png
     - assets/images/larangan_binatang.png
     - assets/images/whatsapp.png
     
