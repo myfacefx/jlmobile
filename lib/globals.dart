@@ -355,6 +355,16 @@ String convertFormatDateTimeProduct(String date) {
   return newDate;
 }
 
+String convertFormatDateTime(String date) {
+  String newDate = "";
+  List<String> split = date.split(" ");
+  List<String> splitTime = split[1].split(":");
+
+  List<String> splitDate = split[0].split("-");
+  newDate = "${splitDate[2]}/${splitDate[1]}/${splitDate[0]}  ${splitTime[0]}:${splitTime[1]}";
+  return newDate;
+}
+
 String convertToAge(DateTime birthDate) {
   final date2 = DateTime.now();
   final year = date2.year - birthDate.year;
@@ -497,6 +507,9 @@ Color myColor([String color = "default"]) {
     case "dark":
       returnedColor = Colors.grey[700];
       break;
+    case "unprime2":
+      returnedColor = Color.fromRGBO(0,0,32, 1);
+      break;
     default:
       returnedColor = Colors.black;
       break;
@@ -573,4 +586,40 @@ Text myText(
       fontWeight: myFontWeight(weight),
     ),
   );
+}
+
+Future<bool> confirmDialog(String content, context,
+    [String title = "Perhatian"]) {
+  return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: myText(text: content),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Ya",
+                    style: TextStyle(color: Colors.red[300], fontSize: 18)),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              FlatButton(
+                child: Text(
+                  "Tidak",
+                  style: TextStyle(color: Colors.blue[600], fontSize: 18),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              VerticalDivider(
+                width: 10,
+                color: Colors.white,
+              ),
+            ],
+          );
+        },
+      ) ??
+      false;
 }

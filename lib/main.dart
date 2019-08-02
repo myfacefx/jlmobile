@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/about.dart';
+import 'package:jlf_mobile/pages/auction/create.dart';
+import 'package:jlf_mobile/pages/blacklist.dart';
+import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/chat_list.dart';
 import 'package:jlf_mobile/pages/faq.dart';
 import 'package:jlf_mobile/pages/home.dart';
-import 'package:jlf_mobile/pages/blacklist.dart';
 import 'package:jlf_mobile/pages/how_to.dart';
 import 'package:jlf_mobile/pages/intro.dart';
 import 'package:jlf_mobile/pages/our_bid.dart';
 import 'package:jlf_mobile/pages/our_product.dart';
-import 'package:jlf_mobile/pages/setting.dart';
-import 'package:jlf_mobile/pages/user/login.dart';
-import 'package:jlf_mobile/themes.dart';
-import 'package:jlf_mobile/pages/user/register.dart';
-import 'package:jlf_mobile/pages/user/profile.dart';
-import 'package:jlf_mobile/pages/user/edit_profile.dart';
-import 'package:jlf_mobile/pages/auction/create.dart';
-import 'package:jlf_mobile/pages/auction/activate.dart';
-import 'package:jlf_mobile/globals.dart' as globals;
-import 'package:jlf_mobile/pages/user/notification.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
-import 'package:jlf_mobile/pages/chat.dart';
-
+import 'package:jlf_mobile/pages/setting.dart';
+import 'package:jlf_mobile/pages/user/edit_profile.dart';
+import 'package:jlf_mobile/pages/user/login.dart';
+import 'package:jlf_mobile/pages/user/notification.dart';
+import 'package:jlf_mobile/pages/user/profile.dart';
+import 'package:jlf_mobile/pages/user/register.dart';
+import 'package:jlf_mobile/themes.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/observer.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  // static FirebaseAnalytics analytics = FirebaseAnalytics();
+  // static FirebaseAnalyticsObserver observer =
+  //     FirebaseAnalyticsObserver(analytics: analytics);
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setEnabledSystemUIOverlays ([]);
     return MaterialApp(
       title: 'JLF',
       debugShowCheckedModeBanner: false,
+      // navigatorObservers: <NavigatorObserver>[observer],
       theme: buildThemeData(),
       initialRoute: globals.state == "intro"
           ? "/intro"

@@ -182,9 +182,8 @@ Future<Map<String, int>> getHistoriesAndBidsCount(int userId) async {
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {
-    
-    // return json.decode(res.body).map((x) => 
-      // response.
+    // return json.decode(res.body).map((x) =>
+    // response.
     // );
     // return res.body;
     // return int.parse(res.body);
@@ -205,6 +204,24 @@ Future<int> getUsersCount() async {
 
   if (res.statusCode == 200) {
     return int.parse(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> getUsersByPhoneNumber(String phoneNumber) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/$phoneNumber/phone-number";
+
+  print(url);
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    print(res.body);
+    return res.body == "true" ? true : false;
   } else {
     throw Exception(res.body);
   }

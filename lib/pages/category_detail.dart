@@ -8,6 +8,7 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/province.dart';
+import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
@@ -282,7 +283,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           ),
           GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed("/auction/create");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => CreateAuctionPage(
+                              isAuction: widget.from == "LELANG" ? true : false,
+                              categoryId: widget.animalCategory.id,
+                              subCategoryId: currentIdSubCategory,
+                            )));
               },
               child: Row(
                 children: <Widget>[
@@ -691,8 +699,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                           )
                         : Column(
                             children: <Widget>[
-                              _buildChips("Harga Jual",
-                                  globals.convertToMoney(10000.0)),
+                              _buildChips(
+                                  "Harga Jual",
+                                  globals.convertToMoney(
+                                      animal.product.price.toDouble())),
                             ],
                           ),
                   ],

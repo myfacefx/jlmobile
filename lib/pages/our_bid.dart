@@ -139,7 +139,7 @@ class _OurBidPageState extends State<OurBidPage> {
 
   // sort and search
   Widget dropdownSortBy() {
-    List<String> item = <String>['Terbaru', 'Selesai', 'Dimenangkan', 'Gagal'];
+    List<String> item = <String>['Terbaru', 'Selesai', 'Dimenangkan', 'Kalah'];
     return DropdownButton<String>(
         value: selectedSortBy,
         items: item.map((String value) {
@@ -276,10 +276,10 @@ class _OurBidPageState extends State<OurBidPage> {
     var colorText = "light";
     String text = globals.convertTimer(expiryTime) + " left";
 
-    if (status == "Gagal") {
+    if (status == "Kalah") {
       colorBox = Colors.red;
       colorText = "light";
-      text = "Gagal";
+      text = "Kalah";
     } else if (status == "Menang" || status == "Terkonfirmasi") {
       colorBox = Colors.green;
       text = "Anda Menang";
@@ -353,7 +353,7 @@ class _OurBidPageState extends State<OurBidPage> {
         text: "Penawaran terakhir oleh ${animal.auction.lastBid}",
         color: "unprime",
         size: 10);
-    if (status == "Gagal") {
+    if (status == "Kalah") {
       widget = globals.myText(
           text: "Dimenangkan oleh ${animal.auction.lastBid}",
           color: "unprime",
@@ -404,7 +404,7 @@ class _OurBidPageState extends State<OurBidPage> {
           status = "Menang";
         }
       } else if (winnerUserId != globals.user.id) {
-        status = "Gagal";
+        status = "Kalah";
       }
     }
 
