@@ -64,12 +64,16 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10),
                 bottomRight: Radius.circular(10))),
-        onPressed: () {
+        onPressed: () async {
           if (route == "/logout") {
-            deleteLocalData("user");
-            globals.state = "login";
-            Navigator.of(context).pop();
-            Navigator.pushNamed(context, "/login");
+            final result = await globals.confirmDialog(
+                "Apakah anda yakin untuk keluar ?", context);
+            if (result) {
+              deleteLocalData("user");
+              globals.state = "login";
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, "/login");
+            }
           } else {
             Navigator.pop(context);
             Navigator.pushNamed(context, route);
@@ -120,7 +124,12 @@ Widget drawer(context) {
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 globals.spacePadding(),
-                globals.user.roleId == 1 ? _buildDrawerNavigationButtonBig("Admin", '/chat-list', null, context) : Container(),
+                globals.user != null
+                    ? globals.user.roleId == 1
+                        ? _buildDrawerNavigationButtonBig(
+                            "Admin", '/chat-list', null, context)
+                        : Container()
+                    : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Lelangku", '/profile', null, context),
@@ -138,8 +147,8 @@ Widget drawer(context) {
                     "Langkah - Langkah", "/how-to", context),
                 _buildDrawerNavigationButtonSmall(
                     "Tanya Jawab", "/faq", context),
-                _buildDrawerNavigationButtonSmall(
-                    "Pengaturan", "/setting", context),
+                // _buildDrawerNavigationButtonSmall(
+                //     "Pengaturan", "/setting", context),
                 _buildDrawerNavigationButtonSmall("Keluar", "/logout", context),
                 globals.spacePadding()
                 // Container()

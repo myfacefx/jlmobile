@@ -123,6 +123,24 @@ class _RegisterPageState extends State<RegisterPage> {
 
       _formKey.currentState.save();
 
+      //check phone number mush unique
+      try {
+        final isFound = await getUsersByPhoneNumber(_phoneNumber);
+        if (isFound) {
+          await globals.showDialogs("Nomer whatsapp sudah digunakan", context);
+          setState(() {
+            registerLoading = false;
+          });
+          return;
+        }
+      } catch (e) {
+        await globals.showDialogs("Gangguan, coba lagi!", context);
+        setState(() {
+          registerLoading = false;
+        });
+        return;
+      }
+
       User user = User();
       user.email = _email;
       user.photo = _photo;

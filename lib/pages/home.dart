@@ -70,13 +70,17 @@ class _HomePage extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _refresh();
-    _getListCategoriesAuction();
-    _loadSliders();
-    _loadPromos();
-    globals.getNotificationCount();
-    globals.generateToken();
-    globals.notificationListener(context);
+    if (globals.user != null) {
+      _refresh();
+      _getListCategoriesAuction();
+      _loadSliders();
+      _loadPromos();
+      _getAnimalCategory();
+      globals.getNotificationCount();
+      globals.generateToken();
+      globals.notificationListener(context);
+    }
+
     initUniLinks();
     initUniLinksStream();
   }
@@ -234,7 +238,7 @@ class _HomePage extends State<HomePage> {
     ];
   }
 
-  _HomePage() {
+  void _getAnimalCategory() {
     getAnimalCategory("token").then((onValue) {
       animalCategories = onValue;
       setState(() {

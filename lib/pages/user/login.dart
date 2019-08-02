@@ -9,7 +9,6 @@ import 'package:jlf_mobile/services/user_services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPage createState() {
@@ -302,6 +301,7 @@ class _LoginPage extends State<LoginPage> {
                             width: 300,
                             padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                             child: TextFormField(
+                              textInputAction: TextInputAction.next,
                               validator: (String value) {
                                 if (value.isEmpty)
                                   return 'Username masih kosong';
@@ -377,8 +377,13 @@ class _LoginPage extends State<LoginPage> {
                               child: GestureDetector(
                                   onTap: () => Navigator.of(context)
                                       .pushNamed("/register"),
-                                  child: Text("Tidak punya akun? Klik Disini",
-                                      style: TextStyle(color: Colors.grey)))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      globals.myText(text: "Tidak punya akun? Klik ", color: "dark"),
+                                      globals.myText(text: "di sini", weight: "SB", decoration: TextDecoration.underline),
+                                    ],
+                                  ))),
                         ),
                         SizedBox(
                           height: 10,

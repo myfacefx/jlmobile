@@ -63,7 +63,8 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true, showNotification: false),
+        appBar: globals.appBar(_scaffoldKey, context,
+            isSubMenu: true, showNotification: false),
         body: Scaffold(
             key: _scaffoldKey,
             drawer: drawer(context),
@@ -93,14 +94,13 @@ class _NotificationPageState extends State<NotificationPage> {
 
                                   if (informationConvert is String) {
                                     informationBuild.add(globals.myText(
-                                        text: informationConvert,
-                                        color: "dark"));
+                                      text: informationConvert,
+                                    ));
                                   } else {
                                     for (var value in informationConvert) {
                                       Widget output;
                                       if (value is String) {
-                                        output = globals.myText(
-                                            text: value, color: "dark");
+                                        output = globals.myText(text: value);
                                       } else {
                                         var valueConvert = value;
 
@@ -134,37 +134,81 @@ class _NotificationPageState extends State<NotificationPage> {
                                                     animalId: histories[i]
                                                         .auction
                                                         .animalId,
-                                                        from: "LELANG",
+                                                    from: "LELANG",
                                                   )));
                                     },
                                     child: Card(
                                         color: histories[i].read == 0
-                                            ? Colors.white
-                                            : Colors.grey,
+                                            ? Colors.grey[300]
+                                            : Colors.white,
                                         child: Column(
                                           children: <Widget>[
-                                            Container(
-                                              padding: EdgeInsets.only(
-                                                  top: 3, right: 3),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: <Widget>[
-                                                  globals.myText(
-                                                      weight: "B",
-                                                      text: globals
-                                                          .convertFormatDateTimeProduct(
-                                                              histories[i]
-                                                                  .createdAt
-                                                                  .toString())),
-                                                ],
-                                              ),
+                                            Row(
+                                              children: <Widget>[
+                                                Flexible(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Container(
+                                                          padding: EdgeInsets
+                                                              .fromLTRB(
+                                                                  8, 5, 8, 8),
+                                                          child: Wrap(
+                                                              children:
+                                                                  informationBuild)),
+                                                      Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 3,
+                                                                left: 7),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 3),
+                                                              child: globals.myText(
+                                                                  size: 10,
+                                                                  color:
+                                                                      "unprime2",
+                                                                  text: globals.convertFormatDateTime(
+                                                                      histories[
+                                                                              i]
+                                                                          .createdAt
+                                                                          .toString())),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  flex: 9,
+                                                ),
+                                                Flexible(
+                                                  child: IconButton(
+                                                    icon: Icon(Icons.delete),
+                                                    iconSize: 24,
+                                                    onPressed: () async {
+                                                      final res = await globals
+                                                          .confirmDialog(
+                                                              "Apakah anda yakin untuk menghapus?",
+                                                              context);
+                                                      if (res) {
+                                                        deleteHistory("",
+                                                            histories[i].id);
+                                                        histories.remove(
+                                                            histories[i]);
+                                                        setState(() {});
+                                                      }
+                                                    },
+                                                  ),
+                                                  flex: 1,
+                                                )
+                                              ],
                                             ),
-                                            Container(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    8, 5, 8, 8),
-                                                child: Wrap(
-                                                    children: informationBuild))
                                           ],
                                         )),
                                   );

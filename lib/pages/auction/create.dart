@@ -6,15 +6,20 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
-import 'package:jlf_mobile/models/product.dart';
-import 'package:jlf_mobile/pages/component/drawer.dart';
-import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/models/auction.dart';
+import 'package:jlf_mobile/models/product.dart';
+import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class CreateAuctionPage extends StatefulWidget {
+  final int categoryId;
+  final int subCategoryId;
+  final bool isAuction;
+  CreateAuctionPage(
+      {Key key, this.categoryId, this.subCategoryId, this.isAuction})
+      : super(key: key);
   @override
   _CreateAuctionPageState createState() => _CreateAuctionPageState();
 }
@@ -72,7 +77,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   List<Asset> images = List<Asset>();
   String _error;
 
-  int _saveAs = 1;
+  int _saveAs = 0;
 
   @override
   void initState() {
@@ -80,8 +85,22 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
     this.isLoading = true;
 
+    if (widget.isAuction != null) {
+      _saveAs = widget.isAuction ? 1 : 2;
+    }
+
     getAnimalCategory("token").then((onValue) {
       animalCategories = onValue;
+      if (widget.categoryId != null) {
+        for (var animalCategory in animalCategories) {
+          if (animalCategory.id == widget.categoryId) {
+            _animalCategory = animalCategory;
+            break;
+          }
+        }
+        _getAnimalSubCategories();
+      }
+
       setState(() {
         isLoading = false;
       });
@@ -132,6 +151,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       getAnimalSubCategoryByCategoryId("token", _animalCategory.id)
           .then((onValue) {
         animalSubCategories = onValue;
+        if (widget.subCategoryId != null) {
+          for (var animalSubCategory in animalSubCategories) {
+            if (animalSubCategory.id == widget.subCategoryId) {
+              _animalSubCategory = animalSubCategory;
+              break;
+            }
+          }
+        }
         setState(() {
           isLoading = false;
         });
@@ -263,7 +290,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       animal.description = _description;
       animal.ownerUserId = globals.user.id;
       animal.regencyId = globals.user.regencyId;
-      animal.slug = "${globals.user.id}-" + 'hewan-jlf-' + DateTime.now().toString();
+      animal.slug =
+          "${globals.user.id}-" + 'hewan-jlf-' + DateTime.now().toString();
 
       formData['animal'] = animal;
 
@@ -279,7 +307,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         auction.ownerUserId = globals.user.id;
         auction.active = 1;
         auction.innerIslandShipping = _innerIslandShipping;
-        auction.slug = 'lelang-jlf-' + DateTime.now().year.toString() + DateTime.now().month.toString() + DateTime.now().day.toString();
+        auction.slug = 'lelang-jlf-' +
+            DateTime.now().year.toString() +
+            DateTime.now().month.toString() +
+            DateTime.now().day.toString();
 
         formData['auction'] = auction;
       } else if (_saveAs == 2) {
@@ -294,7 +325,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         product.ownerUserId = globals.user.id;
         product.status = 'active';
         product.innerIslandShipping = _innerIslandShipping;
-        product.slug = 'produk-jlf-' + DateTime.now().year.toString() + DateTime.now().month.toString() + DateTime.now().day.toString();
+        product.slug = 'produk-jlf-' +
+            DateTime.now().year.toString() +
+            DateTime.now().month.toString() +
+            DateTime.now().day.toString();
 
         formData['product'] = product;
       }
@@ -884,20 +918,20 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 _saveAs == 1 ? _buildAuction() : Container(),
                 _saveAs == 2 ? _buildSellProduct() : Container(),
                 Container(
-                  width: globals.mw(context),
-                  child: CheckboxListTile(
-                      value: _agreeTerms,
-                      title: globals.myText(
-                          text:
-                              "Saya siap menerima konsekuensi apabila menjual binatang langka / tidak sesuai Undang-Undang Republik Indonesia",
-                          color: "dark",
-                          size: 13),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (bool value) {
-                        setState(() {
-                          this._agreeTerms = value;
-                        });
-                      })),
+                    width: globals.mw(context),
+                    child: CheckboxListTile(
+                        value: _agreeTerms,
+                        title: globals.myText(
+                            text:
+                                "Saya siap menerima konsekuensi apabila menjual binatang langka / tidak sesuai Undang-Undang Republik Indonesia",
+                            color: "dark",
+                            size: 13),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        onChanged: (bool value) {
+                          setState(() {
+                            this._agreeTerms = value;
+                          });
+                        })),
                 SizedBox(height: 20),
                 Container(
                     width: globals.mw(context) * 0.95,
