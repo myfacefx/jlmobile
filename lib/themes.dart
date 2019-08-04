@@ -2,6 +2,8 @@ import 'dart:ui' as prefix0;
 
 import 'package:flutter/material.dart';
 
+import 'package:jlf_mobile/globals.dart' as globals;
+
 // const kPrimaryColor = const Color.fromRGBO(255, 77, 77, 1); //red pink
 
 // Color.fromRGBO(73, 187, 255, 1) - light blue
@@ -13,7 +15,9 @@ ThemeData buildThemeData() {
   final baseTheme = ThemeData.light();
   return baseTheme.copyWith(
       appBarTheme: AppBarTheme(
-        color: kPrimaryColor,
+        color: globals.user != null
+            ? globals.user.roleId == 1 ? kPrimaryLight : kPrimaryColor
+            : kPrimaryColor,
       ),
       accentColor: kPrimaryColor,
       primaryColor: kPrimaryColor,
@@ -36,7 +40,7 @@ ThemeData buildThemeData() {
             TextStyle(color: Color.fromRGBO(136, 136, 136, 1), fontSize: 10),
         display3:
             TextStyle(color: Color.fromRGBO(178, 178, 178, 1), fontSize: 12),
-        display4:
-            TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+        display4: TextStyle(
+            color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
       ));
 }

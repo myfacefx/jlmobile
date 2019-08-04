@@ -186,6 +186,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
             child: GridView.count(
               shrinkWrap: true,
               crossAxisCount: 3,
+              physics: ScrollPhysics(),
               children: List.generate(images.length, (index) {
                 Asset asset = images[index];
                 return Container(
@@ -215,7 +216,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 2,
+        maxImages: 5,
       );
     } on PlatformException catch (e) {
       error = e.message;
@@ -268,11 +269,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     }
 
     if (_formKey.currentState.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-
       _formKey.currentState.save();
+      globals.loadingModel(context);
 
       Map<String, dynamic> formData = Map<String, dynamic>();
 
@@ -339,21 +337,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         bool response = await create(formData);
         print(response);
 
-        // Map<String, dynamic> finalResponse = jsonDecode(response);
-
-        setState(() {
-          isLoading = false;
-        });
-
+        Navigator.pop(context);
         await globals.showDialogs(message, context);
         Navigator.pop(context);
         Navigator.pushNamed(context, "/profile");
       } catch (e) {
+        Navigator.pop(context);
         globals.showDialogs(e.toString(), context);
         print(e);
-        setState(() {
-          isLoading = false;
-        });
       }
     } else {
       setState(() {
@@ -678,7 +669,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
         body: Scaffold(
             body: Stack(children: <Widget>[
-          ListView(children: <Widget>[
+          ListView(
+            physics: ScrollPhysics(),
+            children: <Widget>[
             Form(
               autovalidate: autoValidate,
               key: _formKey,
@@ -879,7 +872,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("Foto (Max 2)",
+                        Text("Foto (Max 5)",
                             style: TextStyle(color: Colors.white)),
                         Icon(Icons.add_photo_alternate, color: Colors.white),
                       ],

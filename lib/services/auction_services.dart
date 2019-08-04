@@ -121,7 +121,7 @@ Future<String> checkFirebaseChatId(String token) async {
 
 Future<bool> updateFirebaseChatId(String token, Map<String, dynamic> _data, int id) async {
   final header = {"Content-Type": "application/json"};
-  final url = getBaseUrl() + "/auctions/$id/update";
+  final url = getBaseUrl() + "/auctions/$id/set-chat-room";
 
   print(url);
   print(_data);

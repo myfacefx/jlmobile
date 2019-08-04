@@ -5,6 +5,7 @@ import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/blacklist.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/chat_list.dart';
+import 'package:jlf_mobile/pages/donasi.dart';
 import 'package:jlf_mobile/pages/faq.dart';
 import 'package:jlf_mobile/pages/home.dart';
 import 'package:jlf_mobile/pages/how_to.dart';
@@ -58,8 +59,9 @@ class MyApp extends StatelessWidget {
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
         '/notification': (BuildContext context) => NotificationPage(),
         '/intro': (BuildContext context) => IntroPage(),
-        '/chat': (BuildContext context) => ChatPage(),
-        '/chat-list': (BuildContext context) => ChatListPage()
+        '/chat-list': (BuildContext context) => ChatListPage(),
+        '/donasi': (BuildContext context) => DonasiPage(),
+        
       },
     );
   }
