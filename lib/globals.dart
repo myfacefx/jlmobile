@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/user_services.dart';
@@ -48,6 +49,31 @@ int getTimeOut() {
 
 String getBaseUrl() {
   return baseUrl;
+}
+
+String generateInvoice(Auction auction) {
+  if (auction == null || auction.winnerAcceptedDate == null || auction.verificationCode == null) return '-';
+
+  String invoice = "JLF/";
+  var acceptedDate = DateTime.parse(auction.winnerAcceptedDate);
+  invoice += acceptedDate.year.toString().substring(2);
+  // invoice += acceptedDate.month.toString().substring(2);
+  if (acceptedDate.month < 10) {
+    invoice += "0${acceptedDate.month}";
+  } else {
+    invoice += "${acceptedDate.month}";
+  }
+
+  if (acceptedDate.day < 10) {
+    invoice += "0${acceptedDate.day}";
+  } else {
+    invoice += "${acceptedDate.day}";
+  }
+
+  invoice +=
+      "/AUC/${auction.id}/${auction.verificationCode}";
+
+  return invoice;
 }
 
 FirebaseMessaging _fcm = FirebaseMessaging();

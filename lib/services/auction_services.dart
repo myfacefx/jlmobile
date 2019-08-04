@@ -137,9 +137,12 @@ Future<bool> updateFirebaseChatId(String token, Map<String, dynamic> _data, int 
   }
 }
 
-Future<List<Auction>> getAuctionsWithActiveChat(String token) async {
+Future<List<Auction>> getAuctionsWithActiveChat(String token, int userId, bool isAdmin) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  String url = getBaseUrl() + "/auctions/active-chats";
+  String url = getBaseUrl();
+  
+  if (isAdmin) url += "/auctions/active-chats-admin";
+  else url += "/users/" + userId.toString() + "/auctions/chats";
 
   print(url);
 

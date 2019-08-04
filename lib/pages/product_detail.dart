@@ -723,24 +723,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           winnerFound = true;
           if (winner.id == globals.user.id) isWinner = true;
 
-          invoice = "JLF/";
-          var acceptedDate = DateTime.parse(animal.auction.winnerAcceptedDate);
-          invoice += acceptedDate.year.toString().substring(2);
-          // invoice += acceptedDate.month.toString().substring(2);
-          if (acceptedDate.month < 10) {
-            invoice += "0${acceptedDate.month}";
-          } else {
-            invoice += "${acceptedDate.month}";
-          }
-
-          if (acceptedDate.day < 10) {
-            invoice += "0${acceptedDate.day}";
-          } else {
-            invoice += "${acceptedDate.day}";
-          }
-
-          invoice +=
-              "/AUC/${animal.auction.id}/${animal.auction.verificationCode}";
+          invoice = globals.generateInvoice(animal.auction); 
 
           break;
         }

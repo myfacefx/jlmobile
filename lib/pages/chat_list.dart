@@ -23,12 +23,12 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   void refreshChats() {
-    getAuctionsWithActiveChat("Token").then((onValue) {
+    getAuctionsWithActiveChat(
+            "Token", globals.user.id, globals.user.roleId == 1 ? true : false)
+        .then((onValue) {
       auctions = onValue;
       print(auctions.toString());
-      setState(() {
-        
-      });
+      setState(() {});
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
     });
@@ -38,55 +38,110 @@ class _ChatListPageState extends State<ChatListPage> {
     // DateTime unformattedDate = DateTime(int.parse(document['timestamp'].toString()));
     DateTime unformattedDate = DateTime.parse(auction.winnerAcceptedDate);
 
-    String timestamp = "${unformattedDate.month.toString()}/${unformattedDate.day.toString()} ${unformattedDate.hour.toString()}:${unformattedDate.minute.toString()}";
+    String timestamp =
+        "${unformattedDate.month.toString()}/${unformattedDate.day.toString()} ${unformattedDate.hour.toString()}:${unformattedDate.minute.toString()}";
 
-    return ListTile(
-      title: globals.myText(text: "ID #${auction.id} - PIC #Admin"),
-      subtitle: globals.myText(text: "Tanggal Menang Lelang: $timestamp"),
+    int bidCount = 1;
+
+    return GestureDetector(
       onTap: () {
-         Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  ChatPage(
-                      chatId: auction
-                          .firebaseChatId)));
-      }
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    ChatPage(chatId: auction.firebaseChatId)));
+      },
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.all(2),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: globals.mw(context) * 0.7,
+                child: Column(
+                  children: <Widget>[
+                    globals.myText(
+                        text: "ID Lelang #${auction.id} - PIC #Admin",
+                        weight: "B"),
+                    globals.myText(text: "Tanggal Menang Lelang: $timestamp"),
+                    globals.myText(
+                        text: "Invoice: " + globals.generateInvoice(auction))
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(3),
+                width: globals.mw(context) * 0.2,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                        child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  bidCount != null && bidCount > 0
+                                      ? Container(
+                                          constraints: BoxConstraints(
+                                              minWidth: 20, minHeight: 20),
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(100)),
+                                          child: Text("$bidCount",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20)))
+                                      : Container()
+                                ]))),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   Widget _buildListOfChats() {
-    return auctions.length > 0 ? Flexible(child: ListView.builder(
-      itemCount: auctions.length,
-      padding: EdgeInsets.all(5),
-      itemBuilder: (BuildContext context, int i) {
-        return _buildChat(auctions[i]);
-      },
-    )) : Container(child: globals.myText(text: "Tidak ada chat aktif saat ini"));
+    return auctions.length > 0
+        ? Flexible(
+            child: ListView.builder(
+            itemCount: auctions.length,
+            padding: EdgeInsets.all(5),
+            itemBuilder: (BuildContext context, int i) {
+              return _buildChat(auctions[i]);
+            },
+          ))
+        : Container(
+            margin: EdgeInsets.only(top: globals.mh(context) * 0.05),
+            child: globals.myText(text: "Tidak ada obrolan aktif saat ini"));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: globals.appBar(_scaffoldKey, context),
-      body: Scaffold(
-        key: _scaffoldKey,
-        drawer: drawer(context),
-        body: SafeArea(
-          child: Container(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-            child: Column(
-              children: <Widget>[
-                Center(
-                  child: Column(children: <Widget>[
-                    globals.myText(text: "DAFTAR CHAT LELANG", weight: "B", size: 24),
-                    // globals.spacePadding(),
-                  ]),
-                ),
-                _buildListOfChats()
-              ] 
-            ),
-          ),
-        )));
+        appBar: globals.appBar(_scaffoldKey, context),
+        body: Scaffold(
+            key: _scaffoldKey,
+            drawer: drawer(context),
+            body: SafeArea(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                child: Column(children: <Widget>[
+                  Center(
+                    child: Column(children: <Widget>[
+                      globals.myText(
+                          text: "Obrolan Aktif", weight: "B", size: 24),
+                      // globals.spacePadding(),
+                    ]),
+                  ),
+                  _buildListOfChats()
+                ]),
+              ),
+            )));
   }
 }
