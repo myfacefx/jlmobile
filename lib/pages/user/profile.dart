@@ -352,7 +352,9 @@ class _ProfilePageState extends State<ProfilePage>
                     SizedBox(
                       height: 5,
                     ),
-                    _buildTime(animal.auction.expiryDate),
+                    animal.auction.active == 1
+                        ? _buildTime(animal.auction.expiryDate)
+                        : Container(),
                     isNotError
                         ? _buildImage(animal.animalImages[0].image)
                         : globals.failLoadImage(),
@@ -377,7 +379,7 @@ class _ProfilePageState extends State<ProfilePage>
             ),
           ),
         ),
-        _buildEditAuction(animal.id),
+        // _buildEditAuction(animal.id),
         animal.auction.active == 0
             ? Positioned(
                 bottom: 20,
@@ -437,14 +439,16 @@ class _ProfilePageState extends State<ProfilePage>
                           : globals.failLoadImage(),
                       _buildDetail(animal.name, animal.owner.username,
                           animal.gender, animal.dateOfBirth),
-                          SizedBox(
+                      SizedBox(
                         height: 5,
                       ),
                       Row(
                         children: <Widget>[
                           globals.myText(
                               text:
-                                  "Jumlah Tersedia  : ${animal.product.quantity}", size: 10, color: "unprime"),
+                                  "Jumlah Tersedia  : ${animal.product.quantity}",
+                              size: 10,
+                              color: "unprime"),
                         ],
                       ),
                       _buildChips(
@@ -560,18 +564,18 @@ class _ProfilePageState extends State<ProfilePage>
                       Wrap(
                         children: <Widget>[
                           globals.myText(
-                              text: user.name != null ? user.name + ' - ' : '',
+                              text: user.name != null ? user.name : '',
                               textOverflow: TextOverflow.ellipsis,
                               color: "dark",
                               weight: "B",
                               size: 18),
-                          Icon(Icons.star, size: 18),
-                          globals.myText(
-                              text: '4.5',
-                              textOverflow: TextOverflow.ellipsis,
-                              color: "dark",
-                              weight: "B",
-                              size: 18),
+                          // Icon(Icons.star, size: 18),
+                          // globals.myText(
+                          //     text: '4.5',
+                          //     textOverflow: TextOverflow.ellipsis,
+                          //     color: "dark",
+                          //     weight: "B",
+                          //     size: 18),
                         ],
                       ),
                       SizedBox(height: 3),

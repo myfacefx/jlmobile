@@ -204,6 +204,24 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     }
   }
 
+  _deleteAnimal() async {
+    globals.loadingModel(context);
+    try {
+      final result = await deleteAnimalById("", animalId);
+      Navigator.pop(context);
+      if (result) {
+        await globals.showDialogs("Berhasil menghapus data", context,
+            route: "/profile");
+      } else {
+        globals.showDialogs("Gagal menghapus data", context);
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      print(e.toString());
+      globals.showDialogs("Gagal menghapus data", context);
+    }
+  }
+
   _save() async {
     if (isLoading) return;
 
@@ -246,7 +264,8 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         auction.ownerUserId = globals.user.id;
         auction.active = 1;
         auction.innerIslandShipping = _innerIslandShipping;
-        auction.slug = "${globals.user.id}-" + 'hewan-jlf-' + DateTime.now().toString();
+        auction.slug =
+            "${globals.user.id}-" + 'hewan-jlf-' + DateTime.now().toString();
 
         formData['auction'] = auction;
 
@@ -280,7 +299,10 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         product.ownerUserId = globals.user.id;
         product.status = 'active';
         product.innerIslandShipping = _innerIslandShipping;
-        product.slug = 'produk-jlf-' + DateTime.now().year.toString() + DateTime.now().month.toString() + DateTime.now().day.toString();
+        product.slug = 'produk-jlf-' +
+            DateTime.now().year.toString() +
+            DateTime.now().month.toString() +
+            DateTime.now().day.toString();
 
         formData['product'] = product;
 
@@ -341,7 +363,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       padding: EdgeInsets.all(5),
       child: GridView.count(
         shrinkWrap: true,
-        // mainAxisSpacing: ,
+        physics: ScrollPhysics(),
         crossAxisCount: 3,
         children: List.generate(animalImages.length, (index) {
           // Asset asset = images[index];
@@ -666,7 +688,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
             drawer: drawer(context),
             key: _scaffoldKey,
             body: Stack(children: <Widget>[
-              ListView(children: <Widget>[
+              ListView(physics: ScrollPhysics(), children: <Widget>[
                 Form(
                   autovalidate: autoValidate,
                   key: _formKey,
@@ -940,11 +962,25 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                         child: FlatButton(
                             onPressed: () => isLoading ? null : _save(),
                             child: Text(
-                                !isLoading ? _saveAs == 1 ? "Mulai Lelang" : "Mulai Jual" : "Mohon Tunggu",
+                                !isLoading
+                                    ? _saveAs == 1
+                                        ? "Mulai Lelang"
+                                        : "Mulai Jual"
+                                    : "Mohon Tunggu",
                                 style: Theme.of(context).textTheme.display4),
                             color: isLoading
                                 ? Colors.grey
                                 : Theme.of(context).primaryColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)))),
+                    Container(
+                        width: globals.mw(context) * 0.95,
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: FlatButton(
+                            onPressed: () => isLoading ? null :  _deleteAnimal(),
+                            child: Text("Hapus Hewan",
+                                style: Theme.of(context).textTheme.display4),
+                            color: globals.myColor("danger"),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5)))),
                     SizedBox(height: 20)

@@ -117,6 +117,21 @@ Future<Animal> getAnimalById(String token, int animalId) async {
   }
 }
 
+Future<bool> deleteAnimalById(String token, int animalId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  print(getBaseUrl() + "/animals/$animalId");
+  http.Response res =
+      await http.delete(getBaseUrl() + "/animals/$animalId", headers: header);
+  if (res.statusCode == 204) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 Future<List<Animal>> getUserAnimals(String token, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 

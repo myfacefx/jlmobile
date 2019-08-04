@@ -381,7 +381,7 @@ class _LoginPage extends State<LoginPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       globals.myText(text: "Tidak punya akun? Klik ", color: "dark"),
-                                      globals.myText(text: "di sini", weight: "SB", decoration: TextDecoration.underline),
+                                      globals.myText(text: "di sini", weight: "SB", decoration: TextDecoration.underline, color: "primary"),
                                     ],
                                   ))),
                         ),

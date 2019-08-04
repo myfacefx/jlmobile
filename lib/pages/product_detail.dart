@@ -345,12 +345,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     text: animal.owner.regency.name, color: "light", size: 10),
                 globals.myText(
                     text: animal.owner.province.name, color: "light", size: 10),
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.star, size: 10, color: Colors.yellow),
-                    globals.myText(text: "4.5", color: "light", size: 10)
-                  ],
-                ),
+                // Row(
+                //   children: <Widget>[
+                //     Icon(Icons.star, size: 10, color: Colors.yellow),
+                //     globals.myText(text: "4.5", color: "light", size: 10)
+                //   ],
+                // ),
                 // Row(
                 //   children: <Widget>[
                 //     globals.myText(text: "1000", color: "light", size: 10),

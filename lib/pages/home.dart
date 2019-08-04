@@ -631,7 +631,10 @@ class _HomePage extends State<HomePage> {
                             SizedBox(height: 5),
                             OutlineButton(
                               padding: EdgeInsets.all(0),
-                              onPressed: () => null,
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pushNamed(context, "/donasi");
+                              },
                               color: Colors.transparent,
                               highlightColor: Colors.white10,
                               highlightedBorderColor: Colors.white,
