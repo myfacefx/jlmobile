@@ -201,6 +201,7 @@ class _ChatPageState extends State<ChatPage> {
       Firestore.instance.runTransaction((transaction) async {
         await transaction.set(documentReference, {
           'sender': globals.user.id,
+          'sender_token' : globals.user.firebaseToken,
           'username': globals.user.username,
           'photo': globals.user.photo,
           'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),

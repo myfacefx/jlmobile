@@ -27,7 +27,7 @@ class _ChatListPageState extends State<ChatListPage> {
             "Token", globals.user.id, globals.user.roleId == 1 ? true : false)
         .then((onValue) {
       auctions = onValue;
-      print(auctions.toString());
+      
       setState(() {});
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
@@ -116,9 +116,7 @@ class _ChatListPageState extends State<ChatListPage> {
               return _buildChat(auctions[i]);
             },
           ))
-        : Container(
-            margin: EdgeInsets.only(top: globals.mh(context) * 0.05),
-            child: globals.myText(text: "Tidak ada obrolan aktif saat ini"));
+        : globals.isLoading();
   }
 
   @override
