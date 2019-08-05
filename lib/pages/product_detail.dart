@@ -890,17 +890,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                       chatId: animal.auction
                                                           .firebaseChatId)));
                                     } else {
-                                      // return null;
                                       var documentReference = Firestore.instance
                                           .collection('chat_rooms');
 
                                       String id;
 
                                       DocumentReference temp =
-                                          await documentReference.add({});
+                                        await documentReference.add({
+                                          'admin_token': null,
+                                          'winner_token': winner != null ? winner.firebaseToken : null,
+                                          'owner_token': animal.owner != null ? animal.owner.firebaseToken : null
+                                        });
                                       id = temp.documentID;
-
-                                      print(id);
 
                                       Auction update = Auction();
                                       update.firebaseChatId = id;

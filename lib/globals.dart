@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/user.dart';
@@ -111,8 +112,13 @@ generateToken() async {
 notificationListener(context) {
   _fcm.configure(onMessage: (Map<String, dynamic> message) async {
     print("onMessage: $message");
+    // var android = AndroidNotificationDetails(
+    //   // 'com.jlf.mobile',
+    // );
 
-    showDialogs(message['notification']['body'], context);
+
+
+    // showDialogs(message['notification']['body'], context);
 
     // final snackbar = SnackBar(
     //   content: Text(message['notification']['title']),
