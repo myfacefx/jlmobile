@@ -166,10 +166,12 @@ class _ChatPageState extends State<ChatPage> {
                             weight: "B",
                             decoration: TextDecoration.underline,
                             size: 11),
-                        document['type'] == 1 ? FadeInImage.assetNetwork(
-                                      image: document['content'],
-                                      placeholder: 'assets/images/loading.gif',
-                                      fit: BoxFit.cover) : globals.myText(text: document['content']),                        
+                        document['type'] == 1
+                            ? FadeInImage.assetNetwork(
+                                image: document['content'],
+                                placeholder: 'assets/images/loading.gif',
+                                fit: BoxFit.cover)
+                            : globals.myText(text: document['content']),
                         Container(
                             alignment: Alignment.centerRight,
                             child: globals.myText(
@@ -201,7 +203,7 @@ class _ChatPageState extends State<ChatPage> {
       Firestore.instance.runTransaction((transaction) async {
         await transaction.set(documentReference, {
           'sender': globals.user.id,
-          'sender_token' : globals.user.firebaseToken,
+          'sender_token': globals.user.firebaseToken,
           'username': globals.user.username,
           'photo': globals.user.photo,
           'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
@@ -219,17 +221,10 @@ class _ChatPageState extends State<ChatPage> {
     return Container(
         child: Row(
       children: <Widget>[
-        Material(
-          child: Container(
-            color: Colors.transparent,
-            margin: EdgeInsets.symmetric(horizontal: 1.0),
-            child: IconButton(
-              icon: Icon(Icons.image),
-              onPressed: getImage,
-              color: Colors.black,
-            ),
-          ),
-          color: Colors.white,
+        IconButton(
+          icon: Icon(Icons.image),
+          onPressed: getImage,
+          color: Colors.black,
         ),
         Flexible(
           child: Container(
