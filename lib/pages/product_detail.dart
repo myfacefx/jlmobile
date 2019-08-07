@@ -36,6 +36,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   final _formKeyComment = GlobalKey<FormState>();
   final _formKeyBid = GlobalKey<FormState>();
 
+  bool chatLoading = false;
+
   var auctionHasExpired = false;
 
   // final bidController = MoneyMaskedTextController(leftSymbol: "Rp. ", precision: 0);
@@ -874,14 +876,26 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(20)))),
-                          Container(
+                          chatLoading ? globals.isLoading() :  Container(
                               width: 300,
                               padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
                               child: FlatButton(
                                   onPressed: () async {
+                                    if (chatLoading) return null;
+
+                                    setState(() {
+                                      chatLoading = true;
+                                    });
+
                                     if (animal.auction.firebaseChatId != null &&
                                         animal.auction.firebaseChatId.length >
                                             0) {
+                                      
+                                      setState(() {
+                                        chatLoading = false;
+                                      });
+
+                                      print(animal.auction.firebaseChatId);
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -889,58 +903,71 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                   ChatPage(
                                                       chatId: animal.auction
                                                           .firebaseChatId)));
+
                                     } else {
-                                      var documentReference = Firestore.instance
+                                      // Check first from server whether firebase chat id just set
+
+                                      String firebaseChatId = await AuctionServices.getFirebaseChatId('asd', animal.auction.id);
+                                      
+                                      print("FirebaseChatId = $firebaseChatId");
+
+                                      if (firebaseChatId == null || firebaseChatId.length < 1) {
+                                        var documentReference = Firestore.instance
                                           .collection('chat_rooms');
 
-                                      String id;
+                                        String id;
 
-                                      DocumentReference temp =
-                                        await documentReference.add({
-                                          'admin_token': null,
-                                          'winner_token': winner != null ? winner.firebaseToken : null,
-                                          'owner_token': animal.owner != null ? animal.owner.firebaseToken : null
-                                        });
-                                      id = temp.documentID;
+                                        DocumentReference temp =
+                                          await documentReference.add({
+                                            'admin_token': null,
+                                            'winner_token': winner != null ? winner.firebaseToken : null,
+                                            'owner_token': animal.owner != null ? animal.owner.firebaseToken : null
+                                          });
+                                        id = temp.documentID;
 
-                                      Auction update = Auction();
-                                      update.firebaseChatId = id;
+                                        Auction update = Auction();
+                                        update.firebaseChatId = id;
 
-                                      bool response = await AuctionServices
-                                          .updateFirebaseChatId(
-                                              "token",
-                                              update.toJson(),
-                                              animal.auction.id);
+                                        bool response = await AuctionServices
+                                            .updateFirebaseChatId(
+                                                "token",
+                                                update.toJson(),
+                                                animal.auction.id);
 
-                                      if (response) {
-                                        animal.auction.firebaseChatId = id;
+                                        if (response) {
+                                          animal.auction.firebaseChatId = id;
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          ChatPage(chatId: id)));
+                                          setState(() {
+                                            chatLoading = false;
+                                          });
+                                        } else {
+                                          await globals.showDialogs("Gagal membuka chat, silahkan ulangi", context);
+
+                                          setState(() {
+                                            chatLoading = false;
+                                          });
+                                        }
+                                      } else {
+                                        animal.auction.firebaseChatId = firebaseChatId;
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        ChatPage(chatId: id)));
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  ChatPage(
+                                                      chatId: animal.auction
+                                                          .firebaseChatId)));
+                                        setState(() {
+                                          chatLoading = false;
+                                        });
                                       }
-
-                                      // Firestore.instance.runTransaction((transaction) async {
-                                      //   temp = await documentReference.add();
-
-                                      //   id = temp.documentID;
-
-                                      //   // setState(() {
-                                      //     // state = "Match not found, room created.\nID: ${temp.documentID}";
-                                      //     // matchId = temp.documentID;
-                                      //     // role = ROLE.HOST.index;
-                                      //   });
-
-                                      //   // await prefs.setString('matchId', );
-                                      //   // await prefs.setInt('role', ROLE.HOST.index);
-
-                                      //   // _startTimer();
-                                      // });
                                     }
                                   },
-                                  color: globals.myColor('primary'),
+                                  color: chatLoading ? globals.myColor('dark') : globals.myColor('primary'),
                                   child: globals.myText(
                                       text: "CHAT",
                                       color: 'light',
