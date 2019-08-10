@@ -27,6 +27,7 @@ dependencies:
   flutter_masked_text: ^0.8.0
   multi_image_picker: ^4.3.4
   image_picker: ^0.6.1
+  image_cropper: ^1.0.2
 
   flutter_facebook_login:
     git: 

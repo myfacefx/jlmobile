@@ -410,7 +410,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
               items: durations.map((int type) {
                 return DropdownMenuItem<int>(
                     value: type,
-                    child: Text("$type Jam",
+                    child: Text("1x$type Jam Last Bidder",
                         style: TextStyle(color: Colors.black)));
               }).toList(),
             )),

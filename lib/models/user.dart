@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:jlf_mobile/models/province.dart';
+import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/regency.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
@@ -74,7 +75,7 @@ class User {
         password: json["password"] == null ? null : json["password"],
         phoneNumber: json["phone_number"],
         address: json["address"],
-        photo: json["photo"] == null ? null : json["photo"],
+        photo: json["photo"] == null ? null : json['photo'].length < 12 ? globals.getBaseUrl() + "/images/profile_pictures/" + json["photo"] : json["photo"],
         roleId: json["role_id"] == null ? null : json["role_id"],
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
         blacklisted: json["blacklisted"] == null ? null : json["blacklisted"],

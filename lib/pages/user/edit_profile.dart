@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/models/regency.dart';
@@ -9,6 +14,7 @@ import 'package:jlf_mobile/services/province_services.dart';
 import 'package:jlf_mobile/services/regency_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -45,6 +51,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   List<Province> provinces = List<Province>();
   List<Regency> regencies = List<Regency>();
+
+  File image;
 
   @override
   void initState() {
@@ -147,9 +155,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           globals.user.province.name = _province.name;
           globals.user.phoneNumber = _phoneNumber;
 
-          setState(() {
-            
-          });
+          setState(() {});
 
           Navigator.of(context).pop();
           globals.showDialogs(result, context);
@@ -303,6 +309,88 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ));
   }
 
+  Future _chooseProfilePicture() async {
+    var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (imageFile != null) {
+      // print(imageFile);
+      _cropImage(imageFile);
+      // uploadFile();
+    }
+  }
+
+  Future<Null> _cropImage(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: imageFile.path,
+      ratioX: 1.0,
+      ratioY: 1.0,
+      maxWidth: 150,
+      maxHeight: 150,
+    );
+
+    if (croppedFile != null) _uploadPhoto(croppedFile);
+  }
+
+  String _randomDigits(int count) {
+    var rndnumber = '';
+    var rnd= new math.Random();
+    for (var i = 0; i < count; i++) {
+     rndnumber = rndnumber + rnd.nextInt(9).toString();
+    }
+    return rndnumber;
+  }
+  
+  Future<Null> _uploadPhoto(File imageFile) async {
+    List<int> imageBytes = imageFile.readAsBytesSync();
+
+    String base64Image = base64Encode(imageBytes);
+
+    Map<String, dynamic> formData = Map<String, dynamic>();
+    formData['image_base64'] = base64Image;
+
+    String newFileName = globals.user.id.toString() + "-" + _randomDigits(3);
+    formData['file_name'] = newFileName;
+    
+    await updateProfilePicture(formData, globals.user.id);
+
+    setState(() {
+      globals.user.photo = globals.getBaseUrl() + "/images/profile_pictures/$newFileName.jpg";
+    });
+
+    globals.showDialogs("Foto berhasil diubah", context);
+  }
+
+  Widget _profilePictureInput() {
+    return Column(
+      children: <Widget>[
+        Container(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+            height: 150,
+            child: CircleAvatar(
+                radius: 100,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: globals.user != null && globals.user.photo != null
+                        ? FadeInImage.assetNetwork(
+                            image: image != null ? image : globals.user.photo,
+                            placeholder: 'assets/images/loading.gif',
+                            fit: BoxFit.cover)
+                        : Image.asset('assets/images/account.png')))),
+        Container(
+            width: 300,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: FlatButton(
+                onPressed: () => _chooseProfilePicture(),
+                child: globals.myText(text: "Ganti Foto Profil", color: "light"),
+                color: registerLoading
+                    ? Colors.grey
+                    : Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)))),
+      ],
+    );
+  }
+
   Widget _phoneNumberInput() {
     return Container(
         width: 300,
@@ -349,6 +437,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               autovalidate: autoValidate,
               key: _formKey,
               child: Column(children: <Widget>[
+                _profilePictureInput(),
                 _fullname(),
                 _descriptionInput(),
                 _provinceInput(),
