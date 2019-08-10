@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jlf_mobile/globals.dart' as globals;
@@ -20,11 +21,17 @@ class _NotificationPageState extends State<NotificationPage> {
 
   bool isLoading = true;
 
+  TapGestureRecognizer _recognizerTap;
+
   @override
   void initState() {
     super.initState();
     _getHistories();
     globals.getNotificationCount();
+    _recognizerTap = TapGestureRecognizer()
+     ..onTap = () {
+      //  print();
+     };
   }
 
   _getHistories() {
@@ -92,7 +99,11 @@ class _NotificationPageState extends State<NotificationPage> {
                                   var informationConvert =
                                       json.decode(histories[i].information);
 
+                                  List<TextSpan> textSpans = List<TextSpan>();
+
                                   if (informationConvert is String) {
+                                    textSpans.add(TextSpan(text: informationConvert));
+
                                     informationBuild.add(globals.myText(
                                       text: informationConvert,
                                     ));
@@ -100,8 +111,12 @@ class _NotificationPageState extends State<NotificationPage> {
                                     for (var value in informationConvert) {
                                       Widget output;
                                       if (value is String) {
+                                        textSpans.add(TextSpan(text: value, style: TextStyle(color: Colors.black)));
                                         output = globals.myText(text: value);
                                       } else {
+
+                                        textSpans.add(TextSpan(text: value['username'], style: TextStyle(color: globals.myColor("primary"), fontWeight: FontWeight.bold), recognizer: _recognizerTap));
+
                                         var valueConvert = value;
 
                                         int userId = valueConvert['id'];
@@ -124,6 +139,9 @@ class _NotificationPageState extends State<NotificationPage> {
                                       informationBuild.add(output);
                                     }
                                   }
+                                  
+                                  print(informationBuild);
+
                                   return InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -152,9 +170,15 @@ class _NotificationPageState extends State<NotificationPage> {
                                                           padding: EdgeInsets
                                                               .fromLTRB(
                                                                   8, 5, 8, 8),
-                                                          child: Wrap(
-                                                              children:
-                                                                  informationBuild)),
+                                                          child: RichText(
+                                                            text: TextSpan(
+                                                              children: textSpans
+                                                            )
+                                                          )
+                                                          // child: Wrap(
+                                                          //     children:
+                                                          //         informationBuild)
+                                                                  ),
                                                       Container(
                                                         padding:
                                                             EdgeInsets.only(

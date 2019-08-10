@@ -8,8 +8,10 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/province.dart';
+import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
 
@@ -313,6 +315,89 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                       weight: "XB"),
                 ],
               ))
+        ],
+      ),
+    );
+  }
+
+  Widget _templateTopSellerProfile() {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            ProfilePage(userId: 2))),
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: globals.mw(context) * 0.30,
+            child: Container(
+                width: 150,
+                child: Container(
+                    height: 75,
+                    child: CircleAvatar(
+                        radius: 75,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: FadeInImage.assetNetwork(
+                              fit: BoxFit.cover,
+                              placeholder: 'assets/images/loading.gif',
+                              image:
+                                  'https://placeimg.com/500/500/people?49',
+                            )))))),
+          globals.myText(text: "FRAMADAN", weight: "B")
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopSeller() {
+    // List<User> topSellers = List<User>[];r
+
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(20, 16, 20, 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          globals.myText(text: "TOP SELLER", weight: "B"),
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: Row(
+              children: <Widget>[
+                _templateTopSellerProfile(),
+                _templateTopSellerProfile(),
+                _templateTopSellerProfile()
+              ],
+            ),
+          ),
+          // ListView(
+          //   scrollDirection: Axis.horizontal,
+          //   children: <Widget>[
+          //     Container(
+          //       width: 150,
+          //       child: Container(r
+          //         height: 15,
+          //         child: CircleAvatar(
+          //             radius: 10,
+          //             child: ClipRRect(
+          //                 borderRadius: BorderRadius.circular(100),
+          //                 child: Image.asset('assets/images/account.png'))))
+          //     )
+          //   ],
+          // ),
+          // Container(
+          //   width: globals.mw(context) * 0.5,
+          //   child: Text(
+          //     "${widget.animalCategory.name} - $currentSubCategory",
+          //     overflow: TextOverflow.ellipsis,
+          //     style: Theme.of(context)
+          //         .textTheme
+          //         .title
+          //         .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -772,6 +857,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 height: 8,
               ),
               _buildTitle(),
+              SizedBox(
+                height: 16,
+              ),
+              _buildTopSeller(),
               SizedBox(
                 height: 16,
               ),

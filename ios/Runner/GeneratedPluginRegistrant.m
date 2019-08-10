@@ -11,6 +11,7 @@
 #import <flutter_facebook_login/FacebookLoginPlugin.h>
 #import <flutter_local_notifications/FlutterLocalNotificationsPlugin.h>
 #import <flutter_webview_plugin/FlutterWebviewPlugin.h>
+#import <image_cropper/ImageCropperPlugin.h>
 #import <image_picker/ImagePickerPlugin.h>
 #import <multi_image_picker/MultiImagePickerPlugin.h>
 #import <share/SharePlugin.h>
@@ -29,6 +30,7 @@
   [FacebookLoginPlugin registerWithRegistrar:[registry registrarForPlugin:@"FacebookLoginPlugin"]];
   [FlutterLocalNotificationsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterLocalNotificationsPlugin"]];
   [FlutterWebviewPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterWebviewPlugin"]];
+  [FLTImageCropperPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImageCropperPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [MultiImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"MultiImagePickerPlugin"]];
   [FLTSharePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharePlugin"]];

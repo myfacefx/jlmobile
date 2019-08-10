@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/models/regency.dart';
@@ -46,6 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _username;
   String _password;
   String _photo;
+  String _photoBase64;
   String _gender = "M";
   String _phoneNumber;
   Province _province;
@@ -111,6 +117,11 @@ class _RegisterPageState extends State<RegisterPage> {
   void _register() async {
     if (registerLoading) return;
 
+    if (_photoBase64 == null) {
+      globals.showDialogs("Foto belum dipilih", context);
+      return;
+    }
+
     if (_gender == null) {
       globals.showDialogs("Gender belum dipilih", context);
       return;
@@ -152,8 +163,13 @@ class _RegisterPageState extends State<RegisterPage> {
       user.phoneNumber = _phoneNumber;
       user.roleId = 2;
 
+      Map<String, dynamic> formData = user.toJson();
+
+      formData['photoBase64'] = _photoBase64;
+      
       try {
-        User userResult = await register(user.toJson());
+        // User userResult = await register(user.toJson());
+        User userResult = await register(formData);
 
         if (userResult != null) {
           saveLocalData('user', userToJson(userResult));
@@ -184,6 +200,56 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+   Future _chooseProfilePicture() async {
+    var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if (imageFile != null) {
+      // print(imageFile);
+      _cropImage(imageFile);
+      // uploadFile();
+    }
+  }
+
+  Future<Null> _cropImage(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: imageFile.path,
+      ratioX: 1.0,
+      ratioY: 1.0,
+      maxWidth: 150,
+      maxHeight: 150,
+    );
+
+    // if (croppedFile != null) _uploadPhoto(croppedFile);
+
+    List<int> imageBytes = imageFile.readAsBytesSync();
+
+    String base64Image = base64Encode(imageBytes);
+    
+    setState(() {
+      _photoBase64 = base64Image;
+    });
+  }
+
+  //  Future<Null> _uploadPhoto(File imageFile) async {
+  //   List<int> imageBytes = imageFile.readAsBytesSync();
+
+  //   String base64Image = base64Encode(imageBytes);
+
+  //   Map<String, dynamic> formData = Map<String, dynamic>();
+  //   formData['image_base64'] = base64Image;
+
+  //   String newFileName = globals.user.id.toString() + "-" + _randomDigits(6);
+  //   formData['file_name'] = newFileName;
+    
+  //   await updateProfilePicture(formData, globals.user.id);
+
+  //   setState(() {
+  //     globals.user.photo = globals.getBaseUrl() + "/images/profile_pictures/$newFileName.jpg";
+  //   });
+
+  //   globals.showDialogs("Foto berhasil diubah", context);
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -207,6 +273,20 @@ class _RegisterPageState extends State<RegisterPage> {
                       placeholder: 'assets/images/loading.gif',
                       image: _photo)
                   : Container(),
+              GestureDetector(
+                onTap: () => _chooseProfilePicture(),
+                child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                    height: 150,
+                    child: CircleAvatar(
+                        radius: 100,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: _photoBase64 != null
+                                ? Image.memory(base64Decode(_photoBase64),
+                                    fit: BoxFit.cover)
+                                : Image.asset('assets/images/account.png')))),
+              ),
               Container(
                   alignment: Alignment.center,
                   width: 300,

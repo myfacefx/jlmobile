@@ -47,6 +47,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Flutter Image Cropper -->
+        <activity
+        android:name="com.yalantis.ucrop.UCropActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <!-- Facebook Login configuration -->
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
