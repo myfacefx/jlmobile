@@ -3,6 +3,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/about.dart';
 import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/blacklist.dart';
+import 'package:jlf_mobile/pages/blacklist_animal.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/chat_list.dart';
 import 'package:jlf_mobile/pages/donasi.dart';
@@ -61,6 +62,8 @@ class MyApp extends StatelessWidget {
         '/intro': (BuildContext context) => IntroPage(),
         '/chat-list': (BuildContext context) => ChatListPage(),
         '/donasi': (BuildContext context) => DonasiPage(),
+        '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
+        
         
       },
     );

@@ -846,36 +846,36 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                               text: invoice != null && invoice.length > 0
                                   ? invoice
                                   : "Invoice Gagal Dibuat"),
-                          Container(
-                              width: 300,
-                              padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
-                              child: FlatButton(
-                                  onPressed: () {
-                                    String phone;
-                                    String message = "Halo";
+                          // Container(
+                          //     width: 300,
+                          //     padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+                          //     child: FlatButton(
+                          //         onPressed: () {
+                          //           String phone;
+                          //           String message = "Halo";
 
-                                    if (isOwner) {
-                                      phone =
-                                          "62${animal.owner.phoneNumber.substring(1)}";
-                                      _sendWhatsApp(phone, message);
-                                    } else if (isWinner) {
-                                      phone =
-                                          "62${winner.phoneNumber.substring(1)}";
-                                      _sendWhatsApp(phone, message);
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  color: globals.myColor('primary'),
-                                  child: globals.myText(
-                                      text: isOwner
-                                          ? "HUBUNGI PEMENANG"
-                                          : "HUBUNGI PELELANG",
-                                      color: 'light',
-                                      weight: "B"),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20)))),
+                          //           if (isOwner) {
+                          //             phone =
+                          //                 "62${animal.owner.phoneNumber.substring(1)}";
+                          //             _sendWhatsApp(phone, message);
+                          //           } else if (isWinner) {
+                          //             phone =
+                          //                 "62${winner.phoneNumber.substring(1)}";
+                          //             _sendWhatsApp(phone, message);
+                          //           } else {
+                          //             return null;
+                          //           }
+                          //         },
+                          //         color: globals.myColor('primary'),
+                          //         child: globals.myText(
+                          //             text: isOwner
+                          //                 ? "HUBUNGI PEMENANG"
+                          //                 : "HUBUNGI PELELANG",
+                          //             color: 'light',
+                          //             weight: "B"),
+                          //         shape: RoundedRectangleBorder(
+                          //             borderRadius:
+                          //                 BorderRadius.circular(20)))),
                           chatLoading ? globals.isLoading() :  Container(
                               width: 300,
                               padding: EdgeInsets.fromLTRB(20, 0, 20, 10),

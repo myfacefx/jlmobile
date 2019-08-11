@@ -451,8 +451,10 @@ String convertMonthFromDigit(int monthDigit) {
 }
 
 Widget isLoading() {
-  return Center(
-    child: CircularProgressIndicator(),
+  return Container(
+    child: Center(
+      child: CircularProgressIndicator(),
+    ),
   );
 }
 

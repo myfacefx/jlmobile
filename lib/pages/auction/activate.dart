@@ -417,7 +417,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         Container(
             padding: EdgeInsets.only(bottom: 15),
             child: globals.myText(
-                text: "Waktu dimulai setelah Anda melakukan posting",
+                text: "Waktu closed dihitung dari bid terakhir",
                 color: "danger")),
         Container(
             width: globals.mw(context) * 0.95,

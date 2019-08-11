@@ -733,7 +733,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  globals.myText(text: "Produk-ku ", size: 11),
+                  globals.myText(text: "Draft ", size: 11),
                   animals.length > 0
                       ? Container(
                           constraints:
