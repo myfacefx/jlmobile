@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -7,17 +8,19 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/models/article.dart';
+import 'package:jlf_mobile/models/promo.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
-import 'package:jlf_mobile/pages/how_to.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
+import 'package:jlf_mobile/services/article_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
-import 'package:jlf_mobile/services/slider_service.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,13 +37,20 @@ class _HomePage extends State<HomePage> {
   int _current = 0;
 
   bool isLoadingCategories = true;
-  bool isLoadingSlider = true;
-  bool isLoadingPromo = true;
+  bool isLoadingPromoA = true;
+  bool isLoadingPromoB = true;
+  bool isLoadingPromoC = true;
+  bool isLoadingChampaign = true;
+
+  bool isLoadingPromoVideo = true;
   bool failedDataCategories = false;
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   int membersCount = 0;
-  List<Widget> listImage = [];
-  List<Widget> listPromo = [];
+  List<Widget> listPromoA = [];
+  List<Promo> listPromoB = [];
+  List<Promo> listPromoC = [];
+  List<Promo> listVideo = [];
+  List<Article> listChampaign = [];
   String selectedType = "LELANG";
 
   int _currentArticle = 0;
@@ -72,9 +82,15 @@ class _HomePage extends State<HomePage> {
     super.initState();
     if (globals.user != null) {
       _refresh();
+
       _getListCategoriesAuction();
-      _loadSliders();
-      _loadPromos();
+
+      _loadPromosA();
+      _loadPromosB();
+      _loadPromosC();
+      _loadPromosVideo();
+      _loadChampaign();
+
       _getAnimalCategory();
       globals.getNotificationCount();
       globals.generateToken();
@@ -117,8 +133,6 @@ class _HomePage extends State<HomePage> {
   void checkAppLink(Uri link) {
     int animalId;
     String from;
-
-    print(link.pathSegments);
     List<String> tamp = link.pathSegments[1].split("f")[1].split("-");
 
     if (tamp[0] == "1") {
@@ -145,53 +159,93 @@ class _HomePage extends State<HomePage> {
     }
   }
 
-  _loadSliders() {
-    getAllSliders("token").then((onValue) {
+  _loadPromosA() {
+    getAllPromos("token", "iklan", "A").then((onValue) {
       if (onValue.length != 0) {
-        listImage = [];
+        listPromoA = [];
         onValue.forEach((slider) {
-          listImage.add(
+          listPromoA.add(
             FadeInImage.assetNetwork(
                 placeholder: 'assets/images/loading.gif', image: slider.link),
           );
         });
       } else {
-        listImage = getTemplateSlider();
+        listPromoA = getTemplateSlider();
       }
 
       setState(() {
-        isLoadingSlider = false;
+        isLoadingPromoA = false;
       });
     }).catchError((onError) {
-      listImage = getTemplateSlider();
+      listPromoA = getTemplateSlider();
       setState(() {
-        isLoadingSlider = false;
+        isLoadingPromoA = false;
       });
     });
   }
 
-  _loadPromos() {
-    getAllPromos("").then((onValue) {
+  _loadPromosB() {
+    getAllPromos("token", "iklan", "B").then((onValue) {
       if (onValue.length != 0) {
-        listPromo = [];
-        onValue.forEach((promo) {
-          listPromo.add(FadeInImage.assetNetwork(
-            placeholder: 'assets/images/loading.gif',
-            image: promo.link,
-            // fit: BoxFit.cover,
-          ));
-        });
-      } else {
-        listPromo = getTemplatePromo();
+        listPromoB = onValue;
       }
 
       setState(() {
-        isLoadingPromo = false;
+        isLoadingPromoB = false;
       });
     }).catchError((onError) {
-      listPromo = getTemplatePromo();
       setState(() {
-        isLoadingPromo = false;
+        isLoadingPromoB = false;
+      });
+    });
+  }
+
+  _loadPromosC() {
+    getAllPromos("token", "iklan", "C").then((onValue) {
+      if (onValue.length != 0) {
+        listPromoC = onValue;
+      }
+
+      setState(() {
+        isLoadingPromoC = false;
+      });
+    }).catchError((onError) {
+      setState(() {
+        isLoadingPromoC = false;
+      });
+    });
+  }
+
+  _loadPromosVideo() {
+    getAllPromos("token", "video", "A").then((onValue) {
+      if (onValue.length != 0) {
+        listVideo = onValue;
+      }
+
+      setState(() {
+        isLoadingPromoVideo = false;
+      });
+    }).catchError((onError) {
+      setState(() {
+        isLoadingPromoVideo = false;
+      });
+    });
+  }
+
+  _loadChampaign() {
+    getAllArticle("token", "champaign").then((onValue) {
+      print(json.encode(onValue));
+      if (onValue.length != 0) {
+        listChampaign = onValue;
+      }
+
+      setState(() {
+        isLoadingChampaign = false;
+      });
+    }).catchError((onError) {
+      print(onError.toString());
+      setState(() {
+        isLoadingChampaign = false;
       });
     });
   }
@@ -306,7 +360,6 @@ class _HomePage extends State<HomePage> {
           child: CarouselSlider(
             aspectRatio: 3,
             autoPlay: true,
-            // enlargeCenterPage: true,
             viewportFraction: 3.0,
             height: 200,
             enableInfiniteScroll: true,
@@ -315,7 +368,7 @@ class _HomePage extends State<HomePage> {
                 _current = index;
               });
             },
-            items: listImage,
+            items: listPromoA,
           ),
         ),
         Positioned(
@@ -324,9 +377,7 @@ class _HomePage extends State<HomePage> {
             right: 0.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildDoted(_current + 1, listImage.length + 1)
-              ],
+              children: <Widget>[_buildDoted(_current + 1, listPromoA.length)],
             ))
       ],
     );
@@ -395,7 +446,7 @@ class _HomePage extends State<HomePage> {
               }
             },
             child: globals.myText(
-                text: "PASAR HEWAN",
+                text: "JUAL BELI",
                 size: 16,
                 color: selectedType == "PASAR HEWAN" ? null : "disabled"),
           ),
@@ -446,64 +497,148 @@ class _HomePage extends State<HomePage> {
 
   Widget cardAnimal(AnimalCategory category) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => CategoryDetailPage(
-                      animalCategory: category,
-                      from: selectedType,
-                    )));
-      },
-      child: Card(
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+        onTap: () {
+          if (category.animalsCount > 0) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => CategoryDetailPage(
+                          animalCategory: category,
+                          from: selectedType,
+                        )));
+          }
+        },
+        child: Card(
+          child: Stack(
             children: <Widget>[
-              image(category.image),
-              SizedBox(
-                width: 10,
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    image(category.image),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    detail(category.name, category.animalsCount.toString())
+                  ],
+                ),
               ),
-              detail(category.name, category.animalsCount.toString())
+              category.animalsCount == 0
+                  ? Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              category.animalsCount == 0
+                  ? Positioned.fill(
+                      child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  globals.myText(
+                                      text: "Segera Hadir",
+                                      color: "light",
+                                      size: 14,
+                                      weight: "SB"),
+                                ],
+                              ),
+                            ),
+                          )),
+                    )
+                  : Container(),
             ],
           ),
-        ),
-      ),
+        ));
+  }
+
+  Widget _buildPromotionB() {
+    return Column(
+      children: listPromoB.map((f) {
+        return Container(
+          width: globals.mw(context),
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+          child: FadeInImage.assetNetwork(
+              width: globals.mw(context) * 0.23,
+              height: isLoadingPromoB ? 20 : null,
+              placeholder: 'assets/images/loading.gif',
+              image: f.link),
+        );
+      }).toList(),
     );
   }
 
-  Widget _buildPromotion() {
-    return Container(
-        padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-        child: Column(
-          children: <Widget>[
-            Container(
-              color: Colors.white,
-              width: globals.mw(context),
-              child: listPromo[0],
+  Widget _buildPromotionC() {
+    return Column(
+      children: listPromoC.map((f) {
+        return Container(
+          width: globals.mw(context),
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+          child: FadeInImage.assetNetwork(
+              width: globals.mw(context) * 0.23,
+              height: isLoadingPromoC ? 20 : null,
+              placeholder: 'assets/images/loading.gif',
+              image: f.link),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildVideoA() {
+    return Column(
+      children: listVideo.map((f) {
+        String videoId;
+        videoId = YoutubePlayer.convertUrlToId(f.link);
+        return Container(
+          width: globals.mw(context),
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+          child: YoutubePlayer(
+            context: context,
+            videoId: videoId,
+            // thumbnailUrl: "https://placeimg.com/520/200/animals?10",
+            flags: YoutubePlayerFlags(
+                showVideoProgressIndicator: true, autoPlay: false),
+            videoProgressIndicatorColor: Colors.amber,
+            progressColors: ProgressColors(
+              playedColor: Colors.amber,
+              handleColor: Colors.amberAccent,
             ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  height: 125,
-                  width: globals.mw(context) * 0.47,
-                  child: listPromo[1],
-                ),
-                Container(
-                    color: Colors.white,
-                    height: 125,
-                    width: globals.mw(context) * 0.47,
-                    child: listPromo[2]),
-              ],
-            )
-          ],
-        ));
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildChampaign() {
+    return Column(
+      children: listChampaign.map((f) {
+        return Container(
+          width: globals.mw(context),
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+          child: FadeInImage.assetNetwork(
+              width: globals.mw(context) * 0.23,
+              height: isLoadingCategories ? 20 : null,
+              placeholder: 'assets/images/loading.gif',
+              image: f.link),
+        );
+      }).toList(),
+    );
   }
 
   Widget _buildLaranganBinatang() {
@@ -545,7 +680,9 @@ class _HomePage extends State<HomePage> {
                 highlightedBorderColor: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(100))),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, "/blacklist-animal");
+                },
                 child: Row(
                   children: <Widget>[
                     Text("Lihat selengkapnya",
@@ -849,7 +986,7 @@ class _HomePage extends State<HomePage> {
           body: SafeArea(
             child: ListView(
               children: <Widget>[
-                isLoadingSlider ? globals.isLoading() : _buildCarousel(),
+                isLoadingPromoA ? globals.isLoading() : _buildCarousel(),
                 _buildAsk(),
                 _buildNumberMember(),
                 _buildTitle(),
@@ -859,8 +996,11 @@ class _HomePage extends State<HomePage> {
                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: Divider(color: Colors.black),
                 ),
-                isLoadingPromo ? globals.isLoading() : _buildPromotion(),
+                isLoadingChampaign ? globals.isLoading() : _buildChampaign(),
+                isLoadingPromoVideo ? globals.isLoading() : _buildVideoA(),
+                isLoadingPromoB ? globals.isLoading() : _buildPromotionB(),
                 _buildArticle(),
+                isLoadingPromoC ? globals.isLoading() : _buildPromotionC(),
                 _buildPartner(),
                 Divider(),
                 _buildDonation()

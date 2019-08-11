@@ -128,7 +128,7 @@ Widget drawer(context) {
                       "Obrolan", '/chat-list', null, context),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
-                    "Lelangku", '/profile', null, context),
+                    "Barangku", '/profile', null, context),
                 _buildDrawerNavigationButtonBig("Lelang Diikuti", '/our-bid',
                     globals.user != null ? globals.user.bidsCount : 0, context),
                 _buildDrawerNavigationButtonBig("Belanjaanku", '/our-product',
@@ -140,7 +140,7 @@ Widget drawer(context) {
                 _buildDrawerNavigationButtonSmall(
                     "Tentang JLF", "/about", context),
                 _buildDrawerNavigationButtonSmall(
-                    "Langkah - Langkah", "/how-to", context),
+                    "Tutorial", "/how-to", context),
                 _buildDrawerNavigationButtonSmall(
                     "Tanya Jawab", "/faq", context),
                 // _buildDrawerNavigationButtonSmall(

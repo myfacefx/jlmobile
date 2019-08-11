@@ -251,25 +251,25 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   _save() async {
     if (isLoading) return;
 
-    if (!_agreeTerms) {
-      globals.showDialogs(
-          "Anda harus menyetujui konsekuensi yang akan Anda terima apabila menjual binatang langka/tidak sesuai Undang-Undang",
-          context);
-      return;
-    }
-
-    if (_gender == null) {
-      globals.showDialogs("Gender belum dipilih", context);
-      return;
-    }
-
-    if (imagesBase64.length == 0) {
-      globals.showDialogs("Wajib upload foto hewan max 2 foto", context);
-      return;
-    }
-
+    _formKey.currentState.save();
     if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+      if (!_agreeTerms) {
+        globals.showDialogs(
+            "Anda harus menyetujui konsekuensi yang akan Anda terima apabila menjual binatang langka/tidak sesuai Undang-Undang",
+            context);
+        return;
+      }
+
+      if (_gender == null) {
+        globals.showDialogs("Gender belum dipilih", context);
+        return;
+      }
+
+      if (imagesBase64.length == 0) {
+        globals.showDialogs("Wajib upload foto hewan max 2 foto", context);
+        return;
+      }
+
       globals.loadingModel(context);
 
       Map<String, dynamic> formData = Map<String, dynamic>();
@@ -400,7 +400,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         Container(
             padding: EdgeInsets.only(bottom: 15),
             child: globals.myText(
-                text: "Waktu dimulai setelah Anda melakukan posting",
+                text: "Waktu closed dihitung dari bid terakhir",
                 color: "danger")),
         Container(
             width: globals.mw(context) * 0.95,
@@ -669,9 +669,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
         body: Scaffold(
             body: Stack(children: <Widget>[
-          ListView(
-            physics: ScrollPhysics(),
-            children: <Widget>[
+          ListView(physics: ScrollPhysics(), children: <Widget>[
             Form(
               autovalidate: autoValidate,
               key: _formKey,
@@ -701,7 +699,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           labelText: "Kategori Hewan"),
                       value: _animalCategory,
                       validator: (animalCategory) {
-                        if (animalCategory == null) {
+                        if (_animalCategory == null) {
                           return 'Silahkan pilih kategori hewan';
                         }
                       },
@@ -731,7 +729,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           labelText: "Sub Kategori Hewan"),
                       value: _animalSubCategory,
                       validator: (animalSubCategory) {
-                        if (animalSubCategory == null) {
+                        if (_animalSubCategory == null) {
                           return 'Silahkan pilih sub kategori hewan';
                         }
                       },

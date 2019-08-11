@@ -1,19 +1,17 @@
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
-import 'package:jlf_mobile/models/promo.dart';
+import 'package:jlf_mobile/models/blacklist_animal.dart';
 
-Future<List<Promo>> getAllPromos(
-    String token, String type, String location) async {
+Future<List<BlacklistAnimal>> getAllBlacklistAnimal(String token) async {
   final header = {"Content-Type": "application/json"};
 
-  final url = getBaseUrl() + "/type/$type/location/$location/promos";
-  print(url);
+  final url = getBaseUrl() + "/blacklist-animals";
 
   http.Response res = await http
       .get(url, headers: header)
       .timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
-    return promoFromJson(res.body);
+    return blacklistAnimalFromJson(res.body);
   } else {
     throw Exception(res.body);
   }
