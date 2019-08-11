@@ -14,6 +14,7 @@ import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final AnimalCategory animalCategory;
@@ -32,6 +33,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   AnimalCategory animalCategory;
   bool isLoading = true;
   bool isLoadingProvince = true;
+  bool isLoadingTopSellers = true;
   String currentSubCategory = "ALL";
   int currentIdSubCategory;
 
@@ -44,6 +46,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   List<String> itemProvince = <String>['All'];
 
   List<Animal> animals = List<Animal>();
+  List<User> topSellers = List<User>();
 
   TextEditingController searchController = TextEditingController();
 
@@ -80,6 +83,25 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     });
 
     globals.getNotificationCount();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    refreshTopSellers();
+  }
+
+  void refreshTopSellers() {
+    setState(() {
+      isLoadingTopSellers = true;
+    });
+    getTopSellers("token", animalCategory.id).then((onValue) {
+      setState(() {
+        topSellers = onValue;
+        isLoadingTopSellers = false;
+      });
+    });
   }
 
   void _refresh(int subCategoryId, String subCategoryName, String from) {
@@ -145,6 +167,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         globals.showDialogs(onError.toString(), context);
       });
     }
+
+    refreshTopSellers();
   }
 
   //top container
@@ -320,87 +344,66 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _templateTopSellerProfile() {
+  Widget _templateTopSellerProfile(User user) {    
     return GestureDetector(
       onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            ProfilePage(userId: 2))),
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ProfilePage(userId: user.id))),
       child: Column(
         children: <Widget>[
           Container(
-            width: globals.mw(context) * 0.30,
-            child: Container(
-                width: 150,
-                child: Container(
-                    height: 75,
-                    child: CircleAvatar(
-                        radius: 75,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: FadeInImage.assetNetwork(
-                              fit: BoxFit.cover,
-                              placeholder: 'assets/images/loading.gif',
-                              image:
-                                  'https://placeimg.com/500/500/people?49',
-                            )))))),
-          globals.myText(text: "FRAMADAN", weight: "B")
+              child: Container(
+                  width: 100,
+                  child: Container(
+                      height: 75,
+                      child: CircleAvatar(
+                          radius: 75,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: FadeInImage.assetNetwork(
+                                fit: BoxFit.cover,
+                                placeholder: 'assets/images/loading.gif',
+                                image: user.photo,
+                              )))))),
+          globals.myText(text: user.username, weight: "B")
         ],
       ),
     );
   }
 
   Widget _buildTopSeller() {
-    // List<User> topSellers = List<User>[];r
-
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.fromLTRB(20, 16, 20, 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          globals.myText(text: "TOP SELLER", weight: "B"),
-          Container(
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: Row(
-              children: <Widget>[
-                _templateTopSellerProfile(),
-                _templateTopSellerProfile(),
-                _templateTopSellerProfile()
-              ],
+    return topSellers.length > 0 ? Card(
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 15, bottom: 5, top: 5),
+              alignment: Alignment.centerLeft,
+              child: globals.myText(text: "TOP SELLER", weight: "B"),
             ),
-          ),
-          // ListView(
-          //   scrollDirection: Axis.horizontal,
-          //   children: <Widget>[
-          //     Container(
-          //       width: 150,
-          //       child: Container(r
-          //         height: 15,
-          //         child: CircleAvatar(
-          //             radius: 10,
-          //             child: ClipRRect(
-          //                 borderRadius: BorderRadius.circular(100),
-          //                 child: Image.asset('assets/images/account.png'))))
-          //     )
-          //   ],
-          // ),
-          // Container(
-          //   width: globals.mw(context) * 0.5,
-          //   child: Text(
-          //     "${widget.animalCategory.name} - $currentSubCategory",
-          //     overflow: TextOverflow.ellipsis,
-          //     style: Theme.of(context)
-          //         .textTheme
-          //         .title
-          //         .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
-          //   ),
-          // ),
-        ],
+            Container(
+                height: 100,
+                alignment: Alignment.center,
+                child: isLoadingTopSellers
+                    ? globals.isLoading()
+                    : topSellers.length > 0
+                        ? ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: false,
+                            itemBuilder: (context, index) {
+                              return _templateTopSellerProfile(topSellers[index]);
+                            },
+                            itemCount: topSellers.length,
+                          )
+                        : globals.myText(
+                            text: "Belum ada top seller pada kategori ini")),
+          ],
+        ),
       ),
-    );
+    ) : Container();
   }
 
   //title add post bid
