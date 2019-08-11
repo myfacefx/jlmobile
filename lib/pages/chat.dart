@@ -114,10 +114,6 @@ class _ChatPageState extends State<ChatPage> {
       }
     }
 
-    // return _rightChatMessages(document['type'], document['content']);
-
-    // String timestamp = DateTime.fromMillisecondsSinceEpoch(int.parse(document['timestamp'].toString())).toString();
-
     DateTime unformattedDate = DateTime.fromMillisecondsSinceEpoch(
         int.parse(document['timestamp'].toString()));
 
@@ -185,8 +181,6 @@ class _ChatPageState extends State<ChatPage> {
                 ],
               )),
         ]);
-
-    // return document['sender'] == role ? _rightChatMessages(document['type'], document['content']) : _leftChatMessages(document['type'], document['content']);
   }
 
   void _sendMessage(String content, int type) async {

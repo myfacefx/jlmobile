@@ -12,60 +12,60 @@ User userFromJson(String str) => User.fromJson(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toJson());
 
-List<User> listUserFromJson(String str) => new List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
+List<User> listUserFromJson(String str) =>
+    new List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
 
 class User {
-    int id;
-    String name;
-    String email;
-    dynamic gender;
-    String description;
-    String username;
-    String password;
-    String phoneNumber;
-    dynamic address;
-    String photo;
-    int roleId;
-    int regencyId;
-    int blacklisted;
-    dynamic deletedAt;
-    DateTime createdAt;
-    DateTime updatedAt;
-    int reportsCount;
-    int bidsCount;
-    int historiesCount;
-    Role role;
-    Regency regency;
-    Province province;
-    String firebaseToken;
+  int id;
+  String name;
+  String email;
+  dynamic gender;
+  String description;
+  String username;
+  String password;
+  String phoneNumber;
+  dynamic address;
+  String photo;
+  int roleId;
+  int regencyId;
+  int blacklisted;
+  dynamic deletedAt;
+  DateTime createdAt;
+  DateTime updatedAt;
+  int reportsCount;
+  int bidsCount;
+  int historiesCount;
+  Role role;
+  Regency regency;
+  Province province;
+  String firebaseToken;
 
-    User({
-        this.id,
-        this.name,
-        this.email,
-        this.gender,
-        this.description,
-        this.username,
-        this.password,
-        this.phoneNumber,
-        this.address,
-        this.photo,
-        this.roleId,
-        this.regencyId,
-        this.blacklisted,
-        this.deletedAt,
-        this.createdAt,
-        this.updatedAt,
-        this.reportsCount,
-        this.bidsCount,
-        this.historiesCount,
-        this.role,
-        this.regency,
-        this.province,
-        this.firebaseToken
-    });
+  User(
+      {this.id,
+      this.name,
+      this.email,
+      this.gender,
+      this.description,
+      this.username,
+      this.password,
+      this.phoneNumber,
+      this.address,
+      this.photo,
+      this.roleId,
+      this.regencyId,
+      this.blacklisted,
+      this.deletedAt,
+      this.createdAt,
+      this.updatedAt,
+      this.reportsCount,
+      this.bidsCount,
+      this.historiesCount,
+      this.role,
+      this.regency,
+      this.province,
+      this.firebaseToken});
 
-    factory User.fromJson(Map<String, dynamic> json) => new User(
+  factory User.fromJson(Map<String, dynamic> json) => new User(
         id: json["id"] == null ? null : json["id"],
         name: json["name"] == null ? null : json["name"],
         email: json["email"] == null ? null : json["email"],
@@ -75,23 +75,33 @@ class User {
         password: json["password"] == null ? null : json["password"],
         phoneNumber: json["phone_number"],
         address: json["address"],
-        photo: json["photo"] == null ? null : json['photo'].length < 12 ? globals.getBaseUrl() + "/images/profile_pictures/" + json["photo"] : json["photo"],
+        photo: json["photo"] == null ? null : json['photo'],
         roleId: json["role_id"] == null ? null : json["role_id"],
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
         blacklisted: json["blacklisted"] == null ? null : json["blacklisted"],
         deletedAt: json["deleted_at"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
-        reportsCount: json["reports_count"] == null ? null : json["reports_count"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        reportsCount:
+            json["reports_count"] == null ? null : json["reports_count"],
         bidsCount: json["bids_count"] == null ? null : json["bids_count"],
-        historiesCount: json["histories_count"] == null ? null : json["histories_count"],
+        historiesCount:
+            json["histories_count"] == null ? null : json["histories_count"],
         role: json["role"] == null ? null : Role.fromJson(json["role"]),
-        regency: json["regency"] == null ? null : Regency.fromJson(json["regency"]),
-        province: json["province"] == null ? null : Province.fromJson(json["province"]),
-        firebaseToken: json["firebase_token"] == null ? null : json["firebase_token"],
-    );
+        regency:
+            json["regency"] == null ? null : Regency.fromJson(json["regency"]),
+        province: json["province"] == null
+            ? null
+            : Province.fromJson(json["province"]),
+        firebaseToken:
+            json["firebase_token"] == null ? null : json["firebase_token"],
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
         "name": name == null ? null : name,
         "email": email == null ? null : email,
@@ -115,37 +125,41 @@ class User {
         "regency": regency == null ? null : regency.toJson(),
         "province": province == null ? null : province.toJson(),
         "firebase_token": firebaseToken == null ? null : firebaseToken,
-    }..removeWhere((key, val) => val == null);
+      }..removeWhere((key, val) => val == null);
 }
 
 class Role {
-    int id;
-    String name;
-    DateTime createdAt;
-    DateTime updatedAt;
-    dynamic deletedAt;
+  int id;
+  String name;
+  DateTime createdAt;
+  DateTime updatedAt;
+  dynamic deletedAt;
 
-    Role({
-        this.id,
-        this.name,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt,
-    });
+  Role({
+    this.id,
+    this.name,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+  });
 
-    factory Role.fromJson(Map<String, dynamic> json) => new Role(
+  factory Role.fromJson(Map<String, dynamic> json) => new Role(
         id: json["id"] == null ? null : json["id"],
         name: json["name"] == null ? null : json["name"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
         "name": name == null ? null : name,
         "created_at": createdAt == null ? null : createdAt.toIso8601String(),
         "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
         "deleted_at": deletedAt,
-    };
+      };
 }

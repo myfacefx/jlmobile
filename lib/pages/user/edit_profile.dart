@@ -31,6 +31,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool confirmPasswordVisibility = true;
 
   bool registerLoading = false;
+  bool photoUploading = false;
   bool regencyLoading = false;
 
   FocusNode usernameFocusNode = FocusNode();
@@ -313,6 +314,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (imageFile != null) {
+      setState(() {
+       photoUploading = true; 
+      });
       // print(imageFile);
       _cropImage(imageFile);
       // uploadFile();
@@ -333,13 +337,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   String _randomDigits(int count) {
     var rndnumber = '';
-    var rnd= new math.Random();
+    var rnd = new math.Random();
     for (var i = 0; i < count; i++) {
-     rndnumber = rndnumber + rnd.nextInt(9).toString();
+      rndnumber = rndnumber + rnd.nextInt(9).toString();
     }
     return rndnumber;
   }
-  
+
   Future<Null> _uploadPhoto(File imageFile) async {
     List<int> imageBytes = imageFile.readAsBytesSync();
 
@@ -350,14 +354,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     String newFileName = globals.user.id.toString() + "-" + _randomDigits(3);
     formData['file_name'] = newFileName;
-    
-    await updateProfilePicture(formData, globals.user.id);
 
-    setState(() {
-      globals.user.photo = globals.getBaseUrl() + "/images/profile_pictures/$newFileName.jpg";
-    });
+    try {
+      await updateProfilePicture(formData, globals.user.id);
 
-    globals.showDialogs("Foto berhasil diubah", context);
+      setState(() {
+        globals.user.photo =
+            globals.getBaseUrl() + "/images/profile_pictures/$newFileName.jpg";
+      });
+
+      globals.showDialogs("Foto berhasil diubah", context);
+
+      print("Success update foto");
+      setState(() {
+       photoUploading = false; 
+      });
+    } catch (error) {
+      globals.showDialogs("Gagal mengunggah foto, silahkan coba kembali", context);
+      print(error);
+      setState(() {
+       photoUploading = false; 
+      });
+    }
   }
 
   Widget _profilePictureInput() {
@@ -380,9 +398,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             width: 300,
             padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
             child: FlatButton(
-                onPressed: () => _chooseProfilePicture(),
-                child: globals.myText(text: "Ganti Foto Profil", color: "light"),
-                color: registerLoading
+                onPressed: () => photoUploading ? null : _chooseProfilePicture(),
+                child:
+                    globals.myText(text: photoUploading ? "Mengunggah Foto... " : "Ganti Foto Profil", color: "light"),
+                color: registerLoading || photoUploading
                     ? Colors.grey
                     : Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
