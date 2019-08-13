@@ -95,6 +95,7 @@ flutter:
     - assets/images/intro/5.png
     - assets/images/larangan_binatang.png
     - assets/images/whatsapp.png
+    - assets/images/about-jlf.jpeg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

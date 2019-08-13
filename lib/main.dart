@@ -21,22 +21,22 @@ import 'package:jlf_mobile/pages/user/notification.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/themes.dart';
-// import 'package:firebase_analytics/firebase_analytics.dart';
-// import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // static FirebaseAnalytics analytics = FirebaseAnalytics();
-  // static FirebaseAnalyticsObserver observer =
-  //     FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setEnabledSystemUIOverlays ([]);
     return MaterialApp(
       title: 'JLF',
       debugShowCheckedModeBanner: false,
-      // navigatorObservers: <NavigatorObserver>[observer],
+      navigatorObservers: <NavigatorObserver>[observer],
       theme: buildThemeData(),
       initialRoute: globals.state == "intro"
           ? "/intro"
