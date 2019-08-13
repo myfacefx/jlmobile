@@ -117,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _register() async {
     if (registerLoading) return;
 
-    if (_photoBase64 == null) {
+    if (_photoBase64 == null && _photo == null) {
       globals.showDialogs("Foto belum dipilih", context);
       return;
     }
@@ -273,7 +273,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       placeholder: 'assets/images/loading.gif',
                       image: _photo)
                   : Container(),
-              GestureDetector(
+              _photo == null ? GestureDetector(
                 onTap: () => _chooseProfilePicture(),
                 child: Container(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
@@ -286,7 +286,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ? Image.memory(base64Decode(_photoBase64),
                                     fit: BoxFit.cover)
                                 : Image.asset('assets/images/account.png')))),
-              ),
+              ) : Container(),
               Container(
                   alignment: Alignment.center,
                   width: 300,
