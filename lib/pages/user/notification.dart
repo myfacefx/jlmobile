@@ -102,7 +102,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                   List<TextSpan> textSpans = List<TextSpan>();
 
                                   if (informationConvert is String) {
-                                    textSpans.add(TextSpan(text: informationConvert));
+                                    textSpans.add(TextSpan(text: informationConvert, style: TextStyle(color: Colors.black)));
 
                                     informationBuild.add(globals.myText(
                                       text: informationConvert,
@@ -209,7 +209,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                       ),
                                                     ],
                                                   ),
-                                                  flex: 9,
+                                                  flex: 5,
                                                 ),
                                                 Flexible(
                                                   child: IconButton(

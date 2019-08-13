@@ -53,7 +53,9 @@ String getBaseUrl() {
 }
 
 String generateInvoice(Auction auction) {
-  if (auction == null || auction.winnerAcceptedDate == null || auction.verificationCode == null) return '-';
+  if (auction == null ||
+      auction.winnerAcceptedDate == null ||
+      auction.verificationCode == null) return '-';
 
   String invoice = "JLF/";
   var acceptedDate = DateTime.parse(auction.winnerAcceptedDate);
@@ -71,8 +73,7 @@ String generateInvoice(Auction auction) {
     invoice += "${acceptedDate.day}";
   }
 
-  invoice +=
-      "/AUC/${auction.id}/${auction.verificationCode}";
+  invoice += "/AUC/${auction.id}/${auction.verificationCode}";
 
   return invoice;
 }
@@ -80,26 +81,26 @@ String generateInvoice(Auction auction) {
 FirebaseMessaging _fcm = FirebaseMessaging();
 generateToken() async {
   // Firestore _db = Firestore.instance;
+  print("Previous Token ${user.firebaseToken}");
 
-  if (user != null && user.firebaseToken == null) {
+  if (user != null) {
     String fcmToken = await _fcm.getToken();
 
     if (fcmToken != null) {
-      User updateToken = User();
-      updateToken.firebaseToken = fcmToken;
+      if (fcmToken != user.firebaseToken) {
+        User updateToken = User();
+        updateToken.firebaseToken = fcmToken;
 
-      String result = await update(updateToken.toJson(), user.id);
+        String result = await update(updateToken.toJson(), user.id);
 
-      if (result != null) {
-        user.firebaseToken = fcmToken;
-        print("User's Token updated: $fcmToken");
+        if (result != null) {
+          user.firebaseToken = fcmToken;
+          print("User's Token updated: $fcmToken");
+        } else {
+          print("FAIL TO UPDATE USER'S TOKEN");
+        }
       } else {
-        print("FAIL TO UPDATE USER'S TOKEN");
-        // globals.showDialogs("Terjadi error, silahkan ulangi", context);
-        // setState(() {
-        //   registerLoading = false;
-        //   autoValidate = true;
-        // });
+        print("Current token already the same");
       }
     } else {
       print("GOT NULL FROM REQUEST TOKEN");
@@ -109,14 +110,26 @@ generateToken() async {
   }
 }
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
+
 notificationListener(context) {
   _fcm.configure(onMessage: (Map<String, dynamic> message) async {
     print("onMessage: $message");
+
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+
+    _showNotificationWithDefaultSound(message);
     // var android = AndroidNotificationDetails(
     //   // 'com.jlf.mobile',
     // );
-
-
 
     // showDialogs(message['notification']['body'], context);
 
@@ -134,6 +147,26 @@ notificationListener(context) {
   }, onResume: (Map<String, dynamic> message) async {
     print("onResume: $message");
   });
+}
+
+Future onSelectNotification(String payload) async {
+  print(payload);
+}
+
+Future _showNotificationWithDefaultSound(Map<String, dynamic> message) async {
+  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      'your channel id', 'your channel name', 'your channel description',
+      importance: Importance.Max, priority: Priority.High);
+  var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+  var platformChannelSpecifics = new NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    message['notification']['body'],
+    message['notification']['title'],
+    platformChannelSpecifics,
+    payload: 'Default_Sound',
+  );
 }
 
 /// Global Function to return Alert Dialog
@@ -393,7 +426,8 @@ String convertFormatDateTime(String date) {
   List<String> splitTime = split[1].split(":");
 
   List<String> splitDate = split[0].split("-");
-  newDate = "${splitDate[2]}/${splitDate[1]}/${splitDate[0]}  ${splitTime[0]}:${splitTime[1]}";
+  newDate =
+      "${splitDate[2]}/${splitDate[1]}/${splitDate[0]}  ${splitTime[0]}:${splitTime[1]}";
   return newDate;
 }
 
@@ -542,7 +576,7 @@ Color myColor([String color = "default"]) {
       returnedColor = Colors.grey[700];
       break;
     case "unprime2":
-      returnedColor = Color.fromRGBO(0,0,32, 1);
+      returnedColor = Color.fromRGBO(0, 0, 32, 1);
       break;
     default:
       returnedColor = Colors.black;

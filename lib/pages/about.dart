@@ -25,20 +25,10 @@ class _AboutPageState extends State<AboutPage> {
             drawer: drawer(context),
             body: SafeArea(
               child: Container(
-                padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
-                child: Column(children: <Widget>[
-                  Text("Apa itu JLF?",
-                      style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black)),
-                  globals.spacePadding(),
-                  Text(
-                      "JLF atau Jual Lelang Fauna merupakan situs rintisan awal dari para pecinta reptil yang juga senang berbisnis, mengingat hingga saat ini masih belum ada marketplace yang nyaman digunakan maka kami ingin mencoba memberikan inovasi marketplace yang tidak hanya sekedar untuk jual beli namun juga lelang.",
-                      style: Theme.of(context).textTheme.subtitle,
-                      textAlign: TextAlign.justify)
-                ]),
-              ),
+                  alignment: Alignment.topCenter,
+                  color: Color.fromRGBO(85, 139, 201, 1),
+                  height: globals.mh(context),
+                  child: Image.asset('assets/images/about-jlf.jpeg')),
             )));
   }
 }

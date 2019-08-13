@@ -12,7 +12,7 @@ class ChatListPage extends StatefulWidget {
 
 class _ChatListPageState extends State<ChatListPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  bool isLoading = true;
   List<Auction> auctions = List<Auction>();
 
   @override
@@ -26,11 +26,18 @@ class _ChatListPageState extends State<ChatListPage> {
     getAuctionsWithActiveChat(
             "Token", globals.user.id, globals.user.roleId == 1 ? true : false)
         .then((onValue) {
+          print(onValue);
+      
       auctions = onValue;
       
-      setState(() {});
+      setState(() {
+        isLoading = false;
+      });
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -57,7 +64,7 @@ class _ChatListPageState extends State<ChatListPage> {
           child: Row(
             children: <Widget>[
               Container(
-                width: globals.mw(context) * 0.7,
+                width: globals.mw(context) * 1,
                 child: Column(
                   children: <Widget>[
                     globals.myText(
@@ -80,21 +87,21 @@ class _ChatListPageState extends State<ChatListPage> {
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  bidCount != null && bidCount > 0
-                                      ? Container(
-                                          constraints: BoxConstraints(
-                                              minWidth: 20, minHeight: 20),
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(100)),
-                                          child: Text("$bidCount",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20)))
-                                      : Container()
+                                  // bidCount != null && bidCount > 0
+                                  //     ? Container(
+                                  //         constraints: BoxConstraints(
+                                  //             minWidth: 20, minHeight: 20),
+                                  //         padding: EdgeInsets.all(5),
+                                  //         decoration: BoxDecoration(
+                                  //             color: Theme.of(context)
+                                  //                 .primaryColor,
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(100)),
+                                  //         child: Text("",
+                                  //             style: TextStyle(
+                                  //                 color: Colors.white,
+                                  //                 fontSize: 20)))
+                                  //     : Container()
                                 ]))),
                   ],
                 ),
@@ -107,7 +114,8 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   Widget _buildListOfChats() {
-    return auctions.length > 0
+
+    return isLoading == false ? auctions.length > 0
         ? Flexible(
             child: ListView.builder(
             itemCount: auctions.length,
@@ -116,7 +124,7 @@ class _ChatListPageState extends State<ChatListPage> {
               return _buildChat(auctions[i]);
             },
           ))
-        : globals.isLoading();
+        : Center(child: globals.myText(text: "Belum ada obrolan")) : globals.isLoading();
   }
 
   @override
