@@ -64,7 +64,7 @@ class _ChatListPageState extends State<ChatListPage> {
           child: Row(
             children: <Widget>[
               Container(
-                width: globals.mw(context) * 1,
+                width: globals.mw(context) * 0.9,
                 child: Column(
                   children: <Widget>[
                     globals.myText(
@@ -76,36 +76,36 @@ class _ChatListPageState extends State<ChatListPage> {
                   ],
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(3),
-                width: globals.mw(context) * 0.2,
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                        child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  // bidCount != null && bidCount > 0
-                                  //     ? Container(
-                                  //         constraints: BoxConstraints(
-                                  //             minWidth: 20, minHeight: 20),
-                                  //         padding: EdgeInsets.all(5),
-                                  //         decoration: BoxDecoration(
-                                  //             color: Theme.of(context)
-                                  //                 .primaryColor,
-                                  //             borderRadius:
-                                  //                 BorderRadius.circular(100)),
-                                  //         child: Text("",
-                                  //             style: TextStyle(
-                                  //                 color: Colors.white,
-                                  //                 fontSize: 20)))
-                                  //     : Container()
-                                ]))),
-                  ],
-                ),
-              )
+              // Container(
+              //   padding: EdgeInsets.all(3),
+              //   width: globals.mw(context) * 0.2,
+              //   child: Column(
+              //     children: <Widget>[
+              //       SizedBox(
+              //           child: Container(
+              //               padding: EdgeInsets.symmetric(horizontal: 8),
+              //               child: Row(
+              //                   mainAxisAlignment: MainAxisAlignment.center,
+              //                   children: <Widget>[
+              //                     // bidCount != null && bidCount > 0
+              //                     //     ? Container(
+              //                     //         constraints: BoxConstraints(
+              //                     //             minWidth: 20, minHeight: 20),
+              //                     //         padding: EdgeInsets.all(5),
+              //                     //         decoration: BoxDecoration(
+              //                     //             color: Theme.of(context)
+              //                     //                 .primaryColor,
+              //                     //             borderRadius:
+              //                     //                 BorderRadius.circular(100)),
+              //                     //         child: Text("",
+              //                     //             style: TextStyle(
+              //                     //                 color: Colors.white,
+              //                     //                 fontSize: 20)))
+              //                     //     : Container()
+              //                   ]))),
+              //     ],
+              //   ),
+              // )
             ],
           ),
         ),
