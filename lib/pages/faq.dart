@@ -48,60 +48,72 @@ class _FAQPageState extends State<FAQPage> with SingleTickerProviderStateMixin {
             key: _scaffoldKey,
             drawer: drawer(context),
             body: SafeArea(
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                    width: globals.mw(context),
-                    child: Card(
-                        child: Column(
-                      children: <Widget>[
-                        Container(
-                            child: TabBar(
-                          labelColor: globals.myColor("primary"),
-                          indicatorColor: globals.myColor("primary"),
-                          unselectedLabelColor: globals.myColor("primary"),
-                          controller: _tabController,
-                          tabs: <Widget>[
-                            Tab(
-                              child: globals.myText(
-                                  text: "FAQ",
-                                  size: 12,
-                                  color: "primary",
-                                  weight: "B"),
-                            ),
-                            Tab(
-                              child: globals.myText(
-                                  text: "What's New",
-                                  size: 12,
-                                  color: "primary",
-                                  weight: "B"),
-                            ),
-                            Tab(
-                              child: globals.myText(
-                                  text: "Credit",
-                                  size: 12,
-                                  color: "primary",
-                                  weight: "B"),
-                            )
-                          ],
-                        )),
-                        Container(
-                          height: 400,
-                          // padding: EdgeInsets.all(5),
-                          child: TabBarView(
-                            controller: _tabController,
-                            children: <Widget>[
-                              _buildQuestionAnswers(),
-                              _buildQuestionAnswers(),
-                              _buildQuestionAnswers()
-                            ],
-                          ),
-                        )
-                      ],
-                    )),
-                  ),
-                ]
-              ),
+              child: Container(
+                  alignment: Alignment.topCenter,
+                  color: Color.fromRGBO(85, 139, 201, 1),
+                  height: globals.mh(context),
+                  child: Image.asset('assets/images/faq.jpeg')),
             )));
+            // body: SafeArea(
+            //   child: ListView(
+            //     children: <Widget>[
+            //       Container(
+            //         // width: globals.mw(context),
+            //         // height: globals.mh(context),
+            //         // alignment: Alignment.center,
+            //         child: Container(
+            //           child: Image.asset("assets/image/faq.jpeg")
+            //         )
+            //         // child: Card(
+            //         //     child: Column(
+            //         //   children: <Widget>[
+            //             // Container(
+            //             //     child: TabBar(
+            //             //   labelColor: globals.myColor("primary"),
+            //             //   indicatorColor: globals.myColor("primary"),
+            //             //   unselectedLabelColor: globals.myColor("primary"),
+            //             //   controller: _tabController,
+            //             //   tabs: <Widget>[
+            //             //     Tab(
+            //             //       child: globals.myText(
+            //             //           text: "FAQ",
+            //             //           size: 12,
+            //             //           color: "primary",
+            //             //           weight: "B"),
+            //             //     ),
+            //             //     Tab(
+            //             //       child: globals.myText(
+            //             //           text: "What's New",
+            //             //           size: 12,
+            //             //           color: "primary",
+            //             //           weight: "B"),
+            //             //     ),
+            //             //     Tab(
+            //             //       child: globals.myText(
+            //             //           text: "Credit",
+            //             //           size: 12,
+            //             //           color: "primary",
+            //             //           weight: "B"),
+            //             //     )
+            //             //   ],
+            //             // )),
+            //             // Container(
+            //             //   height: 400,
+            //             //   // padding: EdgeInsets.all(5),
+            //             //   child: TabBarView(
+            //             //     controller: _tabController,
+            //             //     children: <Widget>[
+            //             //       _buildQuestionAnswers(),
+            //             //       _buildQuestionAnswers(),
+            //             //       _buildQuestionAnswers()
+            //             //     ],
+            //             //   ),
+            //             // )
+            //         //   ],
+            //         // )),
+            //       ),
+            //     ]
+            //   ),
+            // )));
   }
 }

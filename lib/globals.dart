@@ -59,19 +59,21 @@ String generateInvoice(Auction auction) {
 
   String invoice = "JLF/";
   var acceptedDate = DateTime.parse(auction.winnerAcceptedDate);
-  invoice += acceptedDate.year.toString().substring(2);
-  // invoice += acceptedDate.month.toString().substring(2);
-  if (acceptedDate.month < 10) {
-    invoice += "0${acceptedDate.month}";
-  } else {
-    invoice += "${acceptedDate.month}";
-  }
+  
 
   if (acceptedDate.day < 10) {
     invoice += "0${acceptedDate.day}";
   } else {
     invoice += "${acceptedDate.day}";
   }
+  
+  if (acceptedDate.month < 10) {
+    invoice += "0${acceptedDate.month}";
+  } else {
+    invoice += "${acceptedDate.month}";
+  }
+  
+  invoice += acceptedDate.year.toString().substring(2);
 
   invoice += "/AUC/${auction.id}/${auction.verificationCode}";
 
