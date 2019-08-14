@@ -19,9 +19,11 @@ import 'package:jlf_mobile/services/article_services.dart';
 import 'package:jlf_mobile/services/jlf_partner_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'package:jlf_mobile/services/version_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -46,6 +48,7 @@ class _HomePage extends State<HomePage> {
 
   bool isLoadingPromoVideo = true;
   bool failedDataCategories = false;
+  bool alreadyUpToDate = false;
 
   bool isLoadingPartner = true;
 
@@ -62,34 +65,11 @@ class _HomePage extends State<HomePage> {
 
   int _currentArticle = 0;
 
-  // List<Widget> _articlesImages = [
-  // ImageOverlay(
-  //     image:
-  //         "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
-  //   ImageOverlay(
-  //       image:
-  //           "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
-  //   ImageOverlay(
-  //       image:
-  //           "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
-  // ];
-  // List<String> _articlesLinks = [
-  //   "https://www.liputan6.com/health/read/3082433/punya-kura-kura-di-rumah-ini-bahaya-yang-bisa-mengintai-anak?utm_expid=.9Z4i5ypGQeGiS7w9arwTvQ.0&utm_referrer=https%3A%2F%2Fwww.google.com%2F",
-  //   "https://www.tribunnews.com/travel/2016/03/24/bertahan-hidup-184-tahun-kura-kura-jonathan-ini-akhirnya-untuk-pertama-kali-mandi",
-  //   "https://www.tribunnews.com/sains/2018/04/12/kura-kura-berambut-hijau-yang-bernapas-melalui-alat-kelaminnya-terancam-punah"
-  // ];
-  // List<String> _articlesTitle = [
-  //   "Punya Kura-Kura di Rumah? Ini Bahaya yang Bisa Mengintai Anak",
-  //   "Bertahan Hidup 184 Tahun, Kura-kura Jonathan Ini Akhirnya Untuk Pertama Kali Mandi",
-  //   "Kura-kura Berambut Hijau yang Bernapas Melalui Alat Kelaminnya Terancam Punah"
-  // ];
-
   @override
   void initState() {
     super.initState();
     if (globals.user != null) {
       _refresh();
-
       _getListCategoriesAuction();
 
       _loadPromosA();
@@ -109,12 +89,54 @@ class _HomePage extends State<HomePage> {
 
     initUniLinks();
     initUniLinksStream();
+    _checkVersion();
   }
 
   @override
   dispose() {
     super.dispose();
     if (_sub != null) _sub.cancel();
+  }
+
+  void _checkVersion() {
+    print("Checking Version");
+    verifyVersion("token", globals.version).then((onValue) async {
+      if (!onValue.isUpToDate) {
+        final result = await showUpdate(onValue.url, onValue.isForceUpdate);
+        print(result);
+        if (!result) {
+          _checkVersion();
+        }
+      } else {
+        print("Already Up To Date Version");
+        setState(() {
+          alreadyUpToDate = true;
+        });
+      }
+    });
+  }
+
+  Future<bool> showUpdate(urlUpdate, bool isForceUpdate) async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: !isForceUpdate,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                  title: Text("Alert"),
+                  content: globals.myText(text: "Aplikasi Butuh diperbaharui"),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: globals.myText(text: "Perbaharui Aplikasi"),
+                      onPressed: () {
+                        launch(urlUpdate);
+                      },
+                    ),
+                  ],
+                ) ??
+                false;
+          },
+        ) ??
+        false;
   }
 
   Future<Null> initUniLinks() async {
@@ -875,10 +897,13 @@ class _HomePage extends State<HomePage> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 children: listParner.map((f) {
-                  return FadeInImage.assetNetwork(
-                      width: globals.mw(context) * 0.23,
-                      placeholder: 'assets/images/loading.gif',
-                      image: f.thumbnail);
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: FadeInImage.assetNetwork(
+                        width: globals.mw(context) * 0.23,
+                        placeholder: 'assets/images/loading.gif',
+                        image: f.thumbnail),
+                  );
                 }).toList(),
               ),
             ),
@@ -982,28 +1007,38 @@ class _HomePage extends State<HomePage> {
           bottomNavigationBar: globals.bottomNavigationBar(context),
           drawer: drawer(context),
           body: SafeArea(
-            child: ListView(
-              children: <Widget>[
-                isLoadingPromoA ? globals.isLoading() : _buildCarousel(),
-                _buildAsk(),
-                _buildNumberMember(),
-                _buildTitle(),
-                _buildGridCategory(animalCategories),
-                _buildLaranganBinatang(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                  child: Divider(color: Colors.black),
-                ),
-                isLoadingChampaign ? globals.isLoading() : _buildChampaign(),
-                isLoadingPromoVideo ? globals.isLoading() : _buildVideoA(),
-                isLoadingPromoB ? globals.isLoading() : _buildPromotionB(),
-                isLoadingArticle ? globals.isLoading() : _buildArticle(),
-                isLoadingPromoC ? globals.isLoading() : _buildPromotionC(),
-                _buildPartner(),
-                Divider(),
-                _buildDonation()
-              ],
-            ),
+            child: !alreadyUpToDate
+                ? globals.isLoading()
+                : ListView(
+                    children: <Widget>[
+                      isLoadingPromoA ? globals.isLoading() : _buildCarousel(),
+                      _buildAsk(),
+                      _buildNumberMember(),
+                      _buildTitle(),
+                      _buildGridCategory(animalCategories),
+                      _buildLaranganBinatang(),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: Divider(color: Colors.black),
+                      ),
+                      isLoadingChampaign
+                          ? globals.isLoading()
+                          : _buildChampaign(),
+                      isLoadingPromoVideo
+                          ? globals.isLoading()
+                          : _buildVideoA(),
+                      isLoadingPromoB
+                          ? globals.isLoading()
+                          : _buildPromotionB(),
+                      isLoadingArticle ? globals.isLoading() : _buildArticle(),
+                      isLoadingPromoC
+                          ? globals.isLoading()
+                          : _buildPromotionC(),
+                      _buildPartner(),
+                      Divider(),
+                      _buildDonation()
+                    ],
+                  ),
           ),
         ),
       ),

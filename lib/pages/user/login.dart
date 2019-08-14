@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart' as http;
+import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/services/user_services.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:jlf_mobile/services/version_services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -31,12 +34,52 @@ class _LoginPage extends State<LoginPage> {
   bool loginLoading = false;
   bool autoValidate = false;
 
+  bool alreadyUpToDate = false;
+
   String _username;
   String _password;
 
   @override
   void initState() {
     super.initState();
+    _checkVersion();
+  }
+
+  void _checkVersion() {
+    print("Checking Version");
+    verifyVersion("token", globals.version).then((onValue) async {
+      if (!onValue.isUpToDate) {
+        final result = await showUpdate(onValue.url, onValue.isForceUpdate);
+        if (!result) {
+          _checkVersion();
+        }
+      } else {
+        print("Already Up To Date Version");
+      }
+    });
+  }
+
+  Future<bool> showUpdate(urlUpdate, bool isForceUpdate) async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: !isForceUpdate,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                  title: Text("Alert"),
+                  content: globals.myText(text: "Aplikasi Butuh diperbaharui"),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: globals.myText(text: "Perbaharui Aplikasi"),
+                      onPressed: () {
+                        launch(urlUpdate);
+                      },
+                    ),
+                  ],
+                ) ??
+                false;
+          },
+        ) ??
+        false;
   }
 
   _logIn() async {
@@ -380,8 +423,14 @@ class _LoginPage extends State<LoginPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      globals.myText(text: "Tidak punya akun? Klik ", color: "dark"),
-                                      globals.myText(text: "di sini", weight: "SB", decoration: TextDecoration.underline, color: "primary"),
+                                      globals.myText(
+                                          text: "Tidak punya akun? Klik ",
+                                          color: "dark"),
+                                      globals.myText(
+                                          text: "di sini",
+                                          weight: "SB",
+                                          decoration: TextDecoration.underline,
+                                          color: "primary"),
                                     ],
                                   ))),
                         ),

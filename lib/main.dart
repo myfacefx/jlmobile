@@ -63,8 +63,6 @@ class MyApp extends StatelessWidget {
         '/chat-list': (BuildContext context) => ChatListPage(),
         '/donasi': (BuildContext context) => DonasiPage(),
         '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
-        
-        
       },
     );
   }

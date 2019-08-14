@@ -332,7 +332,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               "Apakah anda yakin menandai produk ini telah terjual ? Setelah itu barang tidak akan muncul lagi di list penjualan",
               context);
           if (result) {
+            globals.loadingModel(context);
             sold("", animal.product.id).then((onValue) async {
+              Navigator.pop(context);
               if (onValue) {
                 await globals.showDialogs(
                     "Berhasil menandai produk telah terjual", context,
@@ -342,6 +344,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     "Gagal menandai produk telah terjual, Coba lagi.", context);
               }
             }).catchError((onError) {
+              Navigator.pop(context);
               print(onError.toString());
               globals.showDialogs(
                   "Gagal menandai produk telah terjual, Coba lagi.", context);
@@ -724,13 +727,28 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     return animal.auction.bids.length != 0
         ? Container(
             margin: EdgeInsets.fromLTRB(25, 0, 10, 0),
-            child: Table(
-                columnWidths: {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
-                border: TableBorder(
-                    bottom: BorderSide(color: Colors.grey[300]),
-                    verticalInside: BorderSide(color: Colors.grey[300]),
-                    horizontalInside: BorderSide(color: Colors.grey[300])),
-                children: myList),
+            child: ConstrainedBox(
+              constraints: new BoxConstraints(
+                maxHeight: 160.0,
+              ),
+              child: ListView(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                children: <Widget>[
+                  Table(
+                      columnWidths: {
+                        0: FlexColumnWidth(2),
+                        1: FlexColumnWidth(1)
+                      },
+                      border: TableBorder(
+                          bottom: BorderSide(color: Colors.grey[300]),
+                          verticalInside: BorderSide(color: Colors.grey[300]),
+                          horizontalInside:
+                              BorderSide(color: Colors.grey[300])),
+                      children: myList)
+                ],
+              ),
+            ),
           )
         : Container(
             alignment: Alignment.center,
@@ -1720,22 +1738,26 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     ))
                 : Container(),
             Container(
-              height: globals.mh(context) * 0.4,
-              child: ListView.builder(
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: countComments,
-                itemBuilder: (context, int index) {
-                  if (widget.from == "LELANG") {
-                    return _buildTextComment(
-                        animal.auction.auctionComments[index],
-                        animal.ownerUserId);
-                  } else {
-                    return _buildTextCommentProduct(
-                        animal.product.productComments[index],
-                        animal.ownerUserId);
-                  }
-                },
+              child: ConstrainedBox(
+                constraints: new BoxConstraints(
+                  maxHeight: 300,
+                ),
+                child: ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: countComments,
+                  itemBuilder: (context, int index) {
+                    if (widget.from == "LELANG") {
+                      return _buildTextComment(
+                          animal.auction.auctionComments[index],
+                          animal.ownerUserId);
+                    } else {
+                      return _buildTextCommentProduct(
+                          animal.product.productComments[index],
+                          animal.ownerUserId);
+                    }
+                  },
+                ),
               ),
             ),
             SizedBox(
