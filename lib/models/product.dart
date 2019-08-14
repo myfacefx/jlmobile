@@ -15,6 +15,7 @@ class Product {
     int animalId;
     int price;
     String status;
+    String type;
     int quantity;
     int innerIslandShipping;
     int ownerUserId;
@@ -31,6 +32,7 @@ class Product {
         this.price,
         this.status,
         this.quantity,
+        this.type,
         this.innerIslandShipping,
         this.ownerUserId,
         this.createdAt,
@@ -46,6 +48,7 @@ class Product {
         animalId: json["animal_id"] == null ? null : json["animal_id"],
         price: json["price"] == null ? null : json["price"],
         status: json["status"] == null ? null : json["status"],
+        type: json["type"] == null ? null : json["type"],
         quantity: json["quantity"] == null ? null : json["quantity"],
         innerIslandShipping: json["inner_island_shipping"] == null ? null : json["inner_island_shipping"],
         ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
@@ -62,6 +65,7 @@ class Product {
         "animal_id": animalId == null ? null : animalId,
         "price": price == null ? null : price,
         "status": status == null ? null : status,
+        "type": type == null ? null : type,
         "quantity": quantity == null ? null : quantity,
         "inner_island_shipping": innerIslandShipping == null ? null : innerIslandShipping,
         "owner_user_id": ownerUserId == null ? null : ownerUserId,

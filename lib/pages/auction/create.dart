@@ -8,6 +8,7 @@ import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/product.dart';
+import 'package:jlf_mobile/models/select_product.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
@@ -16,9 +17,8 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 class CreateAuctionPage extends StatefulWidget {
   final int categoryId;
   final int subCategoryId;
-  final bool isAuction;
-  CreateAuctionPage(
-      {Key key, this.categoryId, this.subCategoryId, this.isAuction})
+  final int type;
+  CreateAuctionPage({Key key, this.categoryId, this.subCategoryId, this.type})
       : super(key: key);
   @override
   _CreateAuctionPageState createState() => _CreateAuctionPageState();
@@ -52,6 +52,16 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
   List<AnimalSubCategory> animalSubCategories = List<AnimalSubCategory>();
   AnimalSubCategory _animalSubCategory;
+  SelectProduct _selectProduct;
+
+  String labelNamaType = "Hewan";
+
+  List<SelectProduct> selectProducts = [
+    SelectProduct(id: 0, name: "Draf"),
+    SelectProduct(id: 1, name: "Lelang"),
+    SelectProduct(id: 2, name: "Produk Jual"),
+    SelectProduct(id: 3, name: "Produk Aksesoris"),
+  ];
 
   var imagesBase64 = List<String>();
 
@@ -77,19 +87,27 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   List<Asset> images = List<Asset>();
   String _error;
 
-  int _saveAs = 0;
-
   @override
   void initState() {
     super.initState();
 
     this.isLoading = true;
 
-    if (widget.isAuction != null) {
-      _saveAs = widget.isAuction ? 1 : 2;
+    _selectProduct = selectProducts[0];
+
+    if (widget.type != null) {
+      _selectProduct = selectProducts[widget.type];
     }
 
-    getAnimalCategory("token").then((onValue) {
+    if (_selectProduct.id == 3) {
+      labelNamaType = "Aksesoris";
+    } else {
+      labelNamaType = "Hewan";
+    }
+
+    getAnimalCategoryWithoutCount(
+            "token", _selectProduct.id == 3 ? "accessory" : "animal")
+        .then((onValue) {
       animalCategories = onValue;
       if (widget.categoryId != null) {
         for (var animalCategory in animalCategories) {
@@ -116,6 +134,30 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     });
 
     globals.getNotificationCount();
+  }
+
+  void _refreshCategory() {
+    _animalCategory = null;
+    _animalSubCategory = null;
+
+    getAnimalCategoryWithoutCount(
+            "token", _selectProduct.id == 3 ? "accessory" : "animal")
+        .then((onValue) {
+      animalCategories = onValue;
+
+      setState(() {
+        isLoading = false;
+      });
+    }).catchError((onError) {
+      // failedDataCategories = true;
+    }).then((_) {
+      // isLoadingCategories = false;
+
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   // Future<Null> _selectDate(BuildContext context) async {
@@ -260,13 +302,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         return;
       }
 
-      if (_gender == null) {
-        globals.showDialogs("Gender belum dipilih", context);
-        return;
-      }
+      // if (_gender == null) {
+      //   globals.showDialogs("Gender belum dipilih", context);
+      //   return;
+      // }
 
       if (imagesBase64.length == 0) {
-        globals.showDialogs("Wajib upload foto hewan max 2 foto", context);
+        globals.showDialogs(
+            "Wajib upload foto $labelNamaType max 5 foto", context);
         return;
       }
 
@@ -274,7 +317,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
       Map<String, dynamic> formData = Map<String, dynamic>();
 
-      String message = 'Berhasil menambah data hewan';
+      String message = 'Berhasil menambah data $labelNamaType';
 
       Animal animal = Animal();
       animal.animalSubCategoryId = _animalSubCategory.id;
@@ -293,7 +336,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
       formData['animal'] = animal;
 
-      if (_saveAs == 1) {
+      if (_selectProduct.id == 1) {
         message = 'Berhasil menambah data hewan, dan memulai lelang';
         // If user want to start the auction of the animal
         Auction auction = Auction();
@@ -311,19 +354,35 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
             DateTime.now().day.toString();
 
         formData['auction'] = auction;
-      } else if (_saveAs == 2) {
+      } else if (_selectProduct.id == 2) {
         message =
-            'Berhasil menambah data hewan, dan memasang sebagai produk jual';
+            'Berhasil menambah data $labelNamaType, dan memasang sebagai produk jual';
         // If user want to start the auction of the animal
         Product product = Product();
-
+        product.type = "animal";
         product.price = int.parse(_price);
-        // product.quantity = int.parse(_quantity);
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
         product.innerIslandShipping = _innerIslandShipping;
         product.slug = 'produk-jlf-' +
+            DateTime.now().year.toString() +
+            DateTime.now().month.toString() +
+            DateTime.now().day.toString();
+
+        formData['product'] = product;
+      } else if (_selectProduct.id == 3) {
+        message =
+            'Berhasil menambah data $labelNamaType, dan memasang sebagai produk aksesoris';
+        // If user want to start the auction of the animal
+        Product product = Product();
+        product.type = "accessory";
+        product.price = int.parse(_price);
+        product.quantity = 1;
+        product.ownerUserId = globals.user.id;
+        product.status = 'active';
+        product.innerIslandShipping = _innerIslandShipping;
+        product.slug = 'produk-aksesoris-jlf-' +
             DateTime.now().year.toString() +
             DateTime.now().month.toString() +
             DateTime.now().day.toString();
@@ -353,17 +412,17 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     }
   }
 
-  void _handleSaveAs(int value) {
-    setState(() {
-      _saveAs = value;
-    });
-  }
+  // void _handleSaveAs(int value) {
+  //   setState(() {
+  //     _selectProduct.id = value;
+  //   });
+  // }
 
-  void _handleGenderChange(String value) {
-    setState(() {
-      _gender = value;
-    });
-  }
+  // void _handleGenderChange(String value) {
+  //   setState(() {
+  //     _gender = value;
+  //   });
+  // }
 
   Widget _buildAuction() {
     return Column(
@@ -689,18 +748,63 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 Container(
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: DropdownButtonFormField<SelectProduct>(
+                      decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          contentPadding: EdgeInsets.all(13),
+                          hintText: "Simpan Sebagai",
+                          labelText: "Simpan Sebagai"),
+                      value: _selectProduct,
+                      validator: (animalCategory) {
+                        if (_animalCategory == null) {
+                          return 'Silahkan pilih simpan sebagai';
+                        }
+                      },
+                      onChanged: (SelectProduct selectProd) {
+                        setState(() {
+                          if (_selectProduct.id != selectProd.id) {
+                            _selectProduct = selectProd;
+
+                            if (labelNamaType == "Hewan" &&
+                                selectProd.id == 3) {
+                              _refreshCategory();
+                            } else if (labelNamaType == "Aksesoris" &&
+                                selectProd.id != 3) {
+                              _refreshCategory();
+                            }
+
+                            if (_selectProduct.id == 3) {
+                              labelNamaType = "Aksesoris";
+                            } else {
+                              labelNamaType = "Hewan";
+                            }
+                          }
+                        });
+                      },
+                      items: selectProducts.map((SelectProduct selectProduct) {
+                        return DropdownMenuItem<SelectProduct>(
+                            value: selectProduct,
+                            child: Text(selectProduct.name,
+                                style: TextStyle(color: Colors.black)));
+                      }).toList(),
+                    )),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: DropdownButtonFormField<AnimalCategory>(
                       decoration: InputDecoration(
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                           contentPadding: EdgeInsets.all(13),
-                          hintText: "Kategori Hewan",
-                          labelText: "Kategori Hewan"),
+                          hintText: "Kategori $labelNamaType",
+                          labelText: "Kategori $labelNamaType"),
                       value: _animalCategory,
                       validator: (animalCategory) {
                         if (_animalCategory == null) {
-                          return 'Silahkan pilih kategori hewan';
+                          return 'Silahkan pilih kategori $labelNamaType';
                         }
                       },
                       onChanged: (AnimalCategory category) {
@@ -725,12 +829,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                           contentPadding: EdgeInsets.all(13),
-                          hintText: "Sub Kategori Hewan",
-                          labelText: "Sub Kategori Hewan"),
+                          hintText: "Sub Kategori $labelNamaType",
+                          labelText: "Sub Kategori $labelNamaType"),
                       value: _animalSubCategory,
                       validator: (animalSubCategory) {
                         if (_animalSubCategory == null) {
-                          return 'Silahkan pilih sub kategori hewan';
+                          return 'Silahkan pilih sub kategori $labelNamaType';
                         }
                       },
                       onChanged: (AnimalSubCategory category) {
@@ -762,15 +866,15 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       },
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Nama hewan wajib diisi';
+                          return 'Nama $labelNamaType wajib diisi';
                         }
                       },
                       style: TextStyle(color: Colors.black),
                       textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(13),
-                          hintText: "Nama Hewan",
-                          labelText: "Nama Hewan",
+                          hintText: "Nama $labelNamaType",
+                          labelText: "Nama $labelNamaType",
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5))),
@@ -841,11 +945,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: 8,
-                      onFieldSubmitted: (String value) {
-                        // if (value.length > 0) {
-                        //   FocusScope.of(context).requestFocus(passwordFocusNode);
-                        // }
-                      },
+                      onFieldSubmitted: (String value) {},
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Deskripsi wajib diisi';
@@ -856,7 +956,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(13),
                           hintText:
-                              "Tuliskan deskripsi hewan, jenis pengiriman dan catatan penting lainnya",
+                              "Tuliskan deskripsi $labelNamaType, jenis pengiriman dan catatan penting lainnya",
                           labelText: "Deskripsi",
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -884,30 +984,11 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
                 Divider(),
 
-                globals.myText(text: "Simpan Hewan Sebagai", color: "grey"),
-                // Text("Lelangkan Hewan ini?", style: TextStyle(color: Colors.black)),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Radio(
-                          value: 0,
-                          onChanged: _handleSaveAs,
-                          groupValue: _saveAs),
-                      Text("Draf", style: TextStyle(color: Colors.black)),
-                      Radio(
-                          value: 1,
-                          onChanged: _handleSaveAs,
-                          groupValue: _saveAs),
-                      Text("Lelang", style: TextStyle(color: Colors.black)),
-                      Radio(
-                          value: 2,
-                          onChanged: _handleSaveAs,
-                          groupValue: _saveAs),
-                      Text("Produk Jual", style: TextStyle(color: Colors.black))
-                    ]),
                 SizedBox(height: 8),
-                _saveAs == 1 ? _buildAuction() : Container(),
-                _saveAs == 2 ? _buildSellProduct() : Container(),
+                _selectProduct.id == 1 ? _buildAuction() : Container(),
+                _selectProduct.id == 2 || _selectProduct.id == 3
+                    ? _buildSellProduct()
+                    : Container(),
                 Container(
                     width: globals.mw(context),
                     child: CheckboxListTile(
@@ -937,17 +1018,16 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)))),
                 SizedBox(height: 20),
-                // FlatButton(
-                //   child: Text("Restart Request"),
-                //   onPressed: () {
-                //     setState(() {
-                //       isLoading = false;
-                //     });
-                //   },
-                // ),
               ]),
             ),
           ]),
+          !isLoading
+              ? Container()
+              : Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black.withOpacity(0.5),
+                ),
           !isLoading ? Container() : Center(child: CircularProgressIndicator()),
         ])),
       ),

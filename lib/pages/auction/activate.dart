@@ -8,9 +8,9 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
-import 'package:jlf_mobile/models/product.dart';
-import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/models/auction.dart';
+import 'package:jlf_mobile/models/product.dart';
+import 'package:jlf_mobile/models/select_product.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
 import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
@@ -77,13 +77,21 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   List<Asset> images = List<Asset>();
   String _error;
 
-  int _saveAs = 1;
-
   String _price;
   String _quantity;
 
   Animal animal;
   int animalId;
+
+  SelectProduct _selectProduct;
+
+  String labelNamaType = "Hewan";
+
+  List<SelectProduct> selectProducts = [
+    SelectProduct(id: 1, name: "Lelang"),
+    SelectProduct(id: 2, name: "Produk Jual"),
+    SelectProduct(id: 3, name: "Produk Aksesoris"),
+  ];
 
   @override
   void initState() {
@@ -94,6 +102,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
 
   _ActivateAuctionPageState(int animalId) {
     this.animalId = animalId;
+    _selectProduct = selectProducts[0];
 
     isLoading = true;
     getAnimalById("token", animalId).then((onValue) {
@@ -107,23 +116,6 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       this._name = animal.name;
       this._animalCategory = animal.animalSubCategory.animalCategory;
       this._animalCategory = animal.animalSubCategory.animalCategory;
-      // getAnimalCategory("token").then((onValue) {
-      //   animalCategories = onValue;
-      //   setState(() {
-      //     isLoading = false;
-      //   });
-      // }).catchError((onError) {
-      //   // failedDataCategories = true;
-      // }).then((_) {
-      //   // isLoadingCategories = false;
-
-      //   if (!mounted) return;
-      //   setState(() {
-      //     isLoading = false;
-      //   });
-      // });
-      // _getAnimalSubCategories(animal.animalSubCategory);
-      // this._animalSubCategory = animal.animalSubCategory;
       this._description = animal.description;
       this._gender = animal.gender;
       this._dateOfBirth = animal.dateOfBirth;
@@ -132,33 +124,6 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       setState(() {
         isLoading = false;
       });
-    });
-  }
-
-  // Widget _buildGridViewImages() {
-  //   return Container(
-  //     padding: EdgeInsets.all(5),
-  //     child: GridView.count(
-  //       shrinkWrap: true,
-  //       crossAxisCount: 3,
-  //       children: List.generate(images.length, (index) {
-  //         Asset asset = images[index];
-  //         return Container(
-  //           padding: EdgeInsets.all(5),
-  //           child: AssetThumb(
-  //             asset: asset,
-  //             width: globals.mw(context) * 0.95,
-  //             height: 300,
-  //           ),
-  //         );
-  //       }),
-  //     ),
-  //   );
-  // }
-
-  void _handleSaveAs(int value) {
-    setState(() {
-      _saveAs = value;
     });
   }
 
@@ -252,7 +217,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       Map<String, dynamic> formData = Map<String, dynamic>();
       String message;
 
-      if (_saveAs == 1) {
+      if (_selectProduct.id == 1) {
         message = 'Berhasil memulai lelang hewan';
         // If user want to start the auction of the animal
         Auction auction = Auction();
@@ -288,13 +253,13 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
             isLoading = false;
           });
         }
-      } else if (_saveAs == 2) {
+      } else if (_selectProduct.id == 2) {
         message = 'Berhasil memasang hewan sebagai produk jual';
         // If user want to start the auction of the animal
         Product product = Product();
 
         product.price = int.parse(_price);
-        // product.quantity = int.parse(_quantity);
+        product.type = "animal";
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
@@ -313,7 +278,44 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
             await globals.showDialogs(message, context);
           } else {
             await globals.showDialogs(
-                "Gagal membuat lelang, silahkan ulangi kembali", context);
+                "Gagal membuat produk jual, silahkan ulangi kembali", context);
+          }
+
+          Navigator.pop(context);
+          Navigator.pushNamed(context, "/profile");
+        } catch (e) {
+          globals.showDialogs(e.toString(), context);
+          print(e);
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else if (_selectProduct.id == 3) {
+        message = 'Berhasil memasang aksesoris sebagai produk aksesoris';
+        // If user want to start the auction of the animal
+        Product product = Product();
+
+        product.price = int.parse(_price);
+        product.type = "accessory";
+        product.quantity = 1;
+        product.ownerUserId = globals.user.id;
+        product.status = 'active';
+        product.innerIslandShipping = _innerIslandShipping;
+        product.slug = 'produk-accessory-jlf-' +
+            DateTime.now().year.toString() +
+            DateTime.now().month.toString() +
+            DateTime.now().day.toString();
+
+        formData['product'] = product;
+
+        try {
+          bool response = await ProductServices.create(formData, animal.id);
+          print(response);
+          if (response) {
+            await globals.showDialogs(message, context);
+          } else {
+            await globals.showDialogs(
+                "Gagal membuat accessory, silahkan ulangi kembali", context);
           }
 
           Navigator.pop(context);
@@ -618,41 +620,6 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5))),
             )),
-        // Container(
-        //     width: globals.mw(context) * 0.95,
-        //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-        //     child: TextFormField(
-        //       keyboardType: TextInputType.number,
-        //       inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-        //       controller: quantityController,
-        //       focusNode: quantityFocusNode,
-        //       onSaved: (String value) {
-        //         _quantity = value;
-        //       },
-        //       onFieldSubmitted: (String value) {
-        //         // if (value.length > 0) {
-        //         //   FocusScope.of(context).requestFocus(multiplyFocusNode);
-        //         // }
-        //       },
-        //       validator: (value) {
-        //         if (value.isEmpty) {
-        //           return 'Harga Beli Sekarang wajib diisi';
-        //         }
-
-        //         if (int.parse(value) < 1) {
-        //           return 'Stok tidak sesuai';
-        //         }
-        //       },
-        //       style: TextStyle(color: Colors.black),
-        //       // keyboardType: TextInputType.number,
-        //       decoration: InputDecoration(
-        //           contentPadding: EdgeInsets.all(13),
-        //           hintText: "Stok",
-        //           labelText: "Stok",
-        //           fillColor: Colors.white,
-        //           border: OutlineInputBorder(
-        //               borderRadius: BorderRadius.circular(5))),
-        //     )),
         Container(
             width: globals.mw(context),
             child: CheckboxListTile(
@@ -683,9 +650,8 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
+        appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
         body: Scaffold(
-            drawer: drawer(context),
             key: _scaffoldKey,
             body: Stack(children: <Widget>[
               ListView(physics: ScrollPhysics(), children: <Widget>[
@@ -705,184 +671,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                         )),
-                    // Container(
-                    //     width: globals.mw(context) * 0.95,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: DropdownButtonFormField<AnimalCategory>(
-                    //       decoration: InputDecoration(
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(5)),
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           hintText: "Kategori Hewan",
-                    //           labelText: "Kategori Hewan"),
-                    //       value: _animalCategory,
-                    //       validator: (animalCategory) {
-                    //         if (animalCategory == null) {
-                    //           return 'Silahkan pilih kategori hewan';
-                    //         }
-                    //       },
-                    //       onChanged: (AnimalCategory category) {
-                    //         setState(() {
-                    //           _animalCategory = category;
-                    //         });
-                    //         _getAnimalSubCategories(null);
-                    //       },
-                    //       items:
-                    //           animalCategories.map((AnimalCategory category) {
-                    //         return DropdownMenuItem<AnimalCategory>(
-                    //             value: category,
-                    //             child: Text(category.name,
-                    //                 style: TextStyle(color: Colors.black)));
-                    //       }).toList(),
-                    //     )),
-                    // Container(
-                    //     width: globals.mw(context) * 0.95,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: DropdownButtonFormField<AnimalSubCategory>(
-                    //       decoration: InputDecoration(
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(5)),
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           hintText: "Sub Kategori Hewan",
-                    //           labelText: "Sub Kategori Hewan"),
-                    //       value: _animalSubCategory,
-                    //       validator: (animalSubCategory) {
-                    //         if (animalSubCategory == null) {
-                    //           return 'Silahkan pilih sub kategori hewan';
-                    //         }
-                    //       },
-                    //       onChanged: (AnimalSubCategory category) {
-                    //         setState(() {
-                    //           _animalSubCategory = category;
-                    //         });
-                    //       },
-                    //       items: animalSubCategories
-                    //           .map((AnimalSubCategory category) {
-                    //         return DropdownMenuItem<AnimalSubCategory>(
-                    //             value: category,
-                    //             child: Text(category.name,
-                    //                 style: TextStyle(color: Colors.black)));
-                    //       }).toList(),
-                    //     )),
 
-                    // Container(
-                    //     width: globals.mw(context) * 0.95,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: TextFormField(
-                    //       controller: nameController,
-                    //       onSaved: (String value) {
-                    //         _name = value;
-                    //       },
-                    //       onFieldSubmitted: (String value) {
-                    //         // if (value.length > 0) {
-                    //         // FocusScope.of(context).requestFocus(usernameFocusNode);
-                    //         // }
-                    //       },
-                    //       validator: (value) {
-                    //         if (value.isEmpty) {
-                    //           return 'Nama hewan wajib diisi';
-                    //         }
-                    //       },
-                    //       style: TextStyle(color: Colors.black),
-                    //       textCapitalization: TextCapitalization.words,
-                    //       decoration: InputDecoration(
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           hintText: "Nama Hewan",
-                    //           labelText: "Nama Hewan",
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(5))),
-                    //     )),
-                    // Container(
-                    //   width: globals.mw(context) * 0.95,
-                    //   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    //   child: TextFormField(
-                    //     controller: dateOfBirthController,
-                    //     validator: (String value) {
-                    //       if (value.isEmpty) return 'Tanggal lahir masih kosong';
-                    //     },
-                    //     style: TextStyle(color: Colors.black),
-                    //     decoration: InputDecoration(
-                    //         suffixIcon: GestureDetector(
-                    //           onTap: () => _selectDate(context),
-                    //           child: Icon(Icons.calendar_today),
-                    //         ),
-                    //         contentPadding: EdgeInsets.all(13),
-                    //         hintText: "Tanggal Lahir",
-                    //         labelText: "Tanggal Lahir",
-                    //         fillColor: Colors.white,
-                    //         border: OutlineInputBorder(
-                    //             borderRadius: BorderRadius.circular(5))),
-                    //   )),
-                    // Row(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: <Widget>[
-                    //       Radio(
-                    //           value: "M",
-                    //           onChanged: _handleGenderChange,
-                    //           groupValue: _gender),
-                    //       Text("Jantan", style: TextStyle(color: Colors.black)),
-                    //       Radio(
-                    //           value: "F",
-                    //           onChanged: _handleGenderChange,
-                    //           groupValue: _gender),
-                    //       Text("Betina", style: TextStyle(color: Colors.black))
-                    //     ]),
-                    // Container(
-                    //     width: globals.mw(context) * 0.95,
-                    //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    //     child: TextFormField(
-                    //       // initialValue: _description,
-                    //       controller: descriptionController,
-                    //       // focusNode: usernameFocusNode,
-                    //       onSaved: (String value) {
-                    //         _description = value;
-                    //       },
-                    //       keyboardType: TextInputType.multiline,
-                    //       maxLines: 5,
-                    //       onFieldSubmitted: (String value) {
-                    //         // if (value.length > 0) {
-                    //         //   FocusScope.of(context).requestFocus(passwordFocusNode);
-                    //         // }
-                    //       },
-                    //       validator: (value) {
-                    //         if (value.isEmpty) {
-                    //           return 'Deskripsi wajib diisi';
-                    //         }
-                    //       },
-                    //       textCapitalization: TextCapitalization.sentences,
-                    //       style: TextStyle(color: Colors.black),
-                    //       decoration: InputDecoration(
-                    //           contentPadding: EdgeInsets.all(13),
-                    //           hintText: "Deskripsi",
-                    //           labelText: "Deskripsi",
-                    //           fillColor: Colors.white,
-                    //           border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(5))),
-                    //     )),
-                    // Container(
-                    //   width: 150,
-                    //   child: RaisedButton(
-                    //     shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(5)),
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: <Widget>[
-                    //         Text("Foto", style: TextStyle(color: Colors.white)),
-                    //         Icon(Icons.add_photo_alternate,
-                    //             color: Colors.white),
-                    //       ],
-                    //     ),
-                    //     color: Theme.of(context).primaryColor,
-                    //     onPressed: loadAssets,
-                    //   ),
-                    // ),
-                    // images != null && images.length > 0
-                    //     ? _buildGridViewImages()
-                    //     : Container(),
-                    // SizedBox(height: 10),
                     Container(
                         child: globals.myText(
                             text: "Kategori", weight: "B", color: 'dark')),
@@ -894,7 +683,9 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                     SizedBox(height: 10),
                     Container(
                         child: globals.myText(
-                            text: "Nama Hewan", weight: "B", color: 'dark')),
+                            text: "Nama $labelNamaType",
+                            weight: "B",
+                            color: 'dark')),
                     Container(
                         child: globals.myText(
                             text: "${animal != null ? animal.name : ""}",
@@ -924,22 +715,63 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                         : Container(),
 
                     Divider(),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Radio(
-                              value: 1,
-                              onChanged: _handleSaveAs,
-                              groupValue: _saveAs),
-                          Text("Lelang", style: TextStyle(color: Colors.black)),
-                          Radio(
-                              value: 2,
-                              onChanged: _handleSaveAs,
-                              groupValue: _saveAs),
-                          Text("Produk Jual",
-                              style: TextStyle(color: Colors.black))
-                        ]),
-                    _saveAs == 1 ? _buildAuction() : _buildSellProduct(),
+                    // Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: <Widget>[
+                    //       Radio(
+                    //           value: 1,
+                    //           onChanged: _handleSaveAs,
+                    //           groupValue: _saveAs),
+                    //       Text("Lelang", style: TextStyle(color: Colors.black)),
+                    //       Radio(
+                    //           value: 2,
+                    //           onChanged: _handleSaveAs,
+                    //           groupValue: _saveAs),
+                    //       Text("Produk Jual",
+                    //           style: TextStyle(color: Colors.black))
+                    //     ]),
+
+                    Container(
+                        width: globals.mw(context) * 0.95,
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: DropdownButtonFormField<SelectProduct>(
+                          decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              contentPadding: EdgeInsets.all(13),
+                              hintText: "Simpan Sebagai",
+                              labelText: "Simpan Sebagai"),
+                          value: _selectProduct,
+                          validator: (animalCategory) {
+                            if (_animalCategory == null) {
+                              return 'Silahkan pilih simpan sebagai';
+                            }
+                          },
+                          onChanged: (SelectProduct selectProd) {
+                            setState(() {
+                              if (_selectProduct.id != selectProd.id) {
+                                _selectProduct = selectProd;
+
+                                if (_selectProduct.id == 3) {
+                                  labelNamaType = "Aksesoris";
+                                } else {
+                                  labelNamaType = "Hewan";
+                                }
+                              }
+                            });
+                          },
+                          items:
+                              selectProducts.map((SelectProduct selectProduct) {
+                            return DropdownMenuItem<SelectProduct>(
+                                value: selectProduct,
+                                child: Text(selectProduct.name,
+                                    style: TextStyle(color: Colors.black)));
+                          }).toList(),
+                        )),
+                    _selectProduct.id == 1
+                        ? _buildAuction()
+                        : _buildSellProduct(),
                     Container(
                         width: globals.mw(context),
                         child: CheckboxListTile(
@@ -963,7 +795,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                             onPressed: () => isLoading ? null : _save(),
                             child: Text(
                                 !isLoading
-                                    ? _saveAs == 1
+                                    ? _selectProduct.id == 1
                                         ? "Mulai Lelang"
                                         : "Mulai Jual"
                                     : "Mohon Tunggu",
@@ -977,8 +809,8 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                         width: globals.mw(context) * 0.95,
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                         child: FlatButton(
-                            onPressed: () => isLoading ? null :  _deleteAnimal(),
-                            child: Text("Hapus Hewan",
+                            onPressed: () => isLoading ? null : _deleteAnimal(),
+                            child: Text("Hapus Draf",
                                 style: Theme.of(context).textTheme.display4),
                             color: globals.myColor("danger"),
                             shape: RoundedRectangleBorder(

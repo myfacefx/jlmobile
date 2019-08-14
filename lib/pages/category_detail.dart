@@ -57,7 +57,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     if (from == "LELANG") {
       function = getAnimalAuctionByCategory("Token", animalCategory.id,
           selectedSortBy, searchController.text, globals.user.id);
-    } else if (from == "PASAR HEWAN") {
+    } else if (from == "PASAR HEWAN" || from == "ACCESSORY") {
       function = getAnimalProductByCategory("Token", animalCategory.id,
           selectedSortBy, searchController.text, globals.user.id);
     }
@@ -87,7 +87,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     refreshTopSellers();
   }
@@ -127,7 +126,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           globals.user.id);
     }
 
-    if (from == "PASAR HEWAN") {
+    if (from == "PASAR HEWAN" || from == "ACCESSORY") {
       functionCategory = getAnimalProductByCategory(
           "Token",
           widget.animalCategory.id,
@@ -290,6 +289,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   //title add post bid
 
   Widget _buildTitle() {
+    int _type = 0;
+    if (widget.from == "LELANG") {
+      _type = 1;
+    } else if (widget.from == "PASAR HEWAN") {
+      _type = 2;
+    } else if (widget.from == "ACCESSORY") {
+      _type = 3;
+    }
     return Container(
       color: Colors.white,
       padding: EdgeInsets.fromLTRB(20, 16, 20, 16),
@@ -313,7 +320,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => CreateAuctionPage(
-                              isAuction: widget.from == "LELANG" ? true : false,
+                              type: _type,
                               categoryId: widget.animalCategory.id,
                               subCategoryId: currentIdSubCategory,
                             )));
@@ -344,7 +351,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _templateTopSellerProfile(User user) {    
+  Widget _templateTopSellerProfile(User user) {
     return GestureDetector(
       onTap: () => Navigator.push(
           context,
@@ -373,37 +380,41 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   Widget _buildTopSeller() {
-    return topSellers.length > 0 ? Card(
-      child: Container(
-        color: Colors.white,
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 15, bottom: 5, top: 5),
-              alignment: Alignment.centerLeft,
-              child: globals.myText(text: "TOP SELLER", weight: "B"),
+    return topSellers.length > 0
+        ? Card(
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(left: 15, bottom: 5, top: 5),
+                    alignment: Alignment.centerLeft,
+                    child: globals.myText(text: "TOP SELLER", weight: "B"),
+                  ),
+                  Container(
+                      height: 100,
+                      alignment: Alignment.center,
+                      child: isLoadingTopSellers
+                          ? globals.isLoading()
+                          : topSellers.length > 0
+                              ? ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: false,
+                                  itemBuilder: (context, index) {
+                                    return _templateTopSellerProfile(
+                                        topSellers[index]);
+                                  },
+                                  itemCount: topSellers.length,
+                                )
+                              : globals.myText(
+                                  text:
+                                      "Belum ada top seller pada kategori ini")),
+                ],
+              ),
             ),
-            Container(
-                height: 100,
-                alignment: Alignment.center,
-                child: isLoadingTopSellers
-                    ? globals.isLoading()
-                    : topSellers.length > 0
-                        ? ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: false,
-                            itemBuilder: (context, index) {
-                              return _templateTopSellerProfile(topSellers[index]);
-                            },
-                            itemCount: topSellers.length,
-                          )
-                        : globals.myText(
-                            text: "Belum ada top seller pada kategori ini")),
-          ],
-        ),
-      ),
-    ) : Container();
+          )
+        : Container();
   }
 
   //title add post bid
@@ -718,7 +729,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   Widget _buildCard(Animal animal) {
     var isNotError = false;
     if (animal.animalImages.length > 0 &&
-        animal.animalImages[0].image != null) {
+        animal.animalImages[0].thumbnail != null) {
       isNotError = true;
     }
 
@@ -750,7 +761,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                             animal.owner.username, animal.owner.photo)
                         : Container(),
                     isNotError
-                        ? _buildImage(animal.animalImages[0].image)
+                        ? _buildImage(animal.animalImages[0].thumbnail)
                         : globals.failLoadImage(),
                     _buildDetail(
                         animal.name,

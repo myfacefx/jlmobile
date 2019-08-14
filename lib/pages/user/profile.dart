@@ -442,19 +442,15 @@ class _ProfilePageState extends State<ProfilePage>
                       SizedBox(
                         height: 5,
                       ),
-                      Row(
-                        children: <Widget>[
-                          globals.myText(
-                              text:
-                                  "Jumlah Tersedia  : ${animal.product.quantity}",
-                              size: 10,
-                              color: "unprime"),
-                        ],
-                      ),
                       _buildChips(
                           "Harga Jual",
                           globals
                               .convertToMoney(animal.product.price.toDouble())),
+                      _buildChips(
+                          "Jenis",
+                          animal.product.type == "animal"
+                              ? "Hewan"
+                              : "Aksesoris"),
                     ],
                   ),
                 ),
@@ -728,32 +724,10 @@ class _ProfilePageState extends State<ProfilePage>
           isScrollable: true,
           tabs: <Widget>[
             Tab(
-                child: Padding(
-              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  globals.myText(text: "Draft ", size: 11),
-                  animals.length > 0
-                      ? Container(
-                          constraints:
-                              BoxConstraints(minWidth: 10, minHeight: 10),
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(100)),
-                          child: globals.myText(
-                              text: "${animals.length}",
-                              weight: "B",
-                              color: 'light',
-                              size: 10))
-                      : Container()
-                ],
-              ),
-            )),
-            Tab(
-                child: Padding(
-              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                child: Container(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              width: globals.mw(context) * 0.25,
+              constraints: BoxConstraints(minWidth: 100),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -776,25 +750,56 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             )),
             Tab(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                globals.myText(text: "Produk Pasar Hewan ", size: 11),
-                auctions.length > 0
-                    ? Container(
-                        constraints:
-                            BoxConstraints(minWidth: 10, minHeight: 10),
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: globals.myText(
-                            text: "${products.length}",
-                            weight: "B",
-                            color: 'light',
-                            size: 10))
-                    : Container()
-              ],
+                child: Container(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              width: globals.mw(context) * 0.25,
+              constraints: BoxConstraints(minWidth: 100),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Produk Jual Beli ", size: 11),
+                  auctions.length > 0
+                      ? Container(
+                          constraints:
+                              BoxConstraints(minWidth: 10, minHeight: 10),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: globals.myText(
+                              text: "${products.length}",
+                              weight: "B",
+                              color: 'light',
+                              size: 10))
+                      : Container()
+                ],
+              ),
+            )),
+            Tab(
+                child: Container(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              width: globals.mw(context) * 0.2,
+              constraints: BoxConstraints(minWidth: 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Draft ", size: 11),
+                  animals.length > 0
+                      ? Container(
+                          constraints:
+                              BoxConstraints(minWidth: 10, minHeight: 10),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: globals.myText(
+                              text: "${animals.length}",
+                              weight: "B",
+                              color: 'light',
+                              size: 10))
+                      : Container()
+                ],
+              ),
             )),
           ],
         ))));
@@ -830,10 +835,6 @@ class _ProfilePageState extends State<ProfilePage>
         controller: _tabController,
         children: <Widget>[
           Container(
-              child: isLoadingAnimals
-                  ? globals.isLoading()
-                  : _buildAnimals(animals, "produkku")),
-          Container(
               child: isLoadingAuctions
                   ? globals.isLoading()
                   : _buildAnimals(auctions, "produklelang")),
@@ -841,6 +842,10 @@ class _ProfilePageState extends State<ProfilePage>
               child: isLoadingProducts
                   ? globals.isLoading()
                   : _buildAnimals(products, "pasarhewan")),
+          Container(
+              child: isLoadingAnimals
+                  ? globals.isLoading()
+                  : _buildAnimals(animals, "produkku")),
         ],
       ),
     );
