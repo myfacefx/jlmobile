@@ -290,12 +290,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildTitle() {
     int _type = 0;
+    String name = "Buat Lelang";
     if (widget.from == "LELANG") {
       _type = 1;
+      name = "Buat Lelang";
     } else if (widget.from == "PASAR HEWAN") {
       _type = 2;
+      name = "Jual Hewan";
     } else if (widget.from == "ACCESSORY") {
       _type = 3;
+      name = "Jual Aksesoris";
     }
     return Container(
       color: Colors.white,
@@ -338,12 +342,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: Colors.blueGrey),
                   ),
-                  globals.myText(
-                      text: widget.from == "LELANG"
-                          ? "Buat Lelang"
-                          : "Jual Hewan",
-                      color: "primary",
-                      weight: "XB"),
+                  globals.myText(text: name, color: "primary", weight: "XB"),
                 ],
               ))
         ],
