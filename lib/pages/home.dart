@@ -42,6 +42,7 @@ class _HomePage extends State<HomePage> {
   bool isLoadingPromoB = true;
   bool isLoadingPromoC = true;
   bool isLoadingChampaign = true;
+  bool isLoadingArticle = true;
 
   bool isLoadingPromoVideo = true;
   bool failedDataCategories = false;
@@ -55,32 +56,33 @@ class _HomePage extends State<HomePage> {
   List<Promo> listPromoC = [];
   List<Promo> listVideo = [];
   List<Article> listChampaign = [];
+  List<Article> listArticle = [];
   List<JlfPartner> listParner = [];
   String selectedType = "LELANG";
 
   int _currentArticle = 0;
 
-  List<Widget> _articlesImages = [
-    ImageOverlay(
-        image:
-            "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
-    ImageOverlay(
-        image:
-            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
-    ImageOverlay(
-        image:
-            "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
-  ];
-  List<String> _articlesLinks = [
-    "https://www.liputan6.com/health/read/3082433/punya-kura-kura-di-rumah-ini-bahaya-yang-bisa-mengintai-anak?utm_expid=.9Z4i5ypGQeGiS7w9arwTvQ.0&utm_referrer=https%3A%2F%2Fwww.google.com%2F",
-    "https://www.tribunnews.com/travel/2016/03/24/bertahan-hidup-184-tahun-kura-kura-jonathan-ini-akhirnya-untuk-pertama-kali-mandi",
-    "https://www.tribunnews.com/sains/2018/04/12/kura-kura-berambut-hijau-yang-bernapas-melalui-alat-kelaminnya-terancam-punah"
-  ];
-  List<String> _articlesTitle = [
-    "Punya Kura-Kura di Rumah? Ini Bahaya yang Bisa Mengintai Anak",
-    "Bertahan Hidup 184 Tahun, Kura-kura Jonathan Ini Akhirnya Untuk Pertama Kali Mandi",
-    "Kura-kura Berambut Hijau yang Bernapas Melalui Alat Kelaminnya Terancam Punah"
-  ];
+  // List<Widget> _articlesImages = [
+  // ImageOverlay(
+  //     image:
+  //         "https://cdn0-production-images-kly.akamaized.net/mlWguH_D--qaFOedNOreIKdpV8s=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/1071039/original/041915500_1448872446-14824-Baby-Hermanns-Tortoise-white-background.jpg"),
+  //   ImageOverlay(
+  //       image:
+  //           "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-jonathan_20160324_053115.jpg"),
+  //   ImageOverlay(
+  //       image:
+  //           "https://cdn2.tstatic.net/tribunnews/foto/bank/images/kura-kura-saint-mary_20180412_122627.jpg")
+  // ];
+  // List<String> _articlesLinks = [
+  //   "https://www.liputan6.com/health/read/3082433/punya-kura-kura-di-rumah-ini-bahaya-yang-bisa-mengintai-anak?utm_expid=.9Z4i5ypGQeGiS7w9arwTvQ.0&utm_referrer=https%3A%2F%2Fwww.google.com%2F",
+  //   "https://www.tribunnews.com/travel/2016/03/24/bertahan-hidup-184-tahun-kura-kura-jonathan-ini-akhirnya-untuk-pertama-kali-mandi",
+  //   "https://www.tribunnews.com/sains/2018/04/12/kura-kura-berambut-hijau-yang-bernapas-melalui-alat-kelaminnya-terancam-punah"
+  // ];
+  // List<String> _articlesTitle = [
+  //   "Punya Kura-Kura di Rumah? Ini Bahaya yang Bisa Mengintai Anak",
+  //   "Bertahan Hidup 184 Tahun, Kura-kura Jonathan Ini Akhirnya Untuk Pertama Kali Mandi",
+  //   "Kura-kura Berambut Hijau yang Bernapas Melalui Alat Kelaminnya Terancam Punah"
+  // ];
 
   @override
   void initState() {
@@ -95,6 +97,7 @@ class _HomePage extends State<HomePage> {
       _loadPromosC();
       _loadPromosVideo();
       _loadChampaign();
+      _loadArticle();
 
       _getAnimalCategory();
       _loadJlfPartner();
@@ -268,6 +271,23 @@ class _HomePage extends State<HomePage> {
       print(onError.toString());
       setState(() {
         isLoadingChampaign = false;
+      });
+    });
+  }
+
+  _loadArticle() {
+    getAllArticle("token", "article").then((onValue) {
+      if (onValue.length != 0) {
+        listArticle = onValue;
+      }
+
+      setState(() {
+        isLoadingArticle = false;
+      });
+    }).catchError((onError) {
+      print(onError.toString());
+      setState(() {
+        isLoadingArticle = false;
       });
     });
   }
@@ -890,7 +910,9 @@ class _HomePage extends State<HomePage> {
                       _currentArticle = index;
                     });
                   },
-                  items: _articlesImages,
+                  items: listArticle.map((f) {
+                    return ImageOverlay(image: f.image);
+                  }).toList(),
                 ),
               ),
               Positioned(
@@ -903,16 +925,6 @@ class _HomePage extends State<HomePage> {
                           text: "JLF", color: 'light', weight: "XB", size: 25)
                     ],
                   )),
-              // Positioned(
-              //     bottom: 10,
-              //     left: 0.0,
-              //     right: 0.0,
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: <Widget>[
-              //         _buildDoted(_currentArticle + 1, _articlesImages.length)
-              //       ],
-              //     )),
               Positioned(
                   bottom: 10,
                   left: 10,
@@ -923,13 +935,13 @@ class _HomePage extends State<HomePage> {
                       Container(
                           width: globals.mw(context) * 0.6,
                           child: globals.myText(
-                              text: _articlesTitle[_currentArticle],
+                              text: listArticle[_currentArticle].description,
                               color: "light")),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => WebviewScaffold(
-                                  url: _articlesLinks[_currentArticle],
+                                  url: listArticle[_currentArticle].description,
                                   appBar: globals.appBar(_scaffoldKey, context,
                                       isSubMenu: true,
                                       showNotification: false))));
@@ -985,7 +997,7 @@ class _HomePage extends State<HomePage> {
                 isLoadingChampaign ? globals.isLoading() : _buildChampaign(),
                 isLoadingPromoVideo ? globals.isLoading() : _buildVideoA(),
                 isLoadingPromoB ? globals.isLoading() : _buildPromotionB(),
-                _buildArticle(),
+                isLoadingArticle ? globals.isLoading() : _buildArticle(),
                 isLoadingPromoC ? globals.isLoading() : _buildPromotionC(),
                 _buildPartner(),
                 Divider(),

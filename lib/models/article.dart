@@ -20,6 +20,8 @@ class Article {
     dynamic createdAt;
     dynamic updatedAt;
     dynamic deletedAt;
+    String image;
+    String thumbnail;
 
     Article({
         this.id,
@@ -33,6 +35,8 @@ class Article {
         this.createdAt,
         this.updatedAt,
         this.deletedAt,
+        this.image,
+        this.thumbnail,
     });
 
     factory Article.fromJson(Map<String, dynamic> json) => new Article(
@@ -47,6 +51,8 @@ class Article {
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         deletedAt: json["deleted_at"],
+        image: json["image"] == null ? null : json["image"],
+        thumbnail: json["thumbnail"] == null ? null : json["thumbnail"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -61,5 +67,7 @@ class Article {
         "created_at": createdAt,
         "updated_at": updatedAt,
         "deleted_at": deletedAt,
+        "image": image == null ? null : image,
+        "thumbnail": thumbnail == null ? null : thumbnail,
     };
 }

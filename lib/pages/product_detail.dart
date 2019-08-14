@@ -18,6 +18,7 @@ import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
 import 'package:jlf_mobile/services/bid_services.dart';
 import 'package:jlf_mobile/services/product_comment_services.dart';
+import 'package:jlf_mobile/services/product_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -298,7 +299,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     ];
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+      padding: EdgeInsets.fromLTRB(20, 10, 20, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: children2,
@@ -317,10 +318,45 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     }
   }
 
+  Widget _buildDeleteProduct() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+          globals.mw(context) * 0.25, 5, globals.mw(context) * 0.25, 5),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        color: Colors.red,
+        onPressed: () async {
+          final result = await globals.confirmDialog(
+              "Apakah anda yakin menandai produk ini telah terjual ? Setelah itu barang tidak akan muncul lagi di list penjualan",
+              context);
+          if (result) {
+            sold("", animal.product.id).then((onValue) async {
+              if (onValue) {
+                await globals.showDialogs(
+                    "Berhasil menandai produk telah terjual", context,
+                    isDouble: true);
+              } else {
+                globals.showDialogs(
+                    "Gagal menandai produk telah terjual, Coba lagi.", context);
+              }
+            }).catchError((onError) {
+              print(onError.toString());
+              globals.showDialogs(
+                  "Gagal menandai produk telah terjual, Coba lagi.", context);
+            });
+          }
+        },
+        child: globals.myText(text: "Tandai Sudah Terjual", color: "light"),
+      ),
+    );
+  }
+
   Widget _buildOwnerDetail() {
     return Container(
       color: Theme.of(context).primaryColor,
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 18),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -1674,37 +1710,34 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             SizedBox(
               height: 20,
             ),
-            // Column(
-            //   children: animal.auction.auctionComments.map((comment) {
-            //     return _buildTextComment(comment, animal.ownerUserId);
-            //   }).toList(),
-            // ),
-            countComments > 0
+            countComments == 0
                 ? Container(
-                    height: globals.mh(context) * 0.4,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: countComments,
-                      itemBuilder: (context, int index) {
-                        if (widget.from == "LELANG") {
-                          return _buildTextComment(
-                              animal.auction.auctionComments[index],
-                              animal.ownerUserId);
-                        } else {
-                          return _buildTextCommentProduct(
-                              animal.product.productComments[index],
-                              animal.ownerUserId);
-                        }
-                      },
-                    ),
-                  )
-                : Container(
                     alignment: Alignment.center,
                     child: Text(
                       "Belum ada komentar",
                       style: TextStyle(color: Colors.black),
                       textAlign: TextAlign.center,
-                    )),
+                    ))
+                : Container(),
+            Container(
+              height: globals.mh(context) * 0.4,
+              child: ListView.builder(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: countComments,
+                itemBuilder: (context, int index) {
+                  if (widget.from == "LELANG") {
+                    return _buildTextComment(
+                        animal.auction.auctionComments[index],
+                        animal.ownerUserId);
+                  } else {
+                    return _buildTextCommentProduct(
+                        animal.product.productComments[index],
+                        animal.ownerUserId);
+                  }
+                },
+              ),
+            ),
             SizedBox(
               height: 20,
             ),
@@ -1776,6 +1809,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             ? globals.isLoading()
             : SafeArea(
                 child: ListView(
+                  physics: ScrollPhysics(),
                   children: <Widget>[
                     widget.from == "LELANG"
                         ? animal.auction.cancellationDate != null
@@ -1787,18 +1821,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       height: 8,
                     ),
                     _buildDesc(widget.from == "LELANG"),
-                    SizedBox(
-                      height: 8,
-                    ),
                     // If the logged in was the auction owner, hide element
                     (animal.ownerUserId == globals.user.id)
                         ? Container()
                         : _buildOwnerDetail(),
-                    SizedBox(
-                      height: 8,
-                    ),
+
                     widget.from == "LELANG"
                         ? _buildBidRuleAuction()
+                        : Container(),
+
+                    (widget.from == "ACCESSORY" || widget.from == "PASAR HEWAN")
+                        ? (animal.ownerUserId == globals.user.id)
+                            ? _buildDeleteProduct()
+                            : Container()
                         : Container(),
 
                     // If the logged in was the auction owner or the auction has been inactive, hide element
