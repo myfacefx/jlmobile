@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/article.dart';
+import 'package:jlf_mobile/models/jlf_partner.dart';
 import 'package:jlf_mobile/models/promo.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
@@ -16,6 +16,7 @@ import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/article_services.dart';
+import 'package:jlf_mobile/services/jlf_partner_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +45,9 @@ class _HomePage extends State<HomePage> {
 
   bool isLoadingPromoVideo = true;
   bool failedDataCategories = false;
+
+  bool isLoadingPartner = true;
+
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   int membersCount = 0;
   List<Widget> listPromoA = [];
@@ -51,6 +55,7 @@ class _HomePage extends State<HomePage> {
   List<Promo> listPromoC = [];
   List<Promo> listVideo = [];
   List<Article> listChampaign = [];
+  List<JlfPartner> listParner = [];
   String selectedType = "LELANG";
 
   int _currentArticle = 0;
@@ -92,6 +97,8 @@ class _HomePage extends State<HomePage> {
       _loadChampaign();
 
       _getAnimalCategory();
+      _loadJlfPartner();
+
       globals.getNotificationCount();
       globals.generateToken();
       globals.notificationListener(context);
@@ -157,6 +164,22 @@ class _HomePage extends State<HomePage> {
       Navigator.push(context,
           MaterialPageRoute(builder: (BuildContext context) => NotFoundPage()));
     }
+  }
+
+  _loadJlfPartner() {
+    getAllJlfPartner("token").then((onValue) {
+      if (onValue.length != 0) {
+        listParner = onValue;
+      }
+
+      setState(() {
+        isLoadingPartner = false;
+      });
+    }).catchError((onError) {
+      setState(() {
+        isLoadingPartner = false;
+      });
+    });
   }
 
   _loadPromosA() {
@@ -234,7 +257,6 @@ class _HomePage extends State<HomePage> {
 
   _loadChampaign() {
     getAllArticle("token", "champaign").then((onValue) {
-      print(json.encode(onValue));
       if (onValue.length != 0) {
         listChampaign = onValue;
       }
@@ -309,7 +331,7 @@ class _HomePage extends State<HomePage> {
       isLoadingCategories = true;
     });
 
-    getNotUserAnimalCategory("token", globals.user.id).then((onValue) {
+    getAnimalCategory("token").then((onValue) {
       animalCategories = onValue;
       setState(() {
         isLoadingCategories = false;
@@ -330,7 +352,28 @@ class _HomePage extends State<HomePage> {
       isLoadingCategories = true;
     });
 
-    getNotProductUserAnimalCategory("token", globals.user.id).then((onValue) {
+    getProductAnimalCategory("token").then((onValue) {
+      animalCategories = onValue;
+      setState(() {
+        isLoadingCategories = false;
+      });
+    }).catchError((onError) {
+      failedDataCategories = true;
+    }).then((_) {
+      isLoadingCategories = false;
+
+      if (!mounted) return;
+      setState(() {});
+    });
+  }
+
+  void _getAccessoryAnimalCategory() {
+    setState(() {
+      failedDataCategories = false;
+      isLoadingCategories = true;
+    });
+
+    getAccessoryAnimalCategory("token").then((onValue) {
       animalCategories = onValue;
       setState(() {
         isLoadingCategories = false;
@@ -450,6 +493,19 @@ class _HomePage extends State<HomePage> {
                 size: 16,
                 color: selectedType == "PASAR HEWAN" ? null : "disabled"),
           ),
+          Text("  |  ", style: Theme.of(context).textTheme.headline),
+          GestureDetector(
+            onTap: () {
+              if (selectedType != "ACCESSORY") {
+                selectedType = "ACCESSORY";
+                _getAccessoryAnimalCategory();
+              }
+            },
+            child: globals.myText(
+                text: "AKSESORIS",
+                size: 16,
+                color: selectedType == "ACCESSORY" ? null : "disabled"),
+          ),
           Expanded(child: Text("")),
         ],
       ),
@@ -498,15 +554,13 @@ class _HomePage extends State<HomePage> {
   Widget cardAnimal(AnimalCategory category) {
     return GestureDetector(
         onTap: () {
-          if (category.animalsCount > 0) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => CategoryDetailPage(
-                          animalCategory: category,
-                          from: selectedType,
-                        )));
-          }
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CategoryDetailPage(
+                        animalCategory: category,
+                        from: selectedType,
+                      )));
         },
         child: Card(
           child: Stack(
@@ -524,45 +578,45 @@ class _HomePage extends State<HomePage> {
                   ],
                 ),
               ),
-              category.animalsCount == 0
-                  ? Positioned.fill(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.6),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                      ),
-                    )
-                  : Container(),
-              category.animalsCount == 0
-                  ? Positioned.fill(
-                      child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  globals.myText(
-                                      text: "Segera Hadir",
-                                      color: "light",
-                                      size: 14,
-                                      weight: "SB"),
-                                ],
-                              ),
-                            ),
-                          )),
-                    )
-                  : Container(),
+              // category.animalsCount == 0
+              //     ? Positioned.fill(
+              //         child: Align(
+              //           alignment: Alignment.center,
+              //           child: Container(
+              //             decoration: BoxDecoration(
+              //               color: Colors.black.withOpacity(0.6),
+              //               borderRadius: BorderRadius.circular(4),
+              //             ),
+              //             width: double.infinity,
+              //             height: double.infinity,
+              //           ),
+              //         ),
+              //       )
+              //     : Container(),
+              // category.animalsCount == 0
+              //     ? Positioned.fill(
+              //         child: Align(
+              //             alignment: Alignment.center,
+              //             child: Container(
+              //               width: double.infinity,
+              //               height: double.infinity,
+              //               child: Padding(
+              //                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
+              //                 child: Column(
+              //                   mainAxisAlignment: MainAxisAlignment.end,
+              //                   crossAxisAlignment: CrossAxisAlignment.end,
+              //                   children: <Widget>[
+              //                     globals.myText(
+              //                         text: "Segera Hadir",
+              //                         color: "light",
+              //                         size: 14,
+              //                         weight: "SB"),
+              //                   ],
+              //                 ),
+              //               ),
+              //             )),
+              //       )
+              //     : Container(),
             ],
           ),
         ));
@@ -769,7 +823,6 @@ class _HomePage extends State<HomePage> {
                             OutlineButton(
                               padding: EdgeInsets.all(0),
                               onPressed: () {
-                                Navigator.pop(context);
                                 Navigator.pushNamed(context, "/donasi");
                               },
                               color: Colors.transparent,
@@ -787,35 +840,28 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildPartner() {
     return Container(
+        height: 115,
         margin: EdgeInsets.all(5),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
                 padding: EdgeInsets.all(5),
                 child: globals.myText(
                     text: "PARTNER JLF", color: 'dark', size: 15)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                FadeInImage.assetNetwork(
-                    width: globals.mw(context) * 0.23,
-                    placeholder: 'assets/images/loading.gif',
-                    image: 'https://via.placeholder.com/150/92c952'),
-                FadeInImage.assetNetwork(
-                    width: globals.mw(context) * 0.23,
-                    placeholder: 'assets/images/loading.gif',
-                    image: 'https://via.placeholder.com/150/92c952'),
-                FadeInImage.assetNetwork(
-                    width: globals.mw(context) * 0.23,
-                    placeholder: 'assets/images/loading.gif',
-                    image: 'https://via.placeholder.com/150/92c952'),
-                FadeInImage.assetNetwork(
-                    width: globals.mw(context) * 0.23,
-                    placeholder: 'assets/images/loading.gif',
-                    image: 'https://via.placeholder.com/150/92c952'),
-              ],
-            )
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                children: listParner.map((f) {
+                  return FadeInImage.assetNetwork(
+                      width: globals.mw(context) * 0.23,
+                      placeholder: 'assets/images/loading.gif',
+                      image: f.thumbnail);
+                }).toList(),
+              ),
+            ),
           ],
         ));
   }
@@ -901,41 +947,6 @@ class _HomePage extends State<HomePage> {
                                     weight: "B",
                                     align: TextAlign.center))),
                       )
-                      // Container(
-                      //     width: globals.mw(context) * 0.2,
-                      //     // padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                      //     child: RawMaterialButton(
-                      //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      //       padding: EdgeInsets.all(0),
-                      //       child: Container(
-                      //         padding: EdgeInsets.all(0),
-                      //         child: globals.myText(text: "BACA", weight: "B"),
-                      //       ) ,
-                      //       fillColor: Colors.white,
-                      //       onPressed: () {
-                      //         Navigator.of(context).push(MaterialPageRoute(
-                      //             builder: (context) => WebviewScaffold(
-                      //                 url: _articlesLinks[_currentArticle],
-                      //                 appBar: globals.appBar(
-                      //                     _scaffoldKey, context))));
-                      //       },
-                      //     )
-                      // )
-
-                      // child: FlatButton(
-                      //   padding: EdgeInsets.all(10),
-                      //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      //     onPressed: () {
-                      //       Navigator.of(context).push(MaterialPageRoute(
-                      //           builder: (context) => WebviewScaffold(
-                      //               url: _articlesLinks[_currentArticle],
-                      //               appBar: globals.appBar(
-                      //                   _scaffoldKey, context))));
-                      //     },
-                      //     child: globals.myText(text: "BACA"),
-                      //     color: globals.myColor('light'),
-                      //     shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(10)))),
                     ],
                   ))
             ],
@@ -943,31 +954,6 @@ class _HomePage extends State<HomePage> {
         ],
       ),
     );
-
-    // return Container(
-    //     margin: EdgeInsets.all(5),
-    //     child: Column(
-    //       crossAxisAlignment: CrossAxisAlignment.start,
-    //       children: <Widget>[
-    //         Container(
-    //             padding: EdgeInsets.all(5),
-    //             child: globals.myText(
-    //                 text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
-    //         Container(
-    //           width: globals.mw(context),
-    //           child: Card(
-    //               child: Stack(
-    //             children: <Widget>[
-    //               FadeInImage.assetNetwork(
-    //                   width: globals.mw(context) * 0.23,
-    //                   placeholder: 'assets/images/loading.gif',
-    //                   image: 'https://via.placeholder.com/150/92c952'),
-    //               // globals.myText(text: "AWKAWKAWK")
-    //             ],
-    //           )),
-    //         )
-    //       ],
-    //     ));
   }
 
   @override

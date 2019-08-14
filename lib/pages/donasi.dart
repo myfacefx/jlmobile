@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
-import 'package:jlf_mobile/pages/component/drawer.dart';
 
 class DonasiPage extends StatefulWidget {
   @override
@@ -44,10 +43,9 @@ class _DonasiPageState extends State<DonasiPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
+        appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
         body: Scaffold(
             key: _scaffoldKey,
-            drawer: drawer(context),
             body: SafeArea(
               child: ListView(children: <Widget>[
                 Container(

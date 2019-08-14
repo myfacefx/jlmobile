@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/blacklist_animal.dart';
-import 'package:jlf_mobile/models/user.dart';
-import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/blacklist_animal_services.dart';
-import 'package:jlf_mobile/services/user_services.dart';
 
 class BlacklistAnimalPage extends StatefulWidget {
   @override
@@ -36,6 +33,7 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
       _generateBlacklistedUserCard();
     }).catchError((onError) {
       failedDataFetching = true;
+      print(onError.toString());
     }).then((_) {
       isLoading = false;
 
@@ -100,13 +98,12 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
                             childAspectRatio: 1,
                             crossAxisCount: 2,
                             children: blacklistedAnimalCard))
-                    : Container(
-                        alignment: Alignment.bottomLeft,
+                    : Center(
                         child: Text(
-                          "Tidak ada pengguna yang memiliki status blacklist",
-                          style: TextStyle(color: Colors.black),
-                          textAlign: TextAlign.center,
-                        )));
+                        "Tidak ada blacklist Animal",
+                        style: TextStyle(color: Colors.black),
+                        textAlign: TextAlign.center,
+                      )));
   }
 
   Widget _buildPageTitle() {

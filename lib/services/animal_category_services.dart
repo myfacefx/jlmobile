@@ -4,9 +4,9 @@ import 'package:jlf_mobile/models/animal_category.dart';
 
 Future<List<AnimalCategory>> getAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/animal-categories");
-  http.Response res =
-      await http.get(getBaseUrl() + "/animal-categories", headers: header);
+  print(getBaseUrl() + "/animal-categories/animal");
+  http.Response res = await http.get(getBaseUrl() + "/animal-categories/animal",
+      headers: header);
   if (res.statusCode == 200) {
     return animalCategoryFromJson(res.body);
   } else {
@@ -14,12 +14,12 @@ Future<List<AnimalCategory>> getAnimalCategory(String token) async {
   }
 }
 
-Future<List<AnimalCategory>> getNotUserAnimalCategory(
-    String token, int userId) async {
+Future<List<AnimalCategory>> getAnimalCategoryWithoutCount(
+    String token, String type) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/not/$userId/animal-categories");
+  print(getBaseUrl() + "/type/$type/animal-categories");
   http.Response res = await http
-      .get(getBaseUrl() + "/not/$userId/animal-categories", headers: header);
+      .get(getBaseUrl() + "/type/$type/animal-categories", headers: header);
   if (res.statusCode == 200) {
     return animalCategoryFromJson(res.body);
   } else {
@@ -27,12 +27,11 @@ Future<List<AnimalCategory>> getNotUserAnimalCategory(
   }
 }
 
-Future<List<AnimalCategory>> getNotProductUserAnimalCategory(
-    String token, int userId) async {
+Future<List<AnimalCategory>> getAccessoryAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/not/$userId/animal-categories/product");
+  print(getBaseUrl() + "/animal-categories/accessory");
   http.Response res = await http
-      .get(getBaseUrl() + "/not/$userId/animal-categories/product", headers: header);
+      .get(getBaseUrl() + "/animal-categories/accessory", headers: header);
   if (res.statusCode == 200) {
     return animalCategoryFromJson(res.body);
   } else {
@@ -40,4 +39,14 @@ Future<List<AnimalCategory>> getNotProductUserAnimalCategory(
   }
 }
 
-
+Future<List<AnimalCategory>> getProductAnimalCategory(String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  print(getBaseUrl() + "/animal-categories/product");
+  http.Response res = await http
+      .get(getBaseUrl() + "/animal-categories/product", headers: header);
+  if (res.statusCode == 200) {
+    return animalCategoryFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
