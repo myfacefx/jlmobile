@@ -281,7 +281,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     imagesBase64 = List<String>();
 
     for (int i = 0; i < images.length; i++) {
-      ByteData byteData = await images[i].requestOriginal(quality: 75);
+      ByteData byteData = await images[i].requestOriginal(quality: 50);
 
       List<int> imageData = byteData.buffer.asUint8List();
       // byteData.buffer.asByteData();
