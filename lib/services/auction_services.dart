@@ -137,6 +137,28 @@ Future<bool> updateFirebaseChatId(String token, Map<String, dynamic> _data, int 
   }
 }
 
+
+
+Future<bool> delete(String token, int id) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/auctions/$id";
+
+  print(url);
+
+  http.Response res = await http
+      .delete(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut() + 270));
+      
+  if (res.statusCode == 204) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+
 Future<String> getFirebaseChatId(String token, int auctionId) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/auctions/$auctionId/get-chat-room";

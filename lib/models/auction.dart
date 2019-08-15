@@ -1,6 +1,8 @@
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/winner_bid.dart';
+import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/models/animal.dart';
 import 'dart:convert';
 
 List<Auction> auctionFromJson(String str) => new List<Auction>.from(json.decode(str).map((x) => Auction.fromJson(x)));
@@ -36,6 +38,9 @@ class Auction {
     WinnerBid winnerBid;
     String verificationCode;
     String firebaseChatId;
+    Animal animal;
+    User owner;
+    User winner;
 
     Auction({
         this.id,
@@ -67,7 +72,10 @@ class Auction {
         this.duration,
         this.winnerBid,
         this.verificationCode,
-        this.firebaseChatId
+        this.firebaseChatId,
+        this.animal,
+        this.owner,
+        this.winner
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -101,6 +109,9 @@ class Auction {
         winnerBid: json["winner_bid"] == null ? null : WinnerBid.fromJson(json["winner_bid"]),
         verificationCode: json["verification_code"] == null ? null : json["verification_code"],
         firebaseChatId: json["firebase_chat_id"] == null ? null : json["firebase_chat_id"],
+        animal: json["animal"] == null ? null : Animal.fromJson(json["animal"]),
+        owner: json["owner"] == null ? null : User.fromJson(json["owner"]),
+        winner: json["winner"] == null ? null : User.fromJson(json["winner"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -133,6 +144,9 @@ class Auction {
         "duration": duration == null ? null : duration,
         "winner_bid": winnerBid == null ? null : winnerBid.toJson(),
         "verification_code": verificationCode == null ? null : verificationCode,
-        "firebase_chat_id": firebaseChatId == null ? null : firebaseChatId
+        "firebase_chat_id": firebaseChatId == null ? null : firebaseChatId,
+        "animal": animal == null ? null : animal.toJson(),
+        "owner": owner == null ? null : owner.toJson(),
+        "winner": winner == null ? null : winner.toJson(),
     }..removeWhere( (key, val) => val == null);
 }

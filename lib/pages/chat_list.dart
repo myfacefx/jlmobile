@@ -3,6 +3,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/auction_services.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -68,11 +69,25 @@ class _ChatListPageState extends State<ChatListPage> {
                 child: Column(
                   children: <Widget>[
                     globals.myText(
-                        text: "ID Lelang #${auction.id} - PIC #Admin",
+                        text: "Lelang Hewan '${auction.animal.name}'",
                         weight: "B"),
+                    globals.myText(
+                      text: "Seller: ${auction.owner.name}"
+                    ),
                     globals.myText(text: "Tanggal Menang Lelang: $timestamp"),
                     globals.myText(
-                        text: "Invoice: " + globals.generateInvoice(auction))
+                        text: "Invoice: " + globals.generateInvoice(auction)),
+                    FlatButton(
+                      color: globals.myColor("primary"),
+                      child: globals.myText(text: "Lihat Lelang", color: "light"),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => ProductDetailPage(
+                                  animalId: auction.animal.id,
+                                  from: 'LELANG',
+                                ))),
+                    )
                   ],
                 ),
               ),
