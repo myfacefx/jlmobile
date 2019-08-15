@@ -51,11 +51,9 @@ class _ChatPageState extends State<ChatPage> {
                 .orderBy('timestamp', descending: false)
                 .snapshots(),
             builder: (context, snapshot) {
+              print(snapshot.toString());
               if (!snapshot.hasData) {
-                return Center(
-                    child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            globals.myColor("primary"))));
+                return Center(child: globals.isLoading());
               } else {
                 if (messagesScrollController.hasClients) {
                   if (messagesCount > 0 &&
@@ -65,19 +63,21 @@ class _ChatPageState extends State<ChatPage> {
                 }
 
                 messagesCount = snapshot.data.documents.length;
-                return ListView.builder(
-                    shrinkWrap: false,
-                    itemBuilder: (context, index) =>
-                        _chatMessages(snapshot.data.documents[index], index),
-                    itemCount: snapshot.data.documents.length,
-                    // reverse: true,
-                    controller: messagesScrollController);
+                return messagesCount > 0
+                    ? ListView.builder(
+                        shrinkWrap: false,
+                        itemBuilder: (context, index) => _chatMessages(
+                            snapshot.data.documents[index], index),
+                        itemCount: snapshot.data.documents.length,
+                        controller: messagesScrollController)
+                    : ListView(children: <Widget>[_buildTemplateMessage()]);
+                // reverse: true,
               }
             }));
   }
 
   Future getImage() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 60);
 
     if (imageFile != null) {
       // setState(() {
@@ -118,6 +118,104 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  Widget _buildTemplateMessage() {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(3),
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                      child: globals.myText(
+                          text: "JLF Rekber V.01 - Forum Model",
+                          weight: "B",
+                          size: 15,
+                          align: TextAlign.center)),
+                  Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Center(
+                          child: globals.myText(
+                              text:
+                                  "Selamat datang di JLF Rekber, berikut adalah forum rekber untuk membantu proses transaksi anda. Silahkan menunggu untuk admin bergabung di dalam chat, apabila dalam waktu 5 menit tidak ada response anda dapat menghubungi admin."))),
+                  SizedBox(height: 5),
+                  Center(
+                    child: GestureDetector(
+                        onTap: () {
+                          String phone = "6282223304275";
+                          String invoice = globals.generateInvoice(auction);
+                          String message =
+                              "Min,%20tolong%20bantu%20forum%20rekber%20kami%20(No Invoice: $invoice)";
+                          _sendWhatsApp(phone, message);
+                          // https://api.whatsapp.com/send?phone=&text=Min,%20tolong%20bantu%20forum%20rekber%20kami
+                          // t   erus di belakangnya dikasih kode unik / invoice nya
+                        },
+                        child: globals.myText(
+                            text: "Klik disini untuk WA Admin",
+                            weight: "B",
+                            color: "primary",
+                            align: TextAlign.center)),
+                  ),
+                  SizedBox(height: 10),
+                  Center(
+                      child: globals.myText(
+                          text: "LEMBAR FORM SELLER", weight: "B", size: 15)),
+                  globals.myText(
+                      text: "Silahkan bagi seller untuk mengisi data berikut"),
+                  SizedBox(height: 8),
+                  globals.myText(text: "Nama Penjual:", align: TextAlign.left),
+                  globals.myText(text: "Nama Pembeli:", align: TextAlign.left),
+                  globals.myText(
+                      text: "Kode Unik (5 Digit):", align: TextAlign.left),
+                  globals.myText(
+                      text: "Jenis Hewan/Barang:", align: TextAlign.left),
+                  globals.myText(
+                      text: "Garansi Hewan/Barang:", align: TextAlign.left),
+                  globals.myText(
+                      text: "Batas waktu pengambilan paket:",
+                      align: TextAlign.left),
+                  globals.myText(
+                      text: "Nominal Transaksi:", align: TextAlign.left),
+                  globals.myText(
+                      text: "Nomor Rekening Penjual: ..... Bank: ....",
+                      align: TextAlign.left),
+                  globals.myText(
+                      text: "Nomor Rekening Pembeli: ..... Bank: ....",
+                      align: TextAlign.left),
+                  SizedBox(height: 8),
+                  globals.myText(
+                      text:
+                          "(Note: Kolom garansi yang tidak diisi akan dianggap TIDAK BERGARANSI)",
+                      weight: "B",
+                      align: TextAlign.center),
+                  Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Center(
+                        child: FlatButton(
+                          color: globals.myColor("primary"),
+                          child: globals.myText(
+                              text: "Salin Form Diatas", color: "light"),
+                          onPressed: () {
+                            globals.showDialogs(
+                                "Berhasil menyalin form", context);
+                            Clipboard.setData(new ClipboardData(
+                                text:
+                                    'LEMBAR FORM SELLER\n\nNama Penjual:\nNama Pembeli:\nKode Unik (5 Digit):\nJenis Hewan/Barang:\nGaransi Hewan/Barang:\nBatas waktu pengambilan paket:\nNominal transaksi:\nRekening Penjual: ..... Bank: ......\nRekening Pembeli : ..... Bank ..... \n\n(Nb: kolom garansi yg tidak diisi akan dianggap TIDAK BERGARANSI)'));
+                          },
+                        ),
+                      ))
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _chatMessages(DocumentSnapshot document, int index) {
     if (messagesScrollController.hasClients) {
       if (hasNewMessage == true) {
@@ -137,111 +235,7 @@ class _ChatPageState extends State<ChatPage> {
 
     return Column(
       children: <Widget>[
-        index > 0
-            ? Container()
-            : Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Card(
-                      child: Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Center(
-                                child: globals.myText(
-                                    text: "JLF Rekber V.01 - Forum Model",
-                                    weight: "B",
-                                    size: 15,
-                                    align: TextAlign.center)),
-                            Padding(
-                                padding: EdgeInsets.only(top: 5),
-                                child: Center(
-                                    child: globals.myText(
-                                        text:
-                                            "Selamat datang di JLF Rekber, berikut adalah forum rekber untuk membantu proses transaksi anda. Silahkan menunggu untuk admin bergabung di dalam chat, apabila dalam waktu 5 menit tidak ada response anda dapat menghubungi admin."))),
-                            SizedBox(height: 5),
-                            Center(
-                              child: GestureDetector(
-                                  onTap: () {
-                                    String phone = "6282223304275";
-                                    String invoice =
-                                        globals.generateInvoice(auction);
-                                    String message =
-                                        "Min,%20tolong%20bantu%20forum%20rekber%20kami%20(No Invoice: $invoice)";
-                                    _sendWhatsApp(phone, message);
-                                    // https://api.whatsapp.com/send?phone=&text=Min,%20tolong%20bantu%20forum%20rekber%20kami
-                                    // t   erus di belakangnya dikasih kode unik / invoice nya
-                                  },
-                                  child: globals.myText(
-                                      text: "Klik disini untuk WA Admin",
-                                      weight: "B",
-                                      color: "primary",
-                                      align: TextAlign.center)),
-                            ),
-                            SizedBox(height: 10),
-                            Center(
-                                child: globals.myText(
-                                    text: "LEMBAR FORM SELLER",
-                                    weight: "B",
-                                    size: 15)),
-                            globals.myText(
-                                text:
-                                    "Silahkan bagi seller untuk mengisi data berikut"),
-                            SizedBox(height: 8),
-                            globals.myText(
-                                text: "Nama Penjual:", align: TextAlign.left),
-                            globals.myText(
-                                text: "Nama Pembeli:", align: TextAlign.left),
-                            globals.myText(
-                                text: "Kode Unik (5 Digit):",
-                                align: TextAlign.left),
-                            globals.myText(
-                                text: "Jenis Hewan/Barang:",
-                                align: TextAlign.left),
-                            globals.myText(
-                                text: "Garansi Hewan/Barang:",
-                                align: TextAlign.left),
-                            globals.myText(
-                                text: "Batas waktu pengambilan paket:",
-                                align: TextAlign.left),
-                            globals.myText(
-                                text: "Nominal Transaksi:",
-                                align: TextAlign.left),
-                            globals.myText(
-                                text: "Nomor Rekening Penjual: ..... Bank: ....",
-                                align: TextAlign.left),
-                            globals.myText(
-                                text: "Nomor Rekening Pembeli: ..... Bank: ....",
-                                align: TextAlign.left),
-                            SizedBox(height: 8),
-                            globals.myText(
-                                text:
-                                    "(Note: Kolom garansi yang tidak diisi akan dianggap TIDAK BERGARANSI)",
-                                weight: "B",
-                                align: TextAlign.center),
-                            Padding(
-                                padding: EdgeInsets.only(top: 5),
-                                child: Center(
-                                  child: FlatButton(
-                                    color: globals.myColor("primary"),
-                                    child: globals.myText(
-                                        text: "Salin Form Diatas", color: "light"),
-                                    onPressed: () {
-                                      Clipboard.setData(new ClipboardData(
-                                          text:
-                                              'LEMBAR FORM SELLER\n\nNama Penjual:\nNama Pembeli:\nKode Unik (5 Digit):\nJenis Hewan/Barang:\nGaransi Hewan/Barang:\nBatas waktu pengambilan paket:\nNominal transaksi:\nRekening Penjual: ..... Bank: ......\nRekening Pembeli : ..... Bank ..... \n\n(Nb: kolom garansi yg tidak diisi akan dianggap TIDAK BERGARANSI)'));
-                                    },
-                                  ),
-                                ))
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+        index > 0 ? Container() : _buildTemplateMessage(),
         Row(
             mainAxisAlignment:
                 globals.user.id == int.parse(document['sender'].toString())

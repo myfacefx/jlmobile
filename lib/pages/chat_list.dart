@@ -72,7 +72,7 @@ class _ChatListPageState extends State<ChatListPage> {
                         text: "Lelang Hewan '${auction.animal.name}'",
                         weight: "B"),
                     globals.myText(
-                      text: "Seller: ${auction.owner.name}"
+                      text: "Seller: ${auction.owner.username}"
                     ),
                     globals.myText(text: "Tanggal Menang Lelang: $timestamp"),
                     globals.myText(
