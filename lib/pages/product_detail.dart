@@ -986,8 +986,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                   builder: (BuildContext
                                                           context) =>
                                                       ChatPage(
-                                                          chatId: animal.auction
-                                                              .firebaseChatId)));
+                                                          auction: animal.auction)));
                                         } else {
                                           // Check first from server whether firebase chat id just set
 
@@ -1039,7 +1038,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                       builder: (BuildContext
                                                               context) =>
                                                           ChatPage(
-                                                              chatId: id)));
+                                                              auction: animal.auction)));
                                               setState(() {
                                                 chatLoading = false;
                                               });
@@ -1061,9 +1060,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                     builder: (BuildContext
                                                             context) =>
                                                         ChatPage(
-                                                            chatId: animal
-                                                                .auction
-                                                                .firebaseChatId)));
+                                                            auction: animal.auction)));
                                             setState(() {
                                               chatLoading = false;
                                             });

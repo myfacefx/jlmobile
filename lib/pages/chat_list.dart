@@ -57,7 +57,7 @@ class _ChatListPageState extends State<ChatListPage> {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    ChatPage(chatId: auction.firebaseChatId)));
+                    ChatPage(auction: auction)));
       },
       child: Card(
         child: Container(

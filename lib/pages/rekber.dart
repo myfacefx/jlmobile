@@ -146,56 +146,20 @@ class _RekberPageState extends State<RekberPage>
                         ),
                       ),
                     ),
-                    Container(
-                      width: globals.mw(context),
-                      child: Card(
-                          child: Column(
-                        children: <Widget>[
-                          Container(
-                              child: TabBar(
-                            labelColor: globals.myColor("primary"),
-                            indicatorColor: globals.myColor("primary"),
-                            unselectedLabelColor: globals.myColor("primary"),
-                            controller: _tabController,
-                            tabs: <Widget>[
-                              Tab(
-                                child: globals.myText(
-                                    text: "Tutorial",
-                                    size: 12,
-                                    color: "primary",
-                                    weight: "B"),
-                              ),
-                              Tab(
-                                child: globals.myText(
-                                    text: "List Rekber",
-                                    size: 12,
-                                    color: "primary",
-                                    weight: "B"),
-                              ),
-                              Tab(
-                                child: globals.myText(
-                                    text: "Tanya Jawab",
-                                    size: 12,
-                                    color: "primary",
-                                    weight: "B"),
-                              )
-                            ],
-                          )),
-                          Container(
-                            height: 400,
-                            // padding: EdgeInsets.all(5),
-                            child: TabBarView(
-                              controller: _tabController,
-                              children: <Widget>[
-                                _buildTutorial(),
-                                _buildListRekber(),
-                                _buildQuestionAnswers()
-                              ],
-                            ),
-                          )
-                        ],
-                      )),
+                    Card(
+                      child: Container(
+                          padding: EdgeInsets.all(10),
+                          alignment: Alignment.topCenter,
+                          child:
+                              Image.asset('assets/images/rekber-pembeli.jpeg')),
                     ),
+                    Card(
+                      child: Container(
+                          padding: EdgeInsets.all(10),
+                          alignment: Alignment.topCenter,
+                          child:
+                              Image.asset('assets/images/rekber-penjual.jpeg')),
+                    )
                   ]),
                 )
               ],
