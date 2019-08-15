@@ -35,25 +35,24 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   _getHistories() {
-    List<int> listOfHistoryId = List<int>();
 
     getHistories("Token", globals.user.id).then((onValue) {
       histories = onValue;
 
-      for (var history in histories) {
-        // Iterate, if found 'read' = 0, add it to listOfHistoryId
-        if (history.read == 0) {
-          listOfHistoryId.add(history.id);
-        }
-      }
+      // for (var history in histories) {
+      //   // Iterate, if found 'read' = 0, add it to listOfHistoryId
+      //   if (history.read == 0) {
+      //     listOfHistoryId.add(history.id);
+      //   }
+      // }
 
       setState(() {
         isLoading = false;
       });
 
-      if (listOfHistoryId.length > 0) {
-        _setHistories(listOfHistoryId);
-      }
+      // if (listOfHistoryId.length > 0) {
+      //   _setHistories(listOfHistoryId);
+      // }
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
     });
@@ -140,10 +139,17 @@ class _NotificationPageState extends State<NotificationPage> {
                                     }
                                   }
                                   
-                                  print(informationBuild);
+                                  // print(informationBuild);
+                                  
+                                  List<int> listOfHistoryId = List<int>();
+                                  listOfHistoryId.add(histories[i].id);
+
+                                  print("List of ID $listOfHistoryId");
 
                                   return InkWell(
                                     onTap: () {
+                                      print("Triggered $i");
+                                      _setHistories(listOfHistoryId);
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
