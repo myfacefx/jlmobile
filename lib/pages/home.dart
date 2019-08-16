@@ -469,20 +469,23 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildAsk() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-      height: 64,
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(4)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        globals.myText(
-            text: "BACA PANDUAN DAN TIPS TRIK LENGKAP JLF DI SINI",
-            color: "light",
-            size: 16,
-            align: TextAlign.center),
-      ]),
+    return GestureDetector(
+      onTap: () => launch("https://www.youtube.com/channel/UCW-Y3yIisBSOIJhV3ToA5oA"),
+      child: Container(
+        margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        height: 64,
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(4)),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          globals.myText(
+              text: "TONTON PANDUAN DAN TIPS TRIK LENGKAP JLF DI SINI",
+              color: "light",
+              size: 16,
+              align: TextAlign.center),
+        ]),
+      ),
     );
   }
 

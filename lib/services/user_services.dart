@@ -256,19 +256,3 @@ Future<bool> getUsersByPhoneNumber(String phoneNumber) async {
 //     throw Exception(res.body);
 //   }
 // }
-
-Future<List<User>> getTopSellers(String token, int animalCategoryId) async {
-  final header = {"Content-Type": "application/json", "Authorization": token};
-  
-  final url = getBaseUrl() + "/animal-categories/$animalCategoryId/top-sellers";
-
-  print(url);
-
-  http.Response res =
-      await http.get(url, headers: header);
-  if (res.statusCode == 200) {
-    return listUserFromJson(res.body);
-  } else {
-    throw Exception(res.body);
-  }
-}

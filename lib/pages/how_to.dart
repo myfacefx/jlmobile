@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HowToPage extends StatefulWidget {
   @override
@@ -27,16 +28,19 @@ class _HowToPageState extends State<HowToPage> {
               child: Container(
                 padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
                 child: Column(children: <Widget>[
-                  Text("How To",
+                  Text("Tutorial",
                       style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
                           color: Colors.black)),
                   globals.spacePadding(),
-                  Text(
-                      "JLF atau Jual Lelang Fauna merupakan situs rintisan awal dari para pecinta reptil yang juga senang berbisnis, mengingat hingga saat ini masih belum ada marketplace yang nyaman digunakan maka kami ingin mencoba memberikan inovasi marketplace yang tidak hanya sekedar untuk jual beli namun juga lelang.",
-                      style: Theme.of(context).textTheme.subtitle,
-                      textAlign: TextAlign.justify)
+                  globals.myText(text: "Panduan untuk menggunakan seluruh fitur pada aplikasi JLF dapat dilihat pada Youtube Channel Sobat JLF", align: TextAlign.center),
+                  SizedBox(height: 10),
+                  FlatButton(
+                    onPressed: () => launch("https://www.youtube.com/channel/UCW-Y3yIisBSOIJhV3ToA5oA"),
+                    color: globals.myColor("primary"),
+                    child: globals.myText(text: "Klik Disini", color: "light")
+                  )
                 ]),
               ),
             )));

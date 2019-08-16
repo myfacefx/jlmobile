@@ -134,9 +134,11 @@ Widget drawer(context) {
                 _buildDrawerNavigationButtonBig("Belanjaanku", '/our-product',
                     globals.user != null ? 0 : 0, context),
                 _buildDrawerNavigationButtonBig(
-                    "Bagikan JLF", '/share', null, context),
+                    "Rekber", '/rekber', null, context),
+                // buildDrawerNavigationButtonBig(
+                //     "Bagikan JLF", '/share', null, context),
                 globals.spacePadding(),
-                _buildDrawerNavigationButtonSmall("RekBer", "/rekber", context),
+                // _buildDrawerNavigationButtonSmall("RekBer", "/rekber", context),
                 _buildDrawerNavigationButtonSmall(
                     "Tentang JLF", "/about", context),
                 _buildDrawerNavigationButtonSmall(

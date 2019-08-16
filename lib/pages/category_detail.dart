@@ -8,12 +8,14 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/province.dart';
+import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
+import 'package:jlf_mobile/services/top_seller_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
 class CategoryDetailPage extends StatefulWidget {
@@ -46,7 +48,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   List<String> itemProvince = <String>['All'];
 
   List<Animal> animals = List<Animal>();
-  List<User> topSellers = List<User>();
+  List<TopSeller> topSellers = List<TopSeller>();
 
   TextEditingController searchController = TextEditingController();
 
@@ -88,14 +90,26 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   @override
   void initState() {
     super.initState();
-    refreshTopSellers();
+    refreshTopSellerByCategoryId(animalCategory.id);
   }
 
-  void refreshTopSellers() {
+  void refreshTopSellerBySubCategoryId(animalSubCategoryId) {
     setState(() {
       isLoadingTopSellers = true;
     });
-    getTopSellers("token", animalCategory.id).then((onValue) {
+    getTopSellersBySubCategoryId("token", animalSubCategoryId).then((onValue) {
+      setState(() {
+        topSellers = onValue;
+        isLoadingTopSellers = false;
+      });
+    });
+  }
+
+  void refreshTopSellerByCategoryId(animalCategoryId) {
+    setState(() {
+      isLoadingTopSellers = true;
+    });
+    getTopSellersByCategoryId("token", animalCategoryId).then((onValue) {
       setState(() {
         topSellers = onValue;
         isLoadingTopSellers = false;
@@ -152,6 +166,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         print(onError.toString());
         globals.showDialogs(onError.toString(), context);
       });
+
+      refreshTopSellerBySubCategoryId(subCategoryId);
     } else {
       currentSubCategory = "ALL";
       currentIdSubCategory = null;
@@ -165,9 +181,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         if (!mounted) return;
         globals.showDialogs(onError.toString(), context);
       });
+
+      refreshTopSellerByCategoryId(animalCategory.id);
     }
 
-    refreshTopSellers();
+    // refreshTopSellers();
   }
 
   //top container
@@ -350,29 +368,39 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _templateTopSellerProfile(User user) {
+  Widget _templateTopSellerProfile(TopSeller topSeller) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => ProfilePage(userId: user.id))),
+      onTap: () {
+        topSeller.userId != null
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        ProfilePage(userId: topSeller.userId)))
+            : null;
+      },
       child: Column(
         children: <Widget>[
           Container(
               child: Container(
-                  width: 100,
+                  width: 80,
                   child: Container(
-                      height: 75,
+                      height: 65,
                       child: CircleAvatar(
                           radius: 75,
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: FadeInImage.assetNetwork(
-                                fit: BoxFit.cover,
-                                placeholder: 'assets/images/loading.gif',
-                                image: user.photo,
-                              )))))),
-          globals.myText(text: user.username, weight: "B")
+                              child: topSeller.thumbnail != null ||
+                                      topSeller.user.photo != null
+                                  ? FadeInImage.assetNetwork(
+                                      fit: BoxFit.cover,
+                                      placeholder: 'assets/images/loading.gif',
+                                      image: topSeller.thumbnail != null
+                                          ? topSeller.thumbnail
+                                          : topSeller.user.photo)
+                                  : Image.asset(
+                                      'assets/images/account.png')))))),
+          globals.myText(text: topSeller.user != null ? topSeller.user.username : ' ', weight: "B", textOverflow: TextOverflow.ellipsis)
         ],
       ),
     );
@@ -389,7 +417,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   Container(
                     padding: EdgeInsets.only(left: 15, bottom: 5, top: 5),
                     alignment: Alignment.centerLeft,
-                    child: globals.myText(text: "TOP SELLER", weight: "B"),
+                    child: globals.myText(text: "STAR SELLERS", weight: "B"),
                   ),
                   Container(
                       height: 100,
@@ -526,10 +554,13 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     }
 
     return animals.length == 0
-        ? Center(
-            child: Text(
-              "Data tidak ditemukan",
-              style: Theme.of(context).textTheme.title,
+        ? Container(
+            margin: EdgeInsets.only(bottom: 15),
+            child: Center(
+              child: Text(
+                "Belum ada data",
+                style: Theme.of(context).textTheme.title,
+              ),
             ),
           )
         : Container(
