@@ -36,7 +36,7 @@ Future<User> register(Map<String, dynamic> _data) async {
   http.Response res = await http
       .post(getBaseUrl() + "/register",
           headers: header, body: json.encode(_data))
-      .timeout(Duration(seconds: getTimeOut()));
+      .timeout(Duration(seconds: 60));
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);

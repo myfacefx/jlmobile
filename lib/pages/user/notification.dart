@@ -29,13 +29,12 @@ class _NotificationPageState extends State<NotificationPage> {
     _getHistories();
     globals.getNotificationCount();
     _recognizerTap = TapGestureRecognizer()
-     ..onTap = () {
-      //  print();
-     };
+      ..onTap = () {
+        //  print();
+      };
   }
 
   _getHistories() {
-
     getHistories("Token", globals.user.id).then((onValue) {
       histories = onValue;
 
@@ -101,7 +100,9 @@ class _NotificationPageState extends State<NotificationPage> {
                                   List<TextSpan> textSpans = List<TextSpan>();
 
                                   if (informationConvert is String) {
-                                    textSpans.add(TextSpan(text: informationConvert, style: TextStyle(color: Colors.black)));
+                                    textSpans.add(TextSpan(
+                                        text: informationConvert,
+                                        style: TextStyle(color: Colors.black)));
 
                                     informationBuild.add(globals.myText(
                                       text: informationConvert,
@@ -110,11 +111,19 @@ class _NotificationPageState extends State<NotificationPage> {
                                     for (var value in informationConvert) {
                                       Widget output;
                                       if (value is String) {
-                                        textSpans.add(TextSpan(text: value, style: TextStyle(color: Colors.black)));
+                                        textSpans.add(TextSpan(
+                                            text: value,
+                                            style: TextStyle(
+                                                color: Colors.black)));
                                         output = globals.myText(text: value);
                                       } else {
-
-                                        textSpans.add(TextSpan(text: value['username'], style: TextStyle(color: globals.myColor("primary"), fontWeight: FontWeight.bold), recognizer: _recognizerTap));
+                                        textSpans.add(TextSpan(
+                                            text: value['username'],
+                                            style: TextStyle(
+                                                color:
+                                                    globals.myColor("primary"),
+                                                fontWeight: FontWeight.bold),
+                                            recognizer: _recognizerTap));
 
                                         var valueConvert = value;
 
@@ -138,9 +147,9 @@ class _NotificationPageState extends State<NotificationPage> {
                                       informationBuild.add(output);
                                     }
                                   }
-                                  
+
                                   // print(informationBuild);
-                                  
+
                                   List<int> listOfHistoryId = List<int>();
                                   listOfHistoryId.add(histories[i].id);
 
@@ -148,18 +157,22 @@ class _NotificationPageState extends State<NotificationPage> {
 
                                   return InkWell(
                                     onTap: () {
-                                      print("Triggered $i");
-                                      _setHistories(listOfHistoryId);
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  ProductDetailPage(
-                                                    animalId: histories[i]
-                                                        .auction
-                                                        .animalId,
-                                                    from: "LELANG",
-                                                  )));
+                                      if (histories[i].auction != null) {
+                                        _setHistories(listOfHistoryId);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        ProductDetailPage(
+                                                          animalId: histories[i]
+                                                              .auction
+                                                              .animalId,
+                                                          from: "LELANG",
+                                                        )));
+                                      }else{
+                                        globals.showDialogs("Notifikasi Jual Beli dalam pengembangan", context);
+                                      }
                                     },
                                     child: Card(
                                         color: histories[i].read == 0
@@ -177,14 +190,13 @@ class _NotificationPageState extends State<NotificationPage> {
                                                               .fromLTRB(
                                                                   8, 5, 8, 8),
                                                           child: RichText(
-                                                            text: TextSpan(
-                                                              children: textSpans
-                                                            )
-                                                          )
+                                                              text: TextSpan(
+                                                                  children:
+                                                                      textSpans))
                                                           // child: Wrap(
                                                           //     children:
                                                           //         informationBuild)
-                                                                  ),
+                                                          ),
                                                       Container(
                                                         padding:
                                                             EdgeInsets.only(

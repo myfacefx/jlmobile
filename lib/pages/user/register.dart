@@ -12,6 +12,7 @@ import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/services/province_services.dart';
 import 'package:jlf_mobile/services/regency_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 
 class RegisterPage extends StatefulWidget {
   final User user;
@@ -219,9 +220,10 @@ class _RegisterPageState extends State<RegisterPage> {
       maxHeight: 150,
     );
 
-    // if (croppedFile != null) _uploadPhoto(croppedFile);
+    File compressedFile = await FlutterNativeImage.compressImage(imageFile.path,
+          quality: 30, percentage: 100);
 
-    List<int> imageBytes = imageFile.readAsBytesSync();
+    List<int> imageBytes = compressedFile.readAsBytesSync();
 
     String base64Image = base64Encode(imageBytes);
     
