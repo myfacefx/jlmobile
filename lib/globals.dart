@@ -11,7 +11,7 @@ import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
 
-String version = "v0.1.0";  
+String version = "v0.1.2";  
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
