@@ -268,7 +268,9 @@ class _ProfilePageState extends State<ProfilePage>
                           blurRadius: 2.0,
                         ),
                       ]),
-                  child: Center(child: Icon(Icons.edit))),
+                  child: Center(
+                      child:
+                          Icon(Icons.edit, color: globals.myColor("primary")))),
             ),
           )
         : Container();
@@ -516,6 +518,10 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  _navigateTo(String path) {
+    Navigator.pushNamed(context, path);
+  }
+
   // card animals
   Widget _profile() {
     var registeredDate = DateTime.parse(user.createdAt.toString());
@@ -525,23 +531,44 @@ class _ProfilePageState extends State<ProfilePage>
       width: globals.mw(context),
       child: Card(
           child: Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Stack(
                 children: <Widget>[
+                  // user.id == globals.user.id
+                  //     ? GestureDetector(
+                  //         onTap: () {
+                  //           Navigator.pushNamed(context, "/edit-profile");
+                  //         },
+                  //         child: Container(
+                  //             alignment: Alignment.centerRight,
+                  //             child: Icon(Icons.edit,
+                  //                 color: globals.myColor("primary"))),
+                  //       )
+                  //     : Container(),
                   user.id == globals.user.id
-                      ? GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, "/edit-profile");
-                          },
-                          child: Container(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.edit)),
-                        )
-                      : Container(),
+                      ? Container(
+                        alignment: Alignment.topRight,
+                      child: PopupMenuButton(
+                        onSelected: (val) => _navigateTo(val),
+                        icon:
+                            Icon(Icons.edit, color: globals.myColor("primary")),
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem(
+                              value: '/edit-profile',
+                              child: globals.myText(text: "Ubah Profil")
+                            ),
+                            PopupMenuItem(
+                              value: "/edit-password",
+                              child: globals.myText(text: "Ubah Password")
+                            ),
+                          ];
+                        },
+                      )) : Container(),
                   Column(
                     children: <Widget>[
                       Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           height: 100,
                           child: CircleAvatar(
                               radius: 100,

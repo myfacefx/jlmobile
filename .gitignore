@@ -9,6 +9,14 @@
 .history
 .svn/
 
+# Firebase
+**/firebase/**
+
+# Main
+lib/main_development.dart
+lib/main_staging.dart
+lib/main_production.dart
+
 # IntelliJ related
 *.iml
 *.ipr

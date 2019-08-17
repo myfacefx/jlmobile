@@ -15,6 +15,7 @@ import 'package:jlf_mobile/pages/our_bid.dart';
 import 'package:jlf_mobile/pages/our_product.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
 import 'package:jlf_mobile/pages/setting.dart';
+import 'package:jlf_mobile/pages/user/edit_password.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
 import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/pages/user/notification.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         '/logout': (BuildContext context) => LoginPage(),
         '/profile': (BuildContext context) => ProfilePage(),
         '/edit-profile': (BuildContext context) => EditProfilePage(),
+        '/edit-password': (BuildContext context) => EditPasswordPage(),
         '/our-bid': (BuildContext context) => OurBidTopPage(),
         '/our-product': (BuildContext context) => OurProducTopPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
