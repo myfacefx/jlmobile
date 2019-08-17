@@ -58,6 +58,8 @@ dependencies:
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
 
+  loadmore: ^1.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -6,7 +6,7 @@ void main() async {
   var configuredApp = AppConfig(
     appName: 'flavors Dev',
     flavorName: 'development',
-    baseUrl: 'https://jlfbackend.xyz/jlf-backend-api/public',
+    baseUrl: 'http://192.168.1.4:8000',
     apiUrl: '/api',
     child: MyApp(),
   );

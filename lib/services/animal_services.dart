@@ -3,31 +3,46 @@ import 'dart:convert';
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/models/pagination.dart';
 
-Future<List<Animal>> getAnimalAuctionByCategory(String token,
-    int animalCategoryId, String sortBy, String filterName, int userId) async {
+Future<Paginate> getLoadMore(String token, String nextUrl) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
+  print("============================");
+  print(nextUrl);
+  print("============================");
 
-  String params = "?animal_category_id=$animalCategoryId";
-  if (sortBy == "Populer") {
-    params = params + "&sort_by=$sortBy";
-  }
-  if (filterName != "") {
-    params = params + "&animal_name=$filterName";
-  }
-
-  print(getBaseUrl() + "/animals/filter/$userId/auction$params");
-  http.Response res = await http.get(
-      getBaseUrl() + "/animals/filter/$userId/auction$params",
-      headers: header);
+  http.Response res = await http.get(nextUrl, headers: header);
   if (res.statusCode == 200) {
-    return animalFromJson(res.body);
+    return paginateFromJson(res.body);
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<List<Animal>> getAnimalAuctionBySubCategory(
+Future<Paginate> getAnimalAuctionByCategory(String token, int animalCategoryId,
+    String sortBy, String filterName, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  String params = "?";
+  if (sortBy == "Populer") {
+    params = params + "sort_by=$sortBy";
+  }
+  if (filterName != "") {
+    params = params + "&animal_name=$filterName";
+  }
+
+  print(getBaseUrl() + "/animals/category/$animalCategoryId/auction$params");
+  http.Response res = await http.get(
+      getBaseUrl() + "/animals/category/$animalCategoryId/auction$params",
+      headers: header);
+  if (res.statusCode == 200) {
+    return paginateFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<Paginate> getAnimalAuctionBySubCategory(
     String token,
     int animalSubCategoryId,
     String sortBy,
@@ -35,49 +50,51 @@ Future<List<Animal>> getAnimalAuctionBySubCategory(
     int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  String params = "?animal_sub_category_id=$animalSubCategoryId";
+  String params = "?";
   if (sortBy == "Populer") {
-    params = params + "&sort_by=$sortBy";
+    params = params + "sort_by=$sortBy";
   }
   if (filterName != "") {
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() + "/animals/filter/$userId/auction$params");
+  print(getBaseUrl() +
+      "/animals/sub-category/$animalSubCategoryId/auction$params");
   http.Response res = await http.get(
-      getBaseUrl() + "/animals/filter/$userId/auction$params",
+      getBaseUrl() +
+          "/animals/sub-category/$animalSubCategoryId/auction$params",
       headers: header);
   if (res.statusCode == 200) {
-    return animalFromJson(res.body);
+    return paginateFromJson(res.body);
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<List<Animal>> getAnimalProductByCategory(String token,
-    int animalCategoryId, String sortBy, String filterName, int userId) async {
+Future<Paginate> getAnimalProductByCategory(String token, int animalCategoryId,
+    String sortBy, String filterName, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  String params = "?animal_category_id=$animalCategoryId";
+  String params = "?";
   if (sortBy == "Populer") {
-    params = params + "&sort_by=$sortBy";
+    params = params + "sort_by=$sortBy";
   }
   if (filterName != "") {
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() + "/animals/filter/$userId/product$params");
+  print(getBaseUrl() + "/animals/category/$animalCategoryId/product$params");
   http.Response res = await http.get(
-      getBaseUrl() + "/animals/filter/$userId/product$params",
+      getBaseUrl() + "/animals/category/$animalCategoryId/product$params",
       headers: header);
   if (res.statusCode == 200) {
-    return animalFromJson(res.body);
+    return paginateFromJson(res.body);
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<List<Animal>> getAnimalProductBySubCategory(
+Future<Paginate> getAnimalProductBySubCategory(
     String token,
     int animalSubCategoryId,
     String sortBy,
@@ -85,20 +102,22 @@ Future<List<Animal>> getAnimalProductBySubCategory(
     int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  String params = "?animal_sub_category_id=$animalSubCategoryId";
+  String params = "?";
   if (sortBy == "Populer") {
-    params = params + "&sort_by=$sortBy";
+    params = params + "sort_by=$sortBy";
   }
   if (filterName != "") {
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() + "/animals/filter/$userId/product$params");
+  print(getBaseUrl() +
+      "/animals/sub-category/$animalSubCategoryId/product$params");
   http.Response res = await http.get(
-      getBaseUrl() + "/animals/filter/$userId/product$params",
+      getBaseUrl() +
+          "/animals/sub-category/$animalSubCategoryId/product$params",
       headers: header);
   if (res.statusCode == 200) {
-    return animalFromJson(res.body);
+    return paginateFromJson(res.body);
   } else {
     throw Exception(res.body);
   }

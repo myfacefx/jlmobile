@@ -1768,6 +1768,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 ),
                 child: ListView.builder(
                   physics: ScrollPhysics(),
+                  reverse: true,
                   shrinkWrap: true,
                   itemCount: countComments,
                   itemBuilder: (context, int index) {

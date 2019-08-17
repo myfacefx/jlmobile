@@ -100,16 +100,6 @@ class _ProfilePageState extends State<ProfilePage>
 
   // Card Animals
   Widget _buildAnimals(List<Animal> data, String type) {
-    List<Widget> listMyWidgets() {
-      List<Widget> list = List();
-
-      data.forEach((animal) {
-        list.add(_buildCard(animal, type));
-      });
-
-      return list;
-    }
-
     return data.length == 0
         ? Center(
             child: Text(
@@ -118,13 +108,19 @@ class _ProfilePageState extends State<ProfilePage>
             ),
           )
         : Container(
-            child: GridView.count(
-                physics: ClampingScrollPhysics(),
-                shrinkWrap: true,
+            child: GridView.builder(
+            shrinkWrap: true,
+            itemCount: data.length,
+            physics: ScrollPhysics(),
+            semanticChildCount: 2,
+            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                 childAspectRatio:
                     (type == "produkku" || type == "pasarhewan") ? 0.6 : 0.5,
-                crossAxisCount: 2,
-                children: listMyWidgets()));
+                crossAxisCount: 2),
+            itemBuilder: (BuildContext context, int index) {
+              return _buildCard(data[index], type);
+            },
+          ));
   }
 
   Widget _buildTime(String expiryTime) {
