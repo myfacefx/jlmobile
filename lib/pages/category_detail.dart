@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -9,14 +7,13 @@ import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
-import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
-import 'package:jlf_mobile/services/user_services.dart';
+import 'package:loadmore/loadmore.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final AnimalCategory animalCategory;
@@ -34,6 +31,7 @@ class CategoryDetailPage extends StatefulWidget {
 class _CategoryDetailPage extends State<CategoryDetailPage> {
   AnimalCategory animalCategory;
   bool isLoading = true;
+  bool isLoadingLoadMore = false;
   bool isLoadingProvince = true;
   bool isLoadingTopSellers = true;
   String currentSubCategory = "ALL";
@@ -52,6 +50,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   TextEditingController searchController = TextEditingController();
 
+  String nextUrl;
+  bool isLast = false;
+
   _CategoryDetailPage(AnimalCategory animalCategory, String from) {
     globals.autoClose();
     this.animalCategory = animalCategory;
@@ -65,7 +66,12 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     }
 
     function.then((onValue) {
-      animals = onValue;
+      animals.addAll(onValue.data);
+      this.nextUrl = onValue.nextPageUrl;
+      if (onValue.currentPage == onValue.lastPage) {
+        isLast = true;
+      }
+
       setState(() {
         isLoading = false;
       });
@@ -117,11 +123,36 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     });
   }
 
+  Future<bool> _loadmore() async {
+    if (nextUrl == null) {
+      return false;
+    }
+
+    setState(() {
+      isLoadingLoadMore = true;
+    });
+    final onValue = await getLoadMore("", nextUrl);
+    animals.addAll(onValue.data);
+
+    if (onValue.currentPage == onValue.lastPage) {
+      isLast = true;
+    }
+
+    this.nextUrl = onValue.nextPageUrl;
+
+    setState(() {
+      isLoadingLoadMore = false;
+    });
+    return true;
+  }
+
   void _refresh(int subCategoryId, String subCategoryName, String from) {
     setState(() {
       isLoading = true;
     });
 
+    nextUrl = null;
+    isLast = false;
     var functionCategory;
     var functionSubCategory;
 
@@ -158,7 +189,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     if (subCategoryId != null) {
       currentSubCategory = subCategoryName;
       functionSubCategory.then((onValue) {
-        animals = onValue;
+        animals = (onValue.data);
+
+        this.nextUrl = onValue.nextPageUrl;
+
         setState(() {
           isLoading = false;
         });
@@ -172,7 +206,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       currentSubCategory = "ALL";
       currentIdSubCategory = null;
       functionCategory.then((onValue) {
-        animals = onValue;
+        animals = (onValue.data);
+        this.nextUrl = onValue.nextPageUrl;
+
         setState(() {
           isLoading = false;
         });
@@ -400,7 +436,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                                           : topSeller.user.photo)
                                   : Image.asset(
                                       'assets/images/account.png')))))),
-          globals.myText(text: topSeller.user != null ? topSeller.user.username : ' ', weight: "B", textOverflow: TextOverflow.ellipsis)
+          globals.myText(
+              text: topSeller.user != null ? topSeller.user.username : ' ',
+              weight: "B",
+              textOverflow: TextOverflow.ellipsis)
         ],
       ),
     );
@@ -543,16 +582,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   // card animals
 
   Widget _buildAnimals() {
-    List<Widget> listMyWidgets() {
-      List<Widget> list = List();
-
-      animals.forEach((animal) {
-        list.add(_buildCard(animal));
-      });
-
-      return list;
-    }
-
     return animals.length == 0
         ? Container(
             margin: EdgeInsets.only(bottom: 15),
@@ -564,12 +593,19 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ),
           )
         : Container(
-            child: GridView.count(
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.68,
-                crossAxisCount: 2,
-                children: listMyWidgets()));
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: animals.length,
+              physics: ScrollPhysics(),
+              semanticChildCount: 2,
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.68,
+                  crossAxisCount: 2),
+              itemBuilder: (BuildContext context, int index) {
+                return _buildCard(animals[index]);
+              },
+            ),
+          );
   }
 
   Widget _buildTime(String expiryTime, String username, String photo) {
@@ -916,7 +952,28 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : _buildAnimals()
+                  : _buildAnimals(),
+              isLoadingLoadMore
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : isLoading
+                      ? Container()
+                      : isLast
+                          ? Container()
+                          : Center(
+                              child: FloatingActionButton.extended(
+                                label: globals.myText(
+                                    text: "MUAT LAINNYA", color: "light"),
+                                backgroundColor: globals.myColor("primary"),
+                                onPressed: () {
+                                  _loadmore();
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            )
             ],
           ),
         ),
