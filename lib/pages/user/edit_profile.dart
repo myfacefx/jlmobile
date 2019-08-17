@@ -315,7 +315,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     if (imageFile != null) {
       setState(() {
-       photoUploading = true; 
+        photoUploading = true;
       });
       // print(imageFile);
       _cropImage(imageFile);
@@ -367,13 +367,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       print("Success update foto");
       setState(() {
-       photoUploading = false; 
+        photoUploading = false;
       });
     } catch (error) {
-      globals.showDialogs("Gagal mengunggah foto, silahkan coba kembali", context);
+      globals.showDialogs(
+          "Gagal mengunggah foto, silahkan coba kembali", context);
       print(error);
       setState(() {
-       photoUploading = false; 
+        photoUploading = false;
       });
     }
   }
@@ -382,7 +383,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Column(
       children: <Widget>[
         Container(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
             height: 150,
             child: CircleAvatar(
                 radius: 100,
@@ -398,9 +399,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
             width: 300,
             padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
             child: FlatButton(
-                onPressed: () => photoUploading ? null : _chooseProfilePicture(),
-                child:
-                    globals.myText(text: photoUploading ? "Mengunggah Foto... " : "Ganti Foto Profil", color: "light"),
+                onPressed: () =>
+                    photoUploading ? null : _chooseProfilePicture(),
+                child: globals.myText(
+                    text: photoUploading
+                        ? "Mengunggah Foto... "
+                        : "Ganti Foto Profil",
+                    color: "light"),
                 color: registerLoading || photoUploading
                     ? Colors.grey
                     : Theme.of(context).primaryColor,
@@ -446,8 +451,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ListView(children: <Widget>[
             Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Text("Edit Profil",
+                padding: EdgeInsets.only(top: 20, bottom: 7),
+                child: Text("Ubah Profil",
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -462,84 +467,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 _provinceInput(),
                 regencyLoading ? globals.isLoading() : _regencyInput(),
                 _phoneNumberInput(),
-
-                // Container(
-                //     width: 300,
-                //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                //     child: TextFormField(
-                //       focusNode: passwordFocusNode,
-                //       onSaved: (String value) {
-                //         _password = value;
-                //       },
-                //       controller: passwordController,
-                //       onFieldSubmitted: (String value) {
-                //         if (value.length > 0) {
-                //           FocusScope.of(context)
-                //               .requestFocus(confirmPasswordFocusNode);
-                //         }
-                //       },
-                //       validator: (value) {
-                //         if (value.isEmpty ||
-                //             value.length < 8 ||
-                //             value.length > 12) {
-                //           return 'Password minimal 8 maksimal 12 huruf';
-                //         }
-                //       },
-                //       obscureText: passwordVisibility,
-                //       style: TextStyle(color: Colors.black),
-                //       decoration: InputDecoration(
-                //           contentPadding: EdgeInsets.all(13),
-                //           suffixIcon: GestureDetector(
-                //             onTap: () {
-                //               setState(() {
-                //                 passwordVisibility = !passwordVisibility;
-                //               });
-                //             },
-                //             child: Icon(passwordVisibility
-                //                 ? Icons.visibility
-                //                 : Icons.visibility_off),
-                //           ),
-                //           hintText: "Password",
-                //           labelText: "Password",
-                //           fillColor: Colors.white,
-                //           border: OutlineInputBorder(
-                //               borderRadius: BorderRadius.circular(5))),
-                //     )),
-                // Container(
-                //     width: 300,
-                //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                //     child: TextFormField(
-                //       focusNode: confirmPasswordFocusNode,
-                //       controller: confirmPasswordController,
-                //       obscureText: confirmPasswordVisibility,
-                //       validator: (value) {
-                //         if (value != passwordController.text) {
-                //           return 'Password tidak sesuai';
-                //         }
-                //       },
-                //       onFieldSubmitted: (String value) {
-                //         _register();
-                //       },
-                //       style: TextStyle(color: Colors.black),
-                //       decoration: InputDecoration(
-                //           contentPadding: EdgeInsets.all(13),
-                //           suffixIcon: GestureDetector(
-                //             onTap: () {
-                //               setState(() {
-                //                 confirmPasswordVisibility =
-                //                     !confirmPasswordVisibility;
-                //               });
-                //             },
-                //             child: Icon(confirmPasswordVisibility
-                //                 ? Icons.visibility
-                //                 : Icons.visibility_off),
-                //           ),
-                //           hintText: "Ulangi Password",
-                //           labelText: "Ulangi Password",
-                //           fillColor: Colors.white,
-                //           border: OutlineInputBorder(
-                //               borderRadius: BorderRadius.circular(5))),
-                //     )),
                 Container(
                     width: 300,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -554,7 +481,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ? Colors.grey
                             : Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)))),
+                            borderRadius: BorderRadius.circular(5))))
               ]),
             ),
           ])
