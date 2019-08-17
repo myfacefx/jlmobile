@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/blacklist_animal.dart';
 import 'package:jlf_mobile/services/blacklist_animal_services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BlacklistAnimalPage extends StatefulWidget {
   @override
@@ -114,6 +116,14 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
             textAlign: TextAlign.justify));
   }
 
+  Widget _buildDownloadPage() {
+    return FlatButton(
+      color: globals.myColor("primary"),
+      onPressed: () => launch(getBaseUrl() + "/download/restricted-animals"),
+      child: globals.myText(text: "Download Disini", color: "light")
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,10 +131,16 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
         body: Scaffold(
             key: _scaffoldKey,
             body: SafeArea(
-              child: Column(children: <Widget>[
-                _buildPageTitle(),
-                _buildGridBlacklistedUser(),
-              ]),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                  _buildPageTitle(),
+                  _buildDownloadPage()
+                  // _buildGridBlacklistedUser(),
+                ]),
+              ),
             )));
   }
 }
