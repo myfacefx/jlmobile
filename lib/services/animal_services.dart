@@ -264,7 +264,7 @@ Future<bool> create(Map<String, dynamic> _data) async {
 
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))
-      .timeout(Duration(seconds: getTimeOut() + 270));
+      .timeout(Duration(minutes: 10));
 
   print(url);
   // print(_data);

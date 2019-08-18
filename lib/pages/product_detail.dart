@@ -795,33 +795,38 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                globals.user.roleId == 1 ? FlatButton(
-                  color: globals.myColor("danger"),
-                  child: globals.myText(text: "SELESAIKAN LELANG", color: "light"),
-                  onPressed: () async {
-                    final result = await globals.confirmDialog(
-                        "Apakah anda yakin menutup lelang ini? Lelang tidak akan muncul lagi di halaman pemenang maupun pemilik lelang",
-                        context);
-                    if (result) {
-                      AuctionServices.delete("", animal.auction.id).then((onValue) async {
-                        Navigator.pop(context);
-                        if (onValue) {
-                          await globals.showDialogs(
-                              "Berhasil menutup lelang", context,
-                              isDouble: true);
-                        } else {
-                          globals.showDialogs(
-                              "Gagal menutup lelang, Coba lagi.", context);
-                        }
-                      }).catchError((onError) {
-                        Navigator.pop(context);
-                        print(onError.toString());
-                        globals.showDialogs(
-                            "Gagal menutup lelang, Coba lagi.", context);
-                      });
-                    }
-                  },
-                ) : Container(),
+                globals.user.roleId == 1
+                    ? FlatButton(
+                        color: globals.myColor("danger"),
+                        child: globals.myText(
+                            text: "SELESAIKAN LELANG", color: "light"),
+                        onPressed: () async {
+                          final result = await globals.confirmDialog(
+                              "Apakah anda yakin menutup lelang ini? Lelang tidak akan muncul lagi di halaman pemenang maupun pemilik lelang",
+                              context);
+                          if (result) {
+                            AuctionServices.delete("", animal.auction.id)
+                                .then((onValue) async {
+                              Navigator.pop(context);
+                              if (onValue) {
+                                await globals.showDialogs(
+                                    "Berhasil menutup lelang", context,
+                                    isDouble: true);
+                              } else {
+                                globals.showDialogs(
+                                    "Gagal menutup lelang, Coba lagi.",
+                                    context);
+                              }
+                            }).catchError((onError) {
+                              Navigator.pop(context);
+                              print(onError.toString());
+                              globals.showDialogs(
+                                  "Gagal menutup lelang, Coba lagi.", context);
+                            });
+                          }
+                        },
+                      )
+                    : Container(),
                 globals.myText(
                     text: isWinner
                         ? "ANDA TELAH MEMENANGKAN LELANG INI"
@@ -983,10 +988,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (BuildContext
-                                                          context) =>
-                                                      ChatPage(
-                                                          auction: animal.auction)));
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          ChatPage(
+                                                              auction: animal
+                                                                  .auction)));
                                         } else {
                                           // Check first from server whether firebase chat id just set
 
@@ -1038,7 +1044,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                       builder: (BuildContext
                                                               context) =>
                                                           ChatPage(
-                                                              auction: animal.auction)));
+                                                              auction: animal
+                                                                  .auction)));
                                               setState(() {
                                                 chatLoading = false;
                                               });
@@ -1060,7 +1067,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                     builder: (BuildContext
                                                             context) =>
                                                         ChatPage(
-                                                            auction: animal.auction)));
+                                                            auction: animal
+                                                                .auction)));
                                             setState(() {
                                               chatLoading = false;
                                             });
@@ -1500,7 +1508,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             "$username - ${globals.convertFormatDateTimeProduct(auctionComment.createdAt)}",
                         color: "disabled",
                         size: 10),
-                    auctionComment.comment != "UP"
+                    auctionComment.comment.toUpperCase() != "UP"
                         ? globals.myText(
                             text: auctionComment.comment,
                             color: "unprime",
@@ -1577,7 +1585,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             "$username - ${globals.convertFormatDateTimeProduct(productComment.createdAt)}",
                         color: "disabled",
                         size: 10),
-                    productComment.comment != "UP"
+                    productComment.comment.toUpperCase() != "UP"
                         ? globals.myText(
                             text: productComment.comment,
                             color: "unprime",

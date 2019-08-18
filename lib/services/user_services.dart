@@ -36,7 +36,7 @@ Future<User> register(Map<String, dynamic> _data) async {
   http.Response res = await http
       .post(getBaseUrl() + "/register",
           headers: header, body: json.encode(_data))
-      .timeout(Duration(seconds: 60));
+      .timeout(Duration(minutes: 60));
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);
@@ -79,7 +79,8 @@ Future<String> update(Map<String, dynamic> _data, int userId) async {
   }
 }
 
-Future<String> updateProfilePicture(Map<String, dynamic> _data, int userId) async {
+Future<String> updateProfilePicture(
+    Map<String, dynamic> _data, int userId) async {
   final header = {"Content-Type": "application/json"};
   final String url = getBaseUrl() + "/users/$userId/updateProfilePicture";
 

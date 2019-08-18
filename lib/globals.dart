@@ -44,7 +44,7 @@ String state = "Login";
 User user;
 
 // Global timeout setting
-int timeOut = 30;
+int timeOut = 60;
 
 int getTimeOut() {
   return timeOut;

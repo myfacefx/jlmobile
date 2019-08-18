@@ -193,6 +193,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
         this.nextUrl = onValue.nextPageUrl;
 
+        if (onValue.currentPage == onValue.lastPage) {
+          isLast = true;
+        }
+
         setState(() {
           isLoading = false;
         });
@@ -208,6 +212,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       functionCategory.then((onValue) {
         animals = (onValue.data);
         this.nextUrl = onValue.nextPageUrl;
+
+        if (onValue.currentPage == onValue.lastPage) {
+          isLast = true;
+        }
 
         setState(() {
           isLoading = false;
@@ -801,14 +809,13 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
     return GestureDetector(
       onTap: () async {
-        await Navigator.push(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => ProductDetailPage(
                       animalId: animal.id,
                       from: widget.from,
                     )));
-        _refresh(currentIdSubCategory, currentSubCategory, widget.from);
       },
       child: Stack(
         children: <Widget>[
@@ -971,9 +978,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                                 },
                               ),
                             ),
-                            SizedBox(
-                              height: 20,
-                            )
+              SizedBox(
+                height: 20,
+              )
             ],
           ),
         ),
