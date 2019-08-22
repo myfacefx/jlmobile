@@ -13,7 +13,6 @@ import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
-import 'package:loadmore/loadmore.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final AnimalCategory animalCategory;
@@ -616,7 +615,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           );
   }
 
-  Widget _buildTime(String expiryTime, String username, String photo) {
+  Widget _buildTime(
+      String expiryTime, String username, String photo, bool isAuction) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -639,23 +639,18 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   size: 10,
                   textOverflow: TextOverflow.ellipsis))
         ]),
-        Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: globals.myColor("primary")),
-          padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-          child: globals.myText(
-              text: "${globals.convertTimer(expiryTime)}",
-              size: 10,
-              color: "light"),
-        ),
-        // Text(
-        //   "Sisa ${globals.convertTimer(expiryTime)}",
-        //   style: Theme.of(context).textTheme.display1.copyWith(
-        //         fontSize: 10,
-        //       ),
-        //   textAlign: TextAlign.left,
-        // ),
+        isAuction
+            ? Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: globals.myColor("primary")),
+                padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                child: globals.myText(
+                    text: "${globals.convertTimer(expiryTime)}",
+                    size: 10,
+                    color: "light"),
+              )
+            : Container(),
       ],
     );
   }
@@ -829,10 +824,13 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     SizedBox(
                       height: 5,
                     ),
-                    widget.from == "LELANG"
-                        ? _buildTime(animal.auction.expiryDate,
-                            animal.owner.username, animal.owner.photo)
-                        : Container(),
+                    _buildTime(
+                        widget.from == "LELANG"
+                            ? animal.auction.expiryDate
+                            : null,
+                        animal.owner.username,
+                        animal.owner.photo,
+                        widget.from == "LELANG"),
                     isNotError
                         ? _buildImage(animal.animalImages[0].thumbnail)
                         : globals.failLoadImage(),
