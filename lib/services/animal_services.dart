@@ -276,3 +276,21 @@ Future<bool> create(Map<String, dynamic> _data) async {
     throw Exception(res.body);
   }
 }
+
+Future<bool> update(
+    String token, Map<String, dynamic> _data, int id) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/animals/$id";
+
+  print(url);
+
+  http.Response res = await http
+      .put(url, headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut() + 570));
+
+  if (res.statusCode == 202) {
+    return true;
+  } else {
+    throw Exception(res.body);
+  }
+}

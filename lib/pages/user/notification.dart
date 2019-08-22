@@ -170,7 +170,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                               .animalId,
                                                           from: "LELANG",
                                                         )));
-                                      }else{
+                                      } else{
                                         globals.showDialogs("Notifikasi Jual Beli dalam pengembangan", context);
                                       }
                                     },
