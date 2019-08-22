@@ -319,41 +319,49 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildDeleteProduct() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-          globals.mw(context) * 0.25, 5, globals.mw(context) * 0.25, 5),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        color: Colors.red,
-        onPressed: () async {
-          final result = await globals.confirmDialog(
-              "Apakah anda yakin menandai produk ini telah terjual ? Setelah itu barang tidak akan muncul lagi di list penjualan",
-              context);
-          if (result) {
-            globals.loadingModel(context);
-            sold("", animal.product.id).then((onValue) async {
-              Navigator.pop(context);
-              if (onValue) {
-                await globals.showDialogs(
-                    "Berhasil menandai produk telah terjual", context,
-                    isDouble: true);
-              } else {
+    if (animal.product.status != "sold out") {
+      return Container(
+        margin: EdgeInsets.fromLTRB(
+            globals.mw(context) * 0.25, 5, globals.mw(context) * 0.25, 5),
+        child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          color: Colors.red,
+          onPressed: () async {
+            final result = await globals.confirmDialog(
+                "Apakah anda yakin menandai produk ini telah terjual ? Setelah itu barang tidak akan muncul lagi di list penjualan",
+                context);
+            if (result) {
+              globals.loadingModel(context);
+              sold("", animal.product.id).then((onValue) async {
+                Navigator.pop(context);
+                if (onValue) {
+                  await globals.showDialogs(
+                      "Berhasil menandai produk telah terjual", context,
+                      isDouble: true);
+                } else {
+                  globals.showDialogs(
+                      "Gagal menandai produk telah terjual, Coba lagi.",
+                      context);
+                }
+              }).catchError((onError) {
+                Navigator.pop(context);
+                print(onError.toString());
                 globals.showDialogs(
                     "Gagal menandai produk telah terjual, Coba lagi.", context);
-              }
-            }).catchError((onError) {
-              Navigator.pop(context);
-              print(onError.toString());
-              globals.showDialogs(
-                  "Gagal menandai produk telah terjual, Coba lagi.", context);
-            });
-          }
-        },
-        child: globals.myText(text: "Tandai Sudah Terjual", color: "light"),
-      ),
-    );
+              });
+            }
+          },
+          child: globals.myText(text: "Tandai Sudah Terjual", color: "light"),
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(child: globals.myText(text: "Barang sudah terjual", color: "warning"),),
+      );
+    }
   }
 
   Widget _buildOwnerDetail() {
@@ -1688,6 +1696,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             validator: (text) {
               if (text == null || text == "" || text == " ") {
                 return "Teks tidak boleh kosong";
+              }
+              if (text.length >= 100) {
+                return "Teks tidak boleh lebih dari 100 karakter";
               }
             },
             onSaved: (text) {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jlf_mobile/pages/user/login.dart';
-import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/services/static_services.dart';
 
 class IntroPage extends StatefulWidget {
   @override
@@ -96,7 +95,9 @@ class _IntroPageState extends State<IntroPage> {
                                     ),
                                     // Caption
                                     Positioned(
-                                      bottom: count == intros.length ? 10 : globals.mh(context) * 0.08,
+                                      bottom: count == intros.length
+                                          ? 10
+                                          : globals.mh(context) * 0.08,
                                       child: Container(
                                         width: globals.mw(context) * 0.9,
                                         child: Column(
@@ -111,23 +112,47 @@ class _IntroPageState extends State<IntroPage> {
                                                 align: TextAlign.center),
                                             count == intros.length
                                                 ? Container(
-                                                  margin: EdgeInsets.only(top: 10, bottom: 0),
-                                                  child: RaisedButton(
-                                                    child: globals.myText(text: "MULAI"),
-                                                    color: Colors.white,
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      saveLocalData(
-                                                          'isNew', "true");
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (BuildContext
-                                                                      context) =>
-                                                                  LoginPage()));
-                                                    },
-                                                  )
-                                                )
+                                                    margin: EdgeInsets.only(
+                                                        top: 10, bottom: 0),
+                                                    child: RaisedButton(
+                                                      child: globals.myText(
+                                                          text: "MULAI"),
+                                                      color: Colors.white,
+                                                      onPressed: () async {
+                                                        String text =
+                                                            "Hai sobat JLF, Aplikasi ini masih tahap pengembangan (Beta Version) \nMohon masukan demi pengembangan kami ke depannya";
+                                                        globals.loadingModel(
+                                                            context);
+                                                        try {
+                                                          final res =
+                                                              await getAllStatics(
+                                                                  "token");
+                                                          Navigator.pop(
+                                                              context);
+
+                                                          if (res.length > 0) {
+                                                            text = res[0]
+                                                                .popUpText;
+                                                          }
+                                                        } catch (e) {
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
+
+                                                        await globals
+                                                            .showDialogs(
+                                                                text, context);
+                                                        Navigator.pop(context);
+                                                        // saveLocalData(
+                                                        //     'isNew', "true");
+                                                        // Navigator.push(
+                                                        //     context,
+                                                        //     MaterialPageRoute(
+                                                        //         builder: (BuildContext
+                                                        //                 context) =>
+                                                        //             LoginPage()));
+                                                      },
+                                                    ))
                                                 : Container()
                                           ],
                                         ),
@@ -135,33 +160,6 @@ class _IntroPageState extends State<IntroPage> {
                                     )
                                   ],
                                 );
-
-                                if (count == intros.length) {
-                                  return Stack(
-                                    children: <Widget>[
-                                      // _image(f),
-                                      Positioned(
-                                        bottom: 20,
-                                        left: 50,
-                                        right: 50,
-                                        child: RaisedButton(
-                                          child: Text("Mulai"),
-                                          color: Colors.white,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                            saveLocalData('isNew', "true");
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        LoginPage()));
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  );
-                                } else {}
                               }).toList(),
                             ),
                           ),

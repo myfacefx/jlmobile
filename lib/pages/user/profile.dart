@@ -278,6 +278,7 @@ class _ProfilePageState extends State<ProfilePage>
         animal.animalImages[0].image != null) {
       isNotError = true;
     }
+
     return Stack(
       children: <Widget>[
         Container(
@@ -312,7 +313,7 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
               ),
             )),
-        _buildEditAnimal(animal.id)
+        _buildEditAnimal(animal.id),
       ],
     );
   }
@@ -454,7 +455,31 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
               ),
             )),
-        _buildEditAuction(animal.id)
+        animal.product.status != "sold out"
+            ? _buildEditAuction(animal.id)
+            : Container(),
+        animal.product.status == "sold out"
+            ? Positioned(
+                bottom: 20,
+                left: 15,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      width: globals.mw(context) * 0.25,
+                      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                      decoration: BoxDecoration(
+                          color: globals.myColor("danger"),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: globals.myText(
+                          align: TextAlign.center,
+                          text: "Terjual",
+                          color: "light",
+                          size: 10),
+                    )
+                  ],
+                ))
+            : Container(),
       ],
     );
   }
@@ -543,24 +568,24 @@ class _ProfilePageState extends State<ProfilePage>
                   //     : Container(),
                   user.id == globals.user.id
                       ? Container(
-                        alignment: Alignment.topRight,
-                      child: PopupMenuButton(
-                        onSelected: (val) => _navigateTo(val),
-                        icon:
-                            Icon(Icons.edit, color: globals.myColor("primary")),
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem(
-                              value: '/edit-profile',
-                              child: globals.myText(text: "Ubah Profil")
-                            ),
-                            PopupMenuItem(
-                              value: "/edit-password",
-                              child: globals.myText(text: "Ubah Password")
-                            ),
-                          ];
-                        },
-                      )) : Container(),
+                          alignment: Alignment.topRight,
+                          child: PopupMenuButton(
+                            onSelected: (val) => _navigateTo(val),
+                            icon: Icon(Icons.edit,
+                                color: globals.myColor("primary")),
+                            itemBuilder: (BuildContext context) {
+                              return [
+                                PopupMenuItem(
+                                    value: '/edit-profile',
+                                    child: globals.myText(text: "Ubah Profil")),
+                                PopupMenuItem(
+                                    value: "/edit-password",
+                                    child:
+                                        globals.myText(text: "Ubah Password")),
+                              ];
+                            },
+                          ))
+                      : Container(),
                   Column(
                     children: <Widget>[
                       Container(

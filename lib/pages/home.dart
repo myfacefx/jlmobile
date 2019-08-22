@@ -445,6 +445,7 @@ class _HomePage extends State<HomePage> {
           child: CarouselSlider(
             aspectRatio: 3,
             autoPlay: true,
+            autoPlayInterval: Duration(seconds: 10),
             viewportFraction: 3.0,
             height: 200,
             enableInfiniteScroll: true,
@@ -470,7 +471,8 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildAsk() {
     return GestureDetector(
-      onTap: () => launch("https://www.youtube.com/channel/UCW-Y3yIisBSOIJhV3ToA5oA"),
+      onTap: () =>
+          launch("https://www.youtube.com/channel/UCW-Y3yIisBSOIJhV3ToA5oA"),
       child: Container(
         margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -1024,16 +1026,34 @@ class _HomePage extends State<HomePage> {
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: Divider(color: Colors.black),
                       ),
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                          child: globals.myText(
+                              text: "CHAMPAIGN JLF", color: 'dark', size: 15)),
                       isLoadingChampaign
                           ? globals.isLoading()
                           : _buildChampaign(),
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                          child: globals.myText(
+                              text: "VIDEO TUTORIAL JLF",
+                              color: 'dark',
+                              size: 15)),
                       isLoadingPromoVideo
                           ? globals.isLoading()
                           : _buildVideoA(),
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                          child: globals.myText(
+                              text: "ARTIKEL JLF", color: 'dark', size: 15)),
                       isLoadingPromoB
                           ? globals.isLoading()
                           : _buildPromotionB(),
                       isLoadingArticle ? globals.isLoading() : _buildArticle(),
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                          child: globals.myText(
+                              text: "EVENT JLF", color: 'dark', size: 15)),
                       isLoadingPromoC
                           ? globals.isLoading()
                           : _buildPromotionC(),

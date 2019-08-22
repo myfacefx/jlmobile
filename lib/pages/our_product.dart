@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
-import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/choice.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
