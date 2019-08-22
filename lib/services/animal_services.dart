@@ -286,9 +286,48 @@ Future<bool> update(
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
-      .timeout(Duration(seconds: getTimeOut() + 570));
+      .timeout(Duration(seconds: getTimeOut() + 60));
 
   if (res.statusCode == 202) {
+    return true;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> deleteImage(
+    String token, int animalImageId) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/animal-images/$animalImageId";
+
+  print(url);
+
+  http.Response res = await http
+      .delete(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut() + 60));
+  
+  if (res.statusCode == 204) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> createImage(String token, Map<String, dynamic> _data, int animalId) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/animals/$animalId/animal-images";
+
+  print(url);
+
+  http.Response res = await http
+      .post(url, headers: header, body: json.encode(_data))
+      .timeout(Duration(minutes: 10));
+
+
+  if (res.statusCode == 201) {
+    // print(res.body);
     return true;
   } else {
     throw Exception(res.body);
