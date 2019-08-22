@@ -10,6 +10,8 @@ import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
+import 'package:mailer/mailer.dart' as mailer;
+import 'package:mailer/smtp_server.dart';
 
 String version = "v0.1.2";  
 
@@ -745,4 +747,25 @@ Future<bool> confirmDialog(String content, context,
         },
       ) ??
       false;
+}
+
+
+void mailError(String errrorFrom, String cause) async{
+  String username = 'joe.technubi@gmail.com';
+  String password = 'kmzway87AAA';
+
+  final smtpServer = gmail(username, password);
+  
+
+  // Create our message.
+  final message = mailer.Message()
+    ..from = mailer.Address(username, 'JLF Err')
+    ..recipients.add('joe.technubi@gmail.com')
+    ..recipients.add('ervansanjaya@gmail')
+    ..subject =
+        'Error $flavor $version JLF - $errrorFrom :: ${user.email} :: ${user.username} :: ${new DateTime.now()}'
+    ..html = cause;
+
+  await mailer.send(message, smtpServer);
+  print("sended");
 }

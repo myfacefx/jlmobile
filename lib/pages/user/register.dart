@@ -200,9 +200,8 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       } catch (e) {
         print(e);
-        globals.showDialogs(
-            "Username/email sudah terdaftar, silahkan ganti yang lain",
-            context);
+        globals.showDialogs(e.toString(), context);
+        globals.mailError("Register", e.toString());
         setState(() {
           registerLoading = false;
           autoValidate = true;

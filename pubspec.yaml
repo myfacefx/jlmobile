@@ -29,6 +29,7 @@ dependencies:
   image_picker: ^0.6.1
   image_cropper: ^1.0.2
   permission_handler: '^3.2.0'
+  mailer: ^2.2.1
 
   flutter_facebook_login:
     git: 

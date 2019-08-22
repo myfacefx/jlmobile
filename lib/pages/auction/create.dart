@@ -403,6 +403,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       } catch (e) {
         Navigator.pop(context);
         globals.showDialogs(e.toString(), context);
+        globals.mailError("Create product / auction", e.toString());
         print(e);
       }
     } else {
