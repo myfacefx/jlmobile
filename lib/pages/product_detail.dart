@@ -223,7 +223,38 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       SizedBox(
         height: 8,
       ),
-      globals.myText(text: "${animal.description}", color: "dark", size: 13),
+      Container(alignment: Alignment.centerLeft, child: globals.myText(text: "${animal.description}", color: "dark", size: 13, align: TextAlign.left)),
+      SizedBox(
+        height: 10
+      ),
+      Row(
+        children: <Widget>[
+          Expanded(child: Container()),
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(new ClipboardData(
+                text: animal.description));
+              globals.showDialogs("Berhasil menyalin deskripsi", context);
+            },
+            child: Container(
+              padding: EdgeInsets.all(3),
+              width: 30,
+              alignment: Alignment.bottomRight,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: globals.myColor("primary"),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Icon(Icons.content_copy,
+                      size: 14, color: globals.myColor("light")),
+                ],
+              )),
+          ),
+        ],
+      ),
       SizedBox(
         height: 8,
       ),
@@ -653,7 +684,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   TableRow _buildTableRow(
-      bool isFirst, String name, String date, double amount) {
+      bool isFirst, String name, String date, double amount, int userId) {
     return TableRow(children: [
       Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -661,14 +692,22 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           Container(
             padding: EdgeInsets.only(top: 3.5),
             width: globals.mw(context) * 0.3,
-            child: Text(
-              name,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context)
-                  .textTheme
-                  .display4
-                  .copyWith(color: Color.fromRGBO(136, 136, 136, 1)),
-            ),
+            child: GestureDetector(
+              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ProfilePage(userId: userId))),
+              child: globals.myText(text: name, textOverflow: TextOverflow.ellipsis, weight: "B", color: "primary")
+            ) 
+            // // Text(
+            // //   name,
+            // //   overflow: TextOverflow.ellipsis,
+            // //   style: Theme.of(context)
+            // //       .textTheme
+            // //       .display4
+            // //       .copyWith(color: Color.fromRGBO(136, 136, 136, 1)),
+            // ),
           ),
           SizedBox(
             width: 10,
@@ -727,7 +766,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     myList = animal.auction.bids.map((i) {
       count++;
       return _buildTableRow(
-          count == 1, i.user.username, i.createdAt, i.amount.toDouble());
+          count == 1, i.user.username, i.createdAt, i.amount.toDouble(), i.userId);
     }).toList();
 
     // Last 5 Bids
@@ -765,6 +804,35 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               style: TextStyle(color: Colors.black),
               textAlign: TextAlign.center,
             ));
+  }
+
+  Widget _buildCancelAuction() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          globals.myText(
+              text: "- PEMBATALAN LELANG -", weight: "B", color: "dark", size: 16),
+          globals.myText(text: "Pembatalan lelang dapat menghubungi Admin"),
+          Center(
+            child: GestureDetector(
+                onTap: () {
+                  String phone = "6282223304275";
+                  String message =
+                      "Min,%20tolong%20bantu%20batalkan%20lelang%20saya%20(Nama%20Hewan:%20${animal.name}%20-%20Ref:%20ANM${animal.id}%20-%20AUC${animal.auction.id}).%20Makasih%20Min.";
+                  _sendWhatsApp(phone, message);
+                },
+                child: globals.myText(
+                    text: "Klik disini untuk WA Admin",
+                    weight: "B",
+                    color: "primary",
+                    align: TextAlign.center)))
+        ],
+      )
+    );
   }
 
   Widget _buildWinnerSection() {
@@ -1381,18 +1449,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Memasang Bid",
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
-                textAlign: TextAlign.center),
-            content: Text(
-                "Yakin memasang bid Rp. ${globals.convertToMoney(amountDouble)} ?" +
-                    (biddingBIN ? " (Beli Sekarang)" : "") +
-                    " " +
-                    (animal.auction.innerIslandShipping != null &&
-                            animal.auction.innerIslandShipping == 1
-                        ? "(Pengiriman dalam pulau saja)"
-                        : ""),
-                style: TextStyle(color: Colors.black)),
+            title: globals.myText(text: "Memasang Bid", weight: "B", size: 18, align: TextAlign.center),
+            content: Container(
+              child: Text(
+                      "Yakin memasang bid \nRp. ${globals.convertToMoney(amountDouble)} ?" +
+                          (biddingBIN ? " (Beli Sekarang)" : "") +
+                          " " +
+                          (animal.auction.innerIslandShipping != null &&
+                                  animal.auction.innerIslandShipping == 1
+                              ? "(Pengiriman dalam pulau saja)"
+                              : ""),
+                      style: TextStyle(color: Colors.black))
+            ),
             actions: <Widget>[
               FlatButton(
                   child: Text("Batal",
@@ -1891,6 +1959,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     (animal.ownerUserId == globals.user.id)
                         ? Container()
                         : _buildOwnerDetail(),
+
+                    widget.from == "LELANG" && (animal.ownerUserId == globals.user.id)
+                        ? _buildCancelAuction()
+                        : Container(),
 
                     widget.from == "LELANG"
                         ? _buildBidRuleAuction()

@@ -13,6 +13,7 @@ import 'package:jlf_mobile/pages/how_to.dart';
 import 'package:jlf_mobile/pages/intro.dart';
 import 'package:jlf_mobile/pages/our_bid.dart';
 import 'package:jlf_mobile/pages/our_product.dart';
+import 'package:jlf_mobile/pages/product/edit.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
 import 'package:jlf_mobile/pages/setting.dart';
 import 'package:jlf_mobile/pages/user/edit_password.dart';
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
         '/chat-list': (BuildContext context) => ChatListPage(),
         '/donasi': (BuildContext context) => DonasiPage(),
         '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
+        // '/edit-product': (BuildContext context) => EditProductPage()
       },
     );
   }

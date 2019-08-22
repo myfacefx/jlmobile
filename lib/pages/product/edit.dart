@@ -10,21 +10,20 @@ import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/product.dart';
 import 'package:jlf_mobile/models/select_product.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
-import 'package:jlf_mobile/services/animal_services.dart';
+import 'package:jlf_mobile/services/animal_services.dart' as AnimalServices;
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
+import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-class CreateAuctionPage extends StatefulWidget {
-  final int categoryId;
-  final int subCategoryId;
-  final int type;
-  CreateAuctionPage({Key key, this.categoryId, this.subCategoryId, this.type})
-      : super(key: key);
+class EditProductPage extends StatefulWidget {
+  final Animal animal;
+
+  EditProductPage({Key key, @required this.animal}) : super(key: key);
   @override
-  _CreateAuctionPageState createState() => _CreateAuctionPageState();
+  _EditProductPageState createState() => _EditProductPageState(this.animal);
 }
 
-class _CreateAuctionPageState extends State<CreateAuctionPage> {
+class _EditProductPageState extends State<EditProductPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
 
@@ -47,18 +46,24 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
 
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  // TextEditingController p = TextEditingController();
+  // TextEditingController nameController = TextEditingController();
+
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   AnimalCategory _animalCategory;
 
   List<AnimalSubCategory> animalSubCategories = List<AnimalSubCategory>();
   AnimalSubCategory _animalSubCategory;
-  SelectProduct _selectProduct;
+  SelectProduct _selectProduct = SelectProduct(id: 2, name: "Produk Jual");
+  SelectProduct _test;
 
   String labelNamaType = "Hewan";
 
   List<SelectProduct> selectProducts = [
-    SelectProduct(id: 0, name: "Draf"),
-    SelectProduct(id: 1, name: "Lelang"),
+    // SelectProduct(id: 0, name: "Draf"),
+    // SelectProduct(id: 1, name: "Lelang"),
     SelectProduct(id: 2, name: "Produk Jual"),
     SelectProduct(id: 3, name: "Produk Aksesoris"),
   ];
@@ -85,39 +90,88 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   List<int> durations = [3, 6, 12, 24, 48];
 
   List<Asset> images = List<Asset>();
+
+  List<Container> currentImages = List<Container>();
   String _error;
+
+  Animal _animal;
+
+  _EditProductPageState(Animal animal) {
+    this._animal = animal;
+  }
 
   @override
   void initState() {
     super.initState();
 
-    this.isLoading = true;
+    setState(() {
+      // print(_animal.product.type);
+      // _name = _animal.name;
 
-    _selectProduct = selectProducts[0];
+      nameController.text = _animal.name;
+      descriptionController.text = _animal.description;
+      priceController.text = _animal.product.price.toString();
 
-    if (widget.type != null) {
-      _selectProduct = selectProducts[widget.type];
-    }
+      _innerIslandShipping = _animal.product.innerIslandShipping;
 
-    if (_selectProduct.id == 3) {
-      labelNamaType = "Aksesoris";
-    } else {
-      labelNamaType = "Hewan";
-    }
+      _animal.product.innerIslandShipping == 1
+          ? _innerIslandShippingBool = true
+          : _innerIslandShippingBool = false;
 
-    getAnimalCategoryWithoutCount(
-            "token", _selectProduct.id == 3 ? "accessory" : "animal")
-        .then((onValue) {
-      animalCategories = onValue;
-      if (widget.categoryId != null) {
-        for (var animalCategory in animalCategories) {
-          if (animalCategory.id == widget.categoryId) {
-            _animalCategory = animalCategory;
-            break;
-          }
-        }
-        _getAnimalSubCategories();
+      print(_animal.animalImages.toString());
+      for (var image in _animal.animalImages) {
+        // images.add(Asset())
+
+        currentImages.add(Container(
+                  padding: EdgeInsets.all(5),
+                  child: FadeInImage.assetNetwork(
+                    fit: BoxFit.fitHeight,
+                    placeholder: 'assets/images/loading.gif',
+                    image: image.thumbnail,
+                  )));
+        // currentImages.add(Container(
+        //   child: Column(
+        //     children: <Widget>[
+              
+        //       // FlatButton(
+        //       //     onPressed: () => null,
+        //       //     child: Icon(Icons.delete, color: Colors.black))
+        //     ],
+        //   ),
+        // ));
       }
+
+      if (_animal.product.type == "accessory") {
+        labelNamaType = "Aksesoris";
+        _test = SelectProduct(id: 3, name: "Produk Aksesoris");
+      } else {
+        _test = SelectProduct(id: 2, name: "Produk Jual");
+        labelNamaType = "Hewan";
+      }
+    });
+
+    getAnimalCategoryWithoutCount("token", _animal.product.type)
+        .then((onValue) {
+      setState(() {
+        this.animalCategories = onValue;
+      });
+
+      for (var animalCategory in animalCategories) {
+        if (animalCategory.id == _animal.animalSubCategory.animalCategoryId) {
+          _animalCategory = animalCategory;
+          break;
+        }
+      }
+      // _animal
+      // if (_product.animalId != null) {
+      //   for (var animalCategory in animalCategories) {
+      //     if (animalCategory.id == widget.categoryId) {
+      //       _animalCategory = animalCategory;
+      //       break;
+      //     }
+      //   }
+      // }
+      _getAnimalSubCategories();
 
       setState(() {
         isLoading = false;
@@ -193,14 +247,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       getAnimalSubCategoryByCategoryId("token", _animalCategory.id)
           .then((onValue) {
         animalSubCategories = onValue;
-        if (widget.subCategoryId != null) {
-          for (var animalSubCategory in animalSubCategories) {
-            if (animalSubCategory.id == widget.subCategoryId) {
-              _animalSubCategory = animalSubCategory;
-              break;
-            }
+
+        for (var animalSubCategory in animalSubCategories) {
+          if (animalSubCategory.id == _animal.animalSubCategoryId) {
+            _animalSubCategory = animalSubCategory;
+            break;
           }
         }
+
         setState(() {
           isLoading = false;
         });
@@ -222,30 +276,42 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   }
 
   Widget _buildGridViewImages() {
-    return images != null && images.length > 0
-        ? Container(
+    return currentImages == null
+        ? images != null && images.length > 0
+            ? Container(
+                padding: EdgeInsets.all(5),
+                child: GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 3,
+                  physics: ScrollPhysics(),
+                  children: List.generate(images.length, (index) {
+                    Asset asset = images[index];
+                    return Container(
+                      padding: EdgeInsets.all(5),
+                      child: AssetThumb(
+                        asset: asset,
+                        width: 300,
+                        height: 300,
+                      ),
+                    );
+                  }),
+                ),
+              )
+            : Container(
+                padding: EdgeInsets.symmetric(vertical: 30),
+                child: globals.myText(
+                    text: "Belum ada foto terpilih", color: "dark"))
+        : Container(
             padding: EdgeInsets.all(5),
             child: GridView.count(
               shrinkWrap: true,
               crossAxisCount: 3,
               physics: ScrollPhysics(),
-              children: List.generate(images.length, (index) {
-                Asset asset = images[index];
-                return Container(
-                  padding: EdgeInsets.all(5),
-                  child: AssetThumb(
-                    asset: asset,
-                    width: 300,
-                    height: 300,
-                  ),
-                );
+              children: List.generate(currentImages.length, (index) {
+                return currentImages[index];
               }),
             ),
-          )
-        : Container(
-            padding: EdgeInsets.symmetric(vertical: 30),
-            child:
-                globals.myText(text: "Belum ada foto terpilih", color: "dark"));
+          );
   }
 
   Future<void> loadAssets() async {
@@ -270,6 +336,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     if (!mounted) return;
 
     setState(() {
+      currentImages = null;
       images = resultList;
       // if (error == null) _error = 'No Error Detected';
     });
@@ -287,6 +354,82 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       // byteData.buffer.asByteData();
 
       imagesBase64.add(base64Encode(imageData));
+    }
+  }
+
+  _delete() async {
+    if (isLoading) return;
+
+    final result = await globals.confirmDialog(
+        "Apakah Anda yakin untuk menghapus produk ini? Barang akan terhapus selamanya",
+        context);
+    if (result) {
+      ProductServices.delete("", _animal.product.id).then((onValue) async {
+        Navigator.pop(context);
+        if (onValue) {
+          await globals.showDialogs("Berhasil menghapus produk", context,
+              isDouble: true);
+        } else {
+          globals.showDialogs("Gagal menutup produk, Coba lagi.", context);
+        }
+      }).catchError((onError) {
+        Navigator.pop(context);
+        print(onError.toString());
+        globals.showDialogs("Gagal menutup produk, Coba lagi.", context);
+      });
+    }
+  }
+
+  _update() async {
+    if (isLoading) return;
+
+
+    _formKey.currentState.save();
+    if (_formKey.currentState.validate()) {
+      if (!_agreeTerms) {
+        globals.showDialogs(
+            "Anda harus menyetujui konsekuensi yang akan Anda terima apabila menjual binatang langka/tidak sesuai Undang-Undang",
+            context);
+        return;
+      }
+
+      setState(() {
+        isLoading = true;
+      });
+
+      Animal animal = Animal();
+      animal.animalSubCategoryId = _animalSubCategory.id;
+      animal.name = _name;
+      animal.description = _description;
+      
+      Product product = Product();
+      product.price = int.parse(_price);
+      product.innerIslandShipping = _innerIslandShipping;
+
+      print(product.toJson());
+      print(_animal.product.id);
+
+      print("----");
+
+      Map<String, dynamic> formDataAnimal = animal.toJson();
+      // formDataAnimal['images'] = imagesBase64;
+
+      print(formDataAnimal);
+
+      bool response_product = await ProductServices.update("Test", product.toJson(), _animal.product.id);
+
+      bool response_animal = await AnimalServices.update("Test", formDataAnimal, _animal.id);
+
+      String message = "Berhasil mengupdate produk";
+
+      if (!response_product && !response_animal) {
+        message = "Gagal mengupdate produk, silahkan coba kembali";
+      }
+
+      Navigator.pop(context);
+      await globals.showDialogs(message, context);
+      Navigator.pop(context);
+      Navigator.pushNamed(context, "/profile");
     }
   }
 
@@ -393,8 +536,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       formData['images'] = imagesBase64;
 
       try {
-        bool response = await create(formData);
-        print(response);
+        // bool response = await create(formData);
+        // print(response);
 
         Navigator.pop(context);
         await globals.showDialogs(message, context);
@@ -739,57 +882,57 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     color: Theme.of(context).primaryColor,
                     child: Center(
                       child: Text(
-                        "Tambah Produk",
+                        "Edit Produk $labelNamaType",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                       ),
                     )),
-                Container(
-                    width: globals.mw(context) * 0.95,
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: DropdownButtonFormField<SelectProduct>(
-                      decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          contentPadding: EdgeInsets.all(13),
-                          hintText: "Simpan Sebagai",
-                          labelText: "Simpan Sebagai"),
-                      value: _selectProduct,
-                      validator: (animalCategory) {
-                        if (_animalCategory == null) {
-                          return 'Silahkan pilih simpan sebagai';
-                        }
-                      },
-                      onChanged: (SelectProduct selectProd) {
-                        setState(() {
-                          if (_selectProduct.id != selectProd.id) {
-                            _selectProduct = selectProd;
+                // Container(
+                //     width: globals.mw(context) * 0.95,
+                //     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                //     child: DropdownButtonFormField<SelectProduct>(
+                //       decoration: InputDecoration(
+                //           fillColor: Colors.white,
+                //           border: OutlineInputBorder(
+                //               borderRadius: BorderRadius.circular(5)),
+                //           contentPadding: EdgeInsets.all(13),
+                //           hintText: "Simpan Sebagai",
+                //           labelText: "Simpan Sebagai"),
+                //       value: _test,
+                //       validator: (animalCategory) {
+                //         if (_animalCategory == null) {
+                //           return 'Silahkan pilih simpan sebagai';
+                //         }
+                //       },
+                //       onChanged: (SelectProduct selectProd) {
+                //         setState(() {
+                //           if (_selectProduct.id != selectProd.id) {
+                //             _selectProduct = selectProd;
 
-                            if (labelNamaType == "Hewan" &&
-                                selectProd.id == 3) {
-                              _refreshCategory();
-                            } else if (labelNamaType == "Aksesoris" &&
-                                selectProd.id != 3) {
-                              _refreshCategory();
-                            }
+                //             if (labelNamaType == "Hewan" &&
+                //                 selectProd.id == 3) {
+                //               _refreshCategory();
+                //             } else if (labelNamaType == "Aksesoris" &&
+                //                 selectProd.id != 3) {
+                //               _refreshCategory();
+                //             }
 
-                            if (_selectProduct.id == 3) {
-                              labelNamaType = "Aksesoris";
-                            } else {
-                              labelNamaType = "Hewan";
-                            }
-                          }
-                        });
-                      },
-                      items: selectProducts.map((SelectProduct selectProduct) {
-                        return DropdownMenuItem<SelectProduct>(
-                            value: selectProduct,
-                            child: Text(selectProduct.name,
-                                style: TextStyle(color: Colors.black)));
-                      }).toList(),
-                    )),
+                //             if (_selectProduct.id == 3) {
+                //               labelNamaType = "Aksesoris";
+                //             } else {
+                //               labelNamaType = "Hewan";
+                //             }
+                //           }
+                //         });
+                //       },
+                //       items: selectProducts.map((SelectProduct selectProduct) {
+                //         return DropdownMenuItem<SelectProduct>(
+                //             value: selectProduct,
+                //             child: Text(selectProduct.name,
+                //                 style: TextStyle(color: Colors.black)));
+                //       }).toList(),
+                //     )),
                 Container(
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -856,6 +999,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: TextFormField(
+                      controller: nameController,
                       onSaved: (String value) {
                         _name = value;
                       },
@@ -939,6 +1083,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: TextFormField(
+                      controller: descriptionController,
                       // initialValue: _description,
                       focusNode: descriptionFocusNode,
                       onSaved: (String value) {
@@ -977,7 +1122,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       ],
                     ),
                     color: Theme.of(context).primaryColor,
-                    onPressed: loadAssets,
+                    onPressed: () {
+                      globals.showDialogs("Fitur sedang dikembangkan.. Nantikan segera.", context);
+                      // loadAssets
+                    },
                   ),
                 ),
                 _buildGridViewImages(),
@@ -1010,12 +1158,24 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: FlatButton(
-                        onPressed: () => isLoading ? null : _save(),
+                        onPressed: () => isLoading ? null : _update(),
                         child: Text(!isLoading ? "Simpan Data" : "Mohon Tunggu",
                             style: Theme.of(context).textTheme.display4),
                         color: isLoading
                             ? Colors.grey
                             : Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)))),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: FlatButton(
+                        onPressed: () => isLoading ? null : _delete(),
+                        child: Text(
+                            !isLoading ? "Hapus Produk" : "Mohon Tunggu",
+                            style: Theme.of(context).textTheme.display4),
+                        color:
+                            isLoading ? Colors.grey : globals.myColor("danger"),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)))),
                 SizedBox(height: 20),

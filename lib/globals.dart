@@ -280,52 +280,103 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
 }
 
 Widget myAppBarIcon(context) {
-  return GestureDetector(
-    onTap: () => Navigator.of(context).pushNamed('/notification'),
-    child: Center(
-      child: Container(
-          margin: EdgeInsets.only(right: 10),
-          width: 30,
-          height: 30,
-          child: Stack(
-            children: [
-              Icon(
-                Icons.notifications,
-                color: Colors.white,
-                size: 30,
-              ),
-              user != null &&
-                      user.historiesCount != null &&
-                      user.historiesCount > 0
-                  ? Container(
-                      width: 30,
-                      height: 30,
-                      alignment: Alignment.topRight,
-                      margin: EdgeInsets.only(top: 0),
-                      child: Container(
-                        width: 15,
-                        height: 15,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: myColor('prime'),
-                            border: Border.all(
-                                color: Theme.of(context).primaryColor,
-                                width: 1)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Center(
-                            child: Text(
-                              "${user.historiesCount}",
-                              style: TextStyle(fontSize: 10),
+  return Row(
+    children: <Widget>[
+      GestureDetector(
+        onTap: () => Navigator.of(context).pushNamed('/chat-list'),
+        child: Center(
+          child: Container(
+              margin: EdgeInsets.only(right: 10),
+              width: 30,
+              height: 30,
+              child: Stack(
+                children: [
+                  Icon(
+                    Icons.chat,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  1 != 1 && user != null &&
+                          user.historiesCount != null &&
+                          user.historiesCount > 0
+                      ? Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.topRight,
+                          margin: EdgeInsets.only(top: 0),
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: myColor('prime'),
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 1)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Center(
+                                child: Text(
+                                  "${user.historiesCount}",
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    )
-                  : Container(),
-            ],
-          )),
-    ),
+                        )
+                      : Container(),
+                ],
+              )),
+        ),
+      ),
+      GestureDetector(
+        onTap: () => Navigator.of(context).pushNamed('/notification'),
+        child: Center(
+          child: Container(
+              margin: EdgeInsets.only(right: 10),
+              width: 30,
+              height: 30,
+              child: Stack(
+                children: [
+                  Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  user != null &&
+                          user.historiesCount != null &&
+                          user.historiesCount > 0
+                      ? Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.topRight,
+                          margin: EdgeInsets.only(top: 0),
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: myColor('prime'),
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 1)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Center(
+                                child: Text(
+                                  "${user.historiesCount}",
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(),
+                ],
+              )),
+        ),
+      ),
+    ],
   );
 }
 

@@ -124,8 +124,8 @@ Widget drawer(context) {
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 globals.spacePadding(),
-                _buildDrawerNavigationButtonBig(
-                      "Obrolan", '/chat-list', null, context),
+                // _buildDrawerNavigationButtonBig(
+                //     "Obrolan", '/chat-list', null, context),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Barangku", '/profile', null, context),

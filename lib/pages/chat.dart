@@ -199,11 +199,11 @@ class _ChatPageState extends State<ChatPage> {
                           child: globals.myText(
                               text: "Salin Form Diatas", color: "light"),
                           onPressed: () {
-                            globals.showDialogs(
-                                "Berhasil menyalin form", context);
                             Clipboard.setData(new ClipboardData(
                                 text:
                                     'LEMBAR FORM SELLER\n\nNama Penjual:\nNama Pembeli:\nKode Unik (5 Digit):\nJenis Hewan/Barang:\nGaransi Hewan/Barang:\nBatas waktu pengambilan paket:\nNominal transaksi:\nRekening Penjual: ..... Bank: ......\nRekening Pembeli : ..... Bank ..... \n\n(Nb: kolom garansi yg tidak diisi akan dianggap TIDAK BERGARANSI)'));
+                            globals.showDialogs(
+                                "Berhasil menyalin form", context);
                           },
                         ),
                       ))

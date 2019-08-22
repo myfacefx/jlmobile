@@ -5,6 +5,7 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/product/edit.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
@@ -59,6 +60,10 @@ class _ProfilePageState extends State<ProfilePage>
   void initState() {
     super.initState();
 
+    refresh();
+  }
+
+  refresh() {
     _getProdukKu();
     _getProdukLelang();
     _getProdukPasarHewan();
@@ -201,19 +206,18 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Widget _buildEditAuction(int animalId) {
+  Widget _buildEditAuction(Animal animal) {
     return Positioned(
       bottom: 4,
       right: 10,
       child: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => ProductDetailPage(
-                        animalId: animalId,
-                        from: "LELANG",
-                      )));
+                  builder: (BuildContext context) =>
+                      EditProductPage(animal: animal)));
+          this.refresh();
         },
         splashColor: globals.myColor("primary"),
         child: Container(
@@ -456,7 +460,9 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             )),
         animal.product.status != "sold out"
-            ? _buildEditAuction(animal.id)
+            ? animal.ownerUserId == globals.user.id
+                ? _buildEditAuction(animal)
+                : Container()
             : Container(),
         animal.product.status == "sold out"
             ? Positioned(
