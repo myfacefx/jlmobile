@@ -61,7 +61,7 @@ class _HomePage extends State<HomePage> {
   List<Article> listChampaign = [];
   List<Article> listArticle = [];
   List<JlfPartner> listParner = [];
-  String selectedType = "LELANG";
+  String selectedType = "PASAR HEWAN";
 
   int _currentArticle = 0;
 
@@ -70,7 +70,7 @@ class _HomePage extends State<HomePage> {
     super.initState();
     if (globals.user != null) {
       _refresh();
-      _getListCategoriesAuction();
+      _getListCategoriesProduct();
 
       _loadPromosA();
       _loadPromosB();
@@ -78,8 +78,6 @@ class _HomePage extends State<HomePage> {
       _loadPromosVideo();
       _loadChampaign();
       _loadArticle();
-
-      _getAnimalCategory();
       _loadJlfPartner();
 
       globals.getNotificationCount();
@@ -356,16 +354,7 @@ class _HomePage extends State<HomePage> {
     ];
   }
 
-  void _getAnimalCategory() {
-    getAnimalCategory("token").then((onValue) {
-      animalCategories = onValue;
-      setState(() {
-        isLoadingCategories = false;
-      });
-    }).catchError((onError) {
-      globals.showDialogs(onError, context);
-    });
-  }
+
 
   void _getListCategoriesAuction() {
     setState(() {
@@ -517,19 +506,6 @@ class _HomePage extends State<HomePage> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              if (selectedType != "LELANG") {
-                selectedType = "LELANG";
-                _getListCategoriesAuction();
-              }
-            },
-            child: globals.myText(
-                text: "LELANG",
-                size: 16,
-                color: selectedType == "LELANG" ? null : "disabled"),
-          ),
-          Text("  |  ", style: Theme.of(context).textTheme.headline),
-          GestureDetector(
-            onTap: () {
               if (selectedType != "PASAR HEWAN") {
                 selectedType = "PASAR HEWAN";
                 _getListCategoriesProduct();
@@ -552,6 +528,19 @@ class _HomePage extends State<HomePage> {
                 text: "AKSESORIS",
                 size: 16,
                 color: selectedType == "ACCESSORY" ? null : "disabled"),
+          ),
+          Text("  |  ", style: Theme.of(context).textTheme.headline),
+          GestureDetector(
+            onTap: () {
+              if (selectedType != "LELANG") {
+                selectedType = "LELANG";
+                _getListCategoriesAuction();
+              }
+            },
+            child: globals.myText(
+                text: "LELANG",
+                size: 16,
+                color: selectedType == "LELANG" ? null : "disabled"),
           ),
           Expanded(child: Text("")),
         ],

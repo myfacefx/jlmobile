@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/services/static_services.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 
 class IntroPage extends StatefulWidget {
   @override
@@ -143,14 +145,14 @@ class _IntroPageState extends State<IntroPage> {
                                                             .showDialogs(
                                                                 text, context);
                                                         Navigator.pop(context);
-                                                        // saveLocalData(
-                                                        //     'isNew', "true");
-                                                        // Navigator.push(
-                                                        //     context,
-                                                        //     MaterialPageRoute(
-                                                        //         builder: (BuildContext
-                                                        //                 context) =>
-                                                        //             LoginPage()));
+                                                        saveLocalData(
+                                                            'isNew', "true");
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    LoginPage()));
                                                       },
                                                     ))
                                                 : Container()

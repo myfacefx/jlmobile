@@ -359,7 +359,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     } else {
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(child: globals.myText(text: "Barang sudah terjual", color: "warning"),),
+        child: Center(
+          child: globals.myText(text: "Barang sudah terjual", color: "warning"),
+        ),
       );
     }
   }
@@ -1807,7 +1809,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             SizedBox(
               height: 20,
             ),
-            widget.from == "PASAR HEWAN"
+            widget.from == "PASAR HEWAN" || widget.from == "ACCESSORY"
                 ? Form(key: _formKeyComment, child: textAddComment())
                 : Container(),
             widget.from == "LELANG"

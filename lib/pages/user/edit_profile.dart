@@ -5,16 +5,16 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/models/regency.dart';
 import 'package:jlf_mobile/models/user.dart';
-import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/province_services.dart';
 import 'package:jlf_mobile/services/regency_services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jlf_mobile/services/user_services.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -58,6 +58,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
+    requestPermission();
 
     if (globals.user != null) {
       _name = globals.user.name;
@@ -101,6 +102,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
       });
     });
     //_updateRegencies(_regency.provinceId);
+  }
+
+  void requestPermission() async {
+    print("Checking Permission storage");
+    PermissionStatus permissionStorage = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.storage);
+    PermissionStatus permissionCamera =
+        await PermissionHandler().checkPermissionStatus(PermissionGroup.camera);
+
+    if (permissionStorage != PermissionStatus.granted &&
+        permissionCamera != PermissionStatus.granted) {
+      await PermissionHandler().requestPermissions(
+          [PermissionGroup.storage, PermissionGroup.camera]);
+      requestPermission();
+    }
   }
 
   _updateRegencies() {

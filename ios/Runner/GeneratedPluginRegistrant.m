@@ -16,6 +16,7 @@
 #import <image_picker/ImagePickerPlugin.h>
 #import <multi_image_picker/MultiImagePickerPlugin.h>
 #import <path_provider/PathProviderPlugin.h>
+#import <permission_handler/PermissionHandlerPlugin.h>
 #import <share/SharePlugin.h>
 #import <shared_preferences/SharedPreferencesPlugin.h>
 #import <sqflite/SqflitePlugin.h>
@@ -39,6 +40,7 @@
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [MultiImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"MultiImagePickerPlugin"]];
   [FLTPathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTPathProviderPlugin"]];
+  [PermissionHandlerPlugin registerWithRegistrar:[registry registrarForPlugin:@"PermissionHandlerPlugin"]];
   [FLTSharePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharePlugin"]];
   [FLTSharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharedPreferencesPlugin"]];
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];

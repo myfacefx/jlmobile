@@ -13,6 +13,7 @@ import 'package:jlf_mobile/services/province_services.dart';
 import 'package:jlf_mobile/services/regency_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RegisterPage extends StatefulWidget {
   final User user;
@@ -62,6 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
   List<Regency> regencies = List<Regency>();
 
   _RegisterPageState(User user) {
+    requestPermission();
     if (user != null) {
       this.lockEmailFromFacebook = true;
       this.user = user;
@@ -69,6 +71,21 @@ class _RegisterPageState extends State<RegisterPage> {
       nameController.text = user.name;
       this._photo = user.photo;
       this._email = user.email;
+    }
+  }
+
+  void requestPermission() async {
+    print("Checking Permission storage");
+    PermissionStatus permissionStorage = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.storage);
+    PermissionStatus permissionCamera =
+        await PermissionHandler().checkPermissionStatus(PermissionGroup.camera);
+
+    if (permissionStorage != PermissionStatus.granted &&
+        permissionCamera != PermissionStatus.granted) {
+      await PermissionHandler().requestPermissions(
+          [PermissionGroup.storage, PermissionGroup.camera]);
+      requestPermission();
     }
   }
 
@@ -167,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
       Map<String, dynamic> formData = user.toJson();
 
       formData['photoBase64'] = _photoBase64;
-      
+
       try {
         // User userResult = await register(user.toJson());
         User userResult = await register(formData);
@@ -201,7 +218,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-   Future _chooseProfilePicture() async {
+  Future _chooseProfilePicture() async {
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (imageFile != null) {
@@ -221,12 +238,12 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     File compressedFile = await FlutterNativeImage.compressImage(imageFile.path,
-          quality: 30, percentage: 100);
+        quality: 30, percentage: 100);
 
     List<int> imageBytes = compressedFile.readAsBytesSync();
 
     String base64Image = base64Encode(imageBytes);
-    
+
     setState(() {
       _photoBase64 = base64Image;
     });
@@ -242,7 +259,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //   String newFileName = globals.user.id.toString() + "-" + _randomDigits(6);
   //   formData['file_name'] = newFileName;
-    
+
   //   await updateProfilePicture(formData, globals.user.id);
 
   //   setState(() {
@@ -275,20 +292,23 @@ class _RegisterPageState extends State<RegisterPage> {
                       placeholder: 'assets/images/loading.gif',
                       image: _photo)
                   : Container(),
-              _photo == null ? GestureDetector(
-                onTap: () => _chooseProfilePicture(),
-                child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                    height: 150,
-                    child: CircleAvatar(
-                        radius: 100,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: _photoBase64 != null
-                                ? Image.memory(base64Decode(_photoBase64),
-                                    fit: BoxFit.cover)
-                                : Image.asset('assets/images/account.png')))),
-              ) : Container(),
+              _photo == null
+                  ? GestureDetector(
+                      onTap: () => _chooseProfilePicture(),
+                      child: Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                          height: 150,
+                          child: CircleAvatar(
+                              radius: 100,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: _photoBase64 != null
+                                      ? Image.memory(base64Decode(_photoBase64),
+                                          fit: BoxFit.cover)
+                                      : Image.asset(
+                                          'assets/images/account.png')))),
+                    )
+                  : Container(),
               Container(
                   alignment: Alignment.center,
                   width: 300,
