@@ -4,7 +4,9 @@ import 'package:jlf_mobile/models/animal_category.dart';
 
 Future<List<AnimalCategory>> getAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
+ 
   print(getBaseUrl() + "/animal-categories/animal");
+ 
   http.Response res = await http.get(getBaseUrl() + "/animal-categories/animal",
       headers: header);
   if (res.statusCode == 200) {
