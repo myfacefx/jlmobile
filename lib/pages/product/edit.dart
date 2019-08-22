@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/product.dart';
@@ -91,7 +92,7 @@ class _EditProductPageState extends State<EditProductPage> {
 
   List<Asset> images = List<Asset>();
 
-  List<Container> currentImages = List<Container>();
+  List<AnimalImage> currentImages = List<AnimalImage>();
   String _error;
 
   Animal _animal;
@@ -118,28 +119,28 @@ class _EditProductPageState extends State<EditProductPage> {
           ? _innerIslandShippingBool = true
           : _innerIslandShippingBool = false;
 
-      print(_animal.animalImages.toString());
-      for (var image in _animal.animalImages) {
-        // images.add(Asset())
+      if (_animal.animalImages.length > 0) currentImages = _animal.animalImages;
+      // for (var image in _animal.animalImages) {
+      // images.add(Asset())
 
-        currentImages.add(Container(
-                  padding: EdgeInsets.all(5),
-                  child: FadeInImage.assetNetwork(
-                    fit: BoxFit.fitHeight,
-                    placeholder: 'assets/images/loading.gif',
-                    image: image.thumbnail,
-                  )));
-        // currentImages.add(Container(
-        //   child: Column(
-        //     children: <Widget>[
-              
-        //       // FlatButton(
-        //       //     onPressed: () => null,
-        //       //     child: Icon(Icons.delete, color: Colors.black))
-        //     ],
-        //   ),
-        // ));
-      }
+      // currentImages.add(Container(
+      //           padding: EdgeInsets.all(5),
+      //           child: FadeInImage.assetNetwork(
+      //             fit: BoxFit.fitHeight,
+      //             placeholder: 'assets/images/loading.gif',
+      //             image: image.thumbnail,
+      //           )));
+      // currentImages.add(Container(
+      //   child: Column(
+      //     children: <Widget>[
+
+      //       // FlatButton(
+      //       //     onPressed: () => null,
+      //       //     child: Icon(Icons.delete, color: Colors.black))
+      //     ],
+      //   ),
+      // ));
+      // }
 
       if (_animal.product.type == "accessory") {
         labelNamaType = "Aksesoris";
@@ -308,7 +309,58 @@ class _EditProductPageState extends State<EditProductPage> {
               crossAxisCount: 3,
               physics: ScrollPhysics(),
               children: List.generate(currentImages.length, (index) {
-                return currentImages[index];
+                return Container(
+                  height: 180,
+                    child: Column(
+                  children: <Widget>[
+                    // Container(height: 80, child: currentImages[index]),
+                    Container(
+                      height: 80,
+                        padding: EdgeInsets.all(5),
+                        child: FadeInImage.assetNetwork(
+                          fit: BoxFit.contain,
+                          placeholder: 'assets/images/loading.gif',
+                          image: currentImages[index].thumbnail,
+                        )),
+                    Container(
+                      height: 20,
+                      child: FlatButton(
+                          onPressed: () async {
+                            if (isLoading) return;
+
+                            final result = await globals.confirmDialog(
+                                "Apakah Anda yakin untuk menghapus foto produk ini? Foto akan terhapus selamanya",
+                                context);
+                            if (result) {
+                              setState(() {
+                                isLoading = true;
+                              });
+
+                              bool response = await AnimalServices.deleteImage(
+                                  "Test", currentImages[index].id);
+
+                              String message = "Berhasil menghapus foto";
+
+                              currentImages.removeAt(index);
+                              setState(() {
+                                isLoading = false;
+                              });
+                              if (!response) {
+                                message =
+                                    "Gagal menghapus foto, silahkan coba kembali";
+                              }
+
+                              await globals.showDialogs(message, context);
+                              Navigator.pop(context);
+                            }
+                          },
+                          color: globals.myColor("danger"),
+                          child: Container(
+                              child: Icon(Icons.delete,
+                                  size: 16, color: Colors.white))),
+                    ),
+                  ],
+                ));
               }),
             ),
           );
@@ -321,10 +373,16 @@ class _EditProductPageState extends State<EditProductPage> {
 
     List<Asset> resultList;
     String error;
+    int maxImage = 5 - currentImages.length;
+
+    if (maxImage <= 0) {
+      globals.showDialogs("Foto produk sudah mencapai jumlah maksimal (5)", context);
+      return;
+    }
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 5,
+        maxImages: maxImage,
       );
     } on PlatformException catch (e) {
       error = e.message;
@@ -335,13 +393,38 @@ class _EditProductPageState extends State<EditProductPage> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    setState(() {
-      currentImages = null;
-      images = resultList;
-      // if (error == null) _error = 'No Error Detected';
-    });
+    final result = await globals.confirmDialog(
+      "Apakah Anda menggunggah ${resultList.length} foto ini?",
+      context);
+    if (result) {
+      setState(() {
+        images = resultList;
+        _generateImageBase64();
+        currentImages = null;
+        // if (error == null) _error = 'No Error Detected';
+      });
+    } 
+  }
 
-    _generateImageBase64();
+  _uploadImageAndReset() async {
+    if (imagesBase64.length > 0) {
+      Map<String, dynamic> formData = Map<String, dynamic>();
+      formData['images'] = imagesBase64;
+
+      AnimalServices.createImage("", formData, _animal.id).then((onValue) async {
+          Navigator.pop(context);
+          if (onValue) {
+            await globals.showDialogs("Berhasil mengunggah foto produk", context,
+                isDouble: true);
+          } else {
+            globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
+          }
+        }).catchError((onError) {
+          Navigator.pop(context);
+          print(onError.toString());
+          globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
+        });
+    }
   }
 
   _generateImageBase64() async {
@@ -355,6 +438,8 @@ class _EditProductPageState extends State<EditProductPage> {
 
       imagesBase64.add(base64Encode(imageData));
     }
+
+    _uploadImageAndReset();
   }
 
   _delete() async {
@@ -383,7 +468,6 @@ class _EditProductPageState extends State<EditProductPage> {
   _update() async {
     if (isLoading) return;
 
-
     _formKey.currentState.save();
     if (_formKey.currentState.validate()) {
       if (!_agreeTerms) {
@@ -401,7 +485,7 @@ class _EditProductPageState extends State<EditProductPage> {
       animal.animalSubCategoryId = _animalSubCategory.id;
       animal.name = _name;
       animal.description = _description;
-      
+
       Product product = Product();
       product.price = int.parse(_price);
       product.innerIslandShipping = _innerIslandShipping;
@@ -416,9 +500,11 @@ class _EditProductPageState extends State<EditProductPage> {
 
       print(formDataAnimal);
 
-      bool response_product = await ProductServices.update("Test", product.toJson(), _animal.product.id);
+      bool response_product = await ProductServices.update(
+          "Test", product.toJson(), _animal.product.id);
 
-      bool response_animal = await AnimalServices.update("Test", formDataAnimal, _animal.id);
+      bool response_animal =
+          await AnimalServices.update("Test", formDataAnimal, _animal.id);
 
       String message = "Berhasil mengupdate produk";
 
@@ -1123,8 +1209,10 @@ class _EditProductPageState extends State<EditProductPage> {
                     ),
                     color: Theme.of(context).primaryColor,
                     onPressed: () {
-                      globals.showDialogs("Fitur sedang dikembangkan.. Nantikan segera.", context);
-                      // loadAssets
+                      // globals.showDialogs(
+                      //     "Fitur sedang dikembangkan.. Nantikan segera.",
+                      //     context);
+                      loadAssets();
                     },
                   ),
                 ),
