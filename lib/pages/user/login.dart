@@ -101,10 +101,8 @@ class _LoginPage extends State<LoginPage> {
 
       try {
         User userResult = await login((loginUser.toJson()));
-
-        if (userResult != null) {
+        if (userResult.statusCode == 1) {
           saveLocalData('user', userToJson(userResult));
-
           print(userToJson(userResult));
 
           globals.user = userResult;
@@ -112,15 +110,22 @@ class _LoginPage extends State<LoginPage> {
 
           Navigator.of(context).pop();
           Navigator.pushNamed(context, "/");
+        } else if (userResult.statusCode == 2) {
+          globals.showDialogs(
+              "Username/Password salah atau tidak ditemukan", context);
+        } else if (userResult.statusCode == 3) {
+          globals.showDialogs(
+              "Login gagal, Anda masuk dalam blacklist user", context);
         } else {
           globals.showDialogs("Login gagal, silahkan coba kembali", context);
         }
+
         setState(() {
           loginLoading = false;
         });
       } catch (e) {
         globals.showDialogs(e.toString(), context);
-        globals.mailError("Login", e.toString());
+        // globals.mailError("Login", e.toString());
         setState(() {
           loginLoading = false;
         });
