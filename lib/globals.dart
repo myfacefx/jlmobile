@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
@@ -25,19 +26,59 @@ double mw(BuildContext context) {
   return MediaQuery.of(context).size.width;
 }
 
-void share(String from, int animalId) {
-  String param;
-  if (from != null && animalId != null) {
+// void share(String from, int animalId) {
+//   String param;
+//   if (from != null && animalId != null) {
+//     if (from == "LELANG") {
+//       param = "/type/animalf1-$animalId";
+//     }
+//     if (from == "PASAR HEWAN") {
+//       param = "/type/animalf2-$animalId";
+//     }
+//   }
+
+//   Share.share('Bergabung bersama JLF - https://juallelangfauna.com$param');
+// }
+
+// void share(String from, int animalId) {
+//   String param;
+//   if (from != null && animalId != null) {
+//     if (from == "LELANG") {
+//       param = "/type/animalf1-$animalId";
+//     }
+//     if (from == "PASAR HEWAN") {
+//       param = "/type/animalf2-$animalId";
+//     }
+//   }
+
+//   Share.share('Bergabung bersama JLF - https://juallelangfauna.com$param');
+// }
+
+void share(String from, Animal animal) {
+  String text, param;
+  if (from != null && animal.id != null) {
+    String category = animal.animalSubCategory.animalCategory.name;
+    String subCategory = animal.animalSubCategory.name;
+
     if (from == "LELANG") {
-      param = "/type/animalf1-$animalId";
+      param = "/type/animalf1-${animal.id}";
+      String openBid = convertToMoney(double.parse(animal.auction.openBid.toString()));
+      String bin = convertToMoney(double.parse(animal.auction.openBid.toString()));
+      String multiply = convertToMoney(double.parse(animal.auction.multiply.toString()));
+
+      text = "Dilelang ${animal.name} ($category - $subCategory) dengan harga awal Rp. $openBid, beli sekarang (BIN) Rp. $bin, dan kelipatan Rp. $multiply";
     }
     if (from == "PASAR HEWAN") {
-      param = "/type/animalf2-$animalId";
+      param = "/type/animalf2-${animal.id}";
+      String price = convertToMoney(double.parse(animal.product.price.toString()));
+      text = "Dijual ${animal.name} ($category - $subCategory) dengan harga Rp. $price";
     }
+    //  dijual / dilelang {{nama barang}} harga {{}} cek segera
   }
-
-  Share.share('Bergabung bersama JLF - https://juallelangfauna.com$param');
+  
+  Share.share(text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com$param');
 }
+
 
 String baseUrl = "http://192.168.100.119:8000";
 String flavor = "Development";

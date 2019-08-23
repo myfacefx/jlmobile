@@ -704,7 +704,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   : Container(),
               Container(
                 margin: EdgeInsets.only(left: 5),
-                child: innerIslandShipping == 1
+                child: innerIslandShipping == 0
                     ? Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
