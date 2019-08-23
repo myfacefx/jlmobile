@@ -761,7 +761,7 @@ void mailError(String errrorFrom, String cause) async{
   final message = mailer.Message()
     ..from = mailer.Address(username, 'JLF Err')
     ..recipients.add('joe.technubi@gmail.com')
-    ..recipients.add('ervansanjaya@gmail')
+    ..recipients.add('ervansanjaya@gmail.com')
     ..subject =
         'Error $flavor $version JLF - $errrorFrom :: ${user.email} :: ${user.username} :: ${new DateTime.now()}'
     ..html = cause;
