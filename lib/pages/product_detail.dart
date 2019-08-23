@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction.dart';
@@ -47,7 +48,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   bool isLoading = true;
   Animal animal = Animal();
 
-  TextEditingController bidController = TextEditingController();
+  var bidController = MoneyMaskedTextController(
+      precision: 0, leftSymbol: "Rp. ", decimalSeparator: "");
   TextEditingController commentController = TextEditingController();
 
   _ProductDetailPage(int animalId) {
@@ -1376,17 +1378,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 color: Colors.black,
                 fontSize: 12,
               ),
-              validator: (String bid) {
-                // if (bid == null || bid == "" || bid == "0") {
-                //   return "Tawaran tidak boleh kosong";
-                // } else if (animal.auction.openBid > int.parse(bid)) {
-                //   return "Jumlah tawaran terlalu kecil dari harga bukaan";
-                // } else if (animal.auction.currentBid >= int.parse(bid)) {
-                //   return "Jumlah tawaran terlalu kecil";
-                // } else if ((int.parse(bid) % animal.auction.multiply) != 0) {
-                //   return "Jumlah tawaran tidak sesuai kelipatan";
-                // }
-              },
               decoration: InputDecoration(
                   errorStyle: TextStyle(fontSize: 12),
                   border: InputBorder.none,
@@ -1412,26 +1403,30 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               if (bidController.text.isEmpty) {
                 globals.showDialogs("Tawaran Anda masih kosong", context);
                 return null;
-              } else if (animal.auction.openBid > int.parse(bid)) {
+              } else if (animal.auction.openBid >
+                  bidController.numberValue.toInt()) {
                 globals.showDialogs("Tawaran terlalu kecil", context);
                 return null;
-              } else if (animal.auction.currentBid >= int.parse(bid)) {
+              } else if (animal.auction.currentBid >=
+                  bidController.numberValue.toInt()) {
                 globals.showDialogs(
                     "Tawaran terlalu kecil atau sama dengan harga saat ini",
                     context);
                 return null;
-              } else if (((int.parse(bid) - animal.auction.openBid) %
+              } else if (((bidController.numberValue.toInt() -
+                          animal.auction.openBid) %
                       animal.auction.multiply) !=
                   0) {
                 globals.showDialogs("Tawaran tidak sesuai kelipatan", context);
                 return null;
-              } else if (int.parse(bid) > animal.auction.buyItNow) {
+              } else if (bidController.numberValue.toInt() >
+                  animal.auction.buyItNow) {
                 globals.showDialogs(
                     "Tawaran lebih besar dari pada harga beli sekarang",
                     context);
                 return null;
               } else {
-                _addBid(int.parse(bidController.text));
+                _addBid(bidController.numberValue.toInt());
               }
             },
             child: Text(
@@ -1468,7 +1463,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 align: TextAlign.center),
             content: Container(
                 child: Text(
-                    "Yakin memasang bid \nRp. ${globals.convertToMoney(amountDouble)} ?" +
+                    "Yakin memasang bid \n${globals.convertToMoney(amountDouble)} ?" +
                         (biddingBIN ? " (Beli Sekarang)" : "") +
                         " " +
                         (animal.auction.innerIslandShipping != null &&

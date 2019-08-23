@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
@@ -39,12 +40,16 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   FocusNode multiplyFocusNode = FocusNode();
   FocusNode quantityFocusNode = FocusNode();
 
-  TextEditingController openBidController = TextEditingController();
-  TextEditingController multiplyController = TextEditingController();
-  TextEditingController binController = TextEditingController();
+  var openBidController = MoneyMaskedTextController(
+      precision: 0, leftSymbol: "Rp. ", decimalSeparator: "");
+  var multiplyController = MoneyMaskedTextController(
+      precision: 0, leftSymbol: "Rp. ", decimalSeparator: "");
+  var binController = MoneyMaskedTextController(
+      precision: 0, leftSymbol: "Rp. ", decimalSeparator: "");
   TextEditingController dateOfBirthController = TextEditingController();
 
-  TextEditingController priceController = TextEditingController();
+  var priceController = MoneyMaskedTextController(
+      precision: 0, leftSymbol: "Rp. ", decimalSeparator: "");
   TextEditingController quantityController = TextEditingController();
 
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
@@ -67,18 +72,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
   String _name;
   String _description;
-  String _openBid;
-  String _bin;
-  String _multiply;
-  String _bidType;
+
   int _auctionDuration;
   String _gender = "M";
   bool _innerIslandShippingBool = false;
   int _innerIslandShipping = 0;
   DateTime _dateOfBirth;
-
-  String _price;
-  String _quantity;
 
   bool _agreeTerms = false;
 
@@ -341,9 +340,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         // If user want to start the auction of the animal
         Auction auction = Auction();
 
-        auction.openBid = int.parse(_openBid);
-        auction.multiply = int.parse(_multiply);
-        auction.buyItNow = int.parse(_bin);
+        auction.openBid = openBidController.numberValue.toInt();
+        auction.multiply = multiplyController.numberValue.toInt();
+        auction.buyItNow = binController.numberValue.toInt();
         auction.duration = _auctionDuration;
         auction.ownerUserId = globals.user.id;
         auction.active = 1;
@@ -360,7 +359,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         // If user want to start the auction of the animal
         Product product = Product();
         product.type = "animal";
-        product.price = int.parse(_price);
+        product.price = priceController.numberValue.toInt();
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
@@ -377,7 +376,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         // If user want to start the auction of the animal
         Product product = Product();
         product.type = "accessory";
-        product.price = int.parse(_price);
+        product.price = priceController.numberValue.toInt();
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
@@ -412,18 +411,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       });
     }
   }
-
-  // void _handleSaveAs(int value) {
-  //   setState(() {
-  //     _selectProduct.id = value;
-  //   });
-  // }
-
-  // void _handleGenderChange(String value) {
-  //   setState(() {
-  //     _gender = value;
-  //   });
-  // }
 
   Widget _buildAuction() {
     return Column(
@@ -469,11 +456,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
               keyboardType: TextInputType.number,
               controller: openBidController,
               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-              // initialValue: _openBid,
-              // focusNode: usernameFocusNode,
-              onSaved: (String value) {
-                _openBid = value;
-              },
               onFieldSubmitted: (String value) {
                 if (value.length > 0) {
                   FocusScope.of(context).requestFocus(binFocusNode);
@@ -485,7 +467,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 }
 
                 if (binController.text.isNotEmpty) {
-                  if (int.parse(value) >= int.parse(binController.text)) {
+                  if (openBidController.numberValue.toInt() >=
+                      binController.numberValue.toInt()) {
                     return 'Harga awal tidak boleh lebih atau sama dengan harga beli sekarang';
                   }
                 }
@@ -506,11 +489,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
               keyboardType: TextInputType.number,
               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
               controller: binController,
-              // initialValue: _bin,
               focusNode: binFocusNode,
-              onSaved: (String value) {
-                _bin = value;
-              },
               onFieldSubmitted: (String value) {
                 if (value.length > 0) {
                   FocusScope.of(context).requestFocus(multiplyFocusNode);
@@ -522,17 +501,19 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 }
 
                 if (openBidController.text.isNotEmpty) {
-                  if (int.parse(value) <= int.parse(openBidController.text)) {
+                  if (binController.numberValue.toInt() <=
+                      openBidController.numberValue.toInt()) {
                     return 'Harga Beli Sekarang tidak boleh kurang atau sama dengan harga awal';
                   }
 
                   if (multiplyController.text.isNotEmpty) {
-                    if (int.parse(multiplyController.text) == 0) {
+                    if (multiplyController.numberValue.toInt() == 0) {
                       return 'Kelipatan tidak valid';
                     }
 
-                    if ((int.parse(value) - int.parse(openBidController.text)) %
-                            int.parse(multiplyController.text) !=
+                    if ((binController.numberValue.toInt() -
+                                openBidController.numberValue.toInt()) %
+                            multiplyController.numberValue.toInt() !=
                         0) {
                       return 'BIN harus sesuai kelipatan';
                     }
@@ -540,7 +521,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 }
               },
               style: TextStyle(color: Colors.black),
-              // keyboardType: TextInputType.number,
               decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(13),
                   hintText: "Beli Sekarang (BIN)",
@@ -556,11 +536,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
               keyboardType: TextInputType.number,
               controller: multiplyController,
               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-              // initialValue: _multiply,
               focusNode: multiplyFocusNode,
-              onSaved: (String value) {
-                _multiply = value;
-              },
               onFieldSubmitted: (String value) {
                 if (value.length > 0) {
                   _save();
@@ -571,19 +547,20 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                   return 'Harga kelipatan wajib diisi';
                 }
 
-                if (int.parse(value) == 0) {
+                if (multiplyController.numberValue.toInt() == 0) {
                   return 'Kelipatan tidak valid';
                 }
 
                 if (binController.text.isNotEmpty) {
-                  if (int.parse(value) >= int.parse(binController.text)) {
+                  if (multiplyController.numberValue.toInt() >=
+                      binController.numberValue.toInt()) {
                     return 'Harga kelipatan tidak boleh melebihi atau sama dengan harga beli sekarang';
                   }
 
                   if (openBidController.text.isNotEmpty) {
-                    if ((int.parse(binController.text) -
-                                int.parse(openBidController.text)) %
-                            int.parse(value) !=
+                    if ((binController.numberValue.toInt() -
+                                openBidController.numberValue.toInt()) %
+                            multiplyController.numberValue.toInt() !=
                         0) {
                       return 'Nilai kelipatan tidak sesuai';
                     }
@@ -635,9 +612,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
               keyboardType: TextInputType.number,
               controller: priceController,
               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-              onSaved: (String value) {
-                _price = value;
-              },
               onFieldSubmitted: (String value) {
                 if (value.length > 0) {
                   // FocusScope.of(context).requestFocus(quantityFocusNode);
@@ -940,7 +914,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: TextFormField(
-                      // initialValue: _description,
                       focusNode: descriptionFocusNode,
                       onSaved: (String value) {
                         _description = value;
