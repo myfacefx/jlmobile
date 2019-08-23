@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
@@ -44,7 +45,8 @@ class _EditProductPageState extends State<EditProductPage> {
   TextEditingController binController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
 
-  TextEditingController priceController = TextEditingController();
+  var priceController = MoneyMaskedTextController(
+      precision: 0, leftSymbol: "Rp. ", decimalSeparator: "");
   TextEditingController quantityController = TextEditingController();
 
   TextEditingController nameController = TextEditingController();
@@ -896,7 +898,7 @@ class _EditProductPageState extends State<EditProductPage> {
                   return 'Harga awal wajib diisi';
                 }
 
-                if (int.parse(value) < 1) {
+                if (priceController.numberValue.toInt() < 1) {
                   return 'Harga tidak sesuai';
                 }
               },
