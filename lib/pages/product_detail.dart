@@ -1398,8 +1398,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             onPressed: () {
               _formKeyBid.currentState.save();
 
-              String bid = bidController.text;
-
               if (bidController.text.isEmpty) {
                 globals.showDialogs("Tawaran Anda masih kosong", context);
                 return null;
@@ -1487,15 +1485,21 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       final result = await placeBid("Token", newBid);
                       Navigator.pop(context);
 
-                      if (result) {
+                      if (result == 1) {
                         await globals.showDialogs("Tawaran terpasang", context);
-                      } else {
+                      } else if (result == 2) {
                         await globals.showDialogs(
                             "Gagal, tawaran lebih rendah dari tawaran tertinggi saat ini",
                             context);
+                      } else if (result == 3) {
+                        await globals.showDialogs(
+                            "Bid gagal, Anda masuk dalam blacklist user",
+                            context);
+                      } else {
+                        await globals.showDialogs("Error", context);
                       }
 
-                      bidController.text = '';
+                      bidController.updateValue(0);
                       Navigator.pop(context);
                       loadAnimal(animal.id);
                     } catch (e) {

@@ -5,7 +5,6 @@
 import 'dart:convert';
 
 import 'package:jlf_mobile/models/province.dart';
-import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/regency.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
@@ -39,6 +38,7 @@ class User {
   Regency regency;
   Province province;
   String firebaseToken;
+  int statusCode;
 
   User(
       {this.id,

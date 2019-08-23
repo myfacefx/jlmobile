@@ -12,13 +12,22 @@ Future<User> login(Map<String, dynamic> _data) async {
   http.Response res = await http.post(getBaseUrl() + "/login",
       headers: header, body: json.encode(_data));
 
-  print(res.body);
+  User user;
 
   if (res.statusCode == 200) {
-    return userFromJson(res.body);
+    user = userFromJson(res.body);
+    user.statusCode = 1;
+  } else if (res.statusCode == 404) {
+    user = User();
+    user.statusCode = 2;
+  } else if (res.statusCode == 405) {
+    user = User();
+    user.statusCode = 3;
   } else {
     throw Exception(res.body);
   }
+
+  return user;
 }
 
 Future<bool> logout(String token) async {
