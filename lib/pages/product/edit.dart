@@ -503,7 +503,7 @@ class _EditProductPageState extends State<EditProductPage> {
       animal.description = _description;
 
       Product product = Product();
-      product.price = int.parse(_price);
+      product.price = priceController.numberValue.toInt();
       product.innerIslandShipping = _innerIslandShipping;
 
       print(product.toJson());
@@ -628,7 +628,7 @@ class _EditProductPageState extends State<EditProductPage> {
         // If user want to start the auction of the animal
         Product product = Product();
         product.type = "accessory";
-        product.price = int.parse(_price);
+        product.price = priceController.numberValue.toInt();
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
