@@ -94,7 +94,15 @@ class _EditProductPageState extends State<EditProductPage> {
 
   List<Asset> images = List<Asset>();
 
-  List<AnimalImage> currentImages = List<AnimalImage>();
+  List<Column> currentImages = List<Column>();
+  List<int> currentAnimalImageID = List<int>();
+
+  List<int> animalImageIdToDelete = List<int>();
+
+  List<AnimalImage> arrayAnimalImages = List<AnimalImage>();
+
+  List<Asset> arrayOfAssets = List<Asset>();
+
   String _error;
 
   Animal _animal;
@@ -121,28 +129,43 @@ class _EditProductPageState extends State<EditProductPage> {
           ? _innerIslandShippingBool = true
           : _innerIslandShippingBool = false;
 
-      if (_animal.animalImages.length > 0) currentImages = _animal.animalImages;
-      // for (var image in _animal.animalImages) {
-      // images.add(Asset())
+      // Current Images Initialization
+      for (var image in _animal.animalImages) {
+        arrayAnimalImages.add(image);
+      }
 
-      // currentImages.add(Container(
-      //           padding: EdgeInsets.all(5),
-      //           child: FadeInImage.assetNetwork(
-      //             fit: BoxFit.fitHeight,
-      //             placeholder: 'assets/images/loading.gif',
-      //             image: image.thumbnail,
-      //           )));
-      // currentImages.add(Container(
-      //   child: Column(
-      //     children: <Widget>[
-
-      //       // FlatButton(
-      //       //     onPressed: () => null,
-      //       //     child: Icon(Icons.delete, color: Colors.black))
-      //     ],
-      //   ),
-      // ));
-      // }
+      for (var i = 0; i < _animal.animalImages.length; i++) {
+        currentAnimalImageID.add(_animal.animalImages[i].id);
+        currentImages.add(Column(
+          children: <Widget>[
+            Container(
+                height: 80,
+                padding: EdgeInsets.all(5),
+                child: FadeInImage.assetNetwork(
+                  fit: BoxFit.contain,
+                  placeholder: 'assets/images/loading.gif',
+                  image: _animal.animalImages[i].thumbnail,
+                )),
+            Container(
+              height: 20,
+              child: FlatButton(
+                  onPressed: () {
+                    setState(() {
+                      currentAnimalImageID.removeAt(i);
+                      currentImages.removeAt(i);
+                      animalImageIdToDelete.add(_animal.animalImages[i].id);
+                      refreshCurrentImages();
+                    });
+                  },
+                  color: globals.myColor("danger"),
+                  child: Container(
+                      child:
+                          Icon(Icons.delete, size: 16, color: Colors.white))),
+            ),
+            // Container(height: 20, child: Icon(Icons.delete, size: 16, color: Colors.white))
+          ],
+        ));
+      }
 
       if (_animal.product.type == "accessory") {
         labelNamaType = "Aksesoris";
@@ -191,6 +214,38 @@ class _EditProductPageState extends State<EditProductPage> {
     });
 
     globals.getNotificationCount();
+  }
+
+  void refreshCurrentImages() {
+    // Current Images Initialization
+    for (var i = 0; i < currentImages.length; i++) {
+      currentAnimalImageID.add(_animal.animalImages[i].id);
+      currentImages.add(Column(
+        children: <Widget>[
+          Container(
+              height: 80,
+              padding: EdgeInsets.all(5),
+              child: FadeInImage.assetNetwork(
+                fit: BoxFit.contain,
+                placeholder: 'assets/images/loading.gif',
+                image: _animal.animalImages[i].thumbnail,
+              )),
+          Container(
+            height: 20,
+            child: FlatButton(
+                onPressed: () {
+                  setState(() {
+                    currentImages.removeAt(i);
+                    animalImageIdToDelete.add(_animal.animalImages[i].id);
+                  });
+                },
+                color: globals.myColor("danger"),
+                child: Container(
+                    child: Icon(Icons.delete, size: 16, color: Colors.white))),
+          ),
+        ],
+      ));
+    }
   }
 
   void _refreshCategory() {
@@ -279,103 +334,225 @@ class _EditProductPageState extends State<EditProductPage> {
   }
 
   Widget _buildGridViewImages() {
-    return currentImages == null
-        ? images != null && images.length > 0
-            ? Container(
-                padding: EdgeInsets.all(5),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  physics: ScrollPhysics(),
-                  children: List.generate(images.length, (index) {
-                    Asset asset = images[index];
-                    return Container(
-                      padding: EdgeInsets.all(5),
-                      child: AssetThumb(
-                        asset: asset,
-                        width: 300,
-                        height: 300,
-                      ),
-                    );
-                  }),
-                ),
-              )
-            : Container(
-                padding: EdgeInsets.symmetric(vertical: 30),
-                child: globals.myText(
-                    text: "Belum ada foto terpilih", color: "dark"))
-        : Container(
-            padding: EdgeInsets.all(5),
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 3,
-              physics: ScrollPhysics(),
-              children: List.generate(currentImages.length, (index) {
-                return Container(
-                    height: 180,
-                    child: Column(
-                      children: <Widget>[
-                        // Container(height: 80, child: currentImages[index]),
-                        Container(
-                            height: 80,
-                            padding: EdgeInsets.all(5),
+    return Column(
+      children: <Widget>[
+        arrayAnimalImages.length > 0
+            ? GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 3,
+                physics: ScrollPhysics(),
+                children: List.generate(arrayAnimalImages.length, (index) {
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                          width: 80,
+                          padding: EdgeInsets.all(5),
+                          child: Container(
                             child: FadeInImage.assetNetwork(
                               fit: BoxFit.contain,
                               placeholder: 'assets/images/loading.gif',
-                              image: currentImages[index].thumbnail,
-                            )),
-                        Container(
+                              image: arrayAnimalImages[index].thumbnail,
+                            ),
+                          )),
+                      Container(
                           height: 20,
                           child: FlatButton(
                               onPressed: () async {
                                 if (isLoading) return;
-
-                                final result = await globals.confirmDialog(
-                                    "Apakah Anda yakin untuk menghapus foto produk ini? Foto akan terhapus selamanya",
-                                    context);
-                                if (result) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-
-                                  try {
-                                    bool response =
-                                        await AnimalServices.deleteImage(
-                                            "Test", currentImages[index].id);
-
-                                    String message = "Berhasil menghapus foto";
-
-                                    currentImages.removeAt(index);
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    if (!response) {
-                                      message =
-                                          "Gagal menghapus foto, silahkan coba kembali";
-                                    }
-
-                                    await globals.showDialogs(message, context);
-                                    Navigator.pop(context);
-                                  } catch (e) {
-                                    globals.showDialogs(
-                                        "Gagal menghapus foto, Coba kembali",
-                                        context);
-                                    globals.mailError(
-                                        "Delete image on edit product",
-                                        e.toString());
-                                  }
-                                }
+                                animalImageIdToDelete
+                                    .add(arrayAnimalImages[index].id);
+                                arrayAnimalImages.removeAt(index);
+                                setState(() {});
                               },
                               color: globals.myColor("danger"),
                               child: Container(
                                   child: Icon(Icons.delete,
-                                      size: 16, color: Colors.white))),
+                                      size: 16, color: Colors.white)))),
+                    ],
+                  );
+                }))
+            : Container(),
+        arrayOfAssets.length > 0
+            ? GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 3,
+                physics: ScrollPhysics(),
+                children: List.generate(arrayOfAssets.length, (index) {
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        child: AssetThumb(
+                          asset: arrayOfAssets[index],
+                          width: 80,
+                          height: 80,
                         ),
-                      ],
-                    ));
-              }),
-            ),
-          );
+                      ),
+                      Container(
+                          height: 20,
+                          child: FlatButton(
+                              onPressed: () async {
+                                if (isLoading) return;
+                                arrayOfAssets.removeAt(index);
+                                setState(() {});
+                              },
+                              color: globals.myColor("danger"),
+                              child: Container(
+                                  child: Icon(Icons.delete,
+                                      size: 16, color: Colors.white)))),
+                    ],
+                  );
+                }))
+            : Container(),
+      ],
+    );
+
+    return currentImages.length > 0
+        ? GridView.count(
+            shrinkWrap: true,
+            crossAxisCount: 3,
+            physics: ScrollPhysics(),
+            children: List.generate(currentImages.length, (index) {
+              return currentImages[index];
+
+              // return currentImages[index];
+              return Container(
+                  height: 180,
+                  child: Column(
+                    children: <Widget>[
+                      // Container(height: 80, child: currentImages[index]),
+                      currentImages[index] is AnimalImage
+                          ? Container(
+                              height: 80,
+                              padding: EdgeInsets.all(5),
+                              child: FadeInImage.assetNetwork(
+                                fit: BoxFit.contain,
+                                placeholder: 'assets/images/loading.gif',
+                                // image: currentImages[index],
+                              ))
+                          : Container(),
+                      Container(
+                        height: 20,
+                        child: FlatButton(
+                            onPressed: () async {
+                              if (isLoading) return;
+
+                              animalImageIdToDelete
+                                  .add(currentAnimalImageID[index]);
+                              currentImages.removeAt(index);
+                              setState(() {});
+                            },
+                            color: globals.myColor("danger"),
+                            child: Container(
+                                child: Icon(Icons.delete,
+                                    size: 16, color: Colors.white))),
+                      ),
+                    ],
+                  ));
+            }),
+          )
+        : Padding(
+            padding: EdgeInsets.symmetric(vertical: 13),
+            child:
+                Center(child: globals.myText(text: "Tidak ada foto terpilih")));
+
+    // return currentImages == null
+    //     ? images != null && images.length > 0
+    //         ? Container(
+    //             padding: EdgeInsets.all(5),
+    //             child: GridView.count(
+    //               shrinkWrap: true,
+    //               crossAxisCount: 3,
+    //               physics: ScrollPhysics(),
+    //               children: List.generate(images.length, (index) {
+    //                 Asset asset = images[index];
+    //                 return Container(
+    //                   padding: EdgeInsets.all(5),
+    //                   child: AssetThumb(
+    //                     asset: asset,
+    //                     width: 300,
+    //                     height: 300,
+    //                   ),
+    //                 );
+    //               }),
+    //             ),
+    //           )
+    //         : Container(
+    //             padding: EdgeInsets.symmetric(vertical: 30),
+    //             child: globals.myText(
+    //                 text: "Belum ada foto terpilih", color: "dark"))
+    //     : Container(
+    //         padding: EdgeInsets.all(5),
+    //         child: GridView.count(
+    //           shrinkWrap: true,
+    //           crossAxisCount: 3,
+    //           physics: ScrollPhysics(),
+    //           children: List.generate(currentImages.length, (index) {
+    //             return Container(
+    //                 height: 180,
+    //                 child: Column(
+    //                   children: <Widget>[
+    //                     // Container(height: 80, child: currentImages[index]),
+    //                     Container(
+    //                         height: 80,
+    //                         padding: EdgeInsets.all(5),
+    //                         child: FadeInImage.assetNetwork(
+    //                           fit: BoxFit.contain,
+    //                           placeholder: 'assets/images/loading.gif',
+    //                           image: currentImages[index].thumbnail,
+    //                         )),
+    //                     Container(
+    //                       height: 20,
+    //                       child: FlatButton(
+    //                           onPressed: () async {
+    //                             if (isLoading) return;
+
+    //                             final result = await globals.confirmDialog(
+    //                                 "Apakah Anda yakin untuk menghapus foto produk ini? Foto akan terhapus selamanya",
+    //                                 context);
+    //                             if (result) {
+    //                               setState(() {
+    //                                 isLoading = true;
+    //                               });
+
+    //                               try {
+    //                                 bool response =
+    //                                     await AnimalServices.deleteImage(
+    //                                         "Test", currentImages[index].id);
+
+    //                                 String message = "Berhasil menghapus foto";
+
+    //                                 currentImages.removeAt(index);
+    //                                 setState(() {
+    //                                   isLoading = false;
+    //                                 });
+    //                                 if (!response) {
+    //                                   message =
+    //                                       "Gagal menghapus foto, silahkan coba kembali";
+    //                                 }
+
+    //                                 await globals.showDialogs(message, context);
+    //                                 Navigator.pop(context);
+    //                               } catch (e) {
+    //                                 globals.showDialogs(
+    //                                     "Gagal menghapus foto, Coba kembali",
+    //                                     context);
+    //                                 globals.mailError(
+    //                                     "Delete image on edit product",
+    //                                     e.toString());
+    //                               }
+    //                             }
+    //                           },
+    //                           color: globals.myColor("danger"),
+    //                           child: Container(
+    //                               child: Icon(Icons.delete,
+    //                                   size: 16, color: Colors.white))),
+    //                     ),
+    //                   ],
+    //                 ));
+    //           }),
+    //         ),
+    //       );
   }
 
   Future<void> loadAssets() async {
@@ -385,7 +562,7 @@ class _EditProductPageState extends State<EditProductPage> {
 
     List<Asset> resultList;
     String error;
-    int maxImage = 5 - currentImages.length;
+    int maxImage = 5 - arrayAnimalImages.length - arrayOfAssets.length;
 
     if (maxImage <= 0) {
       globals.showDialogs(
@@ -394,9 +571,7 @@ class _EditProductPageState extends State<EditProductPage> {
     }
 
     try {
-      resultList = await MultiImagePicker.pickImages(
-        maxImages: maxImage,
-      );
+      resultList = await MultiImagePicker.pickImages(maxImages: maxImage);
     } on PlatformException catch (e) {
       error = e.message;
     }
@@ -406,15 +581,54 @@ class _EditProductPageState extends State<EditProductPage> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    final result = await globals.confirmDialog(
-        "Apakah Anda menggunggah ${resultList.length} foto ini?", context);
-    if (result) {
+    // final result = await globals.confirmDialog(
+    //     "Apakah Anda menggunggah ${resultList.length} foto ini?", context);
+    // if (result) {
+
+    // // }
+    // if (resultList.length > 0) {
+    // final result = await globals.confirmDialog(
+    //     "Yakin mengunggah ${resultList.length} foto ini?", context);
+    // if (result) {
+
+//         currentImages = null;
+// setState(() {
+//         // if (error == null) _error = 'No Error Detected';
+//       });
+
+    if (resultList.length > 0) {
       setState(() {
         images = resultList;
-        _generateImageBase64();
-        currentImages = null;
-        // if (error == null) _error = 'No Error Detected';
+        arrayOfAssets.addAll(resultList);
       });
+      // Current Images - Newly Added
+      // for (var i = 0; i < resultList.length; i++) {
+      //   currentImages.add(Column(
+      //     children: <Widget>[
+      //       Container(
+      //         padding: EdgeInsets.all(5),
+      //         child: AssetThumb(
+      //           asset: resultList[i],
+      //           width: 80,
+      //           height: 80,
+      //         ),
+      //       ),
+      //       Container(
+      //         height: 20,
+      //         child: FlatButton(
+      //             onPressed: () async {
+      //               currentImages.removeAt(currentImages.length + 1);
+      //               setState(() {});
+      //             },
+      //             color: globals.myColor("danger"),
+      //             child: Container(
+      //                 child:
+      //                     Icon(Icons.delete, size: 16, color: Colors.white))),
+      //       ),
+      //     ],
+      //   ));
+      // }
+      _generateImageBase64();
     }
   }
 
@@ -454,7 +668,7 @@ class _EditProductPageState extends State<EditProductPage> {
       imagesBase64.add(base64Encode(imageData));
     }
 
-    _uploadImageAndReset();
+    // _uploadImageAndReset();
   }
 
   _delete() async {
@@ -482,6 +696,8 @@ class _EditProductPageState extends State<EditProductPage> {
   }
 
   _update() async {
+    print("To Delete = $animalImageIdToDelete");
+    print("To Record = ${imagesBase64.toString()}");
     if (isLoading) return;
 
     _formKey.currentState.save();
@@ -512,7 +728,8 @@ class _EditProductPageState extends State<EditProductPage> {
       print("----");
 
       Map<String, dynamic> formDataAnimal = animal.toJson();
-      // formDataAnimal['images'] = imagesBase64;
+      formDataAnimal['add_images'] = imagesBase64;
+      formDataAnimal['delete_images'] = animalImageIdToDelete;
 
       print(formDataAnimal);
 
@@ -526,7 +743,7 @@ class _EditProductPageState extends State<EditProductPage> {
         String message = "Berhasil mengupdate produk";
 
         if (!response_product && !response_animal) {
-          message = "Gagal mengupdate produk, silahkan coba kembali";
+          message = "Gagal mengupdate produk, silahkan coba kembali #12";
         }
 
         Navigator.pop(context);
@@ -535,7 +752,7 @@ class _EditProductPageState extends State<EditProductPage> {
         Navigator.pushNamed(context, "/profile");
       } catch (e) {
         globals.showDialogs(
-            "Gagal mengupdate produk, silahkan coba kembali", context);
+            "Gagal mengupdate produk, silahkan coba kembali! ${e.toString()}", context);
         globals.mailError("_update product", e.toString());
       }
     }
@@ -611,7 +828,7 @@ class _EditProductPageState extends State<EditProductPage> {
         // If user want to start the auction of the animal
         Product product = Product();
         product.type = "animal";
-        product.price = int.parse(_price);
+        product.price = priceController.numberValue.toInt();
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
@@ -628,7 +845,7 @@ class _EditProductPageState extends State<EditProductPage> {
         // If user want to start the auction of the animal
         Product product = Product();
         product.type = "accessory";
-        product.price = priceController.numberValue.toInt();
+        product.price = int.parse(_price);
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';

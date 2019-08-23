@@ -189,7 +189,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
     var children2 = <Widget>[
       GestureDetector(
-          onTap: () => globals.share(widget.from, animal.id),
+          onTap: () => globals.share(widget.from, animal),
           child: Row(
             children: <Widget>[
               Expanded(child: Container()),
