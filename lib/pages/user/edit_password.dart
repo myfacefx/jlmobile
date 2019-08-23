@@ -35,7 +35,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
   Province _province;
   Regency _regency;
 
-
   @override
   void initState() {
     super.initState();
@@ -56,12 +55,12 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
   void _updatePassword() async {
     if (isLoading) return;
 
+    _formKey.currentState.save();
+
     if (_formKey.currentState.validate()) {
       setState(() {
         isLoading = true;
       });
-
-      _formKey.currentState.save();
 
       User updateUser = User();
       updateUser.password = _password;
@@ -81,6 +80,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
         }
       } catch (e) {
         globals.showDialogs("Terjadi error, silahkan ulangi", context);
+        globals.mailError("edit password", e.toString());
         setState(() {
           isLoading = false;
           autoValidate = true;
@@ -92,7 +92,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       });
     }
   }
-
 
   Widget _buildChangePassword() {
     return Column(children: <Widget>[
@@ -174,12 +173,9 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
           padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
           child: FlatButton(
               onPressed: () => isLoading ? null : _updatePassword(),
-              child: Text(
-                  !isLoading ? "Perbaharui Password" : "Mohon Tunggu",
+              child: Text(!isLoading ? "Perbaharui Password" : "Mohon Tunggu",
                   style: Theme.of(context).textTheme.display4),
-              color: isLoading
-                  ? Colors.grey
-                  : Theme.of(context).primaryColor,
+              color: isLoading ? Colors.grey : Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5))))
     ]);
@@ -204,9 +200,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
             Form(
               autovalidate: autoValidate,
               key: _formKey,
-              child: Column(children: <Widget>[
-                _buildChangePassword()
-              ]),
+              child: Column(children: <Widget>[_buildChangePassword()]),
             ),
           ])
         ])),

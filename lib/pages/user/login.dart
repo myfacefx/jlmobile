@@ -84,13 +84,12 @@ class _LoginPage extends State<LoginPage> {
 
   _logIn() async {
     if (loginLoading) return;
+    _formKey.currentState.save();
 
     if (_formKey.currentState.validate()) {
       setState(() {
         loginLoading = true;
       });
-
-      _formKey.currentState.save();
 
       var formData = Map<String, dynamic>();
       formData['username'] = _username;
@@ -120,7 +119,8 @@ class _LoginPage extends State<LoginPage> {
           loginLoading = false;
         });
       } catch (e) {
-        globals.showDialogs("Username/Password tidak ditemukan", context);
+        globals.showDialogs(e.toString(), context);
+        globals.mailError("Login", e.toString());
         setState(() {
           loginLoading = false;
         });

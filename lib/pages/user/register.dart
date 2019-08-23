@@ -145,25 +145,29 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    _formKey.currentState.save();
+
     if (_formKey.currentState.validate()) {
       setState(() {
         registerLoading = true;
       });
 
-      _formKey.currentState.save();
-
       //check phone number mush unique
       try {
         final isFound = await getUsersByPhoneNumber(_phoneNumber);
         if (isFound) {
-          await globals.showDialogs("Nomer whatsapp sudah digunakan", context);
+          await globals.showDialogs(
+              "Nomer whatsapp sudah digunakan, Silakan coba dengan nomer lain",
+              context);
           setState(() {
             registerLoading = false;
           });
           return;
         }
       } catch (e) {
-        await globals.showDialogs("Gangguan, coba lagi!", context);
+        await globals.showDialogs(
+            "Sedang terjadi gangguan, coba lagi atau hubungi admin", context);
+        globals.mailError("Check WA", e.toString());
         setState(() {
           registerLoading = false;
         });

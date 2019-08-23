@@ -310,57 +310,67 @@ class _EditProductPageState extends State<EditProductPage> {
               physics: ScrollPhysics(),
               children: List.generate(currentImages.length, (index) {
                 return Container(
-                  height: 180,
+                    height: 180,
                     child: Column(
-                  children: <Widget>[
-                    // Container(height: 80, child: currentImages[index]),
-                    Container(
-                      height: 80,
-                        padding: EdgeInsets.all(5),
-                        child: FadeInImage.assetNetwork(
-                          fit: BoxFit.contain,
-                          placeholder: 'assets/images/loading.gif',
-                          image: currentImages[index].thumbnail,
-                        )),
-                    Container(
-                      height: 20,
-                      child: FlatButton(
-                          onPressed: () async {
-                            if (isLoading) return;
+                      children: <Widget>[
+                        // Container(height: 80, child: currentImages[index]),
+                        Container(
+                            height: 80,
+                            padding: EdgeInsets.all(5),
+                            child: FadeInImage.assetNetwork(
+                              fit: BoxFit.contain,
+                              placeholder: 'assets/images/loading.gif',
+                              image: currentImages[index].thumbnail,
+                            )),
+                        Container(
+                          height: 20,
+                          child: FlatButton(
+                              onPressed: () async {
+                                if (isLoading) return;
 
-                            final result = await globals.confirmDialog(
-                                "Apakah Anda yakin untuk menghapus foto produk ini? Foto akan terhapus selamanya",
-                                context);
-                            if (result) {
-                              setState(() {
-                                isLoading = true;
-                              });
+                                final result = await globals.confirmDialog(
+                                    "Apakah Anda yakin untuk menghapus foto produk ini? Foto akan terhapus selamanya",
+                                    context);
+                                if (result) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
 
-                              bool response = await AnimalServices.deleteImage(
-                                  "Test", currentImages[index].id);
+                                  try {
+                                    bool response =
+                                        await AnimalServices.deleteImage(
+                                            "Test", currentImages[index].id);
 
-                              String message = "Berhasil menghapus foto";
+                                    String message = "Berhasil menghapus foto";
 
-                              currentImages.removeAt(index);
-                              setState(() {
-                                isLoading = false;
-                              });
-                              if (!response) {
-                                message =
-                                    "Gagal menghapus foto, silahkan coba kembali";
-                              }
+                                    currentImages.removeAt(index);
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    if (!response) {
+                                      message =
+                                          "Gagal menghapus foto, silahkan coba kembali";
+                                    }
 
-                              await globals.showDialogs(message, context);
-                              Navigator.pop(context);
-                            }
-                          },
-                          color: globals.myColor("danger"),
-                          child: Container(
-                              child: Icon(Icons.delete,
-                                  size: 16, color: Colors.white))),
-                    ),
-                  ],
-                ));
+                                    await globals.showDialogs(message, context);
+                                    Navigator.pop(context);
+                                  } catch (e) {
+                                    globals.showDialogs(
+                                        "Gagal menghapus foto, Coba kembali",
+                                        context);
+                                    globals.mailError(
+                                        "Delete image on edit product",
+                                        e.toString());
+                                  }
+                                }
+                              },
+                              color: globals.myColor("danger"),
+                              child: Container(
+                                  child: Icon(Icons.delete,
+                                      size: 16, color: Colors.white))),
+                        ),
+                      ],
+                    ));
               }),
             ),
           );
@@ -376,7 +386,8 @@ class _EditProductPageState extends State<EditProductPage> {
     int maxImage = 5 - currentImages.length;
 
     if (maxImage <= 0) {
-      globals.showDialogs("Foto produk sudah mencapai jumlah maksimal (5)", context);
+      globals.showDialogs(
+          "Foto produk sudah mencapai jumlah maksimal (5)", context);
       return;
     }
 
@@ -394,8 +405,7 @@ class _EditProductPageState extends State<EditProductPage> {
     if (!mounted) return;
 
     final result = await globals.confirmDialog(
-      "Apakah Anda menggunggah ${resultList.length} foto ini?",
-      context);
+        "Apakah Anda menggunggah ${resultList.length} foto ini?", context);
     if (result) {
       setState(() {
         images = resultList;
@@ -403,7 +413,7 @@ class _EditProductPageState extends State<EditProductPage> {
         currentImages = null;
         // if (error == null) _error = 'No Error Detected';
       });
-    } 
+    }
   }
 
   _uploadImageAndReset() async {
@@ -411,19 +421,22 @@ class _EditProductPageState extends State<EditProductPage> {
       Map<String, dynamic> formData = Map<String, dynamic>();
       formData['images'] = imagesBase64;
 
-      AnimalServices.createImage("", formData, _animal.id).then((onValue) async {
-          Navigator.pop(context);
-          if (onValue) {
-            await globals.showDialogs("Berhasil mengunggah foto produk", context,
-                isDouble: true);
-          } else {
-            globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
-          }
-        }).catchError((onError) {
-          Navigator.pop(context);
-          print(onError.toString());
-          globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
-        });
+      AnimalServices.createImage("", formData, _animal.id)
+          .then((onValue) async {
+        Navigator.pop(context);
+        if (onValue) {
+          await globals.showDialogs("Berhasil mengunggah foto produk", context,
+              isDouble: true);
+        } else {
+          globals.showDialogs(
+              "Gagal menunggah foto produk, Coba lagi.", context);
+        }
+      }).catchError((onError) {
+        Navigator.pop(context);
+        print(onError.toString());
+        globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
+        globals.mailError("_uploadImageAndReset", onError.toString());
+      });
     }
   }
 
@@ -461,6 +474,7 @@ class _EditProductPageState extends State<EditProductPage> {
         Navigator.pop(context);
         print(onError.toString());
         globals.showDialogs("Gagal menutup produk, Coba lagi.", context);
+        globals.mailError("Hapus Product", onError.toString());
       });
     }
   }
@@ -500,22 +514,28 @@ class _EditProductPageState extends State<EditProductPage> {
 
       print(formDataAnimal);
 
-      bool response_product = await ProductServices.update(
-          "Test", product.toJson(), _animal.product.id);
+      try {
+        bool response_product = await ProductServices.update(
+            "Test", product.toJson(), _animal.product.id);
 
-      bool response_animal =
-          await AnimalServices.update("Test", formDataAnimal, _animal.id);
+        bool response_animal =
+            await AnimalServices.update("Test", formDataAnimal, _animal.id);
 
-      String message = "Berhasil mengupdate produk";
+        String message = "Berhasil mengupdate produk";
 
-      if (!response_product && !response_animal) {
-        message = "Gagal mengupdate produk, silahkan coba kembali";
+        if (!response_product && !response_animal) {
+          message = "Gagal mengupdate produk, silahkan coba kembali";
+        }
+
+        Navigator.pop(context);
+        await globals.showDialogs(message, context);
+        Navigator.pop(context);
+        Navigator.pushNamed(context, "/profile");
+      } catch (e) {
+        globals.showDialogs(
+            "Gagal mengupdate produk, silahkan coba kembali", context);
+        globals.mailError("_update product", e.toString());
       }
-
-      Navigator.pop(context);
-      await globals.showDialogs(message, context);
-      Navigator.pop(context);
-      Navigator.pushNamed(context, "/profile");
     }
   }
 

@@ -185,6 +185,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         }
       } catch (e) {
         globals.showDialogs("Terjadi error, silahkan ulangi", context);
+        globals.mailError("Update profile", e.toString());
         setState(() {
           registerLoading = false;
           autoValidate = true;
@@ -389,6 +390,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       globals.showDialogs(
           "Gagal mengunggah foto, silahkan coba kembali", context);
       print(error);
+      globals.mailError("Update image profile", error.toString());
       setState(() {
         photoUploading = false;
       });
