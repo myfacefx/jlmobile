@@ -1461,7 +1461,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 align: TextAlign.center),
             content: Container(
                 child: Text(
-                    "Yakin memasang bid \n${globals.convertToMoney(amountDouble)} ?" +
+                    "Yakin memasang bid \n Rp. ${globals.convertToMoney(amountDouble)} ?" +
                         (biddingBIN ? " (Beli Sekarang)" : "") +
                         " " +
                         (animal.auction.innerIslandShipping != null &&

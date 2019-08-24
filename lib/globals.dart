@@ -477,7 +477,7 @@ String convertToMoney(double number) {
     precision: 0,
     thousandSeparator: '.',
     rightSymbol: ",-",
-    leftSymbol: "Rp."
+    // leftSymbol: "Rp."
   );
   moneyMasked.updateValue(number);
   return moneyMasked.text;

@@ -595,7 +595,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
                   return 'Harga awal wajib diisi';
                 }
 
-                if (int.parse(value) < 1) {
+                if (priceController.numberValue.toInt() < 1) {
                   return 'Harga tidak sesuai';
                 }
               },

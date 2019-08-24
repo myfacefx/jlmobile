@@ -845,7 +845,7 @@ class _EditProductPageState extends State<EditProductPage> {
         // If user want to start the auction of the animal
         Product product = Product();
         product.type = "accessory";
-        product.price = int.parse(_price);
+        product.price = priceController.numberValue.toInt();
         product.quantity = 1;
         product.ownerUserId = globals.user.id;
         product.status = 'active';
