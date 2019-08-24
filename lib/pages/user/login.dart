@@ -146,7 +146,7 @@ class _LoginPage extends State<LoginPage> {
         .logInWithReadPermissions(['email', 'public_profile']);
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        print("####FACEBOOKOUTPUT#####");
+        print("####FACEBOOK OUTPUT#####");
 
         var graphResponse = await http.get(
             'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,address,gender,location,picture.type(large).redirect(false)&access_token=${result.accessToken.token}');
@@ -156,8 +156,12 @@ class _LoginPage extends State<LoginPage> {
 
         User searchUser = User();
         searchUser.email = profile['email'];
+        searchUser.facebookUserId = profile['id'];
 
-        List<User> users = await getByEmail(searchUser.toJson());
+        print("FB LOGIN LOOKUP");
+        print(searchUser.toJson());
+        // List<User> users = await getByEmail(searchUser.toJson());
+        List<User> users = await fbLoginSearch(searchUser.toJson());
 
         print("####USERS TO STRING#####" + users.toString());
 
@@ -174,6 +178,7 @@ class _LoginPage extends State<LoginPage> {
           User registerUser = User();
           registerUser.email = profile['email'];
           registerUser.name = profile['name'];
+          registerUser.facebookUserId = profile['id'];
           registerUser.photo = profile['picture']['data']['url'];
 
           print("USER NOT FOUND, registering");
@@ -181,7 +186,7 @@ class _LoginPage extends State<LoginPage> {
 
           globals.state = "register";
 
-          print(profile['email']);
+          // print(profile['email']);
 
           Navigator.push(
               context,

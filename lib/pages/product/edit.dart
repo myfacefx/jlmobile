@@ -136,35 +136,35 @@ class _EditProductPageState extends State<EditProductPage> {
 
       for (var i = 0; i < _animal.animalImages.length; i++) {
         currentAnimalImageID.add(_animal.animalImages[i].id);
-        currentImages.add(Column(
-          children: <Widget>[
-            Container(
-                height: 80,
-                padding: EdgeInsets.all(5),
-                child: FadeInImage.assetNetwork(
-                  fit: BoxFit.contain,
-                  placeholder: 'assets/images/loading.gif',
-                  image: _animal.animalImages[i].thumbnail,
-                )),
-            Container(
-              height: 20,
-              child: FlatButton(
-                  onPressed: () {
-                    setState(() {
-                      currentAnimalImageID.removeAt(i);
-                      currentImages.removeAt(i);
-                      animalImageIdToDelete.add(_animal.animalImages[i].id);
-                      refreshCurrentImages();
-                    });
-                  },
-                  color: globals.myColor("danger"),
-                  child: Container(
-                      child:
-                          Icon(Icons.delete, size: 16, color: Colors.white))),
-            ),
-            // Container(height: 20, child: Icon(Icons.delete, size: 16, color: Colors.white))
-          ],
-        ));
+        // currentImages.add(Column(
+        //   children: <Widget>[
+        //     Container(
+        //         height: 40,
+        //         padding: EdgeInsets.all(5),
+        //         child: FadeInImage.assetNetwork(
+        //           fit: BoxFit.fitHeight,
+        //           placeholder: 'assets/images/loading.gif',
+        //           image: _animal.animalImages[i].thumbnail,
+        //         )),
+        //     Container(
+        //       height: 20,
+        //       child: FlatButton(
+        //           onPressed: () {
+        //             setState(() {
+        //               currentAnimalImageID.removeAt(i);
+        //               currentImages.removeAt(i);
+        //               animalImageIdToDelete.add(_animal.animalImages[i].id);
+        //               refreshCurrentImages();
+        //             });
+        //           },
+        //           color: globals.myColor("danger"),
+        //           child: Container(
+        //               child:
+        //                   Icon(Icons.delete, size: 16, color: Colors.white))),
+        //     ),
+        //     // Container(height: 20, child: Icon(Icons.delete, size: 16, color: Colors.white))
+        //   ],
+        // ));
       }
 
       if (_animal.product.type == "accessory") {
@@ -226,7 +226,7 @@ class _EditProductPageState extends State<EditProductPage> {
               height: 80,
               padding: EdgeInsets.all(5),
               child: FadeInImage.assetNetwork(
-                fit: BoxFit.contain,
+                fit: BoxFit.fitHeight,
                 placeholder: 'assets/images/loading.gif',
                 image: _animal.animalImages[i].thumbnail,
               )),
@@ -345,11 +345,12 @@ class _EditProductPageState extends State<EditProductPage> {
                   return Column(
                     children: <Widget>[
                       Container(
-                          width: 80,
+                          // width: 40,
+                          height: 100,
                           padding: EdgeInsets.all(5),
                           child: Container(
                             child: FadeInImage.assetNetwork(
-                              fit: BoxFit.contain,
+                              fit: BoxFit.fitWidth,
                               placeholder: 'assets/images/loading.gif',
                               image: arrayAnimalImages[index].thumbnail,
                             ),
@@ -426,7 +427,7 @@ class _EditProductPageState extends State<EditProductPage> {
                               height: 80,
                               padding: EdgeInsets.all(5),
                               child: FadeInImage.assetNetwork(
-                                fit: BoxFit.contain,
+                                fit: BoxFit.fitHeight,
                                 placeholder: 'assets/images/loading.gif',
                                 // image: currentImages[index],
                               ))
@@ -497,7 +498,7 @@ class _EditProductPageState extends State<EditProductPage> {
     //                         height: 80,
     //                         padding: EdgeInsets.all(5),
     //                         child: FadeInImage.assetNetwork(
-    //                           fit: BoxFit.contain,
+    //                           fit: BoxFit.fitHeight,
     //                           placeholder: 'assets/images/loading.gif',
     //                           image: currentImages[index].thumbnail,
     //                         )),
@@ -699,6 +700,11 @@ class _EditProductPageState extends State<EditProductPage> {
     print("To Delete = $animalImageIdToDelete");
     print("To Record = ${imagesBase64.toString()}");
     if (isLoading) return;
+
+    if (arrayAnimalImages.length == 0 && imagesBase64.length == 0) {
+      globals.showDialogs("Tidak ada foto terpilih, minimal 1 foto", context);
+      return;
+    }
 
     _formKey.currentState.save();
     if (_formKey.currentState.validate()) {

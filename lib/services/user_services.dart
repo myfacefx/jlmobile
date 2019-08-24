@@ -42,8 +42,10 @@ Future<bool> logout(String token) async {
 
 Future<User> register(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/register";
+
   http.Response res = await http
-      .post(getBaseUrl() + "/register",
+      .post(url,
           headers: header, body: json.encode(_data))
       .timeout(Duration(minutes: 60));
 
@@ -156,6 +158,24 @@ Future<List<User>> getByEmail(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   http.Response res = await http
       .post(getBaseUrl() + "/users/search/email",
+          headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return listUserFromJson(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<List<User>> fbLoginSearch(Map<String, dynamic> _data) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/facebook-login-search";
+
+  print(url);
+
+  http.Response res = await http
+      .post(url,
           headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut()));
 
