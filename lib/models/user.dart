@@ -39,6 +39,7 @@ class User {
   Province province;
   String firebaseToken;
   int statusCode;
+  String facebookUserId;
 
   User(
       {this.id,
@@ -63,7 +64,8 @@ class User {
       this.role,
       this.regency,
       this.province,
-      this.firebaseToken});
+      this.firebaseToken,
+      this.facebookUserId});
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
         id: json["id"] == null ? null : json["id"],
@@ -99,6 +101,8 @@ class User {
             : Province.fromJson(json["province"]),
         firebaseToken:
             json["firebase_token"] == null ? null : json["firebase_token"],
+        facebookUserId:
+            json["facebook_user_id"] == null ? null : json["facebook_user_id"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -125,6 +129,7 @@ class User {
         "regency": regency == null ? null : regency.toJson(),
         "province": province == null ? null : province.toJson(),
         "firebase_token": firebaseToken == null ? null : firebaseToken,
+        "facebook_user_id": facebookUserId == null ? null : facebookUserId
       }..removeWhere((key, val) => val == null);
 }
 

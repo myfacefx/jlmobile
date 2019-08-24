@@ -494,7 +494,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   // sort and search
   Widget dropdownSortBy() {
-    List<String> item = <String>['Populer', 'Terbaru'];
+    List<String> item = <String>['Populer', 'Terbaru', 'Termurah'];
     return DropdownButton<String>(
         value: selectedSortBy,
         items: item.map((String value) {

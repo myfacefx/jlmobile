@@ -56,6 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _photoBase64;
   String _gender = "M";
   String _phoneNumber;
+  String _facebookUserId;
   Province _province;
   Regency _regency;
 
@@ -65,12 +66,17 @@ class _RegisterPageState extends State<RegisterPage> {
   _RegisterPageState(User user) {
     requestPermission();
     if (user != null) {
-      this.lockEmailFromFacebook = true;
+      if (user.email != null) { // testing purpose 
+      // if (user.email != null) {
+        this.lockEmailFromFacebook = true;
+        this._email = user.email;
+      }
+
       this.user = user;
       // this._name = user.name;
+      this._facebookUserId = user.facebookUserId;
       nameController.text = user.name;
       this._photo = user.photo;
-      this._email = user.email;
     }
   }
 
@@ -183,7 +189,10 @@ class _RegisterPageState extends State<RegisterPage> {
       user.password = _password;
       user.regencyId = _regency.id;
       user.phoneNumber = _phoneNumber;
+      user.facebookUserId = _facebookUserId;
       user.roleId = 2;
+
+      print(user.toJson());
 
       Map<String, dynamic> formData = user.toJson();
 
