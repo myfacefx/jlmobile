@@ -148,6 +148,8 @@ Widget drawer(context) {
                 // _buildDrawerNavigationButtonSmall(
                 //     "Pengaturan", "/setting", context),
                 _buildDrawerNavigationButtonSmall("Keluar", "/logout", context),
+                globals.spacePadding(),
+                Center(child: globals.myText(text: "${globals.version}", size: 11, color: "light")),
                 globals.spacePadding()
                 // Container()
               ],
