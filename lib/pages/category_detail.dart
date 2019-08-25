@@ -494,7 +494,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   // sort and search
   Widget dropdownSortBy() {
-    List<String> item = <String>['Populer', 'Terbaru', 'Termurah'];
+    List<String> item = widget.from == "LELANG" ? <String>['Populer', 'Terbaru'] : <String>['Populer', 'Terbaru', 'Termurah'];
     return DropdownButton<String>(
         value: selectedSortBy,
         items: item.map((String value) {
@@ -872,7 +872,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                               _buildChips(
                                   "Harga Jual",
                                   globals.convertToMoney(
-                                      animal.product.price.toDouble()))
+                                      animal.product.price.toDouble())),
                             ],
                           ),
                   ],
