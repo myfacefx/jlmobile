@@ -872,7 +872,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                               _buildChips(
                                   "Harga Jual",
                                   globals.convertToMoney(
-                                      animal.product.price.toDouble())),
+                                      animal.product.price.toDouble()))
                             ],
                           ),
                   ],

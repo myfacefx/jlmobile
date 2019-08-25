@@ -812,7 +812,7 @@ class _ProfilePageState extends State<ProfilePage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   globals.myText(text: "Produk Jual Beli ", size: 11),
-                  auctions.length > 0
+                  products.length > 0
                       ? Container(
                           constraints:
                               BoxConstraints(minWidth: 10, minHeight: 10),

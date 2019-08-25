@@ -144,6 +144,7 @@ class _LoginPage extends State<LoginPage> {
     });
     FacebookLoginResult result = await facebookLogin
         .logInWithReadPermissions(['email', 'public_profile']);
+
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
         print("####FACEBOOK OUTPUT#####");
@@ -207,11 +208,14 @@ class _LoginPage extends State<LoginPage> {
         throw new StateError("Cancelled by user");
         break;
       case FacebookLoginStatus.error:
-        // globals.showDialog("Error: ${FacebookLoginStatus.error.toString()}", context);
+        // LoginManager
+        globals.showDialogs("Error: ${result.errorMessage}", context);
+        facebookLogin.logOut();
+
         setState(() {
           loginLoading = false;
         });
-        throw new StateError(FacebookLoginStatus.error.toString());
+        // throw new StateError(FacebookLoginStatus.error.toString());
         break;
     }
   }
