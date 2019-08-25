@@ -24,7 +24,7 @@ Future<Paginate> getAnimalAuctionByCategory(String token, int animalCategoryId,
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?";
-  if (sortBy == "Populer") {
+  if (sortBy.length > 0) {
     params = params + "sort_by=$sortBy";
   }
   if (filterName != "") {
@@ -51,7 +51,7 @@ Future<Paginate> getAnimalAuctionBySubCategory(
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?";
-  if (sortBy == "Populer") {
+  if (sortBy.length > 0) {
     params = params + "sort_by=$sortBy";
   }
   if (filterName != "") {
@@ -76,7 +76,7 @@ Future<Paginate> getAnimalProductByCategory(String token, int animalCategoryId,
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?";
-  if (sortBy == "Populer") {
+  if (sortBy.length > 0) {
     params = params + "sort_by=$sortBy";
   }
   if (filterName != "") {
@@ -103,7 +103,7 @@ Future<Paginate> getAnimalProductBySubCategory(
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   String params = "?";
-  if (sortBy == "Populer") {
+  if (sortBy.length > 0) {
     params = params + "sort_by=$sortBy";
   }
   if (filterName != "") {

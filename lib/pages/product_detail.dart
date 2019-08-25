@@ -177,12 +177,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     bool innerIslandShipping = true;
     if (widget.from == "LELANG") {
       if (animal.auction.innerIslandShipping != null &&
-          animal.auction.innerIslandShipping == 0) {
+          animal.auction.innerIslandShipping == 1) {
         innerIslandShipping = false;
       }
     } else {
       if (animal.product.innerIslandShipping != null &&
-          animal.product.innerIslandShipping == 0) {
+          animal.product.innerIslandShipping == 1) {
         innerIslandShipping = false;
       }
     }
@@ -323,7 +323,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       Divider(),
       Container(
           alignment: Alignment.centerLeft,
-          child: innerIslandShipping
+          child: animal.product.innerIslandShipping == 0
               ? globals.myText(
                   text: "Pengiriman ke seluruh nusantara",
                   color: "dark",
