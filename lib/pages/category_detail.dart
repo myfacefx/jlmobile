@@ -53,7 +53,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   bool isLast = false;
 
   _CategoryDetailPage(AnimalCategory animalCategory, String from) {
-    globals.autoClose();
+    if (from == "LELANG") {
+      globals.autoClose();
+    }
+
     this.animalCategory = animalCategory;
     var function;
     if (from == "LELANG") {
