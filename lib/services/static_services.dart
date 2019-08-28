@@ -16,3 +16,20 @@ Future<List<Static>> getAllStatics(String token) async {
     throw Exception(res.body);
   }
 }
+
+Future<bool> checkAvailable(String token, String type) async {
+  final header = {"Content-Type": "application/json"};
+
+  final url = getBaseUrl() + "/check-available/$type";
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+  if (res.statusCode == 200) {
+    return true;
+  } else if (res.statusCode == 401) {
+    return false;
+  } else {
+    throw Exception(res.body);
+  }
+}

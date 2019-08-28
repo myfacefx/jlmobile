@@ -18,6 +18,7 @@ import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/article_services.dart';
 import 'package:jlf_mobile/services/jlf_partner_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
+import 'package:jlf_mobile/services/static_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/services/version_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -354,8 +355,6 @@ class _HomePage extends State<HomePage> {
     ];
   }
 
-
-
   void _getListCategoriesAuction() {
     setState(() {
       failedDataCategories = false;
@@ -531,10 +530,15 @@ class _HomePage extends State<HomePage> {
           ),
           Text("  |  ", style: Theme.of(context).textTheme.headline),
           GestureDetector(
-            onTap: () {
-              if (selectedType != "LELANG") {
-                selectedType = "LELANG";
-                _getListCategoriesAuction();
+            onTap: () async {
+              bool res = await checkAvailable("token", "LELANG");
+              if (res) {
+                if (selectedType != "LELANG") {
+                  selectedType = "LELANG";
+                  _getListCategoriesAuction();
+                }
+              } else {
+                globals.showDialogs("Under Maintenance", context);
               }
             },
             child: globals.myText(

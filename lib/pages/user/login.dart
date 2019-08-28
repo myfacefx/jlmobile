@@ -428,26 +428,26 @@ class _LoginPage extends State<LoginPage> {
                                     : Theme.of(context).primaryColor,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)))),
-                        Container(
-                          width: 300,
-                          child: Center(
-                              child: GestureDetector(
-                                  onTap: () => Navigator.of(context)
-                                      .pushNamed("/register"),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      globals.myText(
-                                          text: "Tidak punya akun? Klik ",
-                                          color: "dark"),
-                                      globals.myText(
-                                          text: "di sini",
-                                          weight: "SB",
-                                          decoration: TextDecoration.underline,
-                                          color: "primary"),
-                                    ],
-                                  ))),
-                        ),
+                        // Container(
+                        //   width: 300,
+                        //   child: Center(
+                        //       child: GestureDetector(
+                        //           onTap: () => Navigator.of(context)
+                        //               .pushNamed("/register"),
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: <Widget>[
+                        //               globals.myText(
+                        //                   text: "Tidak punya akun? Klik ",
+                        //                   color: "dark"),
+                        //               globals.myText(
+                        //                   text: "di sini",
+                        //                   weight: "SB",
+                        //                   decoration: TextDecoration.underline,
+                        //                   color: "primary"),
+                        //             ],
+                        //           ))),
+                        // ),
                         SizedBox(
                           height: 10,
                         ),
