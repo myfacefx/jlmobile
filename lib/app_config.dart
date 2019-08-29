@@ -38,7 +38,14 @@ class AppConfig extends InheritedWidget {
           User newUser = userFromJson(userData);
           print("User Found = ${newUser.username}");
           globals.user = newUser;
-          globals.state = "home";
+
+          globals.state = 'home';
+
+          if (globals.user != null) {
+            if (globals.user.verificationStatus == null) globals.state = 'verification';
+            if (globals.user.verificationStatus == 'denied') globals.state = 'verification';
+          }
+          // globals.state = globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "verification" : "home";
         } else {
           globals.state = "login";
         }

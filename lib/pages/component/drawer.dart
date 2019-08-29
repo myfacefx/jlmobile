@@ -135,6 +135,8 @@ Widget drawer(context) {
                     globals.user != null ? 0 : 0, context),
                 _buildDrawerNavigationButtonBig(
                     "Rekber", '/rekber', null, context),
+                // _buildDrawerNavigationButtonBig(
+                    // "Verification", '/verification', null, context),
                 // buildDrawerNavigationButtonBig(
                 //     "Bagikan JLF", '/share', null, context),
                 globals.spacePadding(),

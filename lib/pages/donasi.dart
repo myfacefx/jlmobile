@@ -47,7 +47,7 @@ class _DonasiPageState extends State<DonasiPage>
         body: Scaffold(
             key: _scaffoldKey,
             body: SafeArea(
-              child: ListView(children: <Widget>[
+              child: 1 == 1 ? Container(margin: EdgeInsets.all(10), alignment: Alignment.center, child: globals.myText(text: "Nantikan segera..")) : ListView(children: <Widget>[
                 Container(
                   width: globals.mw(context),
                   child: Card(

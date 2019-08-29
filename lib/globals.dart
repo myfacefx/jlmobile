@@ -294,7 +294,7 @@ Widget bottomNavigationBar(context) {
 }
 
 Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
-    {bool isSubMenu = false, bool showNotification = true}) {
+    {bool isSubMenu = false, bool showNotification = true, bool hideNavigation = false}) {
   return AppBar(
     title: GestureDetector(
       onTap: () {
@@ -303,7 +303,7 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
       child:
           Container(child: Image.asset("assets/images/logo.png", height: 45)),
     ),
-    leading: isSubMenu
+    leading: hideNavigation ? Container() : isSubMenu
         ? IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {

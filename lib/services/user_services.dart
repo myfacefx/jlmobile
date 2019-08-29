@@ -90,6 +90,27 @@ Future<String> update(Map<String, dynamic> _data, int userId) async {
   }
 }
 
+Future<Map<String, dynamic>> updateVerification(Map<String, dynamic> _data, int userId) async {
+  final header = {"Content-Type": "application/json"};
+  final String url = getBaseUrl() + "/users/$userId/update-verification";
+
+  print(url);
+
+  http.Response res = await http
+      .put(url, headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut()));
+
+  print(res.statusCode);
+
+  var response = json.decode(res.body);
+
+  if (res.statusCode == 202) {
+    return response;
+  } else {
+    throw Exception(response['message']);
+  }
+}
+
 Future<String> updateProfilePicture(
     Map<String, dynamic> _data, int userId) async {
   final header = {"Content-Type": "application/json"};

@@ -109,7 +109,10 @@ class _LoginPage extends State<LoginPage> {
           globals.state = "home";
 
           Navigator.of(context).pop();
-          Navigator.pushNamed(context, "/");
+
+          print("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
+          Navigator.pushNamed(context, globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "/verification" : "/");
+
         } else if (userResult.statusCode == 2) {
           globals.showDialogs(
               "Username/Password salah atau tidak ditemukan", context);
