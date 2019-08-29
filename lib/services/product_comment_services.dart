@@ -6,8 +6,12 @@ import 'package:jlf_mobile/models/product_comment.dart';
 
 Future<bool> addCommentProduct(String token, ProductComment _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "/product-comment";
+
+  print(url);
+
   http.Response res = await http
-      .post(getBaseUrl() + "/product-comment",
+      .post(url,
           headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut()));
 

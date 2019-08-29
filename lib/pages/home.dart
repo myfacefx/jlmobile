@@ -481,7 +481,7 @@ class _HomePage extends State<HomePage> {
           child: CarouselSlider(
             aspectRatio: 3,
             autoPlay: true,
-            autoPlayInterval: Duration(seconds: 10),
+            autoPlayInterval: Duration(seconds: 25),
             viewportFraction: 3.0,
             height: 200,
             enableInfiniteScroll: true,
