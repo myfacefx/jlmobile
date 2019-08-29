@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreateAuctionPage extends StatefulWidget {
   final int categoryId;
@@ -85,6 +87,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
   List<Asset> images = List<Asset>();
   String _error;
+
+  File _video;
+  String videoPath = "";
 
   @override
   void initState() {
@@ -245,6 +250,18 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
             padding: EdgeInsets.symmetric(vertical: 30),
             child:
                 globals.myText(text: "Belum ada foto terpilih", color: "dark"));
+  }
+
+  Future getVideo() async {
+    var video = await ImagePicker.pickVideo(source: ImageSource.gallery);
+
+    setState(() {
+      _video = video;
+    });
+
+    if (_video != null) {
+      videoPath = _video.path;
+    }
   }
 
   Future<void> loadAssets() async {
@@ -622,7 +639,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                   return 'Harga awal wajib diisi';
                 }
 
-                if (priceController.numberValue.toInt()< 1) {
+                if (priceController.numberValue.toInt() < 1) {
                   return 'Harga tidak sesuai';
                 }
               },
@@ -956,6 +973,41 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 ),
                 _buildGridViewImages(),
                 SizedBox(height: 10),
+
+                Container(
+                  width: 250,
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Upload Video (Max 5 MB)",
+                            style: TextStyle(color: Colors.white)),
+                        Icon(Icons.video_call, color: Colors.white),
+                      ],
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    onPressed: getVideo,
+                  ),
+                ),
+
+                Container(
+                  width: 300,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        videoPath ?? "",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
 
                 Divider(),
 
