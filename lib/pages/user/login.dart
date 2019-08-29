@@ -100,34 +100,64 @@ class _LoginPage extends State<LoginPage> {
       loginUser.password = _password;
 
       try {
-        User userResult = await login((loginUser.toJson()));
-        if (userResult.statusCode == 1) {
-          saveLocalData('user', userToJson(userResult));
-          print(userToJson(userResult));
+        Map<String, dynamic> response = await login((loginUser.toJson()));
 
-          globals.user = userResult;
-          globals.state = "home";
+        print(response.toString());
 
-          Navigator.of(context).pop();
+        if (response != null) {
+          if (response['status'] == 'success') {
+            // Successfully Login
 
-          print("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
-          Navigator.pushNamed(context, globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "/verification" : "/");
+            User user = userFromJson(json.encode(response['data']));
 
-        } else if (userResult.statusCode == 2) {
-          globals.showDialogs(
-              "Username/Password salah atau tidak ditemukan", context);
-        } else if (userResult.statusCode == 3) {
-          globals.showDialogs(
-              "Login gagal, Anda masuk dalam blacklist user", context);
-        } else {
-          globals.showDialogs("Login gagal, silahkan coba kembali", context);
+            // print(user.toJson());
+
+            saveLocalData('user', json.encode(response['data']));
+            print(response['data']);
+
+            globals.user = user;
+            globals.state = "home";
+            
+            globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? globals.state = 'verification' : globals.state = 'home';
+
+            Navigator.of(context).pop();
+
+            // print("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
+            Navigator.pushNamed(context, globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "/verification" : "/");
+          } else {
+            globals.showDialogs(response['message'], context);
+            print("ERR: " + response.toString());
+          }
         }
+
+        // if (userResult.statusCode == 1) {
+        //   saveLocalData('user', userToJson(userResult));
+        //   print(userToJson(userResult));
+
+        //   globals.user = userResult;
+        //   globals.state = "home";
+
+        //   Navigator.of(context).pop();
+
+        //   print("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
+        //   Navigator.pushNamed(context, globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "/verification" : "/");
+
+        // } else if (userResult.statusCode == 2) {
+        //   globals.showDialogs(
+        //       "Username/Password salah atau tidak ditemukan", context);
+        // } else if (userResult.statusCode == 3) {
+        //   globals.showDialogs(
+        //       "Login gagal, Anda masuk dalam blacklist user", context);
+        // } else {
+        //   globals.showDialogs("Login gagal, silahkan coba kembali", context);
+        // }
 
         setState(() {
           loginLoading = false;
         });
       } catch (e) {
         globals.showDialogs(e.toString(), context);
+        print(e.toString());
         // globals.mailError("Login", e.toString());
         setState(() {
           loginLoading = false;

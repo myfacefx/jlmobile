@@ -5,29 +5,39 @@ import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<User> login(Map<String, dynamic> _data) async {
+Future<Map<String, dynamic>> login(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
-
-  print(getBaseUrl() + "/login");
-  http.Response res = await http.post(getBaseUrl() + "/login",
+  final url = getBaseUrl() + "/login";
+  
+  print(url);
+  http.Response res = await http.post(url,
       headers: header, body: json.encode(_data));
 
-  User user;
+  print(res.statusCode);
+
+  var response = json.decode(res.body);
 
   if (res.statusCode == 200) {
-    user = userFromJson(res.body);
-    user.statusCode = 1;
-  } else if (res.statusCode == 404) {
-    user = User();
-    user.statusCode = 2;
-  } else if (res.statusCode == 405) {
-    user = User();
-    user.statusCode = 3;
+    return response;
   } else {
-    throw Exception(res.body);
+    throw Exception(response['message']);
   }
+  // User user;
 
-  return user;
+  // if (res.statusCode == 200) {
+  //   user = userFromJson(res.body);
+  //   user.statusCode = 1;
+  // } else if (res.statusCode == 404) {
+  //   user = User();
+  //   user.statusCode = 2;
+  // } else if (res.statusCode == 405) {
+  //   user = User();
+  //   user.statusCode = 3;
+  // } else {
+  //   throw Exception(res.body);
+  // }
+
+  // return user;
 }
 
 Future<bool> logout(String token) async {
@@ -98,7 +108,7 @@ Future<Map<String, dynamic>> updateVerification(Map<String, dynamic> _data, int 
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
-      .timeout(Duration(seconds: getTimeOut()));
+      .timeout(Duration(seconds: getTimeOut() + 200));
 
   print(res.statusCode);
 
