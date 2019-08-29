@@ -22,6 +22,7 @@ import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/pages/user/notification.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
+import 'package:jlf_mobile/pages/verification.dart';
 import 'package:jlf_mobile/themes.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -35,14 +36,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setEnabledSystemUIOverlays ([]);
+    // print("Verification Status: ${globals.user.verificationStatus}");
+    String initialRoute = "/";
+
+    print(globals.state);
+    
+    if (globals.state == "intro") initialRoute = "/intro";
+    else if (globals.state == "login") initialRoute = "/login";
+    else if (globals.user != null) {
+      if (globals.user.verificationStatus == null) {
+        initialRoute = "/verification";
+      } else if (globals.user.verificationStatus != null) {
+        if (globals.user.verificationStatus == "denied") {
+          initialRoute = "/verification";
+        }
+      }
+    }
+    else if (globals.state == "verification") {
+      initialRoute = "/verification";
+    }
+    
     return MaterialApp(
       title: 'JLF',
       debugShowCheckedModeBanner: false,
       navigatorObservers: <NavigatorObserver>[observer],
       theme: buildThemeData(),
-      initialRoute: globals.state == "intro"
-          ? "/intro"
-          : (globals.state == "home" ? "/" : "/login"),
+      initialRoute: initialRoute,
+      // initialRoute: globals.state == "intro"
+      //     ? "/intro"
+      //     : (globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied') ? "/verification" : (globals.state == "home" ? "/" : "/login"),
       routes: <String, WidgetBuilder>{
         //Root Page
         '/': (BuildContext context) => HomePage(),
@@ -66,6 +88,7 @@ class MyApp extends StatelessWidget {
         '/chat-list': (BuildContext context) => ChatListPage(),
         '/donasi': (BuildContext context) => DonasiPage(),
         '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
+        '/verification': (BuildContext context) => VerificationPage(),
         // '/edit-product': (BuildContext context) => EditProductPage()
       },
     );

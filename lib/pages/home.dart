@@ -44,7 +44,7 @@ class _HomePage extends State<HomePage> {
   bool isLoadingPromoA = true;
   bool isLoadingPromoB = true;
   bool isLoadingPromoC = true;
-  bool isLoadingChampaign = true;
+  bool isLoadingCampaign = true;
   bool isLoadingArticle = true;
 
   bool isLoadingPromoVideo = true;
@@ -59,7 +59,7 @@ class _HomePage extends State<HomePage> {
   List<Promo> listPromoB = [];
   List<Promo> listPromoC = [];
   List<Promo> listVideo = [];
-  List<Article> listChampaign = [];
+  List<Article> listCampaign = [];
   List<Article> listArticle = [];
   List<JlfPartner> listParner = [];
   String selectedType = "PASAR HEWAN";
@@ -69,6 +69,7 @@ class _HomePage extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     if (globals.user != null) {
       _refresh();
       _getListCategoriesProduct();
@@ -77,7 +78,7 @@ class _HomePage extends State<HomePage> {
       _loadPromosB();
       _loadPromosC();
       _loadPromosVideo();
-      _loadChampaign();
+      _loadCampaign();
       _loadArticle();
       _loadJlfPartner();
 
@@ -89,6 +90,53 @@ class _HomePage extends State<HomePage> {
     initUniLinks();
     initUniLinksStream();
     _checkVersion();
+
+    _verificationCheck();
+    handleAppLifecycleState();
+  }
+
+  handleAppLifecycleState() {
+    AppLifecycleState _lastLifecyleState;
+    SystemChannels.lifecycle.setMessageHandler((msg) {
+
+     print('SystemChannels> $msg');
+
+        switch (msg) {
+          case "AppLifecycleState.paused":
+            _lastLifecyleState = AppLifecycleState.paused;
+            break;
+          case "AppLifecycleState.inactive":
+            _lastLifecyleState = AppLifecycleState.inactive;
+            break;
+          case "AppLifecycleState.resumed":
+            _lastLifecyleState = AppLifecycleState.resumed;
+            break;
+          case "AppLifecycleState.suspending":
+            _lastLifecyleState = AppLifecycleState.suspending;
+            break;
+          default:
+        }
+    });
+  }
+
+  _verificationCheck() {
+    if (globals.user != null) {
+      if (globals.user == null) {
+        Timer.run(() {
+          Navigator.of(context).pop();
+          Navigator.of(context).pushNamed("/verification");
+        });
+      } else {
+        if (globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied') {
+          Timer.run(() {
+            Navigator.of(context).pop();
+            Navigator.of(context).pushNamed("/verification");
+          });
+        }
+      }
+    } else {
+      print("Y");
+    }
   }
 
   @override
@@ -279,19 +327,19 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  _loadChampaign() {
+  _loadCampaign() {
     getAllArticle("token", "champaign").then((onValue) {
       if (onValue.length != 0) {
-        listChampaign = onValue;
+        listCampaign = onValue;
       }
 
       setState(() {
-        isLoadingChampaign = false;
+        isLoadingCampaign = false;
       });
     }).catchError((onError) {
       print(onError.toString());
       setState(() {
-        isLoadingChampaign = false;
+        isLoadingCampaign = false;
       });
     });
   }
@@ -719,9 +767,9 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  Widget _buildChampaign() {
+  Widget _buildCampaign() {
     return Column(
-      children: listChampaign.map((f) {
+      children: listCampaign.map((f) {
         return Container(
           width: globals.mw(context),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
@@ -1022,10 +1070,10 @@ class _HomePage extends State<HomePage> {
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: globals.myText(
-                              text: "CHAMPAIGN JLF", color: 'dark', size: 15)),
-                      isLoadingChampaign
+                              text: "CAMPAIGN JLF", color: 'dark', size: 15)),
+                      isLoadingCampaign
                           ? globals.isLoading()
-                          : _buildChampaign(),
+                          : _buildCampaign(),
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: globals.myText(
