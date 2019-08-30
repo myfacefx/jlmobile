@@ -47,50 +47,59 @@ class _DonasiPageState extends State<DonasiPage>
         body: Scaffold(
             key: _scaffoldKey,
             body: SafeArea(
-              child: 1 == 1 ? Container(margin: EdgeInsets.all(10), alignment: Alignment.center, child: globals.myText(text: "Nantikan segera..")) : ListView(children: <Widget>[
-                Container(
-                  width: globals.mw(context),
-                  child: Card(
-                      child: Column(
-                    children: <Widget>[
-                      Container(
-                          child: TabBar(
-                        labelColor: globals.myColor("primary"),
-                        indicatorColor: globals.myColor("primary"),
-                        unselectedLabelColor: globals.myColor("primary"),
-                        controller: _tabController,
-                        tabs: <Widget>[
-                          Tab(
-                            child: globals.myText(
-                                text: "Donasi",
-                                size: 12,
-                                color: "primary",
-                                weight: "B"),
-                          ),
-                          Tab(
-                            child: globals.myText(
-                                text: "Sumbangan Donasi",
-                                size: 12,
-                                color: "primary",
-                                weight: "B"),
-                          ),
-                        ],
-                      )),
-                      Container(
-                        height: 400,
-                        // padding: EdgeInsets.all(5),
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: <Widget>[
-                            _buildQuestionAnswers(),
-                            _buildQuestionAnswers(),
-                          ],
-                        ),
-                      )
-                    ],
-                  )),
-                ),
-              ]),
+              child: ListView(
+                children: <Widget>[ 
+                  Container(
+                    width: globals.mw(context),
+                    child: Image.asset("assets/images/donation.jpeg", width: globals.mw(context), fit: BoxFit.fitWidth),
+                  ),
+                ]
+              )
             )));
+            //   child: 1 == 1 ? Container(margin: EdgeInsets.all(10), alignment: Alignment.center, child: globals.myText(text: "Nantikan segera..")) : ListView(children: <Widget>[
+            //     Container(
+            //       width: globals.mw(context),
+            //       child: Card(
+            //           child: Column(
+            //         children: <Widget>[
+            //           Container(
+            //               child: TabBar(
+            //             labelColor: globals.myColor("primary"),
+            //             indicatorColor: globals.myColor("primary"),
+            //             unselectedLabelColor: globals.myColor("primary"),
+            //             controller: _tabController,
+            //             tabs: <Widget>[
+            //               Tab(
+            //                 child: globals.myText(
+            //                     text: "Donasi",
+            //                     size: 12,
+            //                     color: "primary",
+            //                     weight: "B"),
+            //               ),
+            //               Tab(
+            //                 child: globals.myText(
+            //                     text: "Sumbangan Donasi",
+            //                     size: 12,
+            //                     color: "primary",
+            //                     weight: "B"),
+            //               ),
+            //             ],
+            //           )),
+            //           Container(
+            //             height: 400,
+            //             // padding: EdgeInsets.all(5),
+            //             child: TabBarView(
+            //               controller: _tabController,
+            //               children: <Widget>[
+            //                 _buildQuestionAnswers(),
+            //                 _buildQuestionAnswers(),
+            //               ],
+            //             ),
+            //           )
+            //         ],
+            //       )),
+            //     ),
+            //   ]),
+            // )));
   }
 }

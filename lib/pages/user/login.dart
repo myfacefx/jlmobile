@@ -117,13 +117,25 @@ class _LoginPage extends State<LoginPage> {
 
             globals.user = user;
             globals.state = "home";
-            
-            globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? globals.state = 'verification' : globals.state = 'home';
+
+            if (globals.user.verificationStatus == null) {
+              globals.state = 'verification';
+            } else {
+              if (globals.user.verificationStatus == 'denied') {
+                globals.state = 'verification';
+              }
+            }
+            // globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ?  : globals.state = 'home';
 
             Navigator.of(context).pop();
 
             // print("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
-            Navigator.pushNamed(context, globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "/verification" : "/");
+            Navigator.pushNamed(
+                context,
+                globals.user.verificationStatus == null ||
+                        globals.user.verificationStatus == 'denied'
+                    ? "/verification"
+                    : "/");
           } else {
             globals.showDialogs(response['message'], context);
             print("ERR: " + response.toString());
