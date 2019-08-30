@@ -95,29 +95,27 @@ class _HomePage extends State<HomePage> {
     _verificationCheck();
     handleAppLifecycleState();
   }
-  
 
   handleAppLifecycleState() {
     AppLifecycleState _lastLifecyleState;
     SystemChannels.lifecycle.setMessageHandler((msg) {
+      print('SystemChannels> $msg');
 
-     print('SystemChannels> $msg');
-
-        switch (msg) {
-          case "AppLifecycleState.paused":
-            _lastLifecyleState = AppLifecycleState.paused;
-            break;
-          case "AppLifecycleState.inactive":
-            _lastLifecyleState = AppLifecycleState.inactive;
-            break;
-          case "AppLifecycleState.resumed":
-            _lastLifecyleState = AppLifecycleState.resumed;
-            break;
-          case "AppLifecycleState.suspending":
-            _lastLifecyleState = AppLifecycleState.suspending;
-            break;
-          default:
-        }
+      switch (msg) {
+        case "AppLifecycleState.paused":
+          _lastLifecyleState = AppLifecycleState.paused;
+          break;
+        case "AppLifecycleState.inactive":
+          _lastLifecyleState = AppLifecycleState.inactive;
+          break;
+        case "AppLifecycleState.resumed":
+          _lastLifecyleState = AppLifecycleState.resumed;
+          break;
+        case "AppLifecycleState.suspending":
+          _lastLifecyleState = AppLifecycleState.suspending;
+          break;
+        default:
+      }
     });
   }
 
@@ -129,19 +127,20 @@ class _HomePage extends State<HomePage> {
       //     Navigator.of(context).pushNamed("/verification");
       //   });
       // } else {
-        User userResponse = await get(globals.user.id);
+      User userResponse = await get(globals.user.id);
 
-        setState(() {
-          globals.user.verificationStatus = userResponse.verificationStatus;
-          globals.user.identityNumber = userResponse.identityNumber;
+      setState(() {
+        globals.user.verificationStatus = userResponse.verificationStatus;
+        globals.user.identityNumber = userResponse.identityNumber;
+      });
+
+      if (globals.user.verificationStatus == null ||
+          globals.user.verificationStatus == 'denied') {
+        Timer.run(() {
+          Navigator.of(context).pop();
+          Navigator.of(context).pushNamed("/verification");
         });
-
-        if (globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied') {
-          Timer.run(() {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushNamed("/verification");
-          });
-        }
+      }
     }
   }
 
@@ -551,7 +550,7 @@ class _HomePage extends State<HomePage> {
       ]),
     );
   }
-  
+
   Widget _buildVerificationStatus() {
     String display = 'Verifikasi KTP Pending';
     String color = 'warning';
@@ -570,27 +569,31 @@ class _HomePage extends State<HomePage> {
           color = 'danger';
           display = "Verifikasi KTP Ditolak, silahkan ulangi";
         }
-      } 
-      
-      return _verificationStatus != 'verified' ? GestureDetector(
-        onTap: () => Navigator.pushNamed(context, "/verification"),
-            child: Container(
-          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-          height: 35,
-          decoration: BoxDecoration(
-              color: globals.myColor(color),
-              borderRadius: BorderRadius.circular(4)),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            globals.myText(
-                text: display,
-                color: "light",
-                size: 12,
-                weight: "N",
-                align: TextAlign.center)
-          ]),
-        ),
-      ) : Container();
+      }
+
+      return _verificationStatus != 'verified'
+          ? GestureDetector(
+              onTap: () => Navigator.pushNamed(context, "/verification"),
+              child: Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                height: 35,
+                decoration: BoxDecoration(
+                    color: globals.myColor(color),
+                    borderRadius: BorderRadius.circular(4)),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      globals.myText(
+                          text: display,
+                          color: "light",
+                          size: 12,
+                          weight: "N",
+                          align: TextAlign.center)
+                    ]),
+              ),
+            )
+          : Container();
     } else {
       return Container();
     }
@@ -629,7 +632,16 @@ class _HomePage extends State<HomePage> {
           Text("  |  ", style: Theme.of(context).textTheme.headline),
           GestureDetector(
             onTap: () async {
-              bool res = await checkAvailable("token", "LELANG");
+              bool res = false;
+              try {
+                globals.loadingModel(context);
+                res = await checkAvailable("token", "LELANG");
+                Navigator.pop(context);
+              } catch (e) {
+                print(e.toString());
+                Navigator.pop(context);
+              }
+
               if (res) {
                 if (selectedType != "LELANG") {
                   selectedType = "LELANG";
