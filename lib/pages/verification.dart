@@ -8,6 +8,7 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerificationPage extends StatefulWidget {
@@ -37,7 +38,23 @@ class _VerificationPageState extends State<VerificationPage> {
   void initState() {
     super.initState();
     globals.getNotificationCount();
+    _requestPermission();
     _getVerificationStatus();
+  }
+
+  void _requestPermission() async {
+    print("Checking Permission storage + camera");
+    PermissionStatus permissionStorage = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.storage);
+    PermissionStatus permissionCamera =
+        await PermissionHandler().checkPermissionStatus(PermissionGroup.camera);
+
+    if (permissionStorage != PermissionStatus.granted &&
+        permissionCamera != PermissionStatus.granted) {
+      await PermissionHandler().requestPermissions(
+          [PermissionGroup.storage, PermissionGroup.camera]);
+      _requestPermission();
+    }
   }
 
   _getVerificationStatus() async {
@@ -154,7 +171,7 @@ class _VerificationPageState extends State<VerificationPage> {
 
           Navigator.of(context).pop();
           Navigator.of(context).pushNamed("/");
-          
+
           setState(() {
             isLoading = false;
           });
@@ -422,23 +439,28 @@ class _VerificationPageState extends State<VerificationPage> {
                                 : Container(),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 10),
-                              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                                globals.myText(
-                                    text:
-                                        "Terjadi Error? Tidak memiliki KTP? Atau butuh bantuan lainnya?", weight: "B", color: "danger", align: TextAlign.center),
-                                GestureDetector(
-                                    onTap: () {
-                                      String phone = "6282223304275";
-                                      String message =
-                                          "Min,%20tolong%20bantu%20verifikasi%saya%20please%20(ID #${globals.user.id})";
-                                      _sendWhatsApp(phone, message);
-                                    },
-                                    child: globals.myText(
-                                        text: "Klik disini untuk WA Admin",
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    globals.myText(
+                                        text:
+                                            "Terjadi Error? Tidak memiliki KTP? Atau butuh bantuan lainnya?",
                                         weight: "B",
-                                        color: "primary",
-                                        align: TextAlign.center))
-                              ]),
+                                        color: "danger",
+                                        align: TextAlign.center),
+                                    GestureDetector(
+                                        onTap: () {
+                                          String phone = "6282223304275";
+                                          String message =
+                                              "Min,%20tolong%20bantu%20verifikasi%saya%20please%20(ID #${globals.user.id})";
+                                          _sendWhatsApp(phone, message);
+                                        },
+                                        child: globals.myText(
+                                            text: "Klik disini untuk WA Admin",
+                                            weight: "B",
+                                            color: "primary",
+                                            align: TextAlign.center))
+                                  ]),
                             )
                           ]),
                         ),
