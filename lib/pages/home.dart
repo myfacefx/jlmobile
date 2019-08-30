@@ -71,7 +71,10 @@ class _HomePage extends State<HomePage> {
   void initState() {
     super.initState();
 
+     _checkVersion();
+
     if (globals.user != null) {
+      _verificationCheck();
       _refresh();
       _getListCategoriesProduct();
 
@@ -90,9 +93,7 @@ class _HomePage extends State<HomePage> {
 
     initUniLinks();
     initUniLinksStream();
-    _checkVersion();
-
-    _verificationCheck();
+   
     handleAppLifecycleState();
   }
 

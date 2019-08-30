@@ -49,7 +49,9 @@ class _LoginPage extends State<LoginPage> {
 
   _getCount() {
     getUsersCount().then((onValue) {
-      membersCount = onValue;
+      setState(() {
+        membersCount = onValue;
+      });
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
