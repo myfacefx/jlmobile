@@ -10,6 +10,7 @@ import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/article.dart';
 import 'package:jlf_mobile/models/jlf_partner.dart';
 import 'package:jlf_mobile/models/promo.dart';
+import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
@@ -94,6 +95,7 @@ class _HomePage extends State<HomePage> {
     _verificationCheck();
     handleAppLifecycleState();
   }
+  
 
   handleAppLifecycleState() {
     AppLifecycleState _lastLifecyleState;
@@ -119,23 +121,27 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  _verificationCheck() {
+  _verificationCheck() async {
     if (globals.user != null) {
-      if (globals.user == null) {
-        Timer.run(() {
-          Navigator.of(context).pop();
-          Navigator.of(context).pushNamed("/verification");
+      // if (globals.user == null) {
+      //   Timer.run(() {
+      //     Navigator.of(context).pop();
+      //     Navigator.of(context).pushNamed("/verification");
+      //   });
+      // } else {
+        User userResponse = await get(globals.user.id);
+
+        setState(() {
+          globals.user.verificationStatus = userResponse.verificationStatus;
+          globals.user.identityNumber = userResponse.identityNumber;
         });
-      } else {
+
         if (globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied') {
           Timer.run(() {
             Navigator.of(context).pop();
             Navigator.of(context).pushNamed("/verification");
           });
         }
-      }
-    } else {
-      print("Y");
     }
   }
 
@@ -544,6 +550,50 @@ class _HomePage extends State<HomePage> {
             align: TextAlign.center),
       ]),
     );
+  }
+  
+  Widget _buildVerificationStatus() {
+    String display = 'Verifikasi KTP Pending';
+    String color = 'warning';
+
+    if (globals.user != null) {
+      var _verificationStatus = globals.user.verificationStatus;
+
+      if (_verificationStatus == null) {
+        display = 'Belum mengajukan verifikasi';
+        color = 'danger';
+      } else {
+        if (_verificationStatus == 'verified') {
+          display = "Verifikasi KTP Sukses";
+          color = 'success';
+        } else if (_verificationStatus == 'denied') {
+          color = 'danger';
+          display = "Verifikasi KTP Ditolak, silahkan ulangi";
+        }
+      } 
+      
+      return _verificationStatus != 'verified' ? GestureDetector(
+        onTap: () => Navigator.pushNamed(context, "/verification"),
+            child: Container(
+          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          height: 35,
+          decoration: BoxDecoration(
+              color: globals.myColor(color),
+              borderRadius: BorderRadius.circular(4)),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            globals.myText(
+                text: display,
+                color: "light",
+                size: 12,
+                weight: "N",
+                align: TextAlign.center)
+          ]),
+        ),
+      ) : Container();
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildTitle() {
@@ -1057,6 +1107,7 @@ class _HomePage extends State<HomePage> {
                 ? globals.isLoading()
                 : ListView(
                     children: <Widget>[
+                      _buildVerificationStatus(),
                       isLoadingPromoA ? globals.isLoading() : _buildCarousel(),
                       _buildAsk(),
                       _buildNumberMember(),

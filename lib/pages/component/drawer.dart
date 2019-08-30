@@ -126,8 +126,8 @@ Widget drawer(context) {
                 globals.spacePadding(),
                 // _buildDrawerNavigationButtonBig(
                 //     "Obrolan", '/chat-list', null, context),
-                globals.user.verificationStatus != 'verified' ? _buildDrawerNavigationButtonBig(
-                    "Verifikasi KTP", '/verification', null, context) : Container(),
+                globals.user != null ? globals.user.verificationStatus != 'verified' ? _buildDrawerNavigationButtonBig(
+                    "Verifikasi KTP", '/verification', null, context) : Container() : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Barangku", '/profile', null, context),

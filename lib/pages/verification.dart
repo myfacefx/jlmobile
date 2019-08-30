@@ -38,9 +38,6 @@ class _VerificationPageState extends State<VerificationPage> {
     super.initState();
     globals.getNotificationCount();
     _getVerificationStatus();
-    setState(() {
-      isLoading = false;
-    });
   }
 
   _getVerificationStatus() async {
@@ -50,6 +47,7 @@ class _VerificationPageState extends State<VerificationPage> {
       _verificationStatus = userResponse.verificationStatus;
       globals.user.verificationStatus = userResponse.verificationStatus;
       globals.user.identityNumber = userResponse.identityNumber;
+      isLoading = false;
     });
   }
 
@@ -129,8 +127,6 @@ class _VerificationPageState extends State<VerificationPage> {
             globals.user.identityNumber = updateUser.identityNumber;
             globals.user.verificationStatus = updateUser.verificationStatus;
 
-            setState(() {});
-
             User user = globals.user;
             user.identityNumber = updateUser.identityNumber;
             user.verificationStatus = updateUser.verificationStatus;
@@ -138,6 +134,8 @@ class _VerificationPageState extends State<VerificationPage> {
             saveLocalData('user', userToJson(user));
 
             globals.state = "home";
+
+            setState(() {});
 
             Navigator.of(context).pop();
             Navigator.of(context).pushNamed("/");
@@ -149,10 +147,14 @@ class _VerificationPageState extends State<VerificationPage> {
             });
           }
         } catch (e) {
-          globals.showDialogs(
-              "Terjadi error, silahkan ulangi kembali", context);
-          print(e.toString());
-          globals.mailError("KTP Verification", e.toString());
+          // globals.showDialogs(
+          //   "Terjadi error, silahkan ulangi kembali", context);
+          // print(e.toString());
+          // globals.mailError("KTP Verification", e.toString());
+
+          Navigator.of(context).pop();
+          Navigator.of(context).pushNamed("/");
+          
           setState(() {
             isLoading = false;
           });
@@ -256,17 +258,17 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   Widget build(BuildContext context) {
     print(_verificationStatus != null ? _verificationStatus : "KOSONG");
-    String display = 'Pending';
+    String display = 'Verifikasi Pending';
     String color = 'warning';
 
     if (_verificationStatus == null) {
       display = '';
     } else if (_verificationStatus == 'verified') {
-      display = "Terverifikasi";
+      display = "Verifikasi Sukses";
       color = 'success';
     } else if (_verificationStatus == 'denied') {
       color = 'danger';
-      display = "Pengajuan KTP Ditolak, silahkan ulangi";
+      display = "Verifkasi KTP Ditolak, silahkan ulangi";
     }
 
     return Scaffold(
@@ -423,7 +425,7 @@ class _VerificationPageState extends State<VerificationPage> {
                               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                                 globals.myText(
                                     text:
-                                        "Terjadi Error? Butuh bantuan? Hubungi Admin via WhatsApp", weight: "B", color: "danger", align: TextAlign.center),
+                                        "Terjadi Error? Tidak memiliki KTP? Atau butuh bantuan lainnya?", weight: "B", color: "danger", align: TextAlign.center),
                                 GestureDetector(
                                     onTap: () {
                                       String phone = "6282223304275";

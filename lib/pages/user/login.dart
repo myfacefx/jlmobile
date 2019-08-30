@@ -38,11 +38,21 @@ class _LoginPage extends State<LoginPage> {
 
   String _username;
   String _password;
+  int membersCount;
 
   @override
   void initState() {
     super.initState();
     _checkVersion();
+    _getCount();
+  }
+
+  _getCount() {
+    getUsersCount().then((onValue) {
+      membersCount = onValue;
+    }).catchError((onError) {
+      globals.showDialogs(onError, context);
+    });
   }
 
   void _checkVersion() {
@@ -394,6 +404,7 @@ class _LoginPage extends State<LoginPage> {
                         child:
                             Image.asset("assets/images/logo.png", height: 140),
                       )),
+                  membersCount != null ? globals.myText(text: "$membersCount Member Terdaftar", weight: "B", align: TextAlign.center) : Container(),
                   Form(
                     autovalidate: autoValidate,
                     key: _formKey,
