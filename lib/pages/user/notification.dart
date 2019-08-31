@@ -35,32 +35,36 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   _getHistories() {
-    getHistories("Token", globals.user.id).then((onValue) {
+    getHistories(globals.user.tokenRedis, globals.user.id)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       histories = onValue;
-
-      // for (var history in histories) {
-      //   // Iterate, if found 'read' = 0, add it to listOfHistoryId
-      //   if (history.read == 0) {
-      //     listOfHistoryId.add(history.id);
-      //   }
-      // }
 
       setState(() {
         isLoading = false;
       });
-
-      // if (listOfHistoryId.length > 0) {
-      //   _setHistories(listOfHistoryId);
-      // }
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
     });
   }
 
   _setHistories(listOfHistoryId) {
-    setHistories("Token", listOfHistoryId)
-        .then((onValue) {})
-        .catchError((onError) {
+    setHistories(globals.user.tokenRedis, listOfHistoryId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+    }).catchError((onError) {
       print(onError.toString());
     });
   }
@@ -170,8 +174,10 @@ class _NotificationPageState extends State<NotificationPage> {
                                                               .animalId,
                                                           from: "LELANG",
                                                         )));
-                                      } else{
-                                        globals.showDialogs("Notifikasi Jual Beli dalam pengembangan", context);
+                                      } else {
+                                        globals.showDialogs(
+                                            "Notifikasi Jual Beli dalam pengembangan",
+                                            context);
                                       }
                                     },
                                     child: Card(

@@ -11,12 +11,13 @@ Future<bool> addCommentProduct(String token, ProductComment _data) async {
   print(url);
 
   http.Response res = await http
-      .post(url,
-          headers: header, body: json.encode(_data))
+      .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 201) {
     return true;
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }

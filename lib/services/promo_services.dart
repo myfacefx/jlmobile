@@ -4,7 +4,7 @@ import 'package:jlf_mobile/models/promo.dart';
 
 Future<List<Promo>> getAllPromos(
     String token, String type, String location) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/type/$type/location/$location/promos";
   print(url);

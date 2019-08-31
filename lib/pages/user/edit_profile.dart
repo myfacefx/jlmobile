@@ -72,7 +72,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
     globals.getNotificationCount();
 
-    getProvinces("token").then((value) {
+    getProvinces().then((value) {
       provinces = value;
       provinces.forEach((province) {
         if (province.id == globals.user.regency.provinceId) {
@@ -86,8 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       });
     });
 
-    getRegenciesByProvinceId("token", globals.user.regency.provinceId)
-        .then((onValue) {
+    getRegenciesByProvinceId(globals.user.regency.provinceId).then((onValue) {
       setState(() {
         regencies = onValue;
         regencies.forEach((regency) {
@@ -123,23 +122,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
     regencies = List<Regency>();
     _regency = null;
     this.regencyLoading = true;
-    getRegenciesByProvinceId("token", _province.id).then((onValue) {
+    getRegenciesByProvinceId(_province.id).then((onValue) {
       setState(() {
         regencies = onValue;
         this.regencyLoading = false;
       });
     });
-  }
-
-  Widget _buildBackground() {
-    return Center(
-      child: Image.asset(
-        'assets/images/jlf-back.png',
-        width: globals.mw(context),
-        height: globals.mh(context),
-        fit: BoxFit.fill,
-      ),
-    );
   }
 
   void _register() async {
@@ -159,7 +147,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       updateUser.phoneNumber = _phoneNumber;
 
       try {
-        String result = await update(updateUser.toJson(), _id);
+        String result =
+            await update(updateUser.toJson(), _id, globals.user.tokenRedis);
 
         if (result != null) {
           globals.user.name = _name;
@@ -177,11 +166,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Navigator.of(context).pop();
           globals.showDialogs(result, context);
         } else {
-          globals.showDialogs("Terjadi error, silahkan ulangi", context);
-          setState(() {
-            registerLoading = false;
-            autoValidate = true;
-          });
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
         }
       } catch (e) {
         globals.showDialogs("Terjadi error, silahkan ulangi", context);
@@ -373,8 +362,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     formData['file_name'] = newFileName;
 
     try {
-      await updateProfilePicture(formData, globals.user.id);
-
+      final res = await updateProfilePicture(
+          formData, globals.user.id, globals.user.tokenRedis);
+      if (res == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       setState(() {
         globals.user.photo =
             globals.getBaseUrl() + "/images/profile_pictures/$newFileName.jpg";

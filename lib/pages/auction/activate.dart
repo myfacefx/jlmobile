@@ -106,7 +106,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     _selectProduct = selectProducts[0];
 
     isLoading = true;
-    getAnimalById("token", animalId).then((onValue) {
+    getAnimalById(globals.user.tokenRedis, animalId).then((onValue) {
       animal = onValue;
       setState(() {
         isLoading = false;
@@ -236,7 +236,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         formData['auction'] = auction;
 
         try {
-          bool response = await AuctionServices.create(formData, animal.id);
+          bool response = await AuctionServices.create(formData, animal.id, globals.user.tokenRedis);
           print(response);
           if (response) {
             await globals.showDialogs(message, context);
@@ -273,7 +273,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         formData['product'] = product;
 
         try {
-          bool response = await ProductServices.create(formData, animal.id);
+          bool response = await ProductServices.create(formData, animal.id, globals.user.tokenRedis);
           print(response);
           if (response) {
             await globals.showDialogs(message, context);
@@ -310,7 +310,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         formData['product'] = product;
 
         try {
-          bool response = await ProductServices.create(formData, animal.id);
+          bool response = await ProductServices.create(formData, animal.id, globals.user.tokenRedis);
           print(response);
           if (response) {
             await globals.showDialogs(message, context);

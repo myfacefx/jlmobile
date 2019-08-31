@@ -57,7 +57,7 @@ class _LoginPage extends State<LoginPage> {
 
   void _checkVersion() {
     print("Checking Version");
-    verifyVersion("token", globals.version).then((onValue) async {
+    verifyVersion(globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
         final result = await showUpdate(onValue.url, onValue.isForceUpdate);
         if (!result) {

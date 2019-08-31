@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 
-Future<bool> create(Map<String, dynamic> _data, int animalId) async {
-  final header = {"Content-Type": "application/json"};
+Future<bool> create(Map<String, dynamic> _data, int animalId, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$animalId/products/create";
 
   print(url);
@@ -23,7 +23,7 @@ Future<bool> create(Map<String, dynamic> _data, int animalId) async {
 }
 
 Future<bool> sold(String token, int productId) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/sold/products/$productId";
 
   print(url);
@@ -61,7 +61,7 @@ Future<bool> delete(String token, int productId) async {
 
 Future<bool> update(
     String token, Map<String, dynamic> _data, int id) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/products/$id";
 
   print(url);

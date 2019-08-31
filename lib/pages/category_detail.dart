@@ -60,14 +60,29 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     this.animalCategory = animalCategory;
     var function;
     if (from == "LELANG") {
-      function = getAnimalAuctionByCategory("Token", animalCategory.id,
-          selectedSortBy, searchController.text, globals.user.id);
+      function = getAnimalAuctionByCategory(
+          globals.user.tokenRedis,
+          animalCategory.id,
+          selectedSortBy,
+          searchController.text,
+          globals.user.id);
     } else if (from == "PASAR HEWAN" || from == "ACCESSORY") {
-      function = getAnimalProductByCategory("Token", animalCategory.id,
-          selectedSortBy, searchController.text, globals.user.id);
+      function = getAnimalProductByCategory(
+          globals.user.tokenRedis,
+          animalCategory.id,
+          selectedSortBy,
+          searchController.text,
+          globals.user.id);
     }
 
-    function.then((onValue) {
+    function.then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animals.addAll(onValue.data);
       this.nextUrl = onValue.nextPageUrl;
       if (onValue.currentPage == onValue.lastPage) {
@@ -82,7 +97,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       print(onError.toString());
     });
 
-    getProvinces("token").then((onValue) {
+    getProvinces().then((onValue) {
       provinces = onValue;
       provinces.forEach((province) {
         itemProvince.add(province.name);
@@ -105,7 +120,15 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     setState(() {
       isLoadingTopSellers = true;
     });
-    getTopSellersBySubCategoryId("token", animalSubCategoryId).then((onValue) {
+    getTopSellersBySubCategoryId(globals.user.tokenRedis, animalSubCategoryId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       setState(() {
         topSellers = onValue;
         isLoadingTopSellers = false;
@@ -117,7 +140,15 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     setState(() {
       isLoadingTopSellers = true;
     });
-    getTopSellersByCategoryId("token", animalCategoryId).then((onValue) {
+    getTopSellersByCategoryId(globals.user.tokenRedis, animalCategoryId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       setState(() {
         topSellers = onValue;
         isLoadingTopSellers = false;
@@ -133,7 +164,12 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     setState(() {
       isLoadingLoadMore = true;
     });
-    final onValue = await getLoadMore("", nextUrl);
+    final onValue = await getLoadMore(globals.user.tokenRedis, nextUrl);
+    if (onValue == null) {
+      await globals.showDialogs(
+          "Session anda telah berakhir, Silakan melakukan login ulang", context,
+          isLogout: true);
+    }
     animals.addAll(onValue.data);
 
     if (onValue.currentPage == onValue.lastPage) {
@@ -160,13 +196,13 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
     if (from == "LELANG") {
       functionCategory = getAnimalAuctionByCategory(
-          "Token",
+          globals.user.tokenRedis,
           widget.animalCategory.id,
           selectedSortBy,
           searchController.text,
           globals.user.id);
       functionSubCategory = getAnimalAuctionBySubCategory(
-          "Token",
+          globals.user.tokenRedis,
           subCategoryId,
           selectedSortBy,
           searchController.text,
@@ -175,13 +211,13 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
     if (from == "PASAR HEWAN" || from == "ACCESSORY") {
       functionCategory = getAnimalProductByCategory(
-          "Token",
+          globals.user.tokenRedis,
           widget.animalCategory.id,
           selectedSortBy,
           searchController.text,
           globals.user.id);
       functionSubCategory = getAnimalProductBySubCategory(
-          "Token",
+          globals.user.tokenRedis,
           subCategoryId,
           selectedSortBy,
           searchController.text,
@@ -190,7 +226,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
     if (subCategoryId != null) {
       currentSubCategory = subCategoryName;
-      functionSubCategory.then((onValue) {
+      functionSubCategory.then((onValue) async {
+        if (onValue == null) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
+        }
         animals = (onValue.data);
 
         this.nextUrl = onValue.nextPageUrl;
@@ -211,7 +254,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     } else {
       currentSubCategory = "ALL";
       currentIdSubCategory = null;
-      functionCategory.then((onValue) {
+      functionCategory.then((onValue) async {
+        if (onValue == null) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
+        }
         animals = (onValue.data);
         this.nextUrl = onValue.nextPageUrl;
 
@@ -497,7 +547,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   // sort and search
   Widget dropdownSortBy() {
-    List<String> item = widget.from == "LELANG" ? <String>['Populer', 'Terbaru'] : <String>['Populer', 'Terbaru', 'Termurah'];
+    List<String> item = widget.from == "LELANG"
+        ? <String>['Populer', 'Terbaru']
+        : <String>['Populer', 'Terbaru', 'Termurah'];
     return DropdownButton<String>(
         value: selectedSortBy,
         items: item.map((String value) {

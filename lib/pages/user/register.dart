@@ -66,8 +66,9 @@ class _RegisterPageState extends State<RegisterPage> {
   _RegisterPageState(User user) {
     requestPermission();
     if (user != null) {
-      if (user.email != null) { // testing purpose 
-      // if (user.email != null) {
+      if (user.email != null) {
+        // testing purpose
+        // if (user.email != null) {
         this.lockEmailFromFacebook = true;
         this._email = user.email;
       }
@@ -101,7 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     this.registerLoading = true;
 
-    getProvinces("token").then((value) {
+    getProvinces().then((value) {
       provinces = value;
       setState(() {
         this.registerLoading = false;
@@ -113,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _regency = null;
     regencies = List<Regency>();
     this.registerLoading = true;
-    getRegenciesByProvinceId("token", _province.id).then((onValue) {
+    getRegenciesByProvinceId(_province.id).then((onValue) {
       setState(() {
         regencies = onValue;
         this.registerLoading = false;

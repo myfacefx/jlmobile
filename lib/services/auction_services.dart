@@ -4,8 +4,9 @@ import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/auction.dart';
 
-Future<bool> create(Map<String, dynamic> _data, int animalId) async {
-  final header = {"Content-Type": "application/json"};
+Future<bool> create(
+    Map<String, dynamic> _data, int animalId, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$animalId/auctions/create";
 
   print(url);
@@ -43,7 +44,7 @@ Future<bool> setWinner(String token, int auctionId) async {
   }
 }
 
-Future<bool> cancelAuction(String token, int auctionId) async {
+Future<dynamic> cancelAuction(String token, int auctionId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$auctionId/cancel";
 
@@ -57,6 +58,8 @@ Future<bool> cancelAuction(String token, int auctionId) async {
     return true;
   } else if (res.statusCode == 406) {
     return false;
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -119,13 +122,12 @@ Future<String> checkFirebaseChatId(String token) async {
   }
 }
 
-Future<bool> updateFirebaseChatId(
+Future<dynamic> updateFirebaseChatId(
     String token, Map<String, dynamic> _data, int id) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$id/set-chat-room";
 
   print(url);
-  print(_data);
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
@@ -133,13 +135,15 @@ Future<bool> updateFirebaseChatId(
 
   if (res.statusCode == 202) {
     return true;
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
 }
 
 Future<bool> delete(String token, int id) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$id";
 
   print(url);
@@ -158,7 +162,7 @@ Future<bool> delete(String token, int id) async {
 }
 
 Future<String> getFirebaseChatId(String token, int auctionId) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$auctionId/get-chat-room";
 
   print(url);
@@ -189,6 +193,8 @@ Future<List<Auction>> getAuctionsWithActiveChat(
   http.Response res = await http.get(url, headers: header);
   if (res.statusCode == 200) {
     return auctionFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }

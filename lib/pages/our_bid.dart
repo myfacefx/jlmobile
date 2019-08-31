@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
-import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/choice.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
@@ -102,8 +101,15 @@ class _OurBidPageState extends State<OurBidPage> {
   }
 
   _getOurBid() {
-    getUserBidsAnimals("Token", globals.user.id, selectedSortBy)
-        .then((onValue) {
+    getUserBidsAnimals(globals.user.tokenRedis, globals.user.id, selectedSortBy)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animals = onValue;
       setState(() {
         isLoading = false;
@@ -120,8 +126,16 @@ class _OurBidPageState extends State<OurBidPage> {
   }
 
   _getOurComment() {
-    getUserCommentAuctionAnimals("Token", globals.user.id, selectedSortBy)
-        .then((onValue) {
+    getUserCommentAuctionAnimals(
+            globals.user.tokenRedis, globals.user.id, selectedSortBy)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animals = onValue;
       setState(() {
         isLoading = false;

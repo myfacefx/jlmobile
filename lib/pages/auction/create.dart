@@ -110,7 +110,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     }
 
     getAnimalCategoryWithoutCount(
-            "token", _selectProduct.id == 3 ? "accessory" : "animal")
+            globals.user.tokenRedis, _selectProduct.id == 3 ? "accessory" : "animal")
         .then((onValue) {
       animalCategories = onValue;
       if (widget.categoryId != null) {
@@ -145,7 +145,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     _animalSubCategory = null;
 
     getAnimalCategoryWithoutCount(
-            "token", _selectProduct.id == 3 ? "accessory" : "animal")
+            globals.user.tokenRedis, _selectProduct.id == 3 ? "accessory" : "animal")
         .then((onValue) {
       animalCategories = onValue;
 
@@ -194,7 +194,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       isLoading = true;
     });
     if (_animalCategory != null) {
-      getAnimalSubCategoryByCategoryId("token", _animalCategory.id)
+      getAnimalSubCategoryByCategoryId(globals.user.tokenRedis, _animalCategory.id)
           .then((onValue) {
         animalSubCategories = onValue;
         if (widget.subCategoryId != null) {
@@ -409,7 +409,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       formData['images'] = imagesBase64;
 
       try {
-        bool response = await create(formData);
+        bool response = await create(formData, globals.user.tokenRedis);
         print(response);
 
         Navigator.pop(context);

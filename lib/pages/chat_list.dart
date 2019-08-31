@@ -24,10 +24,16 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   void refreshChats() {
-    getAuctionsWithActiveChat(
-            "Token", globals.user.id, globals.user.roleId == 1 ? true : false)
-        .then((onValue) {
-      print(onValue);
+    getAuctionsWithActiveChat(globals.user.tokenRedis, globals.user.id,
+            globals.user.roleId == 1 ? true : false)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
 
       auctions = onValue;
 

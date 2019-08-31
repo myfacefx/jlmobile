@@ -14,7 +14,7 @@ import 'package:share/share.dart';
 import 'package:mailer/mailer.dart' as mailer;
 import 'package:mailer/smtp_server.dart';
 
-String version = "v0.1.5";  
+String version = "v0.1.5";
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
@@ -62,23 +62,29 @@ void share(String from, Animal animal) {
 
     if (from == "LELANG") {
       param = "/type/animalf1-${animal.id}";
-      String openBid = convertToMoney(double.parse(animal.auction.openBid.toString()));
-      String bin = convertToMoney(double.parse(animal.auction.openBid.toString()));
-      String multiply = convertToMoney(double.parse(animal.auction.multiply.toString()));
+      String openBid =
+          convertToMoney(double.parse(animal.auction.openBid.toString()));
+      String bin =
+          convertToMoney(double.parse(animal.auction.openBid.toString()));
+      String multiply =
+          convertToMoney(double.parse(animal.auction.multiply.toString()));
 
-      text = "Dilelang ${animal.name} ($category - $subCategory) dengan harga awal Rp. $openBid, beli sekarang (BIN) Rp. $bin, dan kelipatan Rp. $multiply";
+      text =
+          "Dilelang ${animal.name} ($category - $subCategory) dengan harga awal Rp. $openBid, beli sekarang (BIN) Rp. $bin, dan kelipatan Rp. $multiply";
     }
     if (from == "PASAR HEWAN") {
       param = "/type/animalf2-${animal.id}";
-      String price = convertToMoney(double.parse(animal.product.price.toString()));
-      text = "Dijual ${animal.name} ($category - $subCategory) dengan harga Rp. $price";
+      String price =
+          convertToMoney(double.parse(animal.product.price.toString()));
+      text =
+          "Dijual ${animal.name} ($category - $subCategory) dengan harga Rp. $price";
     }
     //  dijual / dilelang {{nama barang}} harga {{}} cek segera
   }
-  
-  Share.share(text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com$param');
-}
 
+  Share.share(
+      text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com$param');
+}
 
 String baseUrl = "http://192.168.100.119:8000";
 String flavor = "Development";
@@ -104,20 +110,19 @@ String generateInvoice(Auction auction) {
 
   String invoice = "JLF/";
   var acceptedDate = DateTime.parse(auction.winnerAcceptedDate);
-  
 
   if (acceptedDate.day < 10) {
     invoice += "0${acceptedDate.day}";
   } else {
     invoice += "${acceptedDate.day}";
   }
-  
+
   if (acceptedDate.month < 10) {
     invoice += "0${acceptedDate.month}";
   } else {
     invoice += "${acceptedDate.month}";
   }
-  
+
   invoice += acceptedDate.year.toString().substring(2);
 
   invoice += "/AUC/${auction.id}/${auction.verificationCode}";
@@ -138,7 +143,8 @@ generateToken() async {
         User updateToken = User();
         updateToken.firebaseToken = fcmToken;
 
-        String result = await update(updateToken.toJson(), user.id);
+        String result =
+            await update(updateToken.toJson(), user.id, user.tokenRedis);
 
         if (result != null) {
           user.firebaseToken = fcmToken;
@@ -221,7 +227,7 @@ Future<bool> showDialogs(String content, BuildContext context,
     {String title = "Perhatian",
     String route = "",
     bool isDouble = false,
-    Function openSetting,
+    bool isLogout = false,
     String text = "Tutup"}) {
   return showDialog(
     context: context,
@@ -235,7 +241,11 @@ Future<bool> showDialogs(String content, BuildContext context,
             onPressed: () {
               if (text != "Tutup") {
                 Navigator.pop(context);
-                openSetting();
+              } else if (isLogout) {
+                deleteLocalData("user");
+                state = "login";
+                Navigator.of(context).pop();
+                Navigator.pushNamed(context, "/login");
               } else {
                 if (route == "") {
                   Navigator.of(context).pop(true);
@@ -262,15 +272,15 @@ void loadingModel(context, {label = "Memuat. . ."}) {
     barrierDismissible: false,
     context: context,
     builder: (_) => AlertDialog(
-          title: Text(label),
-          content: MaterialButton(
-            onPressed: () {},
-            height: 50,
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.red,
-            ),
-          ),
+      title: Text(label),
+      content: MaterialButton(
+        onPressed: () {},
+        height: 50,
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.red,
         ),
+      ),
+    ),
   );
 }
 
@@ -294,7 +304,9 @@ Widget bottomNavigationBar(context) {
 }
 
 Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
-    {bool isSubMenu = false, bool showNotification = true, bool hideNavigation = false}) {
+    {bool isSubMenu = false,
+    bool showNotification = true,
+    bool hideNavigation = false}) {
   return AppBar(
     title: GestureDetector(
       onTap: () {
@@ -303,20 +315,22 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
       child:
           Container(child: Image.asset("assets/images/logo.png", height: 45)),
     ),
-    leading: hideNavigation ? Container() : isSubMenu
-        ? IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            })
-        : IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              if (scaffoldKey.currentState.isDrawerOpen)
-                scaffoldKey.currentState.openEndDrawer();
-              else
-                scaffoldKey.currentState.openDrawer();
-            }),
+    leading: hideNavigation
+        ? Container()
+        : isSubMenu
+            ? IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                })
+            : IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: () {
+                  if (scaffoldKey.currentState.isDrawerOpen)
+                    scaffoldKey.currentState.openEndDrawer();
+                  else
+                    scaffoldKey.currentState.openDrawer();
+                }),
     actions: <Widget>[showNotification ? myAppBarIcon(context) : Container()],
     centerTitle: true,
   );
@@ -339,7 +353,8 @@ Widget myAppBarIcon(context) {
                     color: Colors.white,
                     size: 30,
                   ),
-                  1 != 1 && user != null &&
+                  1 != 1 &&
+                          user != null &&
                           user.historiesCount != null &&
                           user.historiesCount > 0
                       ? Container(
@@ -455,13 +470,13 @@ void autoClose() async {
 
 void getNotificationCount() async {
   if (user != null && user.id != null) {
-    int historiesCount = await getHistoriesCount(user.id);
+    int historiesCount = await getHistoriesCount(user.id, user.tokenRedis);
 
     if (user.historiesCount != null) {
       user.historiesCount = historiesCount;
     }
 
-    int bidsCount = await getBidsCount(user.id);
+    int bidsCount = await getBidsCount(user.id, user.tokenRedis);
 
     if (user.bidsCount != null) {
       user.bidsCount = bidsCount;
@@ -790,13 +805,11 @@ Future<bool> confirmDialog(String content, context,
       false;
 }
 
-
-void mailError(String errrorFrom, String cause) async{
+void mailError(String errrorFrom, String cause) async {
   String username = 'joe.technubi@gmail.com';
   String password = 'kmzway87AAA';
 
   final smtpServer = gmail(username, password);
-  
 
   // Create our message.
   final message = mailer.Message()

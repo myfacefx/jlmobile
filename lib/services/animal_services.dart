@@ -7,13 +7,13 @@ import 'package:jlf_mobile/models/pagination.dart';
 
 Future<Paginate> getLoadMore(String token, String nextUrl) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print("============================");
   print(nextUrl);
-  print("============================");
 
   http.Response res = await http.get(nextUrl, headers: header);
   if (res.statusCode == 200) {
     return paginateFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -37,6 +37,8 @@ Future<Paginate> getAnimalAuctionByCategory(String token, int animalCategoryId,
       headers: header);
   if (res.statusCode == 200) {
     return paginateFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -66,6 +68,8 @@ Future<Paginate> getAnimalAuctionBySubCategory(
       headers: header);
   if (res.statusCode == 200) {
     return paginateFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -89,6 +93,8 @@ Future<Paginate> getAnimalProductByCategory(String token, int animalCategoryId,
       headers: header);
   if (res.statusCode == 200) {
     return paginateFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -118,6 +124,8 @@ Future<Paginate> getAnimalProductBySubCategory(
       headers: header);
   if (res.statusCode == 200) {
     return paginateFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -131,6 +139,8 @@ Future<Animal> getAnimalById(String token, int animalId) async {
       await http.get(getBaseUrl() + "/animals/$animalId", headers: header);
   if (res.statusCode == 200) {
     return Animal.fromJson(json.decode(res.body));
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -217,6 +227,8 @@ Future<List<Animal>> getUserBidsAnimals(
       headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -235,6 +247,8 @@ Future<List<Animal>> getUserCommentAuctionAnimals(
       headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -253,13 +267,15 @@ Future<List<Animal>> getUserCommentProductAnimals(
       headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<bool> create(Map<String, dynamic> _data) async {
-  final header = {"Content-Type": "application/json"};
+Future<bool> create(Map<String, dynamic> _data, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals";
 
   http.Response res = await http
@@ -277,9 +293,8 @@ Future<bool> create(Map<String, dynamic> _data) async {
   }
 }
 
-Future<bool> update(
-    String token, Map<String, dynamic> _data, int id) async {
-  final header = {"Content-Type": "application/json"};
+Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$id";
 
   print(url);
@@ -295,9 +310,8 @@ Future<bool> update(
   }
 }
 
-Future<bool> deleteImage(
-    String token, int animalImageId) async {
-  final header = {"Content-Type": "application/json"};
+Future<bool> deleteImage(String token, int animalImageId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animal-images/$animalImageId";
 
   print(url);
@@ -305,7 +319,7 @@ Future<bool> deleteImage(
   http.Response res = await http
       .delete(url, headers: header)
       .timeout(Duration(seconds: getTimeOut() + 60));
-  
+
   if (res.statusCode == 204) {
     return true;
   } else if (res.statusCode == 406) {
@@ -315,8 +329,9 @@ Future<bool> deleteImage(
   }
 }
 
-Future<bool> createImage(String token, Map<String, dynamic> _data, int animalId) async {
-  final header = {"Content-Type": "application/json"};
+Future<bool> createImage(
+    String token, Map<String, dynamic> _data, int animalId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$animalId/animal-images";
 
   print(url);
@@ -324,7 +339,6 @@ Future<bool> createImage(String token, Map<String, dynamic> _data, int animalId)
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(minutes: 10));
-
 
   if (res.statusCode == 201) {
     // print(res.body);

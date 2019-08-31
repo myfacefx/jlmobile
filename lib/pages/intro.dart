@@ -127,8 +127,7 @@ class _IntroPageState extends State<IntroPage> {
                                                             context);
                                                         try {
                                                           final res =
-                                                              await getAllStatics(
-                                                                  "token");
+                                                              await getAllStatics();
                                                           Navigator.pop(
                                                               context);
 
