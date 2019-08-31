@@ -258,16 +258,29 @@ Future<List<Animal>> getUserCommentProductAnimals(
   }
 }
 
-Future<bool> create(Map<String, dynamic> _data) async {
-  final header = {"Content-Type": "application/json"};
-  final url = getBaseUrl() + "/animals";
+Future<bool> create(Map<String, dynamic> _data,
+    [http.MultipartFile videoToSent]) async {
+  // final header = {"Content-Type": "application/json"};
 
-  http.Response res = await http
-      .post(url, headers: header, body: json.encode(_data))
-      .timeout(Duration(minutes: 10));
+  // final url = getBaseUrl() + "/animals";
+  var uri = Uri.parse(getBaseUrl() + "/animals");
+  http.MultipartRequest request = new http.MultipartRequest("POST", uri);
+  request.fields['data'] = json.encode(_data);
+  if (videoToSent != null) {
+    print("==========haleluya");
+    request.files.add(videoToSent);
+  }
 
-  print(url);
-  // print(_data);
+  request.headers['Content-Type'] = "multipart/form-data";
+
+  // http.Response res = await http
+  //     .post(url, headers: header, body: json.encode(_data))
+  //     .timeout(Duration(minutes: 10));
+
+  http.StreamedResponse response = await request.send();
+  http.Response res = await http.Response.fromStream(response);
+
+  print(uri);
 
   if (res.statusCode == 201) {
     // print(res.body);
@@ -277,8 +290,7 @@ Future<bool> create(Map<String, dynamic> _data) async {
   }
 }
 
-Future<bool> update(
-    String token, Map<String, dynamic> _data, int id) async {
+Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals/$id";
 
@@ -295,8 +307,7 @@ Future<bool> update(
   }
 }
 
-Future<bool> deleteImage(
-    String token, int animalImageId) async {
+Future<bool> deleteImage(String token, int animalImageId) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animal-images/$animalImageId";
 
@@ -305,7 +316,7 @@ Future<bool> deleteImage(
   http.Response res = await http
       .delete(url, headers: header)
       .timeout(Duration(seconds: getTimeOut() + 60));
-  
+
   if (res.statusCode == 204) {
     return true;
   } else if (res.statusCode == 406) {
@@ -315,7 +326,8 @@ Future<bool> deleteImage(
   }
 }
 
-Future<bool> createImage(String token, Map<String, dynamic> _data, int animalId) async {
+Future<bool> createImage(
+    String token, Map<String, dynamic> _data, int animalId) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals/$animalId/animal-images";
 
@@ -324,7 +336,6 @@ Future<bool> createImage(String token, Map<String, dynamic> _data, int animalId)
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(minutes: 10));
-
 
   if (res.statusCode == 201) {
     // print(res.body);

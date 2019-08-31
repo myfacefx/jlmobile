@@ -26,6 +26,7 @@ class Animal {
     int regencyId;
     int ownerUserId;
     String slug;
+    String videoPath;
     DateTime createdAt;
     DateTime updatedAt;
     dynamic deletedAt;
@@ -45,6 +46,7 @@ class Animal {
         this.regencyId,
         this.ownerUserId,
         this.slug,
+        this.videoPath,
         this.createdAt,
         this.updatedAt,
         this.deletedAt,
@@ -65,6 +67,7 @@ class Animal {
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
         ownerUserId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         slug: json["slug"] == null ? null : json["slug"],
+        videoPath: json["video_path"] == null ? null : json["video_path"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"],
@@ -85,6 +88,7 @@ class Animal {
         "regency_id": regencyId == null ? null : regencyId,
         "owner_user_id": ownerUserId == null ? null : ownerUserId,
         "slug": slug == null ? null : slug,
+        "video_path": videoPath == null ? null : videoPath,
         "created_at": createdAt == null ? null : createdAt.toIso8601String(),
         "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
         "deleted_at": deletedAt,
