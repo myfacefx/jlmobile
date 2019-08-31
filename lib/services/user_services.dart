@@ -8,10 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<Map<String, dynamic>> login(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/login";
-  
+
   print(url);
-  http.Response res = await http.post(url,
-      headers: header, body: json.encode(_data));
+  http.Response res =
+      await http.post(url, headers: header, body: json.encode(_data));
 
   print(res.statusCode);
 
@@ -55,8 +55,7 @@ Future<User> register(Map<String, dynamic> _data) async {
   final url = getBaseUrl() + "/register";
 
   http.Response res = await http
-      .post(url,
-          headers: header, body: json.encode(_data))
+      .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(minutes: 60));
 
   if (res.statusCode == 200) {
@@ -100,7 +99,8 @@ Future<String> update(Map<String, dynamic> _data, int userId) async {
   }
 }
 
-Future<Map<String, dynamic>> updateVerification(Map<String, dynamic> _data, int userId) async {
+Future<Map<String, dynamic>> updateVerification(
+    Map<String, dynamic> _data, int userId) async {
   final header = {"Content-Type": "application/json"};
   final String url = getBaseUrl() + "/users/$userId/update-verification";
 
@@ -206,8 +206,7 @@ Future<List<User>> fbLoginSearch(Map<String, dynamic> _data) async {
   print(url);
 
   http.Response res = await http
-      .post(url,
-          headers: header, body: json.encode(_data))
+      .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {
@@ -317,3 +316,22 @@ Future<bool> getUsersByPhoneNumber(String phoneNumber) async {
 //     throw Exception(res.body);
 //   }
 // }
+
+Future<User> verifyToken(String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "/verify-token";
+
+  print(url);
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return userFromJson(res.body);
+  } else if (res.statusCode == 400) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}

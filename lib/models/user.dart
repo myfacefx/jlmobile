@@ -42,6 +42,7 @@ class User {
   String facebookUserId;
   String identityNumber;
   String verificationStatus;
+  String tokenRedis;
 
   User(
       {this.id,
@@ -69,8 +70,8 @@ class User {
       this.firebaseToken,
       this.facebookUserId,
       this.identityNumber,
-      this.verificationStatus
-      });
+      this.verificationStatus,
+      this.tokenRedis});
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
         id: json["id"] == null ? null : json["id"],
@@ -80,9 +81,10 @@ class User {
         description: json["description"] == null ? null : json["description"],
         username: json["username"] == null ? null : json["username"],
         password: json["password"] == null ? null : json["password"],
-        phoneNumber: json["phone_number"],
-        address: json["address"],
+        phoneNumber: json["phone_number"] == null ? null : json["phone_number"],
+        address: json["address"] == null ? null : json["address"],
         photo: json["photo"] == null ? null : json['photo'],
+        tokenRedis: json["token_redis"] == null ? null : json['token_redis'],
         roleId: json["role_id"] == null ? null : json["role_id"],
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
         blacklisted: json["blacklisted"] == null ? null : json["blacklisted"],
@@ -110,8 +112,9 @@ class User {
             json["facebook_user_id"] == null ? null : json["facebook_user_id"],
         identityNumber:
             json["identity_number"] == null ? null : json["identity_number"],
-        verificationStatus:
-            json["verification_status"] == null ? null : json["verification_status"],
+        verificationStatus: json["verification_status"] == null
+            ? null
+            : json["verification_status"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -139,7 +142,8 @@ class User {
         "province": province == null ? null : province.toJson(),
         "firebase_token": firebaseToken == null ? null : firebaseToken,
         "facebook_user_id": facebookUserId == null ? null : facebookUserId,
-        "verification_status": verificationStatus == null ? null : verificationStatus,
+        "verification_status":
+            verificationStatus == null ? null : verificationStatus,
         "identity_number": identityNumber == null ? null : identityNumber
       }..removeWhere((key, val) => val == null);
 }

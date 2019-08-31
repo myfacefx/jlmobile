@@ -128,7 +128,7 @@ String generateInvoice(Auction auction) {
 FirebaseMessaging _fcm = FirebaseMessaging();
 generateToken() async {
   // Firestore _db = Firestore.instance;
-  print("Previous Token ${user.firebaseToken}");
+  print("Previous Token firebase ${user.firebaseToken}");
 
   if (user != null) {
     String fcmToken = await _fcm.getToken();
