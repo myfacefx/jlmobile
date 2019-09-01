@@ -61,8 +61,8 @@ class _LoginPage extends State<LoginPage> {
     print("Checking Version");
     verifyVersion("token", globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
-        final result = await showUpdate(
-            onValue.url, onValue.isForceUpdate, onValue.message);
+        final result = await globals.showUpdate(
+            onValue.url, onValue.isForceUpdate, onValue.message, context);
         if (!result) {
           _checkVersion();
         }
@@ -70,29 +70,6 @@ class _LoginPage extends State<LoginPage> {
         print("Already Up To Date Version");
       }
     });
-  }
-
-  Future<bool> showUpdate(urlUpdate, bool isForceUpdate, String message) async {
-    return await showDialog<bool>(
-          context: context,
-          barrierDismissible: !isForceUpdate,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                  title: Text("Perhatian"),
-                  content: globals.myText(text: message),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: globals.myText(text: "Perbaharui Aplikasi"),
-                      onPressed: () {
-                        launch(urlUpdate);
-                      },
-                    ),
-                  ],
-                ) ??
-                false;
-          },
-        ) ??
-        false;
   }
 
   _logIn() async {

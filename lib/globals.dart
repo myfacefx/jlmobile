@@ -13,8 +13,9 @@ import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
 import 'package:mailer/mailer.dart' as mailer;
 import 'package:mailer/smtp_server.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-String version = "v0.1.5";
+String version = "v0.1.4";
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
@@ -818,3 +819,37 @@ void mailError(String errrorFrom, String cause) async {
   await mailer.send(message, smtpServer);
   print("sended");
 }
+
+Future<bool> showUpdate(urlUpdate, bool isForceUpdate, String message, context) async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: !isForceUpdate,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Image.asset("assets/images/new_update.png"),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      myText(text: message)
+                    ],
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      color: myColor("primary"),
+                      child: myText(text: "Perbaharui Aplikasi", color: "light"),
+                      onPressed: () {
+                        launch(urlUpdate);
+                      },
+                    ),
+                  ],
+                ) ??
+                false;
+          },
+        ) ??
+        false;
+  }
