@@ -240,10 +240,17 @@ class _HomePage extends State<HomePage> {
       if (onValue.length != 0) {
         listPromoA = [];
         onValue.forEach((slider) {
-          listPromoA.add(
-            FadeInImage.assetNetwork(
+          listPromoA.add(GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => WebviewScaffold(
+                      url: slider.name,
+                      appBar: globals.appBar(_scaffoldKey, context,
+                          isSubMenu: true, showNotification: false))));
+            },
+            child: FadeInImage.assetNetwork(
                 placeholder: 'assets/images/loading.gif', image: slider.link),
-          );
+          ));
         });
       } else {
         listPromoA = getTemplateSlider();
@@ -743,14 +750,23 @@ class _HomePage extends State<HomePage> {
         });
       },
       items: listPromoB.map((f) {
-        return Container(
-          width: globals.mw(context),
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-          child: FadeInImage.assetNetwork(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingPromoB ? 20 : null,
-              placeholder: 'assets/images/loading.gif',
-              image: f.link),
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => WebviewScaffold(
+                    url: f.name,
+                    appBar: globals.appBar(_scaffoldKey, context,
+                        isSubMenu: true, showNotification: false))));
+          },
+          child: Container(
+            width: globals.mw(context),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+            child: FadeInImage.assetNetwork(
+                width: globals.mw(context) * 0.23,
+                height: isLoadingPromoB ? 20 : null,
+                placeholder: 'assets/images/loading.gif',
+                image: f.link),
+          ),
         );
       }).toList(),
     );
@@ -813,14 +829,23 @@ class _HomePage extends State<HomePage> {
         });
       },
       items: listPromoC.map((f) {
-        return Container(
-          width: globals.mw(context),
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-          child: FadeInImage.assetNetwork(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingPromoB ? 20 : null,
-              placeholder: 'assets/images/loading.gif',
-              image: f.link),
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => WebviewScaffold(
+                    url: f.name,
+                    appBar: globals.appBar(_scaffoldKey, context,
+                        isSubMenu: true, showNotification: false))));
+          },
+          child: Container(
+            width: globals.mw(context),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+            child: FadeInImage.assetNetwork(
+                width: globals.mw(context) * 0.23,
+                height: isLoadingPromoB ? 20 : null,
+                placeholder: 'assets/images/loading.gif',
+                image: f.link),
+          ),
         );
       }).toList(),
     );
