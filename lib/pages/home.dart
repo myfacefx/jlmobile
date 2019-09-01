@@ -776,7 +776,7 @@ class _HomePage extends State<HomePage> {
           child: slider,
         ),
         Positioned(
-          right: 15,
+          right: 10,
           top: 0,
           bottom: 0,
           child: GestureDetector(
@@ -785,17 +785,18 @@ class _HomePage extends State<HomePage> {
                   duration: Duration(milliseconds: 500), curve: Curves.linear);
             },
             child: CircleAvatar(
+              radius: 15,
               backgroundColor: Colors.black.withOpacity(0.7),
               child: Icon(
                 Icons.arrow_forward_ios,
-                size: 23,
+                size: 18,
                 color: Colors.white,
               ),
             ),
           ),
         ),
         Positioned(
-          left: 15,
+          left: 10,
           top: 0,
           bottom: 0,
           child: GestureDetector(
@@ -804,10 +805,11 @@ class _HomePage extends State<HomePage> {
                   duration: Duration(milliseconds: 500), curve: Curves.linear);
             },
             child: CircleAvatar(
+              radius: 15,
               backgroundColor: Colors.black.withOpacity(0.7),
               child: Icon(
                 Icons.arrow_back_ios,
-                size: 23,
+                size: 18,
                 color: Colors.white,
               ),
             ),
@@ -855,7 +857,7 @@ class _HomePage extends State<HomePage> {
           child: slider,
         ),
         Positioned(
-          right: 15,
+          right: 10,
           top: 0,
           bottom: 0,
           child: GestureDetector(
@@ -864,17 +866,18 @@ class _HomePage extends State<HomePage> {
                   duration: Duration(milliseconds: 500), curve: Curves.linear);
             },
             child: CircleAvatar(
+              radius: 15,
               backgroundColor: Colors.black.withOpacity(0.7),
               child: Icon(
                 Icons.arrow_forward_ios,
-                size: 23,
+                size: 18,
                 color: Colors.white,
               ),
             ),
           ),
         ),
         Positioned(
-          left: 15,
+          left: 10,
           top: 0,
           bottom: 0,
           child: GestureDetector(
@@ -883,10 +886,11 @@ class _HomePage extends State<HomePage> {
                   duration: Duration(milliseconds: 500), curve: Curves.linear);
             },
             child: CircleAvatar(
+              radius: 15,
               backgroundColor: Colors.black.withOpacity(0.7),
               child: Icon(
                 Icons.arrow_back_ios,
-                size: 23,
+                size: 18,
                 color: Colors.white,
               ),
             ),
@@ -933,7 +937,7 @@ class _HomePage extends State<HomePage> {
           child: slider,
         ),
         Positioned(
-          right: 15,
+          right: 10,
           top: 0,
           bottom: 0,
           child: GestureDetector(
@@ -943,16 +947,17 @@ class _HomePage extends State<HomePage> {
                     curve: Curves.linear);
               },
               child: CircleAvatar(
+                radius: 15,
                 backgroundColor: Colors.black.withOpacity(0.7),
                 child: Icon(
                   Icons.arrow_forward_ios,
-                  size: 23,
+                  size: 18,
                   color: Colors.white,
                 ),
               )),
         ),
         Positioned(
-          left: 15,
+          left: 10,
           top: 0,
           bottom: 0,
           child: GestureDetector(
@@ -961,10 +966,11 @@ class _HomePage extends State<HomePage> {
                   duration: Duration(milliseconds: 500), curve: Curves.linear);
             },
             child: CircleAvatar(
+              radius: 15,
               backgroundColor: Colors.black.withOpacity(0.7),
               child: Icon(
                 Icons.arrow_back_ios,
-                size: 23,
+                size: 18,
                 color: Colors.white,
               ),
             ),
@@ -1197,13 +1203,13 @@ class _HomePage extends State<HomePage> {
                       Container(
                           width: globals.mw(context) * 0.6,
                           child: globals.myText(
-                              text: listArticle[_currentArticle].link,
+                              text: listArticle[_currentArticle].description,
                               color: "light")),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => WebviewScaffold(
-                                  url: listArticle[_currentArticle].description,
+                                  url: listArticle[_currentArticle].link,
                                   appBar: globals.appBar(_scaffoldKey, context,
                                       isSubMenu: true,
                                       showNotification: false))));
