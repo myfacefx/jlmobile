@@ -102,7 +102,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildCarousel() {
     List<Widget> listImage = [];
     List<int> indexImage = [];
-    int count = 0;
+    int count = -1;
     if (animal.animalImages.length == 0) {
       indexImage.add(count);
       count++;
@@ -120,12 +120,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => ImagePopupPage(
-                          image: image.image,
-                          tagCount: "image$count",
+                          image: animal.animalImages,
+                          tagCount: "image-$count",
+                          index: count,
                           animalName: animal.name)));
             },
             child: Hero(
-              tag: "image$count",
+              tag: "image-$count",
               child: FadeInImage.assetNetwork(
                 placeholder: 'assets/images/loading.gif',
                 image: image.thumbnail,
