@@ -41,11 +41,10 @@ class AppConfig extends InheritedWidget {
 
           globals.state = 'home';
 
-          if (globals.user != null) {
-            if (globals.user.verificationStatus == null) globals.state = 'verification';
-            if (globals.user.verificationStatus == 'denied') globals.state = 'verification';
-          }
-          // globals.state = globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "verification" : "home";
+          // if (globals.user != null) {
+          //   if (globals.user.verificationStatus == null) globals.state = 'verification';
+          //   if (globals.user.verificationStatus == 'denied') globals.state = 'verification';
+          // }
         } else {
           globals.state = "login";
         }

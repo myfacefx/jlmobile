@@ -135,13 +135,13 @@ class _HomePage extends State<HomePage> {
         globals.user.identityNumber = userResponse.identityNumber;
       });
 
-      if (globals.user.verificationStatus == null ||
-          globals.user.verificationStatus == 'denied') {
-        Timer.run(() {
-          Navigator.of(context).pop();
-          Navigator.of(context).pushNamed("/verification");
-        });
-      }
+      // if (globals.user.verificationStatus == null ||
+      //     globals.user.verificationStatus == 'denied') {
+      //   Timer.run(() {
+      //     Navigator.of(context).pop();
+      //     Navigator.of(context).pushNamed("/verification");
+      //   });
+      // }
     }
   }
 
@@ -560,7 +560,7 @@ class _HomePage extends State<HomePage> {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Belum mengajukan verifikasi';
+        display = 'Belum mengajukan verifikasi KTP';
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
