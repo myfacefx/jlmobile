@@ -15,7 +15,7 @@ import 'package:mailer/mailer.dart' as mailer;
 import 'package:mailer/smtp_server.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String version = "v0.1.4";
+String version = "v0.1.5";
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
