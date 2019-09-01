@@ -553,22 +553,22 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildVerificationStatus() {
-    String display = 'Verifikasi KTP Pending';
+    String display = 'Verifikasi Tanda Pengenal Pending';
     String color = 'warning';
 
     if (globals.user != null) {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Belum mengajukan verifikasi KTP';
+        display = 'Belum mengajukan verifikasi Tanda Pengenal';
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
-          display = "Verifikasi KTP Sukses";
+          display = "Verifikasi Tanda Pengenal Sukses";
           color = 'success';
         } else if (_verificationStatus == 'denied') {
           color = 'danger';
-          display = "Verifikasi KTP Ditolak, silahkan ulangi";
+          display = "Verifikasi Tanda Pengenal Ditolak, silahkan ulangi";
         }
       }
 

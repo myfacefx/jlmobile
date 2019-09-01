@@ -102,12 +102,12 @@ class _VerificationPageState extends State<VerificationPage> {
 
   _save() async {
     if (_ktp == null) {
-      globals.showDialogs("Foto KTP masih kosong", context);
+      globals.showDialogs("Foto Tanda Pengenal masih kosong", context);
       return false;
     }
 
     if (_selfie == null) {
-      globals.showDialogs("Foto Selfie dengan KTP masih kosong", context);
+      globals.showDialogs("Foto Selfie dengan Tanda Pengenal masih kosong", context);
       return false;
     }
 
@@ -188,7 +188,7 @@ class _VerificationPageState extends State<VerificationPage> {
     return Column(
       children: <Widget>[
         globals.myText(
-            text: "Foto KTP", align: TextAlign.center, size: 20, weight: "B"),
+            text: "Foto Tanda Pengenal", align: TextAlign.center, size: 20, weight: "B"),
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: _ktp != null
@@ -205,7 +205,7 @@ class _VerificationPageState extends State<VerificationPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(isLoading ? "Loading" : "Ambil Foto KTP",
+                        Text(isLoading ? "Loading" : "Ambil Foto Tanda Pengenal",
                             style: Theme.of(context).textTheme.display4),
                         Icon(Icons.camera_alt, color: Colors.white)
                       ],
@@ -223,7 +223,7 @@ class _VerificationPageState extends State<VerificationPage> {
     return Column(
       children: <Widget>[
         globals.myText(
-            text: "Foto Selfie dengan KTP",
+            text: "Foto Selfie dengan Tanda Pengenal",
             align: TextAlign.center,
             size: 20,
             weight: "B"),
@@ -246,7 +246,7 @@ class _VerificationPageState extends State<VerificationPage> {
                         Text(
                             isLoading
                                 ? "Loading"
-                                : "Ambil Foto Selfie dengan KTP",
+                                : "Ambil Foto Selfie dengan Tanda Pengenal",
                             style: Theme.of(context).textTheme.display4),
                         Icon(Icons.camera_alt, color: Colors.white)
                       ],
@@ -285,7 +285,7 @@ class _VerificationPageState extends State<VerificationPage> {
       color = 'success';
     } else if (_verificationStatus == 'denied') {
       color = 'danger';
-      display = "Verifkasi KTP Ditolak, silahkan ulangi";
+      display = "Verifkasi Tanda Pengenal Ditolak, silahkan ulangi";
     }
 
     return Scaffold(
@@ -348,9 +348,9 @@ class _VerificationPageState extends State<VerificationPage> {
                                     ),
                                     globals.myText(
                                         text: _verificationStatus == 'pending'
-                                            ? "Verifikasi KTP Anda sedang kami proses, silahkan tunggu 1x24 jam"
+                                            ? "Verifikasi Tanda Pengenal Anda sedang kami proses, silahkan tunggu 1x24 jam"
                                             : _verificationStatus == 'verified'
-                                                ? "Selamat! Verifikasi KTP Anda telah berhasil, silahkan menggunakan seluruh layanan pada JLF"
+                                                ? "Selamat! Verifikasi Tanda Pengenal Anda telah berhasil, silahkan menggunakan seluruh layanan pada JLF"
                                                 : "",
                                         align: TextAlign.center),
                                   ],
@@ -371,18 +371,18 @@ class _VerificationPageState extends State<VerificationPage> {
                               ? Column(
                                   children: <Widget>[
                                     globals.myText(
-                                        text: "Verifikasi KTP",
+                                        text: "Verifikasi Tanda Pengenal",
                                         weight: "B",
                                         size: 24,
                                         align: TextAlign.center),
                                     SizedBox(height: 8),
                                     globals.myText(
                                         text:
-                                            "Hai sobat JLF, dalam rangka meningkatkan keamanan serta membantu membangun rasa percaya maka pihak kami mewajibkan verifikasi KTP. Dengan memverifikasi KTP, sobat dapat memasang lelang/jual beli, bid, dan komentar pada lelang/jual beli.",
+                                            "Hai sobat JLF, dalam rangka meningkatkan keamanansekaligus membrantas kasus lelang sebelumnya, maka pihak kami mewajibkan para bidder dan seller melakukan verifikasi dengan tanda pengenal (Kartu Pelajar/KTP/Kartu Member Mall/Kartu lainnya dengan identitas jelas). Verifikasi ini hanya dilakukan sekali saja.",
                                         align: TextAlign.center),
                                     globals.myText(
                                         text:
-                                            "(Pastikan data pada KTP terlihat jelas)",
+                                            "(Pastikan data pada Tanda Pengenal terlihat jelas)",
                                         size: 13,
                                         align: TextAlign.center),
                                     Divider(),
@@ -407,9 +407,8 @@ class _VerificationPageState extends State<VerificationPage> {
                                                 _save();
                                               },
                                               validator: (value) {
-                                                if (value.isEmpty ||
-                                                    value.length != 16) {
-                                                  return 'Nomor KTP tidak sesuai';
+                                                if (value.isEmpty) {
+                                                  return 'Nomor Tanda Pengenal tidak boleh kosong';
                                                 }
                                               },
                                               style: TextStyle(
@@ -425,9 +424,9 @@ class _VerificationPageState extends State<VerificationPage> {
                                               decoration: InputDecoration(
                                                   contentPadding:
                                                       EdgeInsets.all(13),
-                                                  hintText: "Nomor KTP",
+                                                  hintText: "Nomor Tanda Pengenal",
                                                   labelText:
-                                                      "16 Digit Nomor KTP",
+                                                      "Nomor Tanda Pengenal",
                                                   fillColor: Colors.white,
                                                   border: OutlineInputBorder(
                                                       borderRadius:
@@ -467,7 +466,7 @@ class _VerificationPageState extends State<VerificationPage> {
                                 children: <Widget>[
                                   globals.myText(
                                       text:
-                                          "Terjadi Error? Tidak memiliki KTP? Atau butuh bantuan lainnya?",
+                                          "Terjadi Error? Atau butuh bantuan lainnya?",
                                       weight: "B",
                                       color: "danger",
                                       align: TextAlign.center),

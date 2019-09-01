@@ -1530,6 +1530,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         await globals.showDialogs(
                             "Bid gagal, Anda masuk dalam blacklist user",
                             context);
+                      } else if (result == 4) {
+                        await globals.showDialogs("Bid gagal, data diri Anda belum terverifikasi", context);
                       } else {
                         await globals.showDialogs("Error", context);
                       }

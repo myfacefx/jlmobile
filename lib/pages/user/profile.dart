@@ -572,38 +572,42 @@ class _ProfilePageState extends State<ProfilePage>
                   //                 color: globals.myColor("primary"))),
                   //       )
                   //     : Container(),
-                  GestureDetector(
-                    onTap: () => globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari nominal bid", context),
-                    child: Container(
+                  // GestureDetector(
+                  //   onTap: () => globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari nominal bid", context),
+                  //   child: Container(
+                  //     alignment: Alignment.topLeft,
+                  //     width: globals.mw(context) * 0.2,
+                  //     padding:
+                  //         EdgeInsets.fromLTRB(10, 15, 0, 0),
+                  //     child: globals.myText(text: "${globals.user.point}\nPOIN", weight: "B", align: TextAlign.center)),
+                  // ),
+                    
+                    
+                    Container(
                       alignment: Alignment.topLeft,
-                      width: globals.mw(context) * 0.2,
-                      padding:
-                          EdgeInsets.fromLTRB(10, 15, 0, 0),
-                      child: globals.myText(text: "${globals.user.point}\nPOIN", weight: "B", align: TextAlign.center)),
-                  ),
-                    
-                    
-                    // FlatButton(
-                    //     onPressed: () {
-                    //       globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari bid", context);
-                    //     },
-                    //     child: Row(
-                    //       mainAxisAlignment:
-                    //           MainAxisAlignment.center,
-                    //       children: <Widget>[
-                    //         Text(
-                    //             "${globals.user.point}",
-                    //             style: Theme.of(context)
-                    //                 .textTheme
-                    //                 .display4)
-                    //       ],
-                    //     ),
-                    //     color: isLoading
-                    //         ? Colors.grey
-                    //         : globals.myColor("warning"),
-                    //     shape: RoundedRectangleBorder(
-                    //         borderRadius:
-                    //             BorderRadius.circular(20)))),
+                      width: globals.mw(context) * 0.25,
+                      child: FlatButton(
+                          onPressed: () {
+                            globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context);
+                          },
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                  "${globals.convertToMoney(globals.user.point.toDouble())} P",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .display4)
+                            ],
+                          ),
+                          color: isLoading
+                              ? Colors.grey
+                              : globals.myColor("warning"),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(5))),
+                    ),
                   user.id == globals.user.id
                       ? Container(
                           alignment: Alignment.topRight,
