@@ -17,7 +17,7 @@ import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
-import 'package:jlf_mobile/services/bid_services.dart';
+import 'package:jlf_mobile/services/bid_services.dart' as BidServices;
 import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:jlf_mobile/services/product_services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -102,7 +102,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildCarousel() {
     List<Widget> listImage = [];
     List<int> indexImage = [];
-    int count = 0;
+    int count = -1;
     if (animal.animalImages.length == 0) {
       indexImage.add(count);
       count++;
@@ -120,12 +120,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => ImagePopupPage(
-                          image: image.image,
-                          tagCount: "image$count",
+                          image: animal.animalImages,
+                          tagCount: "image-$count",
+                          index: count,
                           animalName: animal.name)));
             },
             child: Hero(
-              tag: "image$count",
+              tag: "image-$count",
               child: FadeInImage.assetNetwork(
                 placeholder: 'assets/images/loading.gif',
                 image: image.thumbnail,
@@ -692,8 +693,38 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  TableRow _buildTableRow(
-      bool isFirst, String name, String date, double amount, int userId) {
+  void _delete(Bid bid) async {
+    if (globals.user.id != animal.auction.ownerUserId) {
+      globals.showDialogs(
+          "Hanya pemilik lelang yang dapat menghapus bid", context);
+      return;
+    }
+
+    var response = await globals.confirmDialog(
+        "Yakin menghapus bid sebesar ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?",
+        context);
+
+    // Map<String, dynamic> formData = Map<String, dynamic>();
+    // formData['owner_user_id'] = animal.auction.ownerUserId;
+
+    if (response) {
+      try {
+        bool response = await BidServices.delete("Token", bid.id);
+
+        if (response) {
+          await globals.showDialogs("Berhasil menghapus bid", context);
+          // Navigator.pop(context);
+          loadAnimal(animal.id);
+        }
+      } catch (e) {
+        globals.showDialogs(e.toString(), context);
+        print(e.toString());
+      }
+    }
+  }
+
+  TableRow _buildTableRow(bool isFirst, String name, String date, double amount,
+      int userId, Bid bid) {
     return TableRow(children: [
       Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -739,12 +770,22 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             width: globals.mw(context) * 0.25,
             padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
             margin: EdgeInsets.fromLTRB(5, 3, 0, 3),
-            child: Text(
-              globals.convertToMoney(amount),
-              style: Theme.of(context).textTheme.display3.copyWith(
-                  color: isFirst
-                      ? Colors.white
-                      : Color.fromRGBO(178, 178, 178, 1)),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  globals.convertToMoney(amount),
+                  style: Theme.of(context).textTheme.display3.copyWith(
+                      color: isFirst
+                          ? Colors.white
+                          : Color.fromRGBO(178, 178, 178, 1)),
+                ),
+                animal.auction.ownerUserId == globals.user.id
+                    ? GestureDetector(
+                        onTap: () => _delete(bid),
+                        child: Icon(Icons.delete,
+                            size: 15, color: globals.myColor("warning")))
+                    : Container()
+              ],
             ),
           ),
           // Spacer()
@@ -778,7 +819,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     myList = animal.auction.bids.map((i) {
       count++;
       return _buildTableRow(count == 1, i.user.username, i.createdAt,
-          i.amount.toDouble(), i.userId);
+          i.amount.toDouble(), i.userId, i);
     }).toList();
 
     // Last 5 Bids
@@ -1482,7 +1523,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   onPressed: () async {
                     try {
                       globals.loadingModel(context);
-                      final result = await placeBid("Token", newBid);
+                      final result =
+                          await BidServices.placeBid("Token", newBid);
                       Navigator.pop(context);
 
                       if (result == 1) {
@@ -1495,6 +1537,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         await globals.showDialogs(
                             "Bid gagal, Anda masuk dalam blacklist user",
                             context);
+                      } else if (result == 4) {
+                        await globals.showDialogs(
+                            "Bid gagal, data diri Anda belum terverifikasi",
+                            context, needVerify: true);
                       } else {
                         await globals.showDialogs("Error", context);
                       }
@@ -1718,13 +1764,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       globals.loadingModel(context);
       final result = await addCommentAuction("token", auctionComment);
       Navigator.pop(context);
-      if (result) {
+      if (result == "") {
         await globals.showDialogs("Comment Sended", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else {
+        await globals.showDialogs(result, context, needVerify: true);
       }
     } catch (e) {
       Navigator.pop(context);
@@ -1743,13 +1791,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       globals.loadingModel(context);
       final result = await addCommentProduct("token", productComment);
       Navigator.pop(context);
-      if (result) {
+      if (result == "") {
         await globals.showDialogs("Comment Sended", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else {
+        await globals.showDialogs(result, context, needVerify: true);
       }
     } catch (e) {
       Navigator.pop(context);

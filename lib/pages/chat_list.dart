@@ -69,17 +69,20 @@ class _ChatListPageState extends State<ChatListPage> {
                       text: "Invoice: " + globals.generateInvoice(auction)),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      FlatButton(
-                          color: globals.myColor("primary"),
-                          child: globals.myText(
-                              text: "Buka Obrolan", color: "light"),
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ChatPage(auction: auction)))),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: FlatButton(
+                            color: globals.myColor("primary"),
+                            child: globals.myText(
+                                text: "Buka Obrolan", color: "light"),
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ChatPage(auction: auction)))),
+                      ),
                       FlatButton(
                         color: globals.myColor("primary"),
                         child: globals.myText(

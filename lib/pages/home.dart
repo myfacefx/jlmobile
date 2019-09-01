@@ -27,6 +27,7 @@ import 'package:uni_links/uni_links.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class HomePage extends StatefulWidget {
   @override
   _HomePage createState() {
@@ -71,7 +72,7 @@ class _HomePage extends State<HomePage> {
   void initState() {
     super.initState();
 
-     _checkVersion();
+    _checkVersion();
 
     if (globals.user != null) {
       _verificationCheck();
@@ -93,7 +94,7 @@ class _HomePage extends State<HomePage> {
 
     initUniLinks();
     initUniLinksStream();
-   
+
     handleAppLifecycleState();
   }
 
@@ -135,13 +136,13 @@ class _HomePage extends State<HomePage> {
         globals.user.identityNumber = userResponse.identityNumber;
       });
 
-      if (globals.user.verificationStatus == null ||
-          globals.user.verificationStatus == 'denied') {
-        Timer.run(() {
-          Navigator.of(context).pop();
-          Navigator.of(context).pushNamed("/verification");
-        });
-      }
+      // if (globals.user.verificationStatus == null ||
+      //     globals.user.verificationStatus == 'denied') {
+      //   Timer.run(() {
+      //     Navigator.of(context).pop();
+      //     Navigator.of(context).pushNamed("/verification");
+      //   });
+      // }
     }
   }
 
@@ -155,7 +156,8 @@ class _HomePage extends State<HomePage> {
     print("Checking Version");
     verifyVersion("token", globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
-        final result = await showUpdate(onValue.url, onValue.isForceUpdate);
+        final result = await globals.showUpdate(
+            onValue.url, onValue.isForceUpdate, onValue.message, context);
         print(result);
         if (!result) {
           _checkVersion();
@@ -169,28 +171,7 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  Future<bool> showUpdate(urlUpdate, bool isForceUpdate) async {
-    return await showDialog<bool>(
-          context: context,
-          barrierDismissible: !isForceUpdate,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                  title: Text("Alert"),
-                  content: globals.myText(text: "Aplikasi Butuh diperbaharui"),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: globals.myText(text: "Perbaharui Aplikasi"),
-                      onPressed: () {
-                        launch(urlUpdate);
-                      },
-                    ),
-                  ],
-                ) ??
-                false;
-          },
-        ) ??
-        false;
-  }
+  
 
   Future<Null> initUniLinks() async {
     try {
@@ -553,22 +534,22 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildVerificationStatus() {
-    String display = 'Verifikasi KTP Pending';
+    String display = 'Verifikasi Tanda Pengenal Pending';
     String color = 'warning';
 
     if (globals.user != null) {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Belum mengajukan verifikasi';
+        display = 'Belum mengajukan verifikasi Tanda Pengenal';
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
-          display = "Verifikasi KTP Sukses";
+          display = "Verifikasi Tanda Pengenal Sukses";
           color = 'success';
         } else if (_verificationStatus == 'denied') {
           color = 'danger';
-          display = "Verifikasi KTP Ditolak, silahkan ulangi";
+          display = "Verifikasi Tanda Pengenal Ditolak, silahkan ulangi";
         }
       }
 
@@ -1134,7 +1115,9 @@ class _HomePage extends State<HomePage> {
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: globals.myText(
-                              text: "CAMPAIGN JLF", color: 'dark', size: 15)),
+                              text: "SPONSORED SELLER JLF",
+                              color: 'dark',
+                              size: 15)),
                       isLoadingCampaign
                           ? globals.isLoading()
                           : _buildCampaign(),

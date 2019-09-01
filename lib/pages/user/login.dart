@@ -61,7 +61,8 @@ class _LoginPage extends State<LoginPage> {
     print("Checking Version");
     verifyVersion("token", globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
-        final result = await showUpdate(onValue.url, onValue.isForceUpdate);
+        final result = await globals.showUpdate(
+            onValue.url, onValue.isForceUpdate, onValue.message, context);
         if (!result) {
           _checkVersion();
         }
@@ -69,29 +70,6 @@ class _LoginPage extends State<LoginPage> {
         print("Already Up To Date Version");
       }
     });
-  }
-
-  Future<bool> showUpdate(urlUpdate, bool isForceUpdate) async {
-    return await showDialog<bool>(
-          context: context,
-          barrierDismissible: !isForceUpdate,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                  title: Text("Alert"),
-                  content: globals.myText(text: "Aplikasi Butuh diperbaharui"),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: globals.myText(text: "Perbaharui Aplikasi"),
-                      onPressed: () {
-                        launch(urlUpdate);
-                      },
-                    ),
-                  ],
-                ) ??
-                false;
-          },
-        ) ??
-        false;
   }
 
   _logIn() async {
@@ -406,7 +384,13 @@ class _LoginPage extends State<LoginPage> {
                         child:
                             Image.asset("assets/images/logo.png", height: 140),
                       )),
-                  membersCount != null ? globals.myText(text: "$membersCount Member Terdaftar", weight: "B", align: TextAlign.center) : Container(),
+                  membersCount != null
+                      ? globals.myText(
+                          text: "$membersCount Member Terdaftar",
+                          weight: "B",
+                          align: TextAlign.center)
+                      : Container(),
+                  SizedBox(height: 8),
                   Form(
                     autovalidate: autoValidate,
                     key: _formKey,
