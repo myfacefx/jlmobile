@@ -758,7 +758,8 @@ class _EditProductPageState extends State<EditProductPage> {
         Navigator.pushNamed(context, "/profile");
       } catch (e) {
         globals.showDialogs(
-            "Gagal mengupdate produk, silahkan coba kembali! ${e.toString()}", context);
+            "Gagal mengupdate produk, silahkan coba kembali! ${e.toString()}",
+            context);
         globals.mailError("_update product", e.toString());
       }
     }
