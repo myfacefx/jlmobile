@@ -27,7 +27,6 @@ import 'package:uni_links/uni_links.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class HomePage extends StatefulWidget {
   @override
   _HomePage createState() {
@@ -46,7 +45,6 @@ class _HomePage extends State<HomePage> {
   bool isLoadingPromoA = true;
   bool isLoadingPromoB = true;
   bool isLoadingPromoC = true;
-  bool isLoadingCampaign = true;
   bool isLoadingArticle = true;
 
   bool isLoadingPromoVideo = true;
@@ -61,7 +59,6 @@ class _HomePage extends State<HomePage> {
   List<Promo> listPromoB = [];
   List<Promo> listPromoC = [];
   List<Promo> listVideo = [];
-  List<Article> listCampaign = [];
   List<Article> listArticle = [];
   List<JlfPartner> listParner = [];
   String selectedType = "PASAR HEWAN";
@@ -83,7 +80,6 @@ class _HomePage extends State<HomePage> {
       _loadPromosB();
       _loadPromosC();
       _loadPromosVideo();
-      _loadCampaign();
       _loadArticle();
       _loadJlfPartner();
 
@@ -170,8 +166,6 @@ class _HomePage extends State<HomePage> {
       }
     });
   }
-
-  
 
   Future<Null> initUniLinks() async {
     try {
@@ -310,23 +304,6 @@ class _HomePage extends State<HomePage> {
     }).catchError((onError) {
       setState(() {
         isLoadingPromoVideo = false;
-      });
-    });
-  }
-
-  _loadCampaign() {
-    getAllArticle("token", "champaign").then((onValue) {
-      if (onValue.length != 0) {
-        listCampaign = onValue;
-      }
-
-      setState(() {
-        isLoadingCampaign = false;
-      });
-    }).catchError((onError) {
-      print(onError.toString());
-      setState(() {
-        isLoadingCampaign = false;
       });
     });
   }
@@ -755,8 +732,17 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildPromotionB() {
-    return Column(
-      children: listPromoB.map((f) {
+    final slider = CarouselSlider(
+      aspectRatio: 3,
+      viewportFraction: 3.0,
+      height: 200,
+      enableInfiniteScroll: true,
+      onPageChanged: (index) {
+        setState(() {
+          _currentArticle = index;
+        });
+      },
+      items: listPromoB.map((f) {
         return Container(
           width: globals.mw(context),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
@@ -768,27 +754,135 @@ class _HomePage extends State<HomePage> {
         );
       }).toList(),
     );
+    return Stack(
+      children: <Widget>[
+        Container(
+          child: slider,
+        ),
+        Positioned(
+          right: 15,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.nextPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                size: 23,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 15,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.previousPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 23,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   Widget _buildPromotionC() {
-    return Column(
-      children: listPromoC.map((f) {
+    final slider = CarouselSlider(
+      aspectRatio: 3,
+      viewportFraction: 3.0,
+      height: 200,
+      enableInfiniteScroll: true,
+      onPageChanged: (index) {
+        setState(() {
+          _currentArticle = index;
+        });
+      },
+      items: listPromoC.map((f) {
         return Container(
           width: globals.mw(context),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
           child: FadeInImage.assetNetwork(
               width: globals.mw(context) * 0.23,
-              height: isLoadingPromoC ? 20 : null,
+              height: isLoadingPromoB ? 20 : null,
               placeholder: 'assets/images/loading.gif',
               image: f.link),
         );
       }).toList(),
     );
+    return Stack(
+      children: <Widget>[
+        Container(
+          child: slider,
+        ),
+        Positioned(
+          right: 15,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.nextPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                size: 23,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 15,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.previousPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 23,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   Widget _buildVideoA() {
-    return Column(
-      children: listVideo.map((f) {
+    final slider = CarouselSlider(
+      aspectRatio: 3,
+      viewportFraction: 3.0,
+      height: 200,
+      enableInfiniteScroll: true,
+      onPageChanged: (index) {
+        setState(() {
+          _currentArticle = index;
+        });
+      },
+      items: listVideo.map((f) {
         String videoId;
         videoId = YoutubePlayer.convertUrlToId(f.link);
         return Container(
@@ -797,7 +891,6 @@ class _HomePage extends State<HomePage> {
           child: YoutubePlayer(
             context: context,
             videoId: videoId,
-            // thumbnailUrl: "https://placeimg.com/520/200/animals?10",
             flags: YoutubePlayerFlags(
                 showVideoProgressIndicator: true, autoPlay: false),
             videoProgressIndicatorColor: Colors.amber,
@@ -809,21 +902,50 @@ class _HomePage extends State<HomePage> {
         );
       }).toList(),
     );
-  }
-
-  Widget _buildCampaign() {
-    return Column(
-      children: listCampaign.map((f) {
-        return Container(
-          width: globals.mw(context),
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-          child: FadeInImage.assetNetwork(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingCategories ? 20 : null,
-              placeholder: 'assets/images/loading.gif',
-              image: f.link),
-        );
-      }).toList(),
+    return Stack(
+      children: <Widget>[
+        Container(
+          child: slider,
+        ),
+        Positioned(
+          right: 15,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+              onTap: () {
+                slider.nextPage(
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.linear);
+              },
+              child: CircleAvatar(
+                backgroundColor: Colors.black.withOpacity(0.7),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 23,
+                  color: Colors.white,
+                ),
+              )),
+        ),
+        Positioned(
+          left: 15,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.previousPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 23,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -1108,19 +1230,23 @@ class _HomePage extends State<HomePage> {
                       _buildTitle(),
                       _buildGridCategory(animalCategories),
                       _buildLaranganBinatang(),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: Divider(color: Colors.black),
-                      ),
+                      _buildPartner(),
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                          child: globals.myText(
+                              text: "EVENT JLF", color: 'dark', size: 15)),
+                      isLoadingPromoB
+                          ? globals.isLoading()
+                          : _buildPromotionB(),
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
                           child: globals.myText(
                               text: "SPONSORED SELLER JLF",
                               color: 'dark',
                               size: 15)),
-                      isLoadingCampaign
+                      isLoadingPromoC
                           ? globals.isLoading()
-                          : _buildCampaign(),
+                          : _buildPromotionC(),
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: globals.myText(
@@ -1130,24 +1256,9 @@ class _HomePage extends State<HomePage> {
                       isLoadingPromoVideo
                           ? globals.isLoading()
                           : _buildVideoA(),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                          child: globals.myText(
-                              text: "ARTIKEL JLF", color: 'dark', size: 15)),
-                      isLoadingPromoB
-                          ? globals.isLoading()
-                          : _buildPromotionB(),
                       isLoadingArticle ? globals.isLoading() : _buildArticle(),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                          child: globals.myText(
-                              text: "EVENT JLF", color: 'dark', size: 15)),
-                      isLoadingPromoC
-                          ? globals.isLoading()
-                          : _buildPromotionC(),
-                      _buildPartner(),
                       Divider(),
-                      _buildDonation()
+                      _buildDonation(),
                     ],
                   ),
           ),

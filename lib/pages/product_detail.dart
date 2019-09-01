@@ -434,57 +434,62 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     text: animal.owner.regency.name, color: "light", size: 10),
                 globals.myText(
                     text: animal.owner.province.name, color: "light", size: 10),
-                // Row(
-                //   children: <Widget>[
-                //     Icon(Icons.star, size: 10, color: Colors.yellow),
-                //     globals.myText(text: "4.5", color: "light", size: 10)
-                //   ],
-                // ),
-                // Row(
-                //   children: <Widget>[
-                //     globals.myText(text: "1000", color: "light", size: 10),
-                //     globals.myText(text: " | ", color: "light", size: 10),
-                //     globals.myText(
-                //         text: "10 Barang Terjual", color: "light", size: 10),
-                //   ],
-                // )
               ],
             ),
           ),
           SizedBox(width: 5),
-          Row(
+          Column(
             children: <Widget>[
-              GestureDetector(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            ProfilePage(userId: animal.owner.id))),
-                child: Container(
-                    height: 35,
-                    child: CircleAvatar(
-                        radius: 25,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child:
-                                Icon(Icons.person, color: globals.myColor())))),
+              Row(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ProfilePage(userId: animal.owner.id))),
+                    child: Container(
+                        height: 35,
+                        child: CircleAvatar(
+                            radius: 25,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Icon(Icons.person,
+                                    color: globals.myColor())))),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      String phone =
+                          "62${animal.owner.phoneNumber.substring(1)}";
+                      String message = "${animal.name}, ${widget.from}, mau tanya gan";
+                      _sendWhatsApp(phone, message);
+                    },
+                    child: Container(
+                        height: 35,
+                        child: CircleAvatar(
+                            radius: 25,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.asset(
+                                    'assets/images/whatsapp.png')))),
+                  )
+                ],
               ),
-              GestureDetector(
-                onTap: () {
-                  String phone = "62${animal.owner.phoneNumber.substring(1)}";
-                  String message = "Halo";
+              SizedBox(
+                height: 10,
+              ),
+              RaisedButton(
+                color: Colors.white,
+                onPressed: () {
+                  String phone = "6282223304275";
+                  String message =
+                      "${animal.name}-(${animal.id}), ${widget.from}, tolong di bantu min, saya mau bertanya";
                   _sendWhatsApp(phone, message);
                 },
-                child: Container(
-                    height: 35,
-                    child: CircleAvatar(
-                        radius: 25,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.asset('assets/images/whatsapp.png')))),
+                child: globals.myText(text: "Chat Admin"),
               )
             ],
-          ),
+          )
         ],
       ),
     );
@@ -1540,7 +1545,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       } else if (result == 4) {
                         await globals.showDialogs(
                             "Bid gagal, data diri Anda belum terverifikasi",
-                            context, needVerify: true);
+                            context,
+                            needVerify: true);
                       } else {
                         await globals.showDialogs("Error", context);
                       }
