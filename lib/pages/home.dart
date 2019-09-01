@@ -1197,7 +1197,7 @@ class _HomePage extends State<HomePage> {
                       Container(
                           width: globals.mw(context) * 0.6,
                           child: globals.myText(
-                              text: listArticle[_currentArticle].description,
+                              text: listArticle[_currentArticle].link,
                               color: "light")),
                       GestureDetector(
                         onTap: () {
