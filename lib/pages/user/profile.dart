@@ -583,31 +583,31 @@ class _ProfilePageState extends State<ProfilePage>
                   // ),
                     
                     
-                    Container(
-                      alignment: Alignment.topLeft,
-                      width: globals.mw(context) * 0.25,
-                      child: FlatButton(
-                          onPressed: () {
-                            globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context);
-                          },
-                          child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                  "${globals.convertToMoney(globals.user.point.toDouble())} P",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .display4)
-                            ],
-                          ),
-                          color: isLoading
-                              ? Colors.grey
-                              : globals.myColor("warning"),
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(5))),
-                    ),
+                    // Container(
+                    //   alignment: Alignment.topLeft,
+                    //   width: globals.mw(context) * 0.25,
+                    //   child: FlatButton(
+                    //       onPressed: () {
+                    //         globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context);
+                    //       },
+                    //       child: Row(
+                    //         mainAxisAlignment:
+                    //             MainAxisAlignment.center,
+                    //         children: <Widget>[
+                    //           Text(
+                    //               "${globals.convertToMoney(globals.user.point.toDouble())} P",
+                    //               style: Theme.of(context)
+                    //                   .textTheme
+                    //                   .display4)
+                    //         ],
+                    //       ),
+                    //       color: isLoading
+                    //           ? Colors.grey
+                    //           : globals.myColor("warning"),
+                    //       shape: RoundedRectangleBorder(
+                    //           borderRadius:
+                    //               BorderRadius.circular(5))),
+                    // ),
                   user.id == globals.user.id
                       ? Container(
                           alignment: Alignment.topRight,

@@ -693,35 +693,35 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  void _delete(Bid bid) async {
-    if (globals.user.id != animal.auction.ownerUserId) {
-      globals.showDialogs(
-          "Hanya pemilik lelang yang dapat menghapus bid", context);
-      return;
-    }
+  // void _delete(Bid bid) async {
+  //   if (globals.user.id != animal.auction.ownerUserId) {
+  //     globals.showDialogs(
+  //         "Hanya pemilik lelang yang dapat menghapus bid", context);
+  //     return;
+  //   }
 
-    var response = await globals.confirmDialog(
-        "Yakin menghapus bid sebesar ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?",
-        context);
+  //   var response = await globals.confirmDialog(
+  //       "Yakin menghapus bid sebesar ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?",
+  //       context);
 
-    // Map<String, dynamic> formData = Map<String, dynamic>();
-    // formData['owner_user_id'] = animal.auction.ownerUserId;
+  //   // Map<String, dynamic> formData = Map<String, dynamic>();
+  //   // formData['owner_user_id'] = animal.auction.ownerUserId;
 
-    if (response) {
-      try {
-        bool response = await BidServices.delete("Token", bid.id);
+  //   if (response) {
+  //     try {
+  //       bool response = await BidServices.delete("Token", bid.id);
 
-        if (response) {
-          await globals.showDialogs("Berhasil menghapus bid", context);
-          // Navigator.pop(context);
-          loadAnimal(animal.id);
-        }
-      } catch (e) {
-        globals.showDialogs(e.toString(), context);
-        print(e.toString());
-      }
-    }
-  }
+  //       if (response) {
+  //         await globals.showDialogs("Berhasil menghapus bid", context);
+  //         // Navigator.pop(context);
+  //         loadAnimal(animal.id);
+  //       }
+  //     } catch (e) {
+  //       globals.showDialogs(e.toString(), context);
+  //       print(e.toString());
+  //     }
+  //   }
+  // }
 
   TableRow _buildTableRow(bool isFirst, String name, String date, double amount,
       int userId, Bid bid) {
@@ -779,12 +779,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                           ? Colors.white
                           : Color.fromRGBO(178, 178, 178, 1)),
                 ),
-                animal.auction.ownerUserId == globals.user.id
-                    ? GestureDetector(
-                        onTap: () => _delete(bid),
-                        child: Icon(Icons.delete,
-                            size: 15, color: globals.myColor("warning")))
-                    : Container()
+                // Delete Bid
+                // animal.auction.ownerUserId == globals.user.id
+                //     ? GestureDetector(
+                //         onTap: () => _delete(bid),
+                //         child: Icon(Icons.delete,
+                //             size: 15, color: globals.myColor("warning")))
+                //     : Container()
               ],
             ),
           ),
