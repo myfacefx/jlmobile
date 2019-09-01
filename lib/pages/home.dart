@@ -27,6 +27,7 @@ import 'package:uni_links/uni_links.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class HomePage extends StatefulWidget {
   @override
   _HomePage createState() {
@@ -155,8 +156,8 @@ class _HomePage extends State<HomePage> {
     print("Checking Version");
     verifyVersion("token", globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
-        final result = await showUpdate(
-            onValue.url, onValue.isForceUpdate, onValue.message);
+        final result = await globals.showUpdate(
+            onValue.url, onValue.isForceUpdate, onValue.message, context);
         print(result);
         if (!result) {
           _checkVersion();
@@ -170,28 +171,7 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  Future<bool> showUpdate(urlUpdate, bool isForceUpdate, String message) async {
-    return await showDialog<bool>(
-          context: context,
-          barrierDismissible: !isForceUpdate,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                  title: Text("Perhatian"),
-                  content: globals.myText(text: message),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: globals.myText(text: "Perbaharui Aplikasi"),
-                      onPressed: () {
-                        launch(urlUpdate);
-                      },
-                    ),
-                  ],
-                ) ??
-                false;
-          },
-        ) ??
-        false;
-  }
+  
 
   Future<Null> initUniLinks() async {
     try {
