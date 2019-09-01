@@ -71,7 +71,7 @@ class _HomePage extends State<HomePage> {
   void initState() {
     super.initState();
 
-     _checkVersion();
+    _checkVersion();
 
     if (globals.user != null) {
       _verificationCheck();
@@ -93,7 +93,7 @@ class _HomePage extends State<HomePage> {
 
     initUniLinks();
     initUniLinksStream();
-   
+
     handleAppLifecycleState();
   }
 
@@ -155,7 +155,8 @@ class _HomePage extends State<HomePage> {
     print("Checking Version");
     verifyVersion("token", globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
-        final result = await showUpdate(onValue.url, onValue.isForceUpdate);
+        final result = await showUpdate(
+            onValue.url, onValue.isForceUpdate, onValue.message);
         print(result);
         if (!result) {
           _checkVersion();
@@ -169,14 +170,14 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  Future<bool> showUpdate(urlUpdate, bool isForceUpdate) async {
+  Future<bool> showUpdate(urlUpdate, bool isForceUpdate, String message) async {
     return await showDialog<bool>(
           context: context,
           barrierDismissible: !isForceUpdate,
           builder: (BuildContext context) {
             return AlertDialog(
-                  title: Text("Alert"),
-                  content: globals.myText(text: "Aplikasi Butuh diperbaharui"),
+                  title: Text("Perhatian"),
+                  content: globals.myText(text: message),
                   actions: <Widget>[
                     FlatButton(
                       child: globals.myText(text: "Perbaharui Aplikasi"),
@@ -1134,7 +1135,9 @@ class _HomePage extends State<HomePage> {
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: globals.myText(
-                              text: "CAMPAIGN JLF", color: 'dark', size: 15)),
+                              text: "SPONSORED SELLER JLF",
+                              color: 'dark',
+                              size: 15)),
                       isLoadingCampaign
                           ? globals.isLoading()
                           : _buildCampaign(),

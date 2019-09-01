@@ -694,15 +694,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
   void _delete(Bid bid) async {
     if (globals.user.id != animal.auction.ownerUserId) {
-      globals.showDialogs("Hanya pemilik lelang yang dapat menghapus bid", context);
+      globals.showDialogs(
+          "Hanya pemilik lelang yang dapat menghapus bid", context);
       return;
     }
 
-    var response = await globals.confirmDialog("Yakin menghapus bid sebesar ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?", context);
+    var response = await globals.confirmDialog(
+        "Yakin menghapus bid sebesar ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?",
+        context);
 
     // Map<String, dynamic> formData = Map<String, dynamic>();
     // formData['owner_user_id'] = animal.auction.ownerUserId;
-    
+
     if (response) {
       try {
         bool response = await BidServices.delete("Token", bid.id);
@@ -710,17 +713,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         if (response) {
           await globals.showDialogs("Berhasil menghapus bid", context);
           // Navigator.pop(context);
-          loadAnimal(animal.id); 
+          loadAnimal(animal.id);
         }
       } catch (e) {
         globals.showDialogs(e.toString(), context);
         print(e.toString());
       }
-    } 
+    }
   }
 
-  TableRow _buildTableRow(
-      bool isFirst, String name, String date, double amount, int userId, Bid bid) {
+  TableRow _buildTableRow(bool isFirst, String name, String date, double amount,
+      int userId, Bid bid) {
     return TableRow(children: [
       Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -775,10 +778,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                           ? Colors.white
                           : Color.fromRGBO(178, 178, 178, 1)),
                 ),
-                animal.auction.ownerUserId == globals.user.id ? GestureDetector(
-                    onTap: () => _delete(bid),
-                    child: Icon(Icons.delete,
-                        size: 15, color: globals.myColor("warning"))) : Container()
+                animal.auction.ownerUserId == globals.user.id
+                    ? GestureDetector(
+                        onTap: () => _delete(bid),
+                        child: Icon(Icons.delete,
+                            size: 15, color: globals.myColor("warning")))
+                    : Container()
               ],
             ),
           ),
@@ -1517,7 +1522,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   onPressed: () async {
                     try {
                       globals.loadingModel(context);
-                      final result = await BidServices.placeBid("Token", newBid);
+                      final result =
+                          await BidServices.placeBid("Token", newBid);
                       Navigator.pop(context);
 
                       if (result == 1) {
@@ -1531,7 +1537,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             "Bid gagal, Anda masuk dalam blacklist user",
                             context);
                       } else if (result == 4) {
-                        await globals.showDialogs("Bid gagal, data diri Anda belum terverifikasi", context);
+                        await globals.showDialogs(
+                            "Bid gagal, data diri Anda belum terverifikasi",
+                            context, needVerify: true);
                       } else {
                         await globals.showDialogs("Error", context);
                       }
@@ -1755,13 +1763,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       globals.loadingModel(context);
       final result = await addCommentAuction("token", auctionComment);
       Navigator.pop(context);
-      if (result) {
+      if (result == "") {
         await globals.showDialogs("Comment Sended", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else {
+        await globals.showDialogs(result, context, needVerify: true);
       }
     } catch (e) {
       Navigator.pop(context);
@@ -1780,13 +1790,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       globals.loadingModel(context);
       final result = await addCommentProduct("token", productComment);
       Navigator.pop(context);
-      if (result) {
+      if (result == "") {
         await globals.showDialogs("Comment Sended", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else {
+        await globals.showDialogs(result, context, needVerify: true);
       }
     } catch (e) {
       Navigator.pop(context);

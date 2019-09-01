@@ -258,7 +258,7 @@ Future<List<Animal>> getUserCommentProductAnimals(
   }
 }
 
-Future<bool> create(Map<String, dynamic> _data) async {
+Future<String> create(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals";
 
@@ -267,18 +267,17 @@ Future<bool> create(Map<String, dynamic> _data) async {
       .timeout(Duration(minutes: 10));
 
   print(url);
-  // print(_data);
 
   if (res.statusCode == 201) {
-    // print(res.body);
-    return true;
+    return "";
+  } else if (res.statusCode == 407) {
+    return res.body;
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<bool> update(
-    String token, Map<String, dynamic> _data, int id) async {
+Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals/$id";
 
@@ -295,8 +294,7 @@ Future<bool> update(
   }
 }
 
-Future<bool> deleteImage(
-    String token, int animalImageId) async {
+Future<bool> deleteImage(String token, int animalImageId) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animal-images/$animalImageId";
 
@@ -305,7 +303,7 @@ Future<bool> deleteImage(
   http.Response res = await http
       .delete(url, headers: header)
       .timeout(Duration(seconds: getTimeOut() + 60));
-  
+
   if (res.statusCode == 204) {
     return true;
   } else if (res.statusCode == 406) {
@@ -315,7 +313,8 @@ Future<bool> deleteImage(
   }
 }
 
-Future<bool> createImage(String token, Map<String, dynamic> _data, int animalId) async {
+Future<bool> createImage(
+    String token, Map<String, dynamic> _data, int animalId) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals/$animalId/animal-images";
 
@@ -324,7 +323,6 @@ Future<bool> createImage(String token, Map<String, dynamic> _data, int animalId)
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(minutes: 10));
-
 
   if (res.statusCode == 201) {
     // print(res.body);

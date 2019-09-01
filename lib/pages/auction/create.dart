@@ -409,13 +409,15 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       formData['images'] = imagesBase64;
 
       try {
-        bool response = await create(formData);
-        print(response);
-
+        var response = await create(formData);
         Navigator.pop(context);
-        await globals.showDialogs(message, context);
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "/profile");
+        if (response == "") {
+          await globals.showDialogs(message, context);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, "/profile");
+        } else {
+          await globals.showDialogs(response, context, needVerify: true);
+        }
       } catch (e) {
         Navigator.pop(context);
         globals.showDialogs(e.toString(), context);
@@ -978,23 +980,23 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 _buildGridViewImages(),
                 SizedBox(height: 10),
 
-                Container(
-                  width: 250,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Upload Video (Max 5 MB)",
-                            style: TextStyle(color: Colors.white)),
-                        Icon(Icons.video_call, color: Colors.white),
-                      ],
-                    ),
-                    color: Theme.of(context).primaryColor,
-                    onPressed: getVideo,
-                  ),
-                ),
+                // Container(
+                //   width: 250,
+                //   child: RaisedButton(
+                //     shape: RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(5)),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: <Widget>[
+                //         Text("Upload Video (Max 5 MB)",
+                //             style: TextStyle(color: Colors.white)),
+                //         Icon(Icons.video_call, color: Colors.white),
+                //       ],
+                //     ),
+                //     color: Theme.of(context).primaryColor,
+                //     onPressed: getVideo,
+                //   ),
+                // ),
 
                 Container(
                   width: 300,
