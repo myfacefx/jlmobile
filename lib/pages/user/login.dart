@@ -407,6 +407,7 @@ class _LoginPage extends State<LoginPage> {
                             Image.asset("assets/images/logo.png", height: 140),
                       )),
                   membersCount != null ? globals.myText(text: "$membersCount Member Terdaftar", weight: "B", align: TextAlign.center) : Container(),
+                  SizedBox(height: 8),
                   Form(
                     autovalidate: autoValidate,
                     key: _formKey,

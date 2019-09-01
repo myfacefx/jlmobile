@@ -517,6 +517,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                   return 'Harga Beli Sekarang wajib diisi';
                 }
 
+                if (binController.numberValue.toInt() < 1000) {
+                  return 'Nominal terlalu kecil';
+                }
+
                 if (openBidController.text.isNotEmpty) {
                   if (binController.numberValue.toInt() <=
                       openBidController.numberValue.toInt()) {
