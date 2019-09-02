@@ -14,6 +14,7 @@ import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
+import 'package:jlf_mobile/pages/video_popup.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
@@ -86,6 +87,29 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         isLoading = false;
       });
     });
+  }
+
+  Widget _buildVideo() {
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        margin: EdgeInsets.fromLTRB(2, 2, 2, 0),
+        // height: 40,
+        color: Colors.white,
+        child: InkWell(
+          child: Text(
+            "Klik Untuk Melihat Video",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.blue),
+          ),
+          onTap: () {
+            Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => VideoPopupPage(
+                          videoPath: animal.videoPath,
+                          animalName: animal.name)));
+          }
+        ));
   }
 
   Widget _buildImage() {
@@ -2018,6 +2042,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             : Container()
                         : Container(),
                     _buildImage(),
+                    // _buildVideo(),
                     SizedBox(
                       height: 8,
                     ),

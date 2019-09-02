@@ -267,12 +267,10 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         _video = video;
       });
 
-
       if (_video != null) {
         _videoPath = _video.path;
         videoToSent = await MultipartFile.fromPath('video', _videoPath,
             contentType: MediaType('video', 'mp4'));
-
       } else {
         videoToSent = null;
       }
@@ -425,6 +423,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
       try {
         var response = await create(formData);
+
+        // var response = await create(formData, videoToSent);
 
         Navigator.pop(context);
         if (response == "") {
@@ -1005,23 +1005,25 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 _buildGridViewImages(),
                 SizedBox(height: 10),
 
-                // Container(
-                //   width: 250,
-                //   child: RaisedButton(
-                //     shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(5)),
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: <Widget>[
-                //         Text("Upload Video (Max 5 MB)",
-                //             style: TextStyle(color: Colors.white)),
-                //         Icon(Icons.video_call, color: Colors.white),
-                //       ],
-                //     ),
-                //     color: Theme.of(context).primaryColor,
-                //     onPressed: getVideo,
-                //   ),
-                // ),
+                // _isShowVideo == true
+                //     ? Container(
+                //         width: 250,
+                //         child: RaisedButton(
+                //           shape: RoundedRectangleBorder(
+                //               borderRadius: BorderRadius.circular(5)),
+                //           child: Row(
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children: <Widget>[
+                //               Text("Upload Video (Max 5 MB)",
+                //                   style: TextStyle(color: Colors.white)),
+                //               Icon(Icons.video_call, color: Colors.white),
+                //             ],
+                //           ),
+                //           color: Theme.of(context).primaryColor,
+                //           onPressed: getVideo,
+                //         ),
+                //       )
+                //     : Container(),
 
                 Container(
                   width: 300,
