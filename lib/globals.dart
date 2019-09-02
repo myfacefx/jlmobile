@@ -15,7 +15,7 @@ import 'package:mailer/mailer.dart' as mailer;
 import 'package:mailer/smtp_server.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String version = "v0.1.5";
+String version = "v0.1.6";
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
@@ -236,13 +236,20 @@ Future<bool> showDialogs(String content, BuildContext context,
         title: Text(title, style: TextStyle(color: Colors.black)),
         content: myText(text: content),
         actions: <Widget>[
+          needVerify ? FlatButton(
+            child: Text("Verifikasi Sekarang"),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+              Navigator.pushNamed(context, "/verification");
+            },
+          ) : Container(),
           FlatButton(
             child: Text(text),
             onPressed: () {
-              if (needVerify) {
-                Navigator.of(context).pop(true);
-                Navigator.pushNamed(context, "/verification");
-              } else {
+              // if (needVerify) {
+              //   Navigator.of(context).pop(true);
+              //   Navigator.pushNamed(context, "/verification");
+              // } else {
                 if (route == "") {
                   Navigator.of(context).pop(true);
                 } else {
@@ -254,7 +261,7 @@ Future<bool> showDialogs(String content, BuildContext context,
                 if (isDouble) {
                   Navigator.of(context).pop();
                 }
-              }
+              // }
             },
           ),
         ],

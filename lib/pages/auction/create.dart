@@ -422,18 +422,36 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       formData['images'] = imagesBase64;
 
       try {
-        var response = await create(formData);
-
-        // var response = await create(formData, videoToSent);
-
+        var result = await create(formData);
         Navigator.pop(context);
-        if (response == "") {
+
+        if (result == 1) {
           await globals.showDialogs(message, context);
           Navigator.pop(context);
           Navigator.pushNamed(context, "/profile");
+        } else if (result == 2) {
+          await globals.showDialogs(
+              "Gagal menambah produk, terjadi kesalahan pada server",
+              context);
+        } else if (result == 3) {
+          await globals.showDialogs(
+              "Gagal menambah produk, Anda masuk dalam blacklist user",
+              context);
+        } else if (result == 4) {
+          await globals.showDialogs(
+              "Gagal menambah produk, data diri Anda belum terverifikasi",
+              context,
+              needVerify: true);
         } else {
-          await globals.showDialogs(response, context, needVerify: true);
+          await globals.showDialogs("Error", context);
         }
+        
+        // if (response == "") {
+        //   await globals.showDialogs(message, context);
+          
+        // } else {
+        //   await globals.showDialogs(response, context, needVerify: true);
+        // }
       } catch (e) {
         Navigator.pop(context);
         globals.showDialogs(e.toString(), context);
