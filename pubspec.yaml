@@ -30,7 +30,7 @@ dependencies:
   image_cropper: ^1.0.2
   permission_handler: '^3.2.0'
   mailer: ^2.2.1
-
+  video_player: ^0.10.2
   flutter_facebook_login:
     git: 
       url: https://github.com/yudaprama/flutter_facebook_login
