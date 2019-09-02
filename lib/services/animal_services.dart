@@ -258,42 +258,15 @@ Future<List<Animal>> getUserCommentProductAnimals(
   }
 }
 
-Future<String> create(Map<String, dynamic> _data) async {
-  final header = {"Content-Type": "application/json"};
-  final url = getBaseUrl() + "/animals";
+// Future<String> create(Map<String, dynamic> _data) async {
+//   final header = {"Content-Type": "application/json"};
+//   final url = getBaseUrl() + "/animals";
 
-  http.Response res = await http
-      .post(url, headers: header, body: json.encode(_data))
-      .timeout(Duration(minutes: 10));
+//   http.Response res = await http
+//       .post(url, headers: header, body: json.encode(_data))
+//       .timeout(Duration(minutes: 10));
 
-  print(url);
-
-  if (res.statusCode == 201) {
-    return "";
-  } else if (res.statusCode == 407) {
-    return res.body;
-  } else {
-    throw Exception(res.body);
-  }
-}
-
-// Future<String> create(Map<String, dynamic> _data,
-//     [http.MultipartFile videoToSent]) async {
-
-//   var uri = Uri.parse(getBaseUrl() + "/animals");
-//   http.MultipartRequest request = new http.MultipartRequest("POST", uri);
-//   request.fields['data'] = json.encode(_data);
-//   if (videoToSent != null) {
-//     print("==========haleluya");
-//     request.files.add(videoToSent);
-//   }
-
-//   request.headers['Content-Type'] = "multipart/form-data";
-
-//   http.StreamedResponse response = await request.send();
-//   http.Response res = await http.Response.fromStream(response);
-
-//   print(uri);
+//   print(url);
 
 //   if (res.statusCode == 201) {
 //     return "";
@@ -303,6 +276,33 @@ Future<String> create(Map<String, dynamic> _data) async {
 //     throw Exception(res.body);
 //   }
 // }
+
+Future<String> create(Map<String, dynamic> _data,
+    [http.MultipartFile videoToSent]) async {
+
+  var uri = Uri.parse(getBaseUrl() + "/animals");
+  http.MultipartRequest request = new http.MultipartRequest("POST", uri);
+  request.fields['data'] = json.encode(_data);
+  if (videoToSent != null) {
+    print("==========haleluya");
+    request.files.add(videoToSent);
+  }
+
+  request.headers['Content-Type'] = "multipart/form-data";
+
+  http.StreamedResponse response = await request.send();
+  http.Response res = await http.Response.fromStream(response);
+
+  print(uri);
+
+  if (res.statusCode == 201) {
+    return "";
+  } else if (res.statusCode == 407) {
+    return res.body;
+  } else {
+    throw Exception(res.body);
+  }
+}
 
 Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
   final header = {"Content-Type": "application/json"};
@@ -320,6 +320,31 @@ Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
     throw Exception(res.body);
   }
 }
+
+// // update with attachment
+// Future<bool> update(String token, Map<String, dynamic> _data, int id,
+//     [http.MultipartFile videoToSent]) async {
+//   var uri = Uri.parse(getBaseUrl() + "/animals/$id");
+//   http.MultipartRequest request = new http.MultipartRequest("PUT", uri);
+//   request.fields['data'] = json.encode(_data);
+//   if (videoToSent != null) {
+//     print("==========haleluya");
+//     request.files.add(videoToSent);
+//   }
+
+//   request.headers['Content-Type'] = "multipart/form-data";
+
+//   http.StreamedResponse response = await request.send();
+//   http.Response res = await http.Response.fromStream(response);
+
+//   print(uri);
+
+//   if (res.statusCode == 202) {
+//     return true;
+//   } else {
+//     throw Exception(res.body);
+//   }
+// }
 
 Future<bool> deleteImage(String token, int animalImageId) async {
   final header = {"Content-Type": "application/json"};
