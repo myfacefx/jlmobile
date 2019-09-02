@@ -277,6 +277,33 @@ Future<String> create(Map<String, dynamic> _data) async {
   }
 }
 
+// Future<String> create(Map<String, dynamic> _data,
+//     [http.MultipartFile videoToSent]) async {
+
+//   var uri = Uri.parse(getBaseUrl() + "/animals");
+//   http.MultipartRequest request = new http.MultipartRequest("POST", uri);
+//   request.fields['data'] = json.encode(_data);
+//   if (videoToSent != null) {
+//     print("==========haleluya");
+//     request.files.add(videoToSent);
+//   }
+
+//   request.headers['Content-Type'] = "multipart/form-data";
+
+//   http.StreamedResponse response = await request.send();
+//   http.Response res = await http.Response.fromStream(response);
+
+//   print(uri);
+
+//   if (res.statusCode == 201) {
+//     return "";
+//   } else if (res.statusCode == 407) {
+//     return res.body;
+//   } else {
+//     throw Exception(res.body);
+//   }
+// }
+
 Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals/$id";

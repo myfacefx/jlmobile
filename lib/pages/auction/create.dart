@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:http/http.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
@@ -16,6 +17,7 @@ import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
 
 class CreateAuctionPage extends StatefulWidget {
   final int categoryId;
@@ -89,7 +91,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String _error;
 
   File _video;
-  String videoPath = "";
+  String _videoPath;
+  bool _isShowVideo = false;
+  MultipartFile videoToSent;
 
   @override
   void initState() {
@@ -252,15 +256,24 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 globals.myText(text: "Belum ada foto terpilih", color: "dark"));
   }
 
-  Future getVideo() async {
+  Future<void> getVideo() async {
     var video = await ImagePicker.pickVideo(source: ImageSource.gallery);
 
-    setState(() {
-      _video = video;
-    });
+    // limit max 5 mb
+    if (video.lengthSync() > 6000000) {
+      globals.showDialogs("Ukuran Video Terlalu Besar", context);
+    } else {
+      setState(() {
+        _video = video;
+      });
 
-    if (_video != null) {
-      videoPath = _video.path;
+      if (_video != null) {
+        _videoPath = _video.path;
+        videoToSent = await MultipartFile.fromPath('video', _videoPath,
+            contentType: MediaType('video', 'mp4'));
+      } else {
+        videoToSent = null;
+      }
     }
   }
 
@@ -410,6 +423,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
       try {
         var response = await create(formData);
+
+        // var response = await create(formData, videoToSent);
+
         Navigator.pop(context);
         if (response == "") {
           await globals.showDialogs(message, context);
@@ -719,6 +735,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     );
   }
 
+  void showVideoByCategory() {
+    if (_animalCategory.name.toLowerCase() == "unggas") {
+      _isShowVideo = true;
+    } else {
+      _isShowVideo = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -811,6 +835,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           _animalCategory = category;
                         });
                         _getAnimalSubCategories();
+                        showVideoByCategory();
                       },
                       items: animalCategories.map((AnimalCategory category) {
                         return DropdownMenuItem<AnimalCategory>(
@@ -980,23 +1005,25 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 _buildGridViewImages(),
                 SizedBox(height: 10),
 
-                // Container(
-                //   width: 250,
-                //   child: RaisedButton(
-                //     shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(5)),
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: <Widget>[
-                //         Text("Upload Video (Max 5 MB)",
-                //             style: TextStyle(color: Colors.white)),
-                //         Icon(Icons.video_call, color: Colors.white),
-                //       ],
-                //     ),
-                //     color: Theme.of(context).primaryColor,
-                //     onPressed: getVideo,
-                //   ),
-                // ),
+                // _isShowVideo == true
+                //     ? Container(
+                //         width: 250,
+                //         child: RaisedButton(
+                //           shape: RoundedRectangleBorder(
+                //               borderRadius: BorderRadius.circular(5)),
+                //           child: Row(
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children: <Widget>[
+                //               Text("Upload Video (Max 5 MB)",
+                //                   style: TextStyle(color: Colors.white)),
+                //               Icon(Icons.video_call, color: Colors.white),
+                //             ],
+                //           ),
+                //           color: Theme.of(context).primaryColor,
+                //           onPressed: getVideo,
+                //         ),
+                //       )
+                //     : Container(),
 
                 Container(
                   width: 300,
@@ -1005,7 +1032,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        videoPath ?? "",
+                        _videoPath ?? "",
                         style: TextStyle(
                           color: Colors.black,
                         ),
