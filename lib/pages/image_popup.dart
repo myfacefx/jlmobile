@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:carousel_pro/carousel_pro.dart';
 
 class ImagePopupPage extends StatefulWidget {
   final List<AnimalImage> image;
@@ -28,7 +29,6 @@ class _ImagePopupPageState extends State<ImagePopupPage> {
   _ImagePopupPageState(List<AnimalImage> animalImages, int index) {
     animalImages.forEach((image) {
       listImage.add(PhotoView(
-        enableRotation: true,
         imageProvider: NetworkImage(
           image.image,
         ),
@@ -43,47 +43,24 @@ class _ImagePopupPageState extends State<ImagePopupPage> {
       ),
       backgroundColor: Colors.black,
       body: Center(
-        child: Stack(
-          children: <Widget>[
-            Hero(tag: widget.tagCount, child: _buildCarousel()),
-          ],
-        ),
+        child: Hero(tag: widget.tagCount, child: _buildCarousel()),
       ),
     );
   }
 
-  Widget _buildDoted(int index, int total) {
-    return Container(
-      child:
-          globals.myText(text: "$index / $total", color: "light", weight: "XB"),
-    );
-  }
-
   Widget _buildCarousel() {
+    final slider = Carousel(
+      images: listImage,
+      dotBgColor: Colors.black,
+      autoplay: false,
+    );
+
     return Stack(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          height: globals.mh(context) * 0.9,
-          child: CarouselSlider(
-            enableInfiniteScroll: true,
-            viewportFraction: 1.0,
-            onPageChanged: (index) {
-              setState(() {
-                _current = index;
-              });
-            },
-            items: listImage,
-          ),
-        ),
-        Positioned(
-            bottom: 10,
-            left: 0.0,
-            right: 0.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[_buildDoted(_current + 1, listImage.length)],
-            ))
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            height: globals.mh(context) * 0.9,
+            child: slider),
       ],
     );
   }

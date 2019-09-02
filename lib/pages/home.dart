@@ -498,6 +498,28 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  Widget _buildUpComing() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, "/upcoming");
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        height: 64,
+        decoration: BoxDecoration(
+            color: Colors.orange[400], borderRadius: BorderRadius.circular(4)),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          globals.myText(
+              text: "Cek yuk apa rencana JLF kali ini",
+              color: "light",
+              size: 16,
+              align: TextAlign.center),
+        ]),
+      ),
+    );
+  }
+
   Widget _buildNumberMember() {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
@@ -1261,6 +1283,7 @@ class _HomePage extends State<HomePage> {
                       _buildTitle(),
                       _buildGridCategory(animalCategories),
                       _buildLaranganBinatang(),
+                      _buildUpComing(),
                       _buildPartner(),
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),

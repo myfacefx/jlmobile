@@ -258,6 +258,7 @@ Future<List<Animal>> getUserCommentProductAnimals(
   }
 }
 
+
 // Future<String> create(Map<String, dynamic> _data) async {
 //   final header = {"Content-Type": "application/json"};
 //   final url = getBaseUrl() + "/animals";
@@ -277,7 +278,7 @@ Future<List<Animal>> getUserCommentProductAnimals(
 //   }
 // }
 
-Future<String> create(Map<String, dynamic> _data,
+Future<int> create(Map<String, dynamic> _data,
     [http.MultipartFile videoToSent]) async {
 
   var uri = Uri.parse(getBaseUrl() + "/animals");
@@ -296,9 +297,13 @@ Future<String> create(Map<String, dynamic> _data,
   print(uri);
 
   if (res.statusCode == 201) {
-    return "";
+    return 1;
+  } else if (res.statusCode == 406) {
+    return 2;
   } else if (res.statusCode == 407) {
-    return res.body;
+    return 3;
+  } else if (res.statusCode == 408) {
+    return 4;
   } else {
     throw Exception(res.body);
   }

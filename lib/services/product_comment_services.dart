@@ -4,7 +4,7 @@ import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/product_comment.dart';
 
-Future<String> addCommentProduct(String token, ProductComment _data) async {
+Future<int> addCommentProduct(String token, ProductComment _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/product-comment";
 
@@ -15,9 +15,13 @@ Future<String> addCommentProduct(String token, ProductComment _data) async {
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 201) {
-    return "";
+    return 1;
+  } else if (res.statusCode == 406) {
+    return 2;
   } else if (res.statusCode == 407) {
-    return res.body;
+    return 3;
+  } else if (res.statusCode == 408) {
+    return 4;
   } else {
     throw Exception(res.body);
   }
