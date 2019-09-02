@@ -1793,22 +1793,47 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
     try {
       globals.loadingModel(context);
-      final result = await addCommentAuction("token", auctionComment);
+      final int result = await addCommentAuction("token", auctionComment);
       Navigator.pop(context);
-      if (result == "") {
-        await globals.showDialogs("Comment Sended", context);
+
+      if (result == 1) {
+        await globals.showDialogs("Komentar terpasang", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else if (result == 2) {
+        await globals.showDialogs(
+            "Gagal memasang komentar, terjadi kesalahan pada server",
+            context);
+      } else if (result == 3) {
+        await globals.showDialogs(
+            "Komentar gagal, Anda masuk dalam blacklist user",
+            context);
+      } else if (result == 4) {
+        await globals.showDialogs(
+            "Komentar gagal, data diri Anda belum terverifikasi",
+            context,
+            needVerify: true);
       } else {
-        await globals.showDialogs(result, context, needVerify: true);
+        await globals.showDialogs("Error", context);
       }
+
+      // if (result == "") {
+      //   await globals.showDialogs("Comment Sended", context);
+      //   commentController.text = '';
+      //   setState(() {
+      //     isLoading = true;
+      //   });
+      //   loadAnimal(animal.id);
+      // } else {
+      //   await globals.showDialogs(result, context, needVerify: true);
+      // }
     } catch (e) {
       Navigator.pop(context);
       globals.showDialogs(e.toString(), context);
-      globals.mailError("comment auction", e.toString());
+      globals.mailError("Auction Comment", e.toString());
     }
   }
 
@@ -1822,20 +1847,45 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       globals.loadingModel(context);
       final result = await addCommentProduct("token", productComment);
       Navigator.pop(context);
-      if (result == "") {
-        await globals.showDialogs("Comment Sended", context);
+
+      if (result == 1) {
+        await globals.showDialogs("Komentar terpasang", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else if (result == 2) {
+        await globals.showDialogs(
+            "Gagal memasang komentar, terjadi kesalahan pada server",
+            context);
+      } else if (result == 3) {
+        await globals.showDialogs(
+            "Komentar gagal, Anda masuk dalam blacklist user",
+            context);
+      } else if (result == 4) {
+        await globals.showDialogs(
+            "Komentar gagal, data diri Anda belum terverifikasi",
+            context,
+            needVerify: true);
       } else {
-        await globals.showDialogs(result, context, needVerify: true);
+        await globals.showDialogs("Error", context);
       }
+
+      // if (result == "") {
+      //   await globals.showDialogs("Comment Sended", context);
+      //   commentController.text = '';
+      //   setState(() {
+      //     isLoading = true;
+      //   });
+      //   loadAnimal(animal.id);
+      // } else {
+      //   await globals.showDialogs(result, context, needVerify: true);
+      // }
     } catch (e) {
       Navigator.pop(context);
       globals.showDialogs(e.toString(), context);
-      globals.mailError("Comment product", e.toString());
+      globals.mailError("Product Comment", e.toString());
     }
   }
 
