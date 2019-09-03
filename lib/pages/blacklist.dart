@@ -29,7 +29,14 @@ class _BlacklistPageState extends State<BlacklistPage> {
       failedDataFetching = false;
       isLoading = true;
     });
-    getBlacklistedUser().then((onValue) {
+    getBlacklistedUser(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       blacklistedUser = onValue;
       _generateBlacklistedUserCard();
     }).catchError((onError) {
@@ -68,12 +75,15 @@ class _BlacklistPageState extends State<BlacklistPage> {
                               textAlign: TextAlign.left)
                           : Text(""),
                       Padding(padding: EdgeInsets.only(bottom: 5)),
-                      Flexible(child: blacklistedUser[i].photo != null ? FadeInImage.assetNetwork(
-                          fit: BoxFit.fill,
-                          placeholder: 'assets/images/loading.gif',
-                          image: blacklistedUser[i].photo) : Container())
-                          // image: 'https://thenypost.files.wordpress.com/2018/10/102318-dogs-color-determine-disesases-life.jpg?quality=90&strip=all&w=618&h=410&crop=1'),
-                  ],
+                      Flexible(
+                          child: blacklistedUser[i].photo != null
+                              ? FadeInImage.assetNetwork(
+                                  fit: BoxFit.fill,
+                                  placeholder: 'assets/images/loading.gif',
+                                  image: blacklistedUser[i].photo)
+                              : Container())
+                      // image: 'https://thenypost.files.wordpress.com/2018/10/102318-dogs-color-determine-disesases-life.jpg?quality=90&strip=all&w=618&h=410&crop=1'),
+                    ],
                   )))));
     }
   }

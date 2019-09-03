@@ -58,7 +58,7 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   _getVerificationStatus() async {
-    User userResponse = await get(globals.user.id);
+    User userResponse = await getUserById(globals.user.id, globals.user.tokenRedis);
 
     setState(() {
       _verificationStatus = userResponse.verificationStatus;
@@ -135,8 +135,8 @@ class _VerificationPageState extends State<VerificationPage> {
 
           print(formData.toString());
 
-          Map<String, dynamic> response =
-              await updateVerification(formData, globals.user.id);
+          Map<String, dynamic> response = await updateVerification(
+              formData, globals.user.id, globals.user.tokenRedis);
 
           print(response);
 

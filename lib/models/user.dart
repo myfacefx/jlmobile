@@ -42,6 +42,7 @@ class User {
   String facebookUserId;
   String identityNumber;
   String verificationStatus;
+  String tokenRedis;
   int point;
   String level;
 
@@ -72,6 +73,7 @@ class User {
       this.facebookUserId,
       this.identityNumber,
       this.verificationStatus,
+      this.tokenRedis,
       this.point,
       this.level
       });
@@ -84,9 +86,10 @@ class User {
         description: json["description"] == null ? null : json["description"],
         username: json["username"] == null ? null : json["username"],
         password: json["password"] == null ? null : json["password"],
-        phoneNumber: json["phone_number"],
-        address: json["address"],
+        phoneNumber: json["phone_number"] == null ? null : json["phone_number"],
+        address: json["address"] == null ? null : json["address"],
         photo: json["photo"] == null ? null : json['photo'],
+        tokenRedis: json["token_redis"] == null ? null : json['token_redis'],
         roleId: json["role_id"] == null ? null : json["role_id"],
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
         blacklisted: json["blacklisted"] == null ? null : json["blacklisted"],

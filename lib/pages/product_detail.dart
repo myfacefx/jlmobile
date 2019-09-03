@@ -78,7 +78,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
   void loadAnimal(int animalId) async {
     isLoading = true;
-    getAnimalById("token", animalId).then((onValue) {
+    getAnimalById(globals.user.tokenRedis, animalId).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animal = onValue;
       if (widget.from == "LELANG") {
         _checkAuctionActivity();
@@ -551,11 +558,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                           try {
                             globals.loadingModel(context);
                             final result = await AuctionServices.cancelAuction(
-                                "Token", animal.auction.id);
+                                globals.user.tokenRedis, animal.auction.id);
                             Navigator.pop(context);
                             if (result) {
                               await globals.showDialogs(
                                   "Berhasil membatalkan lelang", context);
+                            } else if (result == null) {
+                              await globals.showDialogs(
+                                  "Session anda telah berakhir, Silakan melakukan login ulang",
+                                  context,
+                                  isLogout: true);
+                              return;
                             } else {
                               await globals.showDialogs(
                                   "Gagal, silahkan coba kembali", context);
@@ -620,7 +633,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   //                         try {
   //                           globals.loadingModel(context);
   //                           final result =
-  //                               await startAuction("Token", animal.auction.id);
+  //                               await startAuction(globals.user.tokenRedis, animal.auction.id);
   //                           Navigator.pop(context);
   //                           if (result) {
   //                             await globals.showDialogs(
@@ -1189,12 +1202,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                             Auction update = Auction();
                                             update.firebaseChatId = id;
 
-                                            bool response =
-                                                await AuctionServices
-                                                    .updateFirebaseChatId(
-                                                        "token",
-                                                        update.toJson(),
-                                                        animal.auction.id);
+                                            var response = await AuctionServices
+                                                .updateFirebaseChatId(
+                                                    globals.user.tokenRedis,
+                                                    update.toJson(),
+                                                    animal.auction.id);
+                                                    
+                                            if (response == null) {
+                                              await globals.showDialogs(
+                                                  "Session anda telah berakhir, Silakan melakukan login ulang",
+                                                  context,
+                                                  isLogout: true);
+                                            }
 
                                             if (response) {
                                               animal.auction.firebaseChatId =
@@ -1316,7 +1335,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     //                                       try {
     //                                         globals.loadingModel(context);
     //                                         final result = await setWinner(
-    //                                             "Token", animal.auction.id);
+    //                                             globals.user.tokenRedis, animal.auction.id);
     //                                         Navigator.pop(context);
     //                                         if (result) {
     //                                           await globals.showDialogs(
@@ -1554,8 +1573,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     try {
                       globals.loadingModel(context);
                       final result =
-                          await BidServices.placeBid("Token", newBid);
+                          await placeBid(globals.user.tokenRedis, newBid);
                       Navigator.pop(context);
+                      if (result == null) {
+                        await globals.showDialogs(
+                            "Session anda telah berakhir, Silakan melakukan login ulang",
+                            context,
+                            isLogout: true);
+                        return;
+                      }
 
                       if (result == 1) {
                         await globals.showDialogs("Tawaran terpasang", context);
@@ -1793,8 +1819,16 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
     try {
       globals.loadingModel(context);
-      final int result = await addCommentAuction("token", auctionComment);
+      final result =
+          await addCommentAuction(globals.user.tokenRedis, auctionComment);
       Navigator.pop(context);
+      if (result == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
 
       if (result == 1) {
         await globals.showDialogs("Komentar terpasang", context);
@@ -1845,8 +1879,16 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
     try {
       globals.loadingModel(context);
-      final result = await addCommentProduct("token", productComment);
+      final result =
+          await addCommentProduct(globals.user.tokenRedis, productComment);
       Navigator.pop(context);
+      if (result == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
 
       if (result == 1) {
         await globals.showDialogs("Komentar terpasang", context);

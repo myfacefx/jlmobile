@@ -3,7 +3,7 @@ import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/jlf_partner.dart';
 
 Future<List<JlfPartner>> getAllJlfPartner(String token) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/jlf-partners";
   print(url);

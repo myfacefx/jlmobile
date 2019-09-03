@@ -96,8 +96,16 @@ class _OurProductPageState extends State<OurProductPage> {
   }
 
   _getOurProduct() {
-    getUserCommentProductAnimals("Token", globals.user.id, selectedSortBy)
-        .then((onValue) {
+    getUserCommentProductAnimals(
+            globals.user.tokenRedis, globals.user.id, selectedSortBy)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animals = onValue;
       setState(() {
         isLoading = false;

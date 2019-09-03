@@ -30,7 +30,14 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
       failedDataFetching = false;
       isLoading = true;
     });
-    getAllBlacklistAnimal("").then((onValue) {
+    getAllBlacklistAnimal(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       blacklistedAnimal = onValue;
       _generateBlacklistedUserCard();
     }).catchError((onError) {
@@ -118,10 +125,9 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
 
   Widget _buildDownloadPage() {
     return FlatButton(
-      color: globals.myColor("primary"),
-      onPressed: () => launch(getBaseUrl() + "/download/restricted-animals"),
-      child: globals.myText(text: "Download Disini", color: "light")
-    );
+        color: globals.myColor("primary"),
+        onPressed: () => launch(getBaseUrl() + "/download/restricted-animals"),
+        child: globals.myText(text: "Download Disini", color: "light"));
   }
 
   @override
@@ -132,14 +138,13 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
             key: _scaffoldKey,
             body: SafeArea(
               child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                  _buildPageTitle(),
-                  _buildDownloadPage()
-                  // _buildGridBlacklistedUser(),
-                ]),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _buildPageTitle(),
+                      _buildDownloadPage()
+                      // _buildGridBlacklistedUser(),
+                    ]),
               ),
             )));
   }

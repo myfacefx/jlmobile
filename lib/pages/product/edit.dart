@@ -192,7 +192,7 @@ class _EditProductPageState extends State<EditProductPage> {
       }
     });
 
-    getAnimalCategoryWithoutCount("token", _animal.product.type)
+    getAnimalCategoryWithoutCount(globals.user.tokenRedis, _animal.product.type)
         .then((onValue) {
       setState(() {
         this.animalCategories = onValue;
@@ -270,7 +270,7 @@ class _EditProductPageState extends State<EditProductPage> {
     _animalSubCategory = null;
 
     getAnimalCategoryWithoutCount(
-            "token", _selectProduct.id == 3 ? "accessory" : "animal")
+            globals.user.tokenRedis, _selectProduct.id == 3 ? "accessory" : "animal")
         .then((onValue) {
       animalCategories = onValue;
 
@@ -319,7 +319,7 @@ class _EditProductPageState extends State<EditProductPage> {
       isLoading = true;
     });
     if (_animalCategory != null) {
-      getAnimalSubCategoryByCategoryId("token", _animalCategory.id)
+      getAnimalSubCategoryByCategoryId(globals.user.tokenRedis, _animalCategory.id)
           .then((onValue) {
         animalSubCategories = onValue;
 

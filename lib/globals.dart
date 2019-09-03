@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 String version = "v0.1.6";
 
+
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
   return MediaQuery.of(context).size.height;
@@ -134,7 +135,7 @@ String generateInvoice(Auction auction) {
 FirebaseMessaging _fcm = FirebaseMessaging();
 generateToken() async {
   // Firestore _db = Firestore.instance;
-  print("Previous Token ${user.firebaseToken}");
+  print("Previous Token firebase ${user.firebaseToken}");
 
   if (user != null) {
     String fcmToken = await _fcm.getToken();
@@ -144,7 +145,8 @@ generateToken() async {
         User updateToken = User();
         updateToken.firebaseToken = fcmToken;
 
-        String result = await update(updateToken.toJson(), user.id);
+        String result =
+            await update(updateToken.toJson(), user.id, user.tokenRedis);
 
         if (result != null) {
           user.firebaseToken = fcmToken;
@@ -227,6 +229,7 @@ Future<bool> showDialogs(String content, BuildContext context,
     {String title = "Perhatian",
     String route = "",
     bool isDouble = false,
+    bool isLogout = false,
     bool needVerify = false,
     String text = "Tutup"}) {
   return showDialog(
@@ -246,10 +249,14 @@ Future<bool> showDialogs(String content, BuildContext context,
           FlatButton(
             child: Text(text),
             onPressed: () {
-              // if (needVerify) {
-              //   Navigator.of(context).pop(true);
-              //   Navigator.pushNamed(context, "/verification");
-              // } else {
+              if (text != "Tutup") {
+                Navigator.pop(context);
+              } else if (isLogout) {
+                deleteLocalData("user");
+                state = "login";
+                Navigator.of(context).pop();
+                Navigator.pushNamed(context, "/login");
+              } else {
                 if (route == "") {
                   Navigator.of(context).pop(true);
                 } else {
@@ -473,13 +480,13 @@ void autoClose() async {
 
 void getNotificationCount() async {
   if (user != null && user.id != null) {
-    int historiesCount = await getHistoriesCount(user.id);
+    int historiesCount = await getHistoriesCount(user.id, user.tokenRedis);
 
     if (user.historiesCount != null) {
       user.historiesCount = historiesCount;
     }
 
-    int bidsCount = await getBidsCount(user.id);
+    int bidsCount = await getBidsCount(user.id, user.tokenRedis);
 
     if (user.bidsCount != null) {
       user.bidsCount = bidsCount;

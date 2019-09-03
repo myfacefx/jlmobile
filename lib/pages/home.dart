@@ -125,7 +125,15 @@ class _HomePage extends State<HomePage> {
       //     Navigator.of(context).pushNamed("/verification");
       //   });
       // } else {
-      User userResponse = await get(globals.user.id);
+      User userResponse =
+          await getUserById(globals.user.id, globals.user.tokenRedis);
+      if (userResponse == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
 
       setState(() {
         globals.user.verificationStatus = userResponse.verificationStatus;
@@ -150,7 +158,7 @@ class _HomePage extends State<HomePage> {
 
   void _checkVersion() {
     print("Checking Version");
-    verifyVersion("token", globals.version).then((onValue) async {
+    verifyVersion(globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
         final result = await globals.showUpdate(
             onValue.url, onValue.isForceUpdate, onValue.message, context);
@@ -220,7 +228,7 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadJlfPartner() {
-    getAllJlfPartner("token").then((onValue) {
+    getAllJlfPartner(globals.user.tokenRedis).then((onValue) {
       if (onValue.length != 0) {
         listParner = onValue;
       }
@@ -236,7 +244,7 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosA() {
-    getAllPromos("token", "iklan", "A").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "iklan", "A").then((onValue) {
       if (onValue.length != 0) {
         listPromoA = [];
         onValue.forEach((slider) {
@@ -268,7 +276,7 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosB() {
-    getAllPromos("token", "iklan", "B").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "iklan", "B").then((onValue) {
       if (onValue.length != 0) {
         listPromoB = onValue;
       }
@@ -284,7 +292,7 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosC() {
-    getAllPromos("token", "iklan", "C").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "iklan", "C").then((onValue) {
       if (onValue.length != 0) {
         listPromoC = onValue;
       }
@@ -300,7 +308,7 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosVideo() {
-    getAllPromos("token", "video", "A").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "video", "A").then((onValue) {
       if (onValue.length != 0) {
         listVideo = onValue;
       }
@@ -315,8 +323,24 @@ class _HomePage extends State<HomePage> {
     });
   }
 
+  _loadCampaign() {
+    getAllArticle(globals.user.tokenRedis, "champaign").then((onValue) {
+      if (onValue.length != 0) {
+        listCampaign = onValue;
+      }
+
+      setState(() {
+        isLoadingCampaign = false;
+      });
+    }).catchError((onError) {
+      print(onError.toString());
+      setState(() {
+        isLoadingCampaign = false;
+      });
+    });
+  }
   _loadArticle() {
-    getAllArticle("token", "article").then((onValue) {
+    getAllArticle(globals.user.tokenRedis, "article").then((onValue) {
       if (onValue.length != 0) {
         listArticle = onValue;
       }
@@ -380,7 +404,14 @@ class _HomePage extends State<HomePage> {
       isLoadingCategories = true;
     });
 
-    getAnimalCategory("token").then((onValue) {
+    getAnimalCategory(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animalCategories = onValue;
       setState(() {
         isLoadingCategories = false;
@@ -401,7 +432,14 @@ class _HomePage extends State<HomePage> {
       isLoadingCategories = true;
     });
 
-    getProductAnimalCategory("token").then((onValue) {
+    getProductAnimalCategory(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animalCategories = onValue;
       setState(() {
         isLoadingCategories = false;
@@ -422,7 +460,14 @@ class _HomePage extends State<HomePage> {
       isLoadingCategories = true;
     });
 
-    getAccessoryAnimalCategory("token").then((onValue) {
+    getAccessoryAnimalCategory(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animalCategories = onValue;
       setState(() {
         isLoadingCategories = false;
@@ -623,7 +668,14 @@ class _HomePage extends State<HomePage> {
               bool res = false;
               try {
                 globals.loadingModel(context);
-                res = await checkAvailable("token", "LELANG");
+                res = await checkAvailable(globals.user.tokenRedis, "LELANG");
+                if (res == null) {
+                  await globals.showDialogs(
+                      "Session anda telah berakhir, Silakan melakukan login ulang",
+                      context,
+                      isLogout: true);
+                  return;
+                }
                 Navigator.pop(context);
               } catch (e) {
                 print(e.toString());

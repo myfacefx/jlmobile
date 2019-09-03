@@ -37,14 +37,28 @@ class AppConfig extends InheritedWidget {
         if (userData != null) {
           User newUser = userFromJson(userData);
           print("User Found = ${newUser.username}");
-          globals.user = newUser;
 
-          globals.state = 'home';
+          print("verify token");
+          final resVerify = await verifyToken(newUser.tokenRedis);
+          if (resVerify != null) {
+            print("verifed token");
+            globals.user = resVerify;
 
-          // if (globals.user != null) {
-          //   if (globals.user.verificationStatus == null) globals.state = 'verification';
-          //   if (globals.user.verificationStatus == 'denied') globals.state = 'verification';
-          // }
+            globals.state = 'home';
+
+            if (globals.user != null) {
+              if (globals.user.verificationStatus == null)
+                globals.state = 'verification';
+              if (globals.user.verificationStatus == 'denied')
+                globals.state = 'verification';
+            }
+            // globals.state = globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "verification" : "home";
+          } else {
+            print("token not found");
+            deleteLocalData("user");
+            globals.state = "login";
+          }
+
         } else {
           globals.state = "login";
         }

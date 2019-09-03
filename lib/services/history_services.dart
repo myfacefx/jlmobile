@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/history.dart';
 
 Future<List<History>> getHistories(String token, int userId) async {
-  final header = {"Content-Type": "application/json"};
+  final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/users/$userId/histories";
 
@@ -17,12 +17,14 @@ Future<List<History>> getHistories(String token, int userId) async {
 
   if (res.statusCode == 200) {
     return historyFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<bool> setHistories(String token, List<int> listOfHistoryId) async {
+Future<dynamic> setHistories(String token, List<int> listOfHistoryId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/histories/mark";
@@ -39,6 +41,8 @@ Future<bool> setHistories(String token, List<int> listOfHistoryId) async {
     return true;
   } else if (res.statusCode == 406) {
     return false;
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }

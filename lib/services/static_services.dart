@@ -2,7 +2,7 @@ import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/static.dart';
 
-Future<List<Static>> getAllStatics(String token) async {
+Future<List<Static>> getAllStatics() async {
   final header = {"Content-Type": "application/json"};
 
   final url = getBaseUrl() + "/statics";
@@ -17,8 +17,8 @@ Future<List<Static>> getAllStatics(String token) async {
   }
 }
 
-Future<bool> checkAvailable(String token, String type) async {
-  final header = {"Content-Type": "application/json"};
+Future<dynamic> checkAvailable(String token, String type) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/check-available/$type";
 
@@ -29,6 +29,8 @@ Future<bool> checkAvailable(String token, String type) async {
     return true;
   } else if (res.statusCode == 401) {
     return false;
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }

@@ -66,17 +66,18 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       updateUser.password = _password;
 
       try {
-        String result = await update(updateUser.toJson(), _id);
+        String result =
+            await update(updateUser.toJson(), _id, globals.user.tokenRedis);
 
         if (result != null) {
           Navigator.of(context).pop();
           globals.showDialogs(result, context);
         } else {
-          globals.showDialogs("Terjadi error, silahkan ulangi", context);
-          setState(() {
-            isLoading = false;
-            autoValidate = true;
-          });
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
         }
       } catch (e) {
         globals.showDialogs("Terjadi error, silahkan ulangi", context);

@@ -13,6 +13,8 @@ Future<int> addCommentAuction(String token, AuctionComment _data) async {
 
   if (res.statusCode == 201) {
     return 1;
+  } else if (res.statusCode == 444) {
+    return null;
   } else if (res.statusCode == 406) {
     return 2;
   } else if (res.statusCode == 407) {

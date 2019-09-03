@@ -25,7 +25,6 @@ class _ProfilePageState extends State<ProfilePage>
 
   TabController _tabController;
 
-  String _username;
   bool isLoadingAnimals = true;
   bool isLoadingAuctions = true;
   bool isLoadingProducts = true;
@@ -46,7 +45,14 @@ class _ProfilePageState extends State<ProfilePage>
       isLoading = false;
     } else {
       _userId = userId;
-      get(_userId).then((onValue) {
+      getUserById(_userId, globals.user.tokenRedis).then((onValue) async {
+        if (onValue == null) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
+        }
         user = onValue;
         isLoading = false;
       }).catchError((onError) {
@@ -71,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukKu() {
-    getUserUnauctionedAnimals("Token", _userId).then((onValue) {
+    getUserUnauctionedAnimals(globals.user.tokenRedis, _userId).then((onValue) {
       animals = onValue;
       setState(() {
         isLoadingAnimals = false;
@@ -82,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukLelang() {
-    getUserAuctionAnimals("Token", _userId).then((onValue) {
+    getUserAuctionAnimals(globals.user.tokenRedis, _userId).then((onValue) {
       auctions = onValue;
       setState(() {
         isLoadingAuctions = false;
@@ -93,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukPasarHewan() {
-    getUserProductAnimals("Token", _userId).then((onValue) {
+    getUserProductAnimals(globals.user.tokenRedis, _userId).then((onValue) {
       products = onValue;
       setState(() {
         isLoadingProducts = false;
@@ -188,7 +194,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Widget _buildDetail(
       String name, String userPost, String gender, DateTime birthDate) {
-    String ageNow = globals.convertToAge(birthDate);
+    // String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: double.infinity,
       child: Column(

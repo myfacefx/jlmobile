@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/slider.dart';
 
 // Future<List<Slider>> getAllSliders(String token) async {
-//   final header = {"Content-Type": "application/json"};
+//   final header = {"Content-Type": "application/json", "Authorization": token};
 
 //   final url = getBaseUrl() + "/sliders";
 
