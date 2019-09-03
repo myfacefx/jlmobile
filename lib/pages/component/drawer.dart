@@ -71,7 +71,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
             if (result) {
               deleteLocalData("user");
               globals.state = "login";
-              await logout(globals.user.tokenRedis);
+              // await logout(globals.user.tokenRedis);
               Navigator.of(context).pop();
               Navigator.pushNamed(context, "/login");
             }
