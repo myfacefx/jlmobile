@@ -13,8 +13,9 @@ import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/product.dart';
 import 'package:jlf_mobile/models/select_product.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
-import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
+import 'package:jlf_mobile/services/auction_services.dart';
 import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
+import 'package:jlf_mobile/services/product_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class ActivateAuctionPage extends StatefulWidget {
@@ -106,7 +107,14 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     _selectProduct = selectProducts[0];
 
     isLoading = true;
-    getAnimalById(globals.user.tokenRedis, animalId).then((onValue) {
+    getAnimalById(globals.user.tokenRedis, animalId).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animal = onValue;
       setState(() {
         isLoading = false;
@@ -175,9 +183,15 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
     try {
       final result = await deleteAnimalById("", animalId);
       Navigator.pop(context);
-      if (result) {
+      if (result == 1) {
         await globals.showDialogs("Berhasil menghapus data", context,
             route: "/profile");
+      } else if (result == 3) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
       } else {
         globals.showDialogs("Gagal menghapus data", context);
       }
@@ -236,10 +250,16 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         formData['auction'] = auction;
 
         try {
-          bool response = await AuctionServices.create(formData, animal.id, globals.user.tokenRedis);
-          print(response);
-          if (response) {
+          int response =
+              await createAuction(formData, animal.id, globals.user.tokenRedis);
+          if (response == 1) {
             await globals.showDialogs(message, context);
+          } else if (response == 3) {
+            await globals.showDialogs(
+                "Session anda telah berakhir, Silakan melakukan login ulang",
+                context,
+                isLogout: true);
+            return;
           } else {
             await globals.showDialogs(
                 "Gagal membuat lelang, silahkan ulangi kembali", context);
@@ -273,10 +293,16 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         formData['product'] = product;
 
         try {
-          bool response = await ProductServices.create(formData, animal.id, globals.user.tokenRedis);
+          int response =
+              await createProduct(formData, animal.id, globals.user.tokenRedis);
           print(response);
-          if (response) {
+          if (response == 1) {
             await globals.showDialogs(message, context);
+          } else if (response == 3) {
+            await globals.showDialogs(
+                "Session anda telah berakhir, Silakan melakukan login ulang",
+                context,
+                isLogout: true);
           } else {
             await globals.showDialogs(
                 "Gagal membuat produk jual, silahkan ulangi kembali", context);
@@ -310,10 +336,16 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         formData['product'] = product;
 
         try {
-          bool response = await ProductServices.create(formData, animal.id, globals.user.tokenRedis);
+          int response =
+              await createProduct(formData, animal.id, globals.user.tokenRedis);
           print(response);
-          if (response) {
+          if (response == 1) {
             await globals.showDialogs(message, context);
+          } else if (response == 3) {
+            await globals.showDialogs(
+                "Session anda telah berakhir, Silakan melakukan login ulang",
+                context,
+                isLogout: true);
           } else {
             await globals.showDialogs(
                 "Gagal membuat accessory, silahkan ulangi kembali", context);

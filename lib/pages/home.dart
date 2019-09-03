@@ -119,12 +119,6 @@ class _HomePage extends State<HomePage> {
 
   _verificationCheck() async {
     if (globals.user != null) {
-      // if (globals.user == null) {
-      //   Timer.run(() {
-      //     Navigator.of(context).pop();
-      //     Navigator.of(context).pushNamed("/verification");
-      //   });
-      // } else {
       User userResponse =
           await getUserById(globals.user.id, globals.user.tokenRedis);
       if (userResponse == null) {
@@ -228,7 +222,14 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadJlfPartner() {
-    getAllJlfPartner(globals.user.tokenRedis).then((onValue) {
+    getAllJlfPartner(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       if (onValue.length != 0) {
         listParner = onValue;
       }
@@ -244,7 +245,14 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosA() {
-    getAllPromos(globals.user.tokenRedis, "iklan", "A").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "iklan", "A").then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       if (onValue.length != 0) {
         listPromoA = [];
         onValue.forEach((slider) {
@@ -276,7 +284,14 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosB() {
-    getAllPromos(globals.user.tokenRedis, "iklan", "B").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "iklan", "B").then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       if (onValue.length != 0) {
         listPromoB = onValue;
       }
@@ -292,7 +307,14 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosC() {
-    getAllPromos(globals.user.tokenRedis, "iklan", "C").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "iklan", "C").then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       if (onValue.length != 0) {
         listPromoC = onValue;
       }
@@ -308,7 +330,14 @@ class _HomePage extends State<HomePage> {
   }
 
   _loadPromosVideo() {
-    getAllPromos(globals.user.tokenRedis, "video", "A").then((onValue) {
+    getAllPromos(globals.user.tokenRedis, "video", "A").then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       if (onValue.length != 0) {
         listVideo = onValue;
       }

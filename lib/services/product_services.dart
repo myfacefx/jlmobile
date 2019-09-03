@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 
-Future<bool> create(Map<String, dynamic> _data, int animalId, String token) async {
+Future<int> createProduct(
+    Map<String, dynamic> _data, int animalId, String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$animalId/products/create";
 
@@ -14,15 +15,17 @@ Future<bool> create(Map<String, dynamic> _data, int animalId, String token) asyn
       .timeout(Duration(seconds: getTimeOut() + 270));
 
   if (res.statusCode == 201) {
-    return true;
+    return 1;
   } else if (res.statusCode == 406) {
-    return false;
+    return 2;
+  } else if (res.statusCode == 444) {
+    return 3;
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<bool> sold(String token, int productId) async {
+Future<int> sold(String token, int productId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/sold/products/$productId";
 
@@ -33,33 +36,36 @@ Future<bool> sold(String token, int productId) async {
       .timeout(Duration(seconds: getTimeOut() + 270));
 
   if (res.statusCode == 202) {
-    return true;
+    return 1;
   } else if (res.statusCode == 406) {
-    return false;
+    return 2;
+  } else if (res.statusCode == 444) {
+    return 3;
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<bool> delete(String token, int productId) async {
+Future<int> deleteProduct(String token, int productId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/products/$productId";
 
   print(url);
 
-  http.Response res =
-      await http.delete(url, headers: header);
+  http.Response res = await http.delete(url, headers: header);
   if (res.statusCode == 204) {
-    return true;
+    return 1;
   } else if (res.statusCode == 406) {
-    return false;
+    return 2;
+  } else if (res.statusCode == 444) {
+    return 3;
   } else {
     throw Exception(res.body);
   }
 }
 
-Future<bool> update(
+Future<int> updateProduct(
     String token, Map<String, dynamic> _data, int id) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/products/$id";
@@ -71,7 +77,9 @@ Future<bool> update(
       .timeout(Duration(seconds: getTimeOut() + 270));
 
   if (res.statusCode == 202) {
-    return true;
+    return 1;
+  } else if (res.statusCode == 444) {
+    return 2;
   } else {
     throw Exception(res.body);
   }

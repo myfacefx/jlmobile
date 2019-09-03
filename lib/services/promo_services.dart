@@ -14,6 +14,8 @@ Future<List<Promo>> getAllPromos(
       .timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
     return promoFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }

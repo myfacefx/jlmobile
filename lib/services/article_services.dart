@@ -13,6 +13,8 @@ Future<List<Article>> getAllArticle(String token, String type) async {
       .timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
     return articleFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }

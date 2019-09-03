@@ -58,8 +58,14 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   _getVerificationStatus() async {
-    User userResponse = await getUserById(globals.user.id, globals.user.tokenRedis);
-
+    User userResponse =
+        await getUserById(globals.user.id, globals.user.tokenRedis);
+    if (userResponse == null) {
+      await globals.showDialogs(
+          "Session anda telah berakhir, Silakan melakukan login ulang", context,
+          isLogout: true);
+      return;
+    }
     setState(() {
       _verificationStatus = userResponse.verificationStatus;
       globals.user.verificationStatus = userResponse.verificationStatus;
@@ -107,7 +113,8 @@ class _VerificationPageState extends State<VerificationPage> {
     }
 
     if (_selfie == null) {
-      globals.showDialogs("Foto Selfie dengan Tanda Pengenal masih kosong", context);
+      globals.showDialogs(
+          "Foto Selfie dengan Tanda Pengenal masih kosong", context);
       return false;
     }
 
@@ -137,6 +144,13 @@ class _VerificationPageState extends State<VerificationPage> {
 
           Map<String, dynamic> response = await updateVerification(
               formData, globals.user.id, globals.user.tokenRedis);
+
+          if (response == null) {
+            await globals.showDialogs(
+                "Session anda telah berakhir, Silakan melakukan login ulang",
+                context,
+                isLogout: true);
+          }
 
           print(response);
 
@@ -188,7 +202,10 @@ class _VerificationPageState extends State<VerificationPage> {
     return Column(
       children: <Widget>[
         globals.myText(
-            text: "Foto Tanda Pengenal", align: TextAlign.center, size: 20, weight: "B"),
+            text: "Foto Tanda Pengenal",
+            align: TextAlign.center,
+            size: 20,
+            weight: "B"),
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: _ktp != null
@@ -205,7 +222,8 @@ class _VerificationPageState extends State<VerificationPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(isLoading ? "Loading" : "Ambil Foto Tanda Pengenal",
+                        Text(
+                            isLoading ? "Loading" : "Ambil Foto Tanda Pengenal",
                             style: Theme.of(context).textTheme.display4),
                         Icon(Icons.camera_alt, color: Colors.white)
                       ],
@@ -330,7 +348,8 @@ class _VerificationPageState extends State<VerificationPage> {
                                                 : globals.myColor("warning"),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(20)))),
+                                                    BorderRadius.circular(
+                                                        20)))),
                                     Divider()
                                   ],
                                 )
@@ -424,7 +443,8 @@ class _VerificationPageState extends State<VerificationPage> {
                                               decoration: InputDecoration(
                                                   contentPadding:
                                                       EdgeInsets.all(13),
-                                                  hintText: "Nomor Tanda Pengenal",
+                                                  hintText:
+                                                      "Nomor Tanda Pengenal",
                                                   labelText:
                                                       "Nomor Tanda Pengenal",
                                                   fillColor: Colors.white,

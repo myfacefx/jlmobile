@@ -26,6 +26,8 @@ Future<List<AnimalCategory>> getAnimalCategoryWithoutCount(
       .get(getBaseUrl() + "/type/$type/animal-categories", headers: header);
   if (res.statusCode == 200) {
     return animalCategoryFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
