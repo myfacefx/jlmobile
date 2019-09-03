@@ -45,7 +45,6 @@ class _HomePage extends State<HomePage> {
   bool isLoadingPromoA = true;
   bool isLoadingPromoB = true;
   bool isLoadingPromoC = true;
-  bool isLoadingCampaign = true;
   bool isLoadingArticle = true;
 
   bool isLoadingPromoVideo = true;
@@ -60,7 +59,6 @@ class _HomePage extends State<HomePage> {
   List<Promo> listPromoB = [];
   List<Promo> listPromoC = [];
   List<Promo> listVideo = [];
-  List<Article> listCampaign = [];
   List<Article> listArticle = [];
   List<JlfPartner> listParner = [];
   String selectedType = "PASAR HEWAN";
@@ -71,7 +69,10 @@ class _HomePage extends State<HomePage> {
   void initState() {
     super.initState();
 
+    _checkVersion();
+
     if (globals.user != null) {
+      _verificationCheck();
       _refresh();
       _getListCategoriesProduct();
 
@@ -79,7 +80,6 @@ class _HomePage extends State<HomePage> {
       _loadPromosB();
       _loadPromosC();
       _loadPromosVideo();
-      _loadCampaign();
       _loadArticle();
       _loadJlfPartner();
 
@@ -90,9 +90,7 @@ class _HomePage extends State<HomePage> {
 
     initUniLinks();
     initUniLinksStream();
-    _checkVersion();
 
-    _verificationCheck();
     handleAppLifecycleState();
   }
 
@@ -142,13 +140,13 @@ class _HomePage extends State<HomePage> {
         globals.user.identityNumber = userResponse.identityNumber;
       });
 
-      if (globals.user.verificationStatus == null ||
-          globals.user.verificationStatus == 'denied') {
-        Timer.run(() {
-          Navigator.of(context).pop();
-          Navigator.of(context).pushNamed("/verification");
-        });
-      }
+      // if (globals.user.verificationStatus == null ||
+      //     globals.user.verificationStatus == 'denied') {
+      //   Timer.run(() {
+      //     Navigator.of(context).pop();
+      //     Navigator.of(context).pushNamed("/verification");
+      //   });
+      // }
     }
   }
 
@@ -162,7 +160,8 @@ class _HomePage extends State<HomePage> {
     print("Checking Version");
     verifyVersion(globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
-        final result = await showUpdate(onValue.url, onValue.isForceUpdate);
+        final result = await globals.showUpdate(
+            onValue.url, onValue.isForceUpdate, onValue.message, context);
         print(result);
         if (!result) {
           _checkVersion();
@@ -174,29 +173,6 @@ class _HomePage extends State<HomePage> {
         });
       }
     });
-  }
-
-  Future<bool> showUpdate(urlUpdate, bool isForceUpdate) async {
-    return await showDialog<bool>(
-          context: context,
-          barrierDismissible: !isForceUpdate,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                  title: Text("Alert"),
-                  content: globals.myText(text: "Aplikasi Butuh diperbaharui"),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: globals.myText(text: "Perbaharui Aplikasi"),
-                      onPressed: () {
-                        launch(urlUpdate);
-                      },
-                    ),
-                  ],
-                ) ??
-                false;
-          },
-        ) ??
-        false;
   }
 
   Future<Null> initUniLinks() async {
@@ -272,10 +248,17 @@ class _HomePage extends State<HomePage> {
       if (onValue.length != 0) {
         listPromoA = [];
         onValue.forEach((slider) {
-          listPromoA.add(
-            FadeInImage.assetNetwork(
+          listPromoA.add(GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => WebviewScaffold(
+                      url: slider.name,
+                      appBar: globals.appBar(_scaffoldKey, context,
+                          isSubMenu: true, showNotification: false))));
+            },
+            child: FadeInImage.assetNetwork(
                 placeholder: 'assets/images/loading.gif', image: slider.link),
-          );
+          ));
         });
       } else {
         listPromoA = getTemplateSlider();
@@ -356,7 +339,6 @@ class _HomePage extends State<HomePage> {
       });
     });
   }
-
   _loadArticle() {
     getAllArticle(globals.user.tokenRedis, "article").then((onValue) {
       if (onValue.length != 0) {
@@ -561,6 +543,28 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  Widget _buildUpComing() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, "/upcoming");
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        height: 64,
+        decoration: BoxDecoration(
+            color: Colors.orange[400], borderRadius: BorderRadius.circular(4)),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          globals.myText(
+              text: "Cek yuk apa rencana JLF kali ini",
+              color: "light",
+              size: 16,
+              align: TextAlign.center),
+        ]),
+      ),
+    );
+  }
+
   Widget _buildNumberMember() {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
@@ -581,22 +585,22 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildVerificationStatus() {
-    String display = 'Verifikasi KTP Pending';
+    String display = 'Verifikasi Tanda Pengenal Pending';
     String color = 'warning';
 
     if (globals.user != null) {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Belum mengajukan verifikasi';
+        display = 'Belum mengajukan verifikasi Tanda Pengenal';
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
-          display = "Verifikasi KTP Sukses";
+          display = "Verifikasi Tanda Pengenal Sukses";
           color = 'success';
         } else if (_verificationStatus == 'denied') {
           color = 'danger';
-          display = "Verifikasi KTP Ditolak, silahkan ulangi";
+          display = "Verifikasi Tanda Pengenal Ditolak, silahkan ulangi";
         }
       }
 
@@ -809,40 +813,179 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildPromotionB() {
-    return Column(
-      children: listPromoB.map((f) {
-        return Container(
-          width: globals.mw(context),
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-          child: FadeInImage.assetNetwork(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingPromoB ? 20 : null,
-              placeholder: 'assets/images/loading.gif',
-              image: f.link),
+    final slider = CarouselSlider(
+      aspectRatio: 3,
+      viewportFraction: 3.0,
+      height: 200,
+      enableInfiniteScroll: true,
+      onPageChanged: (index) {
+        setState(() {
+          _currentArticle = index;
+        });
+      },
+      items: listPromoB.map((f) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => WebviewScaffold(
+                    url: f.name,
+                    appBar: globals.appBar(_scaffoldKey, context,
+                        isSubMenu: true, showNotification: false))));
+          },
+          child: Container(
+            width: globals.mw(context),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+            child: FadeInImage.assetNetwork(
+                width: globals.mw(context) * 0.23,
+                height: isLoadingPromoB ? 20 : null,
+                placeholder: 'assets/images/loading.gif',
+                image: f.link),
+          ),
         );
       }).toList(),
+    );
+    return Stack(
+      children: <Widget>[
+        Container(
+          child: slider,
+        ),
+        Positioned(
+          right: 10,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.nextPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 10,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.previousPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
   Widget _buildPromotionC() {
-    return Column(
-      children: listPromoC.map((f) {
-        return Container(
-          width: globals.mw(context),
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-          child: FadeInImage.assetNetwork(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingPromoC ? 20 : null,
-              placeholder: 'assets/images/loading.gif',
-              image: f.link),
+    final slider = CarouselSlider(
+      aspectRatio: 3,
+      viewportFraction: 3.0,
+      height: 200,
+      enableInfiniteScroll: true,
+      onPageChanged: (index) {
+        setState(() {
+          _currentArticle = index;
+        });
+      },
+      items: listPromoC.map((f) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => WebviewScaffold(
+                    url: f.name,
+                    appBar: globals.appBar(_scaffoldKey, context,
+                        isSubMenu: true, showNotification: false))));
+          },
+          child: Container(
+            width: globals.mw(context),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
+            child: FadeInImage.assetNetwork(
+                width: globals.mw(context) * 0.23,
+                height: isLoadingPromoB ? 20 : null,
+                placeholder: 'assets/images/loading.gif',
+                image: f.link),
+          ),
         );
       }).toList(),
+    );
+    return Stack(
+      children: <Widget>[
+        Container(
+          child: slider,
+        ),
+        Positioned(
+          right: 10,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.nextPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 10,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.previousPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
   Widget _buildVideoA() {
-    return Column(
-      children: listVideo.map((f) {
+    final slider = CarouselSlider(
+      aspectRatio: 3,
+      viewportFraction: 3.0,
+      height: 200,
+      enableInfiniteScroll: true,
+      onPageChanged: (index) {
+        setState(() {
+          _currentArticle = index;
+        });
+      },
+      items: listVideo.map((f) {
         String videoId;
         videoId = YoutubePlayer.convertUrlToId(f.link);
         return Container(
@@ -851,7 +994,6 @@ class _HomePage extends State<HomePage> {
           child: YoutubePlayer(
             context: context,
             videoId: videoId,
-            // thumbnailUrl: "https://placeimg.com/520/200/animals?10",
             flags: YoutubePlayerFlags(
                 showVideoProgressIndicator: true, autoPlay: false),
             videoProgressIndicatorColor: Colors.amber,
@@ -863,21 +1005,52 @@ class _HomePage extends State<HomePage> {
         );
       }).toList(),
     );
-  }
-
-  Widget _buildCampaign() {
-    return Column(
-      children: listCampaign.map((f) {
-        return Container(
-          width: globals.mw(context),
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-          child: FadeInImage.assetNetwork(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingCategories ? 20 : null,
-              placeholder: 'assets/images/loading.gif',
-              image: f.link),
-        );
-      }).toList(),
+    return Stack(
+      children: <Widget>[
+        Container(
+          child: slider,
+        ),
+        Positioned(
+          right: 10,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+              onTap: () {
+                slider.nextPage(
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.linear);
+              },
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: Colors.black.withOpacity(0.7),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 18,
+                  color: Colors.white,
+                ),
+              )),
+        ),
+        Positioned(
+          left: 10,
+          top: 0,
+          bottom: 0,
+          child: GestureDetector(
+            onTap: () {
+              slider.previousPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.linear);
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Icon(
+                Icons.arrow_back_ios,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -1110,7 +1283,7 @@ class _HomePage extends State<HomePage> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => WebviewScaffold(
-                                  url: listArticle[_currentArticle].description,
+                                  url: listArticle[_currentArticle].link,
                                   appBar: globals.appBar(_scaffoldKey, context,
                                       isSubMenu: true,
                                       showNotification: false))));
@@ -1162,17 +1335,24 @@ class _HomePage extends State<HomePage> {
                       _buildTitle(),
                       _buildGridCategory(animalCategories),
                       _buildLaranganBinatang(),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: Divider(color: Colors.black),
-                      ),
+                      _buildUpComing(),
+                      _buildPartner(),
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: globals.myText(
-                              text: "CAMPAIGN JLF", color: 'dark', size: 15)),
-                      isLoadingCampaign
+                              text: "EVENT JLF", color: 'dark', size: 15)),
+                      isLoadingPromoB
                           ? globals.isLoading()
-                          : _buildCampaign(),
+                          : _buildPromotionB(),
+                      Container(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                          child: globals.myText(
+                              text: "SPONSORED SELLER JLF",
+                              color: 'dark',
+                              size: 15)),
+                      isLoadingPromoC
+                          ? globals.isLoading()
+                          : _buildPromotionC(),
                       Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: globals.myText(
@@ -1182,24 +1362,9 @@ class _HomePage extends State<HomePage> {
                       isLoadingPromoVideo
                           ? globals.isLoading()
                           : _buildVideoA(),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                          child: globals.myText(
-                              text: "ARTIKEL JLF", color: 'dark', size: 15)),
-                      isLoadingPromoB
-                          ? globals.isLoading()
-                          : _buildPromotionB(),
                       isLoadingArticle ? globals.isLoading() : _buildArticle(),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                          child: globals.myText(
-                              text: "EVENT JLF", color: 'dark', size: 15)),
-                      isLoadingPromoC
-                          ? globals.isLoading()
-                          : _buildPromotionC(),
-                      _buildPartner(),
                       Divider(),
-                      _buildDonation()
+                      _buildDonation(),
                     ],
                   ),
           ),

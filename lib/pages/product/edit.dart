@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_video_compress/flutter_video_compress.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
@@ -11,11 +14,13 @@ import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/product.dart';
 import 'package:jlf_mobile/models/select_product.dart';
+import 'package:jlf_mobile/pages/video_popup.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart' as AnimalServices;
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
 import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:http_parser/http_parser.dart';
 
 class EditProductPage extends StatefulWidget {
   final Animal animal;
@@ -85,6 +90,12 @@ class _EditProductPageState extends State<EditProductPage> {
   int _innerIslandShipping = 0;
   DateTime _dateOfBirth;
 
+  Subscription _subscription;
+  final _flutterVideoCompress = FlutterVideoCompress();
+  String _convertedVideoPath;
+  bool _isShowVideo = false;
+  MultipartFile videoToSent;
+
   String _price;
   String _quantity;
 
@@ -114,6 +125,11 @@ class _EditProductPageState extends State<EditProductPage> {
   @override
   void initState() {
     super.initState();
+
+    _subscription =
+        _flutterVideoCompress.compressProgress$.subscribe((progress) {
+      debugPrint('progress: $progress');
+    });
 
     setState(() {
       // print(_animal.product.type);
@@ -198,6 +214,7 @@ class _EditProductPageState extends State<EditProductPage> {
       //   }
       // }
       _getAnimalSubCategories();
+      showVideoByCategory();
 
       setState(() {
         isLoading = false;
@@ -331,6 +348,29 @@ class _EditProductPageState extends State<EditProductPage> {
         isLoading = false;
       });
     }
+  }
+
+  Widget _buildVideo() {
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        margin: EdgeInsets.fromLTRB(2, 2, 2, 0),
+        // height: 40,
+        // color: Colors.white,
+        child: InkWell(
+            child: Text(
+              "Klik Untuk Melihat Video",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => VideoPopupPage(
+                          videoPath: _animal.videoPath,
+                          animalName: _animal.name)));
+            }));
   }
 
   Widget _buildGridViewImages() {
@@ -556,6 +596,35 @@ class _EditProductPageState extends State<EditProductPage> {
     //       );
   }
 
+  Future<void> getVideo() async {
+    var video = await ImagePicker.pickVideo(source: ImageSource.gallery);
+
+    // limit max 5 mb
+    if (video.lengthSync() > 5500000) {
+      globals.showDialogs("Ukuran Video Terlalu Besar", context);
+    } else {
+      setState(() {
+        isLoading = true;
+      });
+
+      final _convertedVideo = await _flutterVideoCompress.compressVideo(
+        video.path,
+        quality:
+            VideoQuality.MediumQuality, // default(VideoQuality.DefaultQuality)
+        deleteOrigin: false, // default(false)
+      );
+      debugPrint(_convertedVideo.toJson().toString());
+      _convertedVideoPath = _convertedVideo.path;
+
+      setState(() {
+        isLoading = false;
+      });
+
+      videoToSent = await MultipartFile.fromPath('video', _convertedVideoPath,
+          contentType: MediaType('video', 'mp4'));
+    }
+  }
+
   Future<void> loadAssets() async {
     setState(() {
       images = List<Asset>();
@@ -746,6 +815,9 @@ class _EditProductPageState extends State<EditProductPage> {
         bool response_animal =
             await AnimalServices.update("Test", formDataAnimal, _animal.id);
 
+        // bool response_animal = await AnimalServices.update(
+        //     "Test", formDataAnimal, _animal.id, videoToSent);
+
         String message = "Berhasil mengupdate produk";
 
         if (!response_product && !response_animal) {
@@ -758,7 +830,8 @@ class _EditProductPageState extends State<EditProductPage> {
         Navigator.pushNamed(context, "/profile");
       } catch (e) {
         globals.showDialogs(
-            "Gagal mengupdate produk, silahkan coba kembali! ${e.toString()}", context);
+            "Gagal mengupdate produk, silahkan coba kembali! ${e.toString()}",
+            context);
         globals.mailError("_update product", e.toString());
       }
     }
@@ -1195,6 +1268,14 @@ class _EditProductPageState extends State<EditProductPage> {
     );
   }
 
+  void showVideoByCategory() {
+    if (_animalCategory.name.toLowerCase() == "unggas") {
+      _isShowVideo = true;
+    } else {
+      _isShowVideo = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -1287,6 +1368,7 @@ class _EditProductPageState extends State<EditProductPage> {
                           _animalCategory = category;
                         });
                         _getAnimalSubCategories();
+                        showVideoByCategory();
                       },
                       items: animalCategories.map((AnimalCategory category) {
                         return DropdownMenuItem<AnimalCategory>(
@@ -1463,6 +1545,45 @@ class _EditProductPageState extends State<EditProductPage> {
                 ),
                 _buildGridViewImages(),
                 SizedBox(height: 10),
+
+                // _animal.videoPath != null ? _buildVideo() : Container(),
+
+                // _isShowVideo == true
+                //     ? Container(
+                //         width: 250,
+                //         child: RaisedButton(
+                //           shape: RoundedRectangleBorder(
+                //               borderRadius: BorderRadius.circular(5)),
+                //           child: Row(
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children: <Widget>[
+                //               Text("Upload Video (Max 5 MB)",
+                //                   style: TextStyle(color: Colors.white)),
+                //               Icon(Icons.video_call, color: Colors.white),
+                //             ],
+                //           ),
+                //           color: Theme.of(context).primaryColor,
+                //           onPressed: getVideo,
+                //         ),
+                //       )
+                //     : Container(),
+
+                // Container(
+                //   width: 300,
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: <Widget>[
+                //       Text(
+                //         _convertedVideoPath ?? "",
+                //         style: TextStyle(
+                //           color: Colors.black,
+                //         ),
+                //         textAlign: TextAlign.center,
+                //       ),
+                //     ],
+                //   ),
+                // ),
 
                 Divider(),
 

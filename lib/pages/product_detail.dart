@@ -14,10 +14,11 @@ import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
+import 'package:jlf_mobile/pages/video_popup.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
-import 'package:jlf_mobile/services/bid_services.dart';
+import 'package:jlf_mobile/services/bid_services.dart' as BidServices;
 import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:jlf_mobile/services/product_services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -95,6 +96,29 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     });
   }
 
+  Widget _buildVideo() {
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        margin: EdgeInsets.fromLTRB(2, 2, 2, 0),
+        // height: 40,
+        color: Colors.white,
+        child: InkWell(
+          child: Text(
+            "Klik Untuk Melihat Video",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.blue),
+          ),
+          onTap: () {
+            Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => VideoPopupPage(
+                          videoPath: animal.videoPath,
+                          animalName: animal.name)));
+          }
+        ));
+  }
+
   Widget _buildImage() {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -109,7 +133,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildCarousel() {
     List<Widget> listImage = [];
     List<int> indexImage = [];
-    int count = 0;
+    int count = -1;
     if (animal.animalImages.length == 0) {
       indexImage.add(count);
       count++;
@@ -127,12 +151,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => ImagePopupPage(
-                          image: image.image,
-                          tagCount: "image$count",
+                          image: animal.animalImages,
+                          tagCount: "image-$count",
+                          index: count,
                           animalName: animal.name)));
             },
             child: Hero(
-              tag: "image$count",
+              tag: "image-$count",
               child: FadeInImage.assetNetwork(
                 placeholder: 'assets/images/loading.gif',
                 image: image.thumbnail,
@@ -440,57 +465,62 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     text: animal.owner.regency.name, color: "light", size: 10),
                 globals.myText(
                     text: animal.owner.province.name, color: "light", size: 10),
-                // Row(
-                //   children: <Widget>[
-                //     Icon(Icons.star, size: 10, color: Colors.yellow),
-                //     globals.myText(text: "4.5", color: "light", size: 10)
-                //   ],
-                // ),
-                // Row(
-                //   children: <Widget>[
-                //     globals.myText(text: "1000", color: "light", size: 10),
-                //     globals.myText(text: " | ", color: "light", size: 10),
-                //     globals.myText(
-                //         text: "10 Barang Terjual", color: "light", size: 10),
-                //   ],
-                // )
               ],
             ),
           ),
           SizedBox(width: 5),
-          Row(
+          Column(
             children: <Widget>[
-              GestureDetector(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            ProfilePage(userId: animal.owner.id))),
-                child: Container(
-                    height: 35,
-                    child: CircleAvatar(
-                        radius: 25,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child:
-                                Icon(Icons.person, color: globals.myColor())))),
+              Row(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ProfilePage(userId: animal.owner.id))),
+                    child: Container(
+                        height: 35,
+                        child: CircleAvatar(
+                            radius: 25,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Icon(Icons.person,
+                                    color: globals.myColor())))),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      String phone =
+                          "62${animal.owner.phoneNumber.substring(1)}";
+                      String message = "${animal.name}, ${widget.from}, mau tanya gan";
+                      _sendWhatsApp(phone, message);
+                    },
+                    child: Container(
+                        height: 35,
+                        child: CircleAvatar(
+                            radius: 25,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.asset(
+                                    'assets/images/whatsapp.png')))),
+                  )
+                ],
               ),
-              GestureDetector(
-                onTap: () {
-                  String phone = "62${animal.owner.phoneNumber.substring(1)}";
-                  String message = "Halo";
+              SizedBox(
+                height: 10,
+              ),
+              RaisedButton(
+                color: Colors.white,
+                onPressed: () {
+                  String phone = "6282223304275";
+                  String message =
+                      "${animal.name}-(${animal.id}), ${widget.from}, tolong di bantu min, saya mau bertanya";
                   _sendWhatsApp(phone, message);
                 },
-                child: Container(
-                    height: 35,
-                    child: CircleAvatar(
-                        radius: 25,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.asset('assets/images/whatsapp.png')))),
+                child: globals.myText(text: "Chat Admin"),
               )
             ],
-          ),
+          )
         ],
       ),
     );
@@ -705,8 +735,38 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  TableRow _buildTableRow(
-      bool isFirst, String name, String date, double amount, int userId) {
+  // void _delete(Bid bid) async {
+  //   if (globals.user.id != animal.auction.ownerUserId) {
+  //     globals.showDialogs(
+  //         "Hanya pemilik lelang yang dapat menghapus bid", context);
+  //     return;
+  //   }
+
+  //   var response = await globals.confirmDialog(
+  //       "Yakin menghapus bid sebesar ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?",
+  //       context);
+
+  //   // Map<String, dynamic> formData = Map<String, dynamic>();
+  //   // formData['owner_user_id'] = animal.auction.ownerUserId;
+
+  //   if (response) {
+  //     try {
+  //       bool response = await BidServices.delete("Token", bid.id);
+
+  //       if (response) {
+  //         await globals.showDialogs("Berhasil menghapus bid", context);
+  //         // Navigator.pop(context);
+  //         loadAnimal(animal.id);
+  //       }
+  //     } catch (e) {
+  //       globals.showDialogs(e.toString(), context);
+  //       print(e.toString());
+  //     }
+  //   }
+  // }
+
+  TableRow _buildTableRow(bool isFirst, String name, String date, double amount,
+      int userId, Bid bid) {
     return TableRow(children: [
       Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -752,12 +812,23 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             width: globals.mw(context) * 0.25,
             padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
             margin: EdgeInsets.fromLTRB(5, 3, 0, 3),
-            child: Text(
-              globals.convertToMoney(amount),
-              style: Theme.of(context).textTheme.display3.copyWith(
-                  color: isFirst
-                      ? Colors.white
-                      : Color.fromRGBO(178, 178, 178, 1)),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  globals.convertToMoney(amount),
+                  style: Theme.of(context).textTheme.display3.copyWith(
+                      color: isFirst
+                          ? Colors.white
+                          : Color.fromRGBO(178, 178, 178, 1)),
+                ),
+                // Delete Bid
+                // animal.auction.ownerUserId == globals.user.id
+                //     ? GestureDetector(
+                //         onTap: () => _delete(bid),
+                //         child: Icon(Icons.delete,
+                //             size: 15, color: globals.myColor("warning")))
+                //     : Container()
+              ],
             ),
           ),
           // Spacer()
@@ -791,7 +862,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     myList = animal.auction.bids.map((i) {
       count++;
       return _buildTableRow(count == 1, i.user.username, i.createdAt,
-          i.amount.toDouble(), i.userId);
+          i.amount.toDouble(), i.userId, i);
     }).toList();
 
     // Last 5 Bids
@@ -1522,6 +1593,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         await globals.showDialogs(
                             "Bid gagal, Anda masuk dalam blacklist user",
                             context);
+                      } else if (result == 4) {
+                        await globals.showDialogs(
+                            "Bid gagal, data diri Anda belum terverifikasi",
+                            context,
+                            needVerify: true);
                       } else {
                         await globals.showDialogs("Error", context);
                       }
@@ -1753,18 +1829,45 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             isLogout: true);
         return;
       }
-      if (result) {
-        await globals.showDialogs("Comment Sended", context);
+
+      if (result == 1) {
+        await globals.showDialogs("Komentar terpasang", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else if (result == 2) {
+        await globals.showDialogs(
+            "Gagal memasang komentar, terjadi kesalahan pada server",
+            context);
+      } else if (result == 3) {
+        await globals.showDialogs(
+            "Komentar gagal, Anda masuk dalam blacklist user",
+            context);
+      } else if (result == 4) {
+        await globals.showDialogs(
+            "Komentar gagal, data diri Anda belum terverifikasi",
+            context,
+            needVerify: true);
+      } else {
+        await globals.showDialogs("Error", context);
       }
+
+      // if (result == "") {
+      //   await globals.showDialogs("Comment Sended", context);
+      //   commentController.text = '';
+      //   setState(() {
+      //     isLoading = true;
+      //   });
+      //   loadAnimal(animal.id);
+      // } else {
+      //   await globals.showDialogs(result, context, needVerify: true);
+      // }
     } catch (e) {
       Navigator.pop(context);
       globals.showDialogs(e.toString(), context);
-      globals.mailError("comment auction", e.toString());
+      globals.mailError("Auction Comment", e.toString());
     }
   }
 
@@ -1786,18 +1889,45 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             isLogout: true);
         return;
       }
-      if (result) {
-        await globals.showDialogs("Comment Sended", context);
+
+      if (result == 1) {
+        await globals.showDialogs("Komentar terpasang", context);
         commentController.text = '';
         setState(() {
           isLoading = true;
         });
         loadAnimal(animal.id);
+      } else if (result == 2) {
+        await globals.showDialogs(
+            "Gagal memasang komentar, terjadi kesalahan pada server",
+            context);
+      } else if (result == 3) {
+        await globals.showDialogs(
+            "Komentar gagal, Anda masuk dalam blacklist user",
+            context);
+      } else if (result == 4) {
+        await globals.showDialogs(
+            "Komentar gagal, data diri Anda belum terverifikasi",
+            context,
+            needVerify: true);
+      } else {
+        await globals.showDialogs("Error", context);
       }
+
+      // if (result == "") {
+      //   await globals.showDialogs("Comment Sended", context);
+      //   commentController.text = '';
+      //   setState(() {
+      //     isLoading = true;
+      //   });
+      //   loadAnimal(animal.id);
+      // } else {
+      //   await globals.showDialogs(result, context, needVerify: true);
+      // }
     } catch (e) {
       Navigator.pop(context);
       globals.showDialogs(e.toString(), context);
-      globals.mailError("Comment product", e.toString());
+      globals.mailError("Product Comment", e.toString());
     }
   }
 
@@ -2011,6 +2141,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             : Container()
                         : Container(),
                     _buildImage(),
+                    // _buildVideo(),
                     SizedBox(
                       height: 8,
                     ),

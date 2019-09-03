@@ -43,6 +43,8 @@ class User {
   String identityNumber;
   String verificationStatus;
   String tokenRedis;
+  int point;
+  String level;
 
   User(
       {this.id,
@@ -71,7 +73,10 @@ class User {
       this.facebookUserId,
       this.identityNumber,
       this.verificationStatus,
-      this.tokenRedis});
+      this.tokenRedis,
+      this.point,
+      this.level
+      });
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
         id: json["id"] == null ? null : json["id"],
@@ -112,9 +117,12 @@ class User {
             json["facebook_user_id"] == null ? null : json["facebook_user_id"],
         identityNumber:
             json["identity_number"] == null ? null : json["identity_number"],
-        verificationStatus: json["verification_status"] == null
-            ? null
-            : json["verification_status"],
+        verificationStatus:
+            json["verification_status"] == null ? null : json["verification_status"],
+        point:
+            json["point"] == null ? null : json["point"],
+        level:
+            json["level"] == null ? null : json["level"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -142,9 +150,10 @@ class User {
         "province": province == null ? null : province.toJson(),
         "firebase_token": firebaseToken == null ? null : firebaseToken,
         "facebook_user_id": facebookUserId == null ? null : facebookUserId,
-        "verification_status":
-            verificationStatus == null ? null : verificationStatus,
-        "identity_number": identityNumber == null ? null : identityNumber
+        "verification_status": verificationStatus == null ? null : verificationStatus,
+        "identity_number": identityNumber == null ? null : identityNumber,
+        "point": point == null ? null : point,
+        "level": level == null ? null : level
       }..removeWhere((key, val) => val == null);
 }
 

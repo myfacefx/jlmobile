@@ -58,6 +58,7 @@ class AppConfig extends InheritedWidget {
             deleteLocalData("user");
             globals.state = "login";
           }
+
         } else {
           globals.state = "login";
         }

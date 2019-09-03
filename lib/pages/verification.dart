@@ -102,12 +102,12 @@ class _VerificationPageState extends State<VerificationPage> {
 
   _save() async {
     if (_ktp == null) {
-      globals.showDialogs("Foto KTP masih kosong", context);
+      globals.showDialogs("Foto Tanda Pengenal masih kosong", context);
       return false;
     }
 
     if (_selfie == null) {
-      globals.showDialogs("Foto Selfie dengan KTP masih kosong", context);
+      globals.showDialogs("Foto Selfie dengan Tanda Pengenal masih kosong", context);
       return false;
     }
 
@@ -188,7 +188,7 @@ class _VerificationPageState extends State<VerificationPage> {
     return Column(
       children: <Widget>[
         globals.myText(
-            text: "Foto KTP", align: TextAlign.center, size: 20, weight: "B"),
+            text: "Foto Tanda Pengenal", align: TextAlign.center, size: 20, weight: "B"),
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: _ktp != null
@@ -205,7 +205,7 @@ class _VerificationPageState extends State<VerificationPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(isLoading ? "Loading" : "Ambil Foto KTP",
+                        Text(isLoading ? "Loading" : "Ambil Foto Tanda Pengenal",
                             style: Theme.of(context).textTheme.display4),
                         Icon(Icons.camera_alt, color: Colors.white)
                       ],
@@ -223,7 +223,7 @@ class _VerificationPageState extends State<VerificationPage> {
     return Column(
       children: <Widget>[
         globals.myText(
-            text: "Foto Selfie dengan KTP",
+            text: "Foto Selfie dengan Tanda Pengenal",
             align: TextAlign.center,
             size: 20,
             weight: "B"),
@@ -246,7 +246,7 @@ class _VerificationPageState extends State<VerificationPage> {
                         Text(
                             isLoading
                                 ? "Loading"
-                                : "Ambil Foto Selfie dengan KTP",
+                                : "Ambil Foto Selfie dengan Tanda Pengenal",
                             style: Theme.of(context).textTheme.display4),
                         Icon(Icons.camera_alt, color: Colors.white)
                       ],
@@ -285,187 +285,208 @@ class _VerificationPageState extends State<VerificationPage> {
       color = 'success';
     } else if (_verificationStatus == 'denied') {
       color = 'danger';
-      display = "Verifkasi KTP Ditolak, silahkan ulangi";
+      display = "Verifkasi Tanda Pengenal Ditolak, silahkan ulangi";
     }
 
     return Scaffold(
         appBar: globals.appBar(_scaffoldKey, context,
-            isSubMenu: true, showNotification: false, hideNavigation: true),
+            isSubMenu: true, showNotification: false),
         body: Scaffold(
             key: _scaffoldKey,
             drawer: drawer(context),
             body: SafeArea(
-              child: WillPopScope(
-                onWillPop: () async {
-                  var response = await globals.confirmDialog(
-                      "Yakin ingin keluar dari aplikasi?", context);
-
-                  if (response) {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  }
-                },
-                child: isLoading
-                    ? globals.isLoading()
-                    : Container(
-                        padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
-                        child: Center(
-                          child: ListView(children: <Widget>[
-                            _verificationStatus != null
-                                ? Column(
-                                    children: <Widget>[
-                                      Center(
-                                        child: Container(
-                                            child: globals.myText(
-                                                text: display,
-                                                color: color,
-                                                size: 20,
-                                                align: TextAlign.center)),
-                                      ),
-                                      globals.myText(
-                                          text: _verificationStatus == 'pending'
-                                              ? "Verifikasi KTP Anda sedang kami proses, silahkan tunggu 1x24 jam"
-                                              : _verificationStatus ==
-                                                      'verified'
-                                                  ? "Selamat! Verifikasi KTP Anda telah berhasil, silahkan menggunakan seluruh layanan pada JLF"
-                                                  : "",
-                                          align: TextAlign.center),
-                                    ],
-                                  )
-                                : Container(),
-                            _verificationStatus == 'pending' ||
-                                    _verificationStatus == 'verified'
-                                ? FlatButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pushNamed('/'),
-                                    color: globals.myColor('primary'),
-                                    child: globals.myText(
-                                        text: "Kembali ke Beranda",
-                                        color: 'light'))
-                                : Container(),
-                            _verificationStatus == null ||
-                                    _verificationStatus == 'denied'
-                                ? Column(
-                                    children: <Widget>[
-                                      globals.myText(
-                                          text: "Verifikasi KTP",
-                                          weight: "B",
-                                          size: 24,
-                                          align: TextAlign.center),
-                                      SizedBox(height: 8),
-                                      globals.myText(
-                                          text:
-                                              "Hai sobat JLF, dalam rangka meningkatkan keamanan serta membantu membangun rasa percaya maka pihak kami mewajibkan verifikasi KTP.",
-                                          align: TextAlign.center),
-                                      globals.myText(
-                                          text:
-                                              "(Pastikan data pada KTP terlihat jelas)",
-                                          size: 13,
-                                          align: TextAlign.center),
-                                      Divider(),
-                                      _buildKTP(),
-                                      Divider(),
-                                      _buildSelfie(),
-                                      Form(
-                                          autovalidate: true,
-                                          key: _formKey,
-                                          child: Container(
-                                              width: globals.mw(context),
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              child: TextFormField(
-                                                enabled: !isLoading,
-                                                controller:
-                                                    identityNumberController,
-                                                onSaved: (String value) {
-                                                  _identityNumber = value;
-                                                },
-                                                onFieldSubmitted:
-                                                    (String value) {
-                                                  _save();
-                                                },
-                                                validator: (value) {
-                                                  if (value.isEmpty ||
-                                                      value.length != 16) {
-                                                    return 'Nomor KTP tidak sesuai';
-                                                  }
-                                                },
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                                textCapitalization:
-                                                    TextCapitalization.words,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                inputFormatters: [
-                                                  WhitelistingTextInputFormatter
-                                                      .digitsOnly
-                                                ],
-                                                decoration: InputDecoration(
-                                                    contentPadding:
-                                                        EdgeInsets.all(13),
-                                                    hintText: "Nomor KTP",
-                                                    labelText:
-                                                        "16 Digit Nomor KTP",
-                                                    fillColor: Colors.white,
-                                                    border: OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5))),
-                                              ))),
-                                      Container(
-                                          width: globals.mw(context),
-                                          padding:
-                                              EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                          child: FlatButton(
-                                              onPressed: () =>
-                                                  isLoading ? null : _save(),
-                                              child: Text(
-                                                  isLoading
-                                                      ? "Loading"
-                                                      : "Simpan",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .display4),
-                                              color: isLoading
-                                                  ? Colors.grey
-                                                  : Theme.of(context)
-                                                      .primaryColor,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)))),
-                                      globals.spacePadding(),
-                                    ],
-                                  )
-                                : Container(),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+              child: isLoading
+                  ? globals.isLoading()
+                  : Container(
+                      padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                      child: Center(
+                        child: ListView(children: <Widget>[
+                          _verificationStatus != "verified"
+                              ? Column(
+                                  children: <Widget>[
+                                    Container(
+                                        width: globals.mw(context),
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: FlatButton(
+                                            onPressed: () =>
+                                                Navigator.of(context)
+                                                    .pushNamed('/'),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                    isLoading
+                                                        ? "Loading"
+                                                        : "Lewati Tahapan Ini",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .display4)
+                                              ],
+                                            ),
+                                            color: isLoading
+                                                ? Colors.grey
+                                                : globals.myColor("warning"),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)))),
+                                    Divider()
+                                  ],
+                                )
+                              : Container(),
+                          _verificationStatus != null
+                              ? Column(
+                                  children: <Widget>[
+                                    Center(
+                                      child: Container(
+                                          child: globals.myText(
+                                              text: display,
+                                              color: color,
+                                              size: 20,
+                                              align: TextAlign.center)),
+                                    ),
+                                    globals.myText(
+                                        text: _verificationStatus == 'pending'
+                                            ? "Verifikasi Tanda Pengenal Anda sedang kami proses, silahkan tunggu 1x24 jam"
+                                            : _verificationStatus == 'verified'
+                                                ? "Selamat! Verifikasi Tanda Pengenal Anda telah berhasil, silahkan menggunakan seluruh layanan pada JLF"
+                                                : "",
+                                        align: TextAlign.center),
+                                  ],
+                                )
+                              : Container(),
+                          _verificationStatus == 'pending' ||
+                                  _verificationStatus == 'verified'
+                              ? FlatButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pushNamed('/'),
+                                  color: globals.myColor('primary'),
+                                  child: globals.myText(
+                                      text: "Kembali ke Beranda",
+                                      color: 'light'))
+                              : Container(),
+                          _verificationStatus == null ||
+                                  _verificationStatus == 'denied'
+                              ? Column(
                                   children: <Widget>[
                                     globals.myText(
-                                        text:
-                                            "Terjadi Error? Tidak memiliki KTP? Atau butuh bantuan lainnya?",
+                                        text: "Verifikasi Tanda Pengenal",
                                         weight: "B",
-                                        color: "danger",
+                                        size: 24,
                                         align: TextAlign.center),
-                                    GestureDetector(
-                                        onTap: () {
-                                          String phone = "6282223304275";
-                                          String message =
-                                              "Min,%20tolong%20bantu%20verifikasi%saya%20please%20(ID #${globals.user.id})";
-                                          _sendWhatsApp(phone, message);
-                                        },
-                                        child: globals.myText(
-                                            text: "Klik disini untuk WA Admin",
-                                            weight: "B",
-                                            color: "primary",
-                                            align: TextAlign.center))
-                                  ]),
-                            )
-                          ]),
-                        ),
+                                    SizedBox(height: 8),
+                                    globals.myText(
+                                        text:
+                                            "Hai sobat JLF, dalam rangka meningkatkan keamanansekaligus membrantas kasus lelang sebelumnya, maka pihak kami mewajibkan para bidder dan seller melakukan verifikasi dengan tanda pengenal (Kartu Pelajar/KTP/SIM/Kartu Member Mall/Kartu lainnya dengan identitas jelas). Verifikasi ini hanya dilakukan sekali saja.",
+                                        align: TextAlign.center),
+                                    globals.myText(
+                                        text:
+                                            "(Pastikan data pada Tanda Pengenal terlihat jelas)",
+                                        size: 13,
+                                        align: TextAlign.center),
+                                    Divider(),
+                                    _buildKTP(),
+                                    Divider(),
+                                    _buildSelfie(),
+                                    Form(
+                                        autovalidate: true,
+                                        key: _formKey,
+                                        child: Container(
+                                            width: globals.mw(context),
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 0, 0, 10),
+                                            child: TextFormField(
+                                              enabled: !isLoading,
+                                              controller:
+                                                  identityNumberController,
+                                              onSaved: (String value) {
+                                                _identityNumber = value;
+                                              },
+                                              onFieldSubmitted: (String value) {
+                                                _save();
+                                              },
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Nomor Tanda Pengenal tidak boleh kosong';
+                                                }
+                                              },
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              textCapitalization:
+                                                  TextCapitalization.words,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              inputFormatters: [
+                                                WhitelistingTextInputFormatter
+                                                    .digitsOnly
+                                              ],
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.all(13),
+                                                  hintText: "Nomor Tanda Pengenal",
+                                                  labelText:
+                                                      "Nomor Tanda Pengenal",
+                                                  fillColor: Colors.white,
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5))),
+                                            ))),
+                                    Container(
+                                        width: globals.mw(context),
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: FlatButton(
+                                            onPressed: () =>
+                                                isLoading ? null : _save(),
+                                            child: Text(
+                                                isLoading
+                                                    ? "Loading"
+                                                    : "Simpan",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .display4),
+                                            color: isLoading
+                                                ? Colors.grey
+                                                : Theme.of(context)
+                                                    .primaryColor,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        20)))),
+                                    globals.spacePadding(),
+                                  ],
+                                )
+                              : Container(),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  globals.myText(
+                                      text:
+                                          "Terjadi Error? Atau butuh bantuan lainnya?",
+                                      weight: "B",
+                                      color: "danger",
+                                      align: TextAlign.center),
+                                  GestureDetector(
+                                      onTap: () {
+                                        String phone = "6282223304275";
+                                        String message =
+                                            "Min,%20tolong%20bantu%20verifikasi%saya%20please%20(ID #${globals.user.id})";
+                                        _sendWhatsApp(phone, message);
+                                      },
+                                      child: globals.myText(
+                                          text: "Klik disini untuk WA Admin",
+                                          weight: "B",
+                                          color: "primary",
+                                          align: TextAlign.center))
+                                ]),
+                          )
+                        ]),
                       ),
-              ),
+                    ),
             )));
   }
 }

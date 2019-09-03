@@ -11,6 +11,7 @@
 #import <flutter_facebook_login/FacebookLoginPlugin.h>
 #import <flutter_local_notifications/FlutterLocalNotificationsPlugin.h>
 #import <flutter_native_image/FlutterNativeImagePlugin.h>
+#import <flutter_video_compress/FlutterVideoCompressPlugin.h>
 #import <flutter_webview_plugin/FlutterWebviewPlugin.h>
 #import <image_cropper/ImageCropperPlugin.h>
 #import <image_picker/ImagePickerPlugin.h>
@@ -22,6 +23,7 @@
 #import <sqflite/SqflitePlugin.h>
 #import <uni_links/UniLinksPlugin.h>
 #import <url_launcher/UrlLauncherPlugin.h>
+#import <video_player/VideoPlayerPlugin.h>
 #import <webview_flutter/WebViewFlutterPlugin.h>
 
 @implementation GeneratedPluginRegistrant
@@ -35,6 +37,7 @@
   [FacebookLoginPlugin registerWithRegistrar:[registry registrarForPlugin:@"FacebookLoginPlugin"]];
   [FlutterLocalNotificationsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterLocalNotificationsPlugin"]];
   [FlutterNativeImagePlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterNativeImagePlugin"]];
+  [FlutterVideoCompressPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterVideoCompressPlugin"]];
   [FlutterWebviewPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterWebviewPlugin"]];
   [FLTImageCropperPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImageCropperPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
@@ -46,6 +49,7 @@
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
   [UniLinksPlugin registerWithRegistrar:[registry registrarForPlugin:@"UniLinksPlugin"]];
   [FLTUrlLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTUrlLauncherPlugin"]];
+  [FLTVideoPlayerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTVideoPlayerPlugin"]];
   [FLTWebViewFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTWebViewFlutterPlugin"]];
 }
 

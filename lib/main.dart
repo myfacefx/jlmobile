@@ -16,6 +16,7 @@ import 'package:jlf_mobile/pages/our_product.dart';
 import 'package:jlf_mobile/pages/product/edit.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
 import 'package:jlf_mobile/pages/setting.dart';
+import 'package:jlf_mobile/pages/up_coming.dart';
 import 'package:jlf_mobile/pages/user/edit_password.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
 import 'package:jlf_mobile/pages/user/login.dart';
@@ -40,9 +41,11 @@ class MyApp extends StatelessWidget {
     String initialRoute = "/";
 
     print(globals.state);
-    
-    if (globals.state == "intro") initialRoute = "/intro";
-    else if (globals.state == "login") initialRoute = "/login";
+
+    if (globals.state == "intro")
+      initialRoute = "/intro";
+    else if (globals.state == "login")
+      initialRoute = "/login";
     else if (globals.user != null) {
       if (globals.user.verificationStatus == null) {
         initialRoute = "/verification";
@@ -51,11 +54,10 @@ class MyApp extends StatelessWidget {
           initialRoute = "/verification";
         }
       }
-    }
-    else if (globals.state == "verification") {
+    } else if (globals.state == "verification") {
       initialRoute = "/verification";
     }
-    
+
     return MaterialApp(
       title: 'JLF',
       debugShowCheckedModeBanner: false,
@@ -89,6 +91,7 @@ class MyApp extends StatelessWidget {
         '/donasi': (BuildContext context) => DonasiPage(),
         '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
         '/verification': (BuildContext context) => VerificationPage(),
+        '/upcoming': (BuildContext context) => UpComingPage(),
         // '/edit-product': (BuildContext context) => EditProductPage()
       },
     );

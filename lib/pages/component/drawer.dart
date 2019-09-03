@@ -127,7 +127,7 @@ Widget drawer(context) {
                 // _buildDrawerNavigationButtonBig(
                 //     "Obrolan", '/chat-list', null, context),
                 globals.user != null ? globals.user.verificationStatus != 'verified' ? _buildDrawerNavigationButtonBig(
-                    "Verifikasi KTP", '/verification', null, context) : Container() : Container(),
+                    "Verifikasi Data Diri", '/verification', null, context) : Container() : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Barangku", '/profile', null, context),

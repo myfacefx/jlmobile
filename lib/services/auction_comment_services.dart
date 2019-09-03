@@ -4,7 +4,7 @@ import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/auction_comment.dart';
 
-Future<bool> addCommentAuction(String token, AuctionComment _data) async {
+Future<int> addCommentAuction(String token, AuctionComment _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   http.Response res = await http
       .post(getBaseUrl() + "/auction-comment",
@@ -12,9 +12,15 @@ Future<bool> addCommentAuction(String token, AuctionComment _data) async {
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 201) {
-    return true;
+    return 1;
   } else if (res.statusCode == 444) {
     return null;
+  } else if (res.statusCode == 406) {
+    return 2;
+  } else if (res.statusCode == 407) {
+    return 3;
+  } else if (res.statusCode == 408) {
+    return 4;
   } else {
     throw Exception(res.body);
   }

@@ -17,8 +17,36 @@ Future<int> placeBid(String token, Bid _data) async {
     return 2;
   } else if (res.statusCode == 407) {
     return 3;
+
   } else if (res.statusCode == 444) {
     return null;
+
+  } else if (res.statusCode == 408) {
+    return 4;
+
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<bool> delete(String token, int bidId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  final url = getBaseUrl() + "/bids/$bidId";
+
+  print(url);
+
+  http.Response res = await http
+      .delete(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  // var response = json.decode(res.body);
+
+  // return response;
+  if (res.statusCode == 204) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
   } else {
     throw Exception(res.body);
   }
