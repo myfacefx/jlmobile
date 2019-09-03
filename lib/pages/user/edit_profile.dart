@@ -148,7 +148,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       try {
         String result =
-            await update(updateUser.toJson(), _id, globals.user.tokenRedis);
+            await updateUserLogin(updateUser.toJson(), _id, globals.user.tokenRedis);
 
         if (result != null) {
           globals.user.name = _name;

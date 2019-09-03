@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
+import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/pagination.dart';
 
@@ -146,29 +146,18 @@ Future<Animal> getAnimalById(String token, int animalId) async {
   }
 }
 
-Future<bool> deleteAnimalById(String token, int animalId) async {
+Future<int> deleteAnimalById(String token, int animalId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   print(getBaseUrl() + "/animals/$animalId");
   http.Response res =
       await http.delete(getBaseUrl() + "/animals/$animalId", headers: header);
   if (res.statusCode == 204) {
-    return true;
+    return 1;
   } else if (res.statusCode == 406) {
-    return false;
-  } else {
-    throw Exception(res.body);
-  }
-}
-
-Future<List<Animal>> getUserAnimals(String token, int userId) async {
-  final header = {"Content-Type": "application/json", "Authorization": token};
-
-  print(getBaseUrl() + "/users/$userId/animals");
-  http.Response res =
-      await http.get(getBaseUrl() + "/users/$userId/animals", headers: header);
-  if (res.statusCode == 200) {
-    return animalFromJson(res.body);
+    return 2;
+  } else if (res.statusCode == 444) {
+    return 3;
   } else {
     throw Exception(res.body);
   }
@@ -183,6 +172,8 @@ Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId) async {
 
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -196,6 +187,8 @@ Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
       .get(getBaseUrl() + "/users/$userId/auctions/animals", headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -209,6 +202,8 @@ Future<List<Animal>> getUserProductAnimals(String token, int userId) async {
       .get(getBaseUrl() + "/users/$userId/products/animals", headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
   } else {
     throw Exception(res.body);
   }
@@ -274,25 +269,6 @@ Future<List<Animal>> getUserCommentProductAnimals(
   }
 }
 
-// Future<String> create(Map<String, dynamic> _data) async {
-//   final header = {"Content-Type": "application/json"};
-//   final url = getBaseUrl() + "/animals";
-
-//   http.Response res = await http
-//       .post(url, headers: header, body: json.encode(_data))
-//       .timeout(Duration(minutes: 10));
-
-//   print(url);
-
-//   if (res.statusCode == 201) {
-//     return "";
-//   } else if (res.statusCode == 407) {
-//     return res.body;
-//   } else {
-//     throw Exception(res.body);
-//   }
-// }
-
 Future<int> create(Map<String, dynamic> _data, String token,
     [http.MultipartFile videoToSent]) async {
   var uri = Uri.parse(getBaseUrl() + "/animals");
@@ -326,7 +302,8 @@ Future<int> create(Map<String, dynamic> _data, String token,
   }
 }
 
-Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
+Future<int> updateAnimal(
+    String token, Map<String, dynamic> _data, int id) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/animals/$id";
@@ -338,7 +315,9 @@ Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
       .timeout(Duration(seconds: getTimeOut() + 60));
 
   if (res.statusCode == 202) {
-    return true;
+    return 1;
+  } else if (res.statusCode == 444) {
+    return 2;
   } else {
     throw Exception(res.body);
   }
@@ -369,40 +348,40 @@ Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
 //   }
 // }
 
-Future<bool> deleteImage(String token, int animalImageId) async {
-  final header = {"Content-Type": "application/json"};
-  final url = getBaseUrl() + "/animal-images/$animalImageId";
+// Future<bool> deleteImage(String token, int animalImageId) async {
+//   final header = {"Content-Type": "application/json"};
+//   final url = getBaseUrl() + "/animal-images/$animalImageId";
 
-  print(url);
+//   print(url);
 
-  http.Response res = await http
-      .delete(url, headers: header)
-      .timeout(Duration(seconds: getTimeOut() + 60));
+//   http.Response res = await http
+//       .delete(url, headers: header)
+//       .timeout(Duration(seconds: getTimeOut() + 60));
 
-  if (res.statusCode == 204) {
-    return true;
-  } else if (res.statusCode == 406) {
-    return false;
-  } else {
-    throw Exception(res.body);
-  }
-}
+//   if (res.statusCode == 204) {
+//     return true;
+//   } else if (res.statusCode == 406) {
+//     return false;
+//   } else {
+//     throw Exception(res.body);
+//   }
+// }
 
-Future<bool> createImage(
-    String token, Map<String, dynamic> _data, int animalId) async {
-  final header = {"Content-Type": "application/json", "Authorization": token};
-  final url = getBaseUrl() + "/animals/$animalId/animal-images";
+// Future<bool> createImage(
+//     String token, Map<String, dynamic> _data, int animalId) async {
+//   final header = {"Content-Type": "application/json", "Authorization": token};
+//   final url = getBaseUrl() + "/animals/$animalId/animal-images";
 
-  print(url);
+//   print(url);
 
-  http.Response res = await http
-      .post(url, headers: header, body: json.encode(_data))
-      .timeout(Duration(minutes: 10));
+//   http.Response res = await http
+//       .post(url, headers: header, body: json.encode(_data))
+//       .timeout(Duration(minutes: 10));
 
-  if (res.statusCode == 201) {
-    // print(res.body);
-    return true;
-  } else {
-    throw Exception(res.body);
-  }
-}
+//   if (res.statusCode == 201) {
+//     // print(res.body);
+//     return true;
+//   } else {
+//     throw Exception(res.body);
+//   }
+// }

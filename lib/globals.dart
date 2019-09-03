@@ -145,7 +145,7 @@ generateToken() async {
         updateToken.firebaseToken = fcmToken;
 
         String result =
-            await update(updateToken.toJson(), user.id, user.tokenRedis);
+            await updateUserLogin(updateToken.toJson(), user.id, user.tokenRedis);
 
         if (result != null) {
           user.firebaseToken = fcmToken;
@@ -476,7 +476,7 @@ Widget spacePadding() {
 // }
 
 void autoClose() async {
-  bool response = await AuctionService.autoClose('a');
+  await AuctionService.autoClose(user.tokenRedis);
 }
 
 void getNotificationCount() async {

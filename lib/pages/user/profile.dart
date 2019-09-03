@@ -77,7 +77,15 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukKu() {
-    getUserUnauctionedAnimals(globals.user.tokenRedis, _userId).then((onValue) {
+    getUserUnauctionedAnimals(globals.user.tokenRedis, _userId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animals = onValue;
       setState(() {
         isLoadingAnimals = false;
@@ -88,7 +96,15 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukLelang() {
-    getUserAuctionAnimals(globals.user.tokenRedis, _userId).then((onValue) {
+    getUserAuctionAnimals(globals.user.tokenRedis, _userId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       auctions = onValue;
       setState(() {
         isLoadingAuctions = false;
@@ -99,7 +115,15 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukPasarHewan() {
-    getUserProductAnimals(globals.user.tokenRedis, _userId).then((onValue) {
+    getUserProductAnimals(globals.user.tokenRedis, _userId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       products = onValue;
       setState(() {
         isLoadingProducts = false;
@@ -587,33 +611,32 @@ class _ProfilePageState extends State<ProfilePage>
                   //         EdgeInsets.fromLTRB(10, 15, 0, 0),
                   //     child: globals.myText(text: "${globals.user.point}\nPOIN", weight: "B", align: TextAlign.center)),
                   // ),
-                    
-                    
-                    // Container(
-                    //   alignment: Alignment.topLeft,
-                    //   width: globals.mw(context) * 0.25,
-                    //   child: FlatButton(
-                    //       onPressed: () {
-                    //         globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context);
-                    //       },
-                    //       child: Row(
-                    //         mainAxisAlignment:
-                    //             MainAxisAlignment.center,
-                    //         children: <Widget>[
-                    //           Text(
-                    //               "${globals.convertToMoney(globals.user.point.toDouble())} P",
-                    //               style: Theme.of(context)
-                    //                   .textTheme
-                    //                   .display4)
-                    //         ],
-                    //       ),
-                    //       color: isLoading
-                    //           ? Colors.grey
-                    //           : globals.myColor("warning"),
-                    //       shape: RoundedRectangleBorder(
-                    //           borderRadius:
-                    //               BorderRadius.circular(5))),
-                    // ),
+
+                  // Container(
+                  //   alignment: Alignment.topLeft,
+                  //   width: globals.mw(context) * 0.25,
+                  //   child: FlatButton(
+                  //       onPressed: () {
+                  //         globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context);
+                  //       },
+                  //       child: Row(
+                  //         mainAxisAlignment:
+                  //             MainAxisAlignment.center,
+                  //         children: <Widget>[
+                  //           Text(
+                  //               "${globals.convertToMoney(globals.user.point.toDouble())} P",
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .display4)
+                  //         ],
+                  //       ),
+                  //       color: isLoading
+                  //           ? Colors.grey
+                  //           : globals.myColor("warning"),
+                  //       shape: RoundedRectangleBorder(
+                  //           borderRadius:
+                  //               BorderRadius.circular(5))),
+                  // ),
                   user.id == globals.user.id
                       ? Container(
                           alignment: Alignment.topRight,
@@ -662,7 +685,10 @@ class _ProfilePageState extends State<ProfilePage>
                               color: "dark",
                               weight: "B",
                               size: 18),
-                          globals.user.verificationStatus == 'verified' ? Icon(Icons.verified_user, size: 18, color: globals.myColor("primary")) : Container(),
+                          globals.user.verificationStatus == 'verified'
+                              ? Icon(Icons.verified_user,
+                                  size: 18, color: globals.myColor("primary"))
+                              : Container(),
                           // globals.myText(
                           //     text: '4.5',
                           //     textOverflow: TextOverflow.ellipsis,

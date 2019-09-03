@@ -71,6 +71,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
             if (result) {
               deleteLocalData("user");
               globals.state = "login";
+              await logout(globals.user.tokenRedis);
               Navigator.of(context).pop();
               Navigator.pushNamed(context, "/login");
             }
@@ -126,8 +127,15 @@ Widget drawer(context) {
                 globals.spacePadding(),
                 // _buildDrawerNavigationButtonBig(
                 //     "Obrolan", '/chat-list', null, context),
-                globals.user != null ? globals.user.verificationStatus != 'verified' ? _buildDrawerNavigationButtonBig(
-                    "Verifikasi Data Diri", '/verification', null, context) : Container() : Container(),
+                globals.user != null
+                    ? globals.user.verificationStatus != 'verified'
+                        ? _buildDrawerNavigationButtonBig(
+                            "Verifikasi Data Diri",
+                            '/verification',
+                            null,
+                            context)
+                        : Container()
+                    : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
                     "Barangku", '/profile', null, context),
@@ -151,7 +159,9 @@ Widget drawer(context) {
                 //     "Pengaturan", "/setting", context),
                 _buildDrawerNavigationButtonSmall("Keluar", "/logout", context),
                 globals.spacePadding(),
-                Center(child: globals.myText(text: "${globals.version}", size: 11, color: "light")),
+                Center(
+                    child: globals.myText(
+                        text: "${globals.version}", size: 11, color: "light")),
                 globals.spacePadding()
                 // Container()
               ],

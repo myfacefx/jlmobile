@@ -123,7 +123,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
     getAnimalCategoryWithoutCount(globals.user.tokenRedis,
             _selectProduct.id == 3 ? "accessory" : "animal")
-        .then((onValue) {
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
       animalCategories = onValue;
       if (widget.categoryId != null) {
         for (var animalCategory in animalCategories) {
@@ -208,7 +215,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     if (_animalCategory != null) {
       getAnimalSubCategoryByCategoryId(
               globals.user.tokenRedis, _animalCategory.id)
-          .then((onValue) {
+          .then((onValue) async {
+        if (onValue == null) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
+        }
         animalSubCategories = onValue;
         if (widget.subCategoryId != null) {
           for (var animalSubCategory in animalSubCategories) {

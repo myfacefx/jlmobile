@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_video_compress/flutter_video_compress.dart';
 import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
@@ -19,8 +20,8 @@ import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart' as AnimalServices;
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
 import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
+import 'package:jlf_mobile/services/product_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:http_parser/http_parser.dart';
 
 class EditProductPage extends StatefulWidget {
   final Animal animal;
@@ -269,8 +270,8 @@ class _EditProductPageState extends State<EditProductPage> {
     _animalCategory = null;
     _animalSubCategory = null;
 
-    getAnimalCategoryWithoutCount(
-            globals.user.tokenRedis, _selectProduct.id == 3 ? "accessory" : "animal")
+    getAnimalCategoryWithoutCount(globals.user.tokenRedis,
+            _selectProduct.id == 3 ? "accessory" : "animal")
         .then((onValue) {
       animalCategories = onValue;
 
@@ -319,8 +320,16 @@ class _EditProductPageState extends State<EditProductPage> {
       isLoading = true;
     });
     if (_animalCategory != null) {
-      getAnimalSubCategoryByCategoryId(globals.user.tokenRedis, _animalCategory.id)
-          .then((onValue) {
+      getAnimalSubCategoryByCategoryId(
+              globals.user.tokenRedis, _animalCategory.id)
+          .then((onValue) async {
+        if (onValue == null) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
+        }
         animalSubCategories = onValue;
 
         for (var animalSubCategory in animalSubCategories) {
@@ -702,29 +711,29 @@ class _EditProductPageState extends State<EditProductPage> {
     }
   }
 
-  _uploadImageAndReset() async {
-    if (imagesBase64.length > 0) {
-      Map<String, dynamic> formData = Map<String, dynamic>();
-      formData['images'] = imagesBase64;
+  // _uploadImageAndReset() async {
+  //   if (imagesBase64.length > 0) {
+  //     Map<String, dynamic> formData = Map<String, dynamic>();
+  //     formData['images'] = imagesBase64;
 
-      AnimalServices.createImage("", formData, _animal.id)
-          .then((onValue) async {
-        Navigator.pop(context);
-        if (onValue) {
-          await globals.showDialogs("Berhasil mengunggah foto produk", context,
-              isDouble: true);
-        } else {
-          globals.showDialogs(
-              "Gagal menunggah foto produk, Coba lagi.", context);
-        }
-      }).catchError((onError) {
-        Navigator.pop(context);
-        print(onError.toString());
-        globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
-        globals.mailError("_uploadImageAndReset", onError.toString());
-      });
-    }
-  }
+  //     AnimalServices.createImage("", formData, _animal.id)
+  //         .then((onValue) async {
+  //       Navigator.pop(context);
+  //       if (onValue) {
+  //         await globals.showDialogs("Berhasil mengunggah foto produk", context,
+  //             isDouble: true);
+  //       } else {
+  //         globals.showDialogs(
+  //             "Gagal menunggah foto produk, Coba lagi.", context);
+  //       }
+  //     }).catchError((onError) {
+  //       Navigator.pop(context);
+  //       print(onError.toString());
+  //       globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
+  //       globals.mailError("_uploadImageAndReset", onError.toString());
+  //     });
+  //   }
+  // }
 
   _generateImageBase64() async {
     imagesBase64 = List<String>();
@@ -748,11 +757,17 @@ class _EditProductPageState extends State<EditProductPage> {
         "Apakah Anda yakin untuk menghapus produk ini? Barang akan terhapus selamanya",
         context);
     if (result) {
-      ProductServices.delete("", _animal.product.id).then((onValue) async {
+      deleteProduct(globals.user.tokenRedis, _animal.product.id)
+          .then((onValue) async {
         Navigator.pop(context);
-        if (onValue) {
+        if (onValue == 1) {
           await globals.showDialogs("Berhasil menghapus produk", context,
               isDouble: true);
+        } else if (onValue == 3) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
         } else {
           globals.showDialogs("Gagal menutup produk, Coba lagi.", context);
         }
@@ -797,11 +812,6 @@ class _EditProductPageState extends State<EditProductPage> {
       product.price = priceController.numberValue.toInt();
       product.innerIslandShipping = _innerIslandShipping;
 
-      print(product.toJson());
-      print(_animal.product.id);
-
-      print("----");
-
       Map<String, dynamic> formDataAnimal = animal.toJson();
       formDataAnimal['add_images'] = imagesBase64;
       formDataAnimal['delete_images'] = animalImageIdToDelete;
@@ -809,19 +819,20 @@ class _EditProductPageState extends State<EditProductPage> {
       print(formDataAnimal);
 
       try {
-        bool response_product = await ProductServices.update(
-            "Test", product.toJson(), _animal.product.id);
+        int responseProduct = await updateProduct(
+            globals.user.tokenRedis, product.toJson(), _animal.product.id);
 
-        bool response_animal =
-            await AnimalServices.update("Test", formDataAnimal, _animal.id);
-
-        // bool response_animal = await AnimalServices.update(
-        //     "Test", formDataAnimal, _animal.id, videoToSent);
+        int responseAnimal = await AnimalServices.updateAnimal(
+            globals.user.tokenRedis, formDataAnimal, _animal.id);
 
         String message = "Berhasil mengupdate produk";
 
-        if (!response_product && !response_animal) {
-          message = "Gagal mengupdate produk, silahkan coba kembali #12";
+        if (responseAnimal == 2 || responseProduct == 2) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
         }
 
         Navigator.pop(context);

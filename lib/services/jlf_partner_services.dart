@@ -13,6 +13,8 @@ Future<List<JlfPartner>> getAllJlfPartner(String token) async {
       .timeout(Duration(seconds: getTimeOut()));
   if (res.statusCode == 200) {
     return jlfPartnerFromJson(res.body);
+  } else if (res.statusCode == 200) {
+    return null;
   } else {
     throw Exception(res.body);
   }

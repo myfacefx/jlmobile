@@ -18,6 +18,7 @@ import 'package:jlf_mobile/pages/video_popup.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
+import 'package:jlf_mobile/services/auction_services.dart';
 import 'package:jlf_mobile/services/bid_services.dart';
 import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:jlf_mobile/services/product_services.dart';
@@ -401,12 +402,18 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 context);
             if (result) {
               globals.loadingModel(context);
-              sold("", animal.product.id).then((onValue) async {
+              sold(globals.user.tokenRedis, animal.product.id)
+                  .then((onValue) async {
                 Navigator.pop(context);
-                if (onValue) {
+                if (onValue == 1) {
                   await globals.showDialogs(
                       "Berhasil menandai produk telah terjual", context,
                       isDouble: true);
+                } else if (onValue == 3) {
+                  await globals.showDialogs(
+                      "Session anda telah berakhir, Silakan melakukan login ulang",
+                      context,
+                      isLogout: true);
                 } else {
                   globals.showDialogs(
                       "Gagal menandai produk telah terjual, Coba lagi.",
@@ -979,13 +986,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                               "Apakah anda yakin menutup lelang ini? Lelang tidak akan muncul lagi di halaman pemenang maupun pemilik lelang",
                               context);
                           if (result) {
-                            AuctionServices.delete("", animal.auction.id)
+                            deleteAuction(
+                                    globals.user.tokenRedis, animal.auction.id)
                                 .then((onValue) async {
                               Navigator.pop(context);
-                              if (onValue) {
+                              if (onValue == 1) {
                                 await globals.showDialogs(
                                     "Berhasil menutup lelang", context,
                                     isDouble: true);
+                              } else if (onValue == 3) {
+                                await globals.showDialogs(
+                                    "Session anda telah berakhir, Silakan melakukan login ulang",
+                                    context,
+                                    isLogout: true);
                               } else {
                                 globals.showDialogs(
                                     "Gagal menutup lelang, Coba lagi.",
@@ -1174,6 +1187,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                               await AuctionServices
                                                   .getFirebaseChatId(
                                                       'asd', animal.auction.id);
+                                          if (firebaseChatId == null) {
+                                            await globals.showDialogs(
+                                                "Session anda telah berakhir, Silakan melakukan login ulang",
+                                                context,
+                                                isLogout: true);
+                                          }
 
                                           print(
                                               "FirebaseChatId = $firebaseChatId");
