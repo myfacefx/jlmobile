@@ -274,7 +274,6 @@ Future<List<Animal>> getUserCommentProductAnimals(
   }
 }
 
-
 // Future<String> create(Map<String, dynamic> _data) async {
 //   final header = {"Content-Type": "application/json"};
 //   final url = getBaseUrl() + "/animals";
@@ -294,9 +293,8 @@ Future<List<Animal>> getUserCommentProductAnimals(
 //   }
 // }
 
-Future<int> create(Map<String, dynamic> _data,
+Future<int> create(Map<String, dynamic> _data, String token,
     [http.MultipartFile videoToSent]) async {
-
   var uri = Uri.parse(getBaseUrl() + "/animals");
   http.MultipartRequest request = new http.MultipartRequest("POST", uri);
   request.fields['data'] = json.encode(_data);
@@ -306,6 +304,7 @@ Future<int> create(Map<String, dynamic> _data,
   }
 
   request.headers['Content-Type'] = "multipart/form-data";
+  request.headers['Authorization'] = token;
 
   http.StreamedResponse response = await request.send();
   http.Response res = await http.Response.fromStream(response);
@@ -320,13 +319,14 @@ Future<int> create(Map<String, dynamic> _data,
     return 3;
   } else if (res.statusCode == 408) {
     return 4;
+  } else if (res.statusCode == 444) {
+    return 5;
   } else {
     throw Exception(res.body);
   }
 }
 
 Future<bool> update(String token, Map<String, dynamic> _data, int id) async {
-
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/animals/$id";
@@ -390,7 +390,6 @@ Future<bool> deleteImage(String token, int animalImageId) async {
 
 Future<bool> createImage(
     String token, Map<String, dynamic> _data, int animalId) async {
-
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$animalId/animal-images";
 

@@ -18,7 +18,7 @@ class _UpComingPageState extends State<UpComingPage>
   void initState() {
     super.initState();
     globals.getNotificationCount();
-    getAllStatics("token").then((onValue) {
+    getAllStatics().then((onValue) {
       if (onValue.length > 0) {
         if (onValue[0].imageUpcoming != "" &&
             onValue[0].imageUpcoming != null) {

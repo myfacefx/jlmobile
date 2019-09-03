@@ -121,8 +121,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       labelNamaType = "Hewan";
     }
 
-    getAnimalCategoryWithoutCount(
-            globals.user.tokenRedis, _selectProduct.id == 3 ? "accessory" : "animal")
+    getAnimalCategoryWithoutCount(globals.user.tokenRedis,
+            _selectProduct.id == 3 ? "accessory" : "animal")
         .then((onValue) {
       animalCategories = onValue;
       if (widget.categoryId != null) {
@@ -156,8 +156,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     _animalCategory = null;
     _animalSubCategory = null;
 
-    getAnimalCategoryWithoutCount(
-            globals.user.tokenRedis, _selectProduct.id == 3 ? "accessory" : "animal")
+    getAnimalCategoryWithoutCount(globals.user.tokenRedis,
+            _selectProduct.id == 3 ? "accessory" : "animal")
         .then((onValue) {
       animalCategories = onValue;
 
@@ -206,7 +206,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       isLoading = true;
     });
     if (_animalCategory != null) {
-      getAnimalSubCategoryByCategoryId(globals.user.tokenRedis, _animalCategory.id)
+      getAnimalSubCategoryByCategoryId(
+              globals.user.tokenRedis, _animalCategory.id)
           .then((onValue) {
         animalSubCategories = onValue;
         if (widget.subCategoryId != null) {
@@ -438,7 +439,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       formData['images'] = imagesBase64;
 
       try {
-        var result = await create(formData, videoToSent);
+        var result =
+            await create(formData, globals.user.tokenRedis, videoToSent);
 
         Navigator.pop(context);
 
@@ -448,8 +450,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
           Navigator.pushNamed(context, "/profile");
         } else if (result == 2) {
           await globals.showDialogs(
-              "Gagal menambah produk, terjadi kesalahan pada server",
-              context);
+              "Gagal menambah produk, terjadi kesalahan pada server", context);
         } else if (result == 3) {
           await globals.showDialogs(
               "Gagal menambah produk, Anda masuk dalam blacklist user",
@@ -459,16 +460,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
               "Gagal menambah produk, data diri Anda belum terverifikasi",
               context,
               needVerify: true);
+        } else if (result == 4) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
         } else {
           await globals.showDialogs("Error", context);
         }
-        
-        // if (response == "") {
-        //   await globals.showDialogs(message, context);
-          
-        // } else {
-        //   await globals.showDialogs(response, context, needVerify: true);
-        // }
       } catch (e) {
         Navigator.pop(context);
         globals.showDialogs(e.toString(), context);

@@ -323,22 +323,6 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  _loadCampaign() {
-    getAllArticle(globals.user.tokenRedis, "champaign").then((onValue) {
-      if (onValue.length != 0) {
-        listCampaign = onValue;
-      }
-
-      setState(() {
-        isLoadingCampaign = false;
-      });
-    }).catchError((onError) {
-      print(onError.toString());
-      setState(() {
-        isLoadingCampaign = false;
-      });
-    });
-  }
   _loadArticle() {
     getAllArticle(globals.user.tokenRedis, "article").then((onValue) {
       if (onValue.length != 0) {

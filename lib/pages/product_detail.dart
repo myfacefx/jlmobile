@@ -18,7 +18,7 @@ import 'package:jlf_mobile/pages/video_popup.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
-import 'package:jlf_mobile/services/bid_services.dart' as BidServices;
+import 'package:jlf_mobile/services/bid_services.dart';
 import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:jlf_mobile/services/product_services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -103,20 +103,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         // height: 40,
         color: Colors.white,
         child: InkWell(
-          child: Text(
-            "Klik Untuk Melihat Video",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.blue),
-          ),
-          onTap: () {
-            Navigator.push(
+            child: Text(
+              "Klik Untuk Melihat Video",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.blue),
+            ),
+            onTap: () {
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => VideoPopupPage(
                           videoPath: animal.videoPath,
                           animalName: animal.name)));
-          }
-        ));
+            }));
   }
 
   Widget _buildImage() {
@@ -492,7 +491,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     onTap: () {
                       String phone =
                           "62${animal.owner.phoneNumber.substring(1)}";
-                      String message = "${animal.name}, ${widget.from}, mau tanya gan";
+                      String message =
+                          "${animal.name}, ${widget.from}, mau tanya gan";
                       _sendWhatsApp(phone, message);
                     },
                     child: Container(
@@ -1207,7 +1207,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                     globals.user.tokenRedis,
                                                     update.toJson(),
                                                     animal.auction.id);
-                                                    
+
                                             if (response == null) {
                                               await globals.showDialogs(
                                                   "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -1575,13 +1575,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       final result =
                           await placeBid(globals.user.tokenRedis, newBid);
                       Navigator.pop(context);
-                      if (result == null) {
-                        await globals.showDialogs(
-                            "Session anda telah berakhir, Silakan melakukan login ulang",
-                            context,
-                            isLogout: true);
-                        return;
-                      }
 
                       if (result == 1) {
                         await globals.showDialogs("Tawaran terpasang", context);
@@ -1598,6 +1591,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             "Bid gagal, data diri Anda belum terverifikasi",
                             context,
                             needVerify: true);
+                      } else if (result == 4) {
+                        await globals.showDialogs(
+                            "Session anda telah berakhir, Silakan melakukan login ulang",
+                            context,
+                            isLogout: true);
                       } else {
                         await globals.showDialogs("Error", context);
                       }
@@ -1822,13 +1820,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       final result =
           await addCommentAuction(globals.user.tokenRedis, auctionComment);
       Navigator.pop(context);
-      if (result == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
 
       if (result == 1) {
         await globals.showDialogs("Komentar terpasang", context);
@@ -1839,31 +1830,22 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         loadAnimal(animal.id);
       } else if (result == 2) {
         await globals.showDialogs(
-            "Gagal memasang komentar, terjadi kesalahan pada server",
-            context);
+            "Gagal memasang komentar, terjadi kesalahan pada server", context);
       } else if (result == 3) {
         await globals.showDialogs(
-            "Komentar gagal, Anda masuk dalam blacklist user",
-            context);
+            "Komentar gagal, Anda masuk dalam blacklist user", context);
       } else if (result == 4) {
         await globals.showDialogs(
-            "Komentar gagal, data diri Anda belum terverifikasi",
-            context,
+            "Komentar gagal, data diri Anda belum terverifikasi", context,
             needVerify: true);
+      } else if (result == 4) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
       } else {
         await globals.showDialogs("Error", context);
       }
-
-      // if (result == "") {
-      //   await globals.showDialogs("Comment Sended", context);
-      //   commentController.text = '';
-      //   setState(() {
-      //     isLoading = true;
-      //   });
-      //   loadAnimal(animal.id);
-      // } else {
-      //   await globals.showDialogs(result, context, needVerify: true);
-      // }
     } catch (e) {
       Navigator.pop(context);
       globals.showDialogs(e.toString(), context);
@@ -1882,13 +1864,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       final result =
           await addCommentProduct(globals.user.tokenRedis, productComment);
       Navigator.pop(context);
-      if (result == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
 
       if (result == 1) {
         await globals.showDialogs("Komentar terpasang", context);
@@ -1899,31 +1874,22 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         loadAnimal(animal.id);
       } else if (result == 2) {
         await globals.showDialogs(
-            "Gagal memasang komentar, terjadi kesalahan pada server",
-            context);
+            "Gagal memasang komentar, terjadi kesalahan pada server", context);
       } else if (result == 3) {
         await globals.showDialogs(
-            "Komentar gagal, Anda masuk dalam blacklist user",
-            context);
+            "Komentar gagal, Anda masuk dalam blacklist user", context);
       } else if (result == 4) {
         await globals.showDialogs(
-            "Komentar gagal, data diri Anda belum terverifikasi",
-            context,
+            "Komentar gagal, data diri Anda belum terverifikasi", context,
             needVerify: true);
+      } else if (result == 4) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
       } else {
         await globals.showDialogs("Error", context);
       }
-
-      // if (result == "") {
-      //   await globals.showDialogs("Comment Sended", context);
-      //   commentController.text = '';
-      //   setState(() {
-      //     isLoading = true;
-      //   });
-      //   loadAnimal(animal.id);
-      // } else {
-      //   await globals.showDialogs(result, context, needVerify: true);
-      // }
     } catch (e) {
       Navigator.pop(context);
       globals.showDialogs(e.toString(), context);

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
+import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/bid.dart';
 
 Future<int> placeBid(String token, Bid _data) async {
@@ -17,13 +17,10 @@ Future<int> placeBid(String token, Bid _data) async {
     return 2;
   } else if (res.statusCode == 407) {
     return 3;
-
-  } else if (res.statusCode == 444) {
-    return null;
-
   } else if (res.statusCode == 408) {
     return 4;
-
+  } else if (res.statusCode == 444) {
+    return 5;
   } else {
     throw Exception(res.body);
   }
@@ -40,9 +37,6 @@ Future<bool> delete(String token, int bidId) async {
       .delete(url, headers: header)
       .timeout(Duration(seconds: getTimeOut()));
 
-  // var response = json.decode(res.body);
-
-  // return response;
   if (res.statusCode == 204) {
     return true;
   } else if (res.statusCode == 406) {
