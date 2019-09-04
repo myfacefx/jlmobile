@@ -2126,7 +2126,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             : Container()
                         : Container(),
                     _buildImage(),
-                    // _buildVideo(),
+                    animal.videoPath != null ? _buildVideo() : Container(),
                     SizedBox(
                       height: 8,
                     ),

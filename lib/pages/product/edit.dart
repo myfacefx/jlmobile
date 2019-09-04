@@ -821,10 +821,8 @@ class _EditProductPageState extends State<EditProductPage> {
       try {
         int responseProduct = await updateProduct(
             globals.user.tokenRedis, product.toJson(), _animal.product.id);
-
         int responseAnimal = await AnimalServices.updateAnimal(
-            globals.user.tokenRedis, formDataAnimal, _animal.id);
-
+            globals.user.tokenRedis, formDataAnimal, _animal.id, videoToSent);
         String message = "Berhasil mengupdate produk";
 
         if (responseAnimal == 2 || responseProduct == 2) {
@@ -1557,44 +1555,44 @@ class _EditProductPageState extends State<EditProductPage> {
                 _buildGridViewImages(),
                 SizedBox(height: 10),
 
-                // _animal.videoPath != null ? _buildVideo() : Container(),
+                _animal.videoPath != null ? _buildVideo() : Container(),
 
-                // _isShowVideo == true
-                //     ? Container(
-                //         width: 250,
-                //         child: RaisedButton(
-                //           shape: RoundedRectangleBorder(
-                //               borderRadius: BorderRadius.circular(5)),
-                //           child: Row(
-                //             mainAxisAlignment: MainAxisAlignment.center,
-                //             children: <Widget>[
-                //               Text("Upload Video (Max 5 MB)",
-                //                   style: TextStyle(color: Colors.white)),
-                //               Icon(Icons.video_call, color: Colors.white),
-                //             ],
-                //           ),
-                //           color: Theme.of(context).primaryColor,
-                //           onPressed: getVideo,
-                //         ),
-                //       )
-                //     : Container(),
+                _isShowVideo == true
+                    ? Container(
+                        width: 250,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Upload Video (Max 5 MB)",
+                                  style: TextStyle(color: Colors.white)),
+                              Icon(Icons.video_call, color: Colors.white),
+                            ],
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          onPressed: getVideo,
+                        ),
+                      )
+                    : Container(),
 
-                // Container(
-                //   width: 300,
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.center,
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: <Widget>[
-                //       Text(
-                //         _convertedVideoPath ?? "",
-                //         style: TextStyle(
-                //           color: Colors.black,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ],
-                //   ),
-                // ),
+                Container(
+                  width: 300,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        _convertedVideoPath ?? "",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
 
                 Divider(),
 

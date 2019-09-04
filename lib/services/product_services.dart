@@ -71,7 +71,7 @@ Future<int> updateProduct(
   final url = getBaseUrl() + "/products/$id";
 
   print(url);
-
+  // print(json.encode(_data));
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut() + 270));
