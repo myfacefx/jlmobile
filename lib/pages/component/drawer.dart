@@ -78,7 +78,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
           } else {
             Navigator.pop(context);
             Navigator.pushNamed(context, route);
-          }
+          } 
         },
         child: SizedBox(
             width: double.infinity,

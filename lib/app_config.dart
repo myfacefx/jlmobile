@@ -42,6 +42,7 @@ class AppConfig extends InheritedWidget {
           final resVerify = await verifyToken(newUser.tokenRedis);
           if (resVerify != null) {
             print("verifed token");
+            print(resVerify.tokenRedis);
             globals.user = resVerify;
 
             globals.state = 'home';

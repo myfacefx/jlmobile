@@ -98,6 +98,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildVideo() {
+    print(animal.videoPath);
     return Container(
         padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
         margin: EdgeInsets.fromLTRB(2, 2, 2, 0),

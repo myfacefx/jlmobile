@@ -16,8 +16,7 @@ class _VideoPopupPage extends State<VideoPopupPage> {
   String _videoPath;
   String _animalName;
 
-
-  _VideoPopupPage(String videoPath, String animalName){
+  _VideoPopupPage(String videoPath, String animalName) {
     _videoPath = videoPath;
     _animalName = animalName;
   }
@@ -33,46 +32,42 @@ class _VideoPopupPage extends State<VideoPopupPage> {
     _controller.play();
   }
 
-
-    // use this when you want to get video from path on the device
-    // void initState() {
-    // super.initState();
-    // var file = new File(_videoPath);
-    // _controller = VideoPlayerController.file(file)
-    //   ..initialize().then((_) {
-    //     // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-    //     setState(() {});
-    //   });
+  // use this when you want to get video from path on the device
+  // void initState() {
+  // super.initState();
+  // var file = new File(_videoPath);
+  // _controller = VideoPlayerController.file(file)
+  //   ..initialize().then((_) {
+  //     // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+  //     setState(() {});
+  //   });
   // }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video Demo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(_animalName),
-        ),
-        backgroundColor: Colors.black,
-        body: Center(
-          child: _controller.value.initialized
-              ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                )
-              : Container(),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
-            });
-          },
-          child: Icon(
-            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_animalName),
+      ),
+      backgroundColor: Colors.black,
+      body: Center(
+        child: _controller.value.initialized
+            ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+            : Container(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _controller.value.isPlaying
+                ? _controller.pause()
+                : _controller.play();
+          });
+        },
+        child: Icon(
+          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
         ),
       ),
     );
@@ -83,5 +78,4 @@ class _VideoPopupPage extends State<VideoPopupPage> {
     super.dispose();
     _controller.dispose();
   }
-
 }
