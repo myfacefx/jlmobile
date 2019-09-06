@@ -784,7 +784,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   }
 
   void showVideoByCategory() {
-    if (_animalCategory.name.toLowerCase() == "unggas") {
+    if (_animalCategory.isVideoAllowed == true) {
       _isShowVideo = true;
     } else {
       _isShowVideo = false;

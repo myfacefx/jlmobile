@@ -20,6 +20,7 @@ class AnimalCategory {
     String updatedAt;
     dynamic deletedAt;
     int animalsCount;
+    bool isVideoAllowed;
     List<AnimalSubCategory> animalSubCategories;
 
     AnimalCategory({
@@ -32,6 +33,7 @@ class AnimalCategory {
         this.updatedAt,
         this.deletedAt,
         this.animalsCount,
+        this.isVideoAllowed,
         this.animalSubCategories,
     });
 
@@ -45,6 +47,7 @@ class AnimalCategory {
         updatedAt: json["updated_at"] == null ? null : json["updated_at"],
         deletedAt: json["deleted_at"],
         animalsCount: json["animals_count"] == null ? null : json["animals_count"],
+        isVideoAllowed: json["is_video_allowed"] == null ? null : json["is_video_allowed"],
         animalSubCategories: json["animal_sub_categories"] == null ? null : new List<AnimalSubCategory>.from(json["animal_sub_categories"].map((x) => AnimalSubCategory.fromJson(x))),
     );
 
@@ -58,6 +61,7 @@ class AnimalCategory {
         "updated_at": updatedAt == null ? null : updatedAt,
         "deleted_at": deletedAt,
         "animals_count": animalsCount == null ? null : animalsCount,
+        "is_video_allowed": isVideoAllowed == null ? null : isVideoAllowed,
         "animal_sub_categories": animalSubCategories == null ? null : new List<dynamic>.from(animalSubCategories.map((x) => x.toJson())),
     }..removeWhere( (key, val) => val == null);
 }
