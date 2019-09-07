@@ -66,7 +66,7 @@ void share(String from, Animal animal) {
       String openBid =
           convertToMoney(double.parse(animal.auction.openBid.toString()));
       String bin =
-          convertToMoney(double.parse(animal.auction.openBid.toString()));
+          convertToMoney(double.parse(animal.auction.buyItNow.toString()));
       String multiply =
           convertToMoney(double.parse(animal.auction.multiply.toString()));
 
@@ -386,7 +386,7 @@ Widget myAppBarIcon(context) {
                               padding: const EdgeInsets.all(0.0),
                               child: Center(
                                 child: Text(
-                                  "${user.historiesCount}",
+                                  "${user.historiesCount+5}",
                                   style: TextStyle(fontSize: 10),
                                 ),
                               ),
@@ -449,8 +449,8 @@ Widget myAppBarIcon(context) {
   );
 }
 
-Widget spacePadding() {
-  return Padding(padding: EdgeInsets.only(bottom: 20));
+Widget spacePadding({double padding = 20}) {
+  return Padding(padding: EdgeInsets.only(bottom: padding));
 }
 
 // Future<ImageProvider> imageUrlProvider(String link,
@@ -683,6 +683,9 @@ Color myColor([String color = "default"]) {
       break;
     case "secondary":
       returnedColor = Colors.deepOrange;
+      break;
+    case "success":
+      returnedColor = Colors.green;
       break;
     case "active":
       returnedColor = Colors.black;
