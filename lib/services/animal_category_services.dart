@@ -5,9 +5,9 @@ import 'package:jlf_mobile/models/animal_category.dart';
 Future<List<AnimalCategory>> getAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  print(getBaseUrl() + "/animal-categories/animal");
+  print(getBaseUrl() + "/animal/animal-categories");
 
-  http.Response res = await http.get(getBaseUrl() + "/animal-categories/animal",
+  http.Response res = await http.get(getBaseUrl() + "/animal/animal-categories",
       headers: header);
   if (res.statusCode == 200) {
     return animalCategoryFromJson(res.body);
@@ -35,9 +35,9 @@ Future<List<AnimalCategory>> getAnimalCategoryWithoutCount(
 
 Future<List<AnimalCategory>> getAccessoryAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/animal-categories/accessory");
+  print(getBaseUrl() + "/accessory/animal-categories");
   http.Response res = await http
-      .get(getBaseUrl() + "/animal-categories/accessory", headers: header);
+      .get(getBaseUrl() + "/accessory/animal-categories", headers: header);
   if (res.statusCode == 200) {
     return animalCategoryFromJson(res.body);
   } else if (res.statusCode == 444) {
@@ -49,9 +49,9 @@ Future<List<AnimalCategory>> getAccessoryAnimalCategory(String token) async {
 
 Future<List<AnimalCategory>> getProductAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/animal-categories/product");
+  print(getBaseUrl() + "/product/animal-categories");
   http.Response res = await http
-      .get(getBaseUrl() + "/animal-categories/product", headers: header);
+      .get(getBaseUrl() + "/product/animal-categories", headers: header);
   if (res.statusCode == 200) {
     return animalCategoryFromJson(res.body);
   } else if (res.statusCode == 444) {
