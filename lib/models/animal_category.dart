@@ -10,6 +10,16 @@ List<AnimalCategory> animalCategoryFromJson(String str) => new List<AnimalCatego
 
 String animalCategoryToJson(List<AnimalCategory> data) => json.encode(new List<dynamic>.from(data.map((x) => x.toJson())));
 
+AnimalCategory animalObjectCategoryFromJson(String str) {
+    final jsonData = json.decode(str);
+    return AnimalCategory.fromJson(jsonData);
+}
+
+String animalObjectToJson(AnimalCategory data) {
+    final dyn = data.toJson();
+    return json.encode(dyn);
+}
+
 class AnimalCategory {
     int id;
     String name;
@@ -20,7 +30,7 @@ class AnimalCategory {
     String updatedAt;
     dynamic deletedAt;
     int animalsCount;
-    bool isVideoAllowed;
+    int isVideoAllowed;
     List<AnimalSubCategory> animalSubCategories;
 
     AnimalCategory({

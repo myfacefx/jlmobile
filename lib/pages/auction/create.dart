@@ -784,11 +784,17 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   }
 
   void showVideoByCategory() {
-    if (_animalCategory.isVideoAllowed == true) {
-      _isShowVideo = true;
-    } else {
-      _isShowVideo = false;
-    }
+    AnimalCategory tamp;
+    getAnimalCategoryById(globals.user.tokenRedis, _animalCategory.id)
+        .then((onValue) {
+      tamp = onValue;
+
+      if (tamp.isVideoAllowed == 1) {
+        _isShowVideo = true;
+      } else {
+        _isShowVideo = false;
+      }
+    });
   }
 
   @override

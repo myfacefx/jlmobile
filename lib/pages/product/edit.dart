@@ -1276,13 +1276,19 @@ class _EditProductPageState extends State<EditProductPage> {
       ],
     );
   }
-
+  
   void showVideoByCategory() {
-    if (_animalCategory.name.toLowerCase() == "unggas") {
-      _isShowVideo = true;
-    } else {
-      _isShowVideo = false;
-    }
+    AnimalCategory tamp;
+    getAnimalCategoryById(globals.user.tokenRedis, _animalCategory.id)
+        .then((onValue) {
+      tamp = onValue;
+
+      if (tamp.isVideoAllowed == 1) {
+        _isShowVideo = true;
+      } else {
+        _isShowVideo = false;
+      }
+    });
   }
 
   @override

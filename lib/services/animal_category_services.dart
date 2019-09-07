@@ -60,3 +60,21 @@ Future<List<AnimalCategory>> getProductAnimalCategory(String token) async {
     throw Exception(res.body);
   }
 }
+
+Future<AnimalCategory> getAnimalCategoryById(String token, int animalCategoryId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  print(getBaseUrl() +
+      "/animal-categories/$animalCategoryId");
+  http.Response res = await http.get(
+      getBaseUrl() +
+          "/animal-categories/$animalCategoryId",
+      headers: header);
+  if (res.statusCode == 200) {
+    return animalObjectCategoryFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
