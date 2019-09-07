@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/auction.dart';
+import 'package:jlf_mobile/models/bid.dart';
+import 'package:jlf_mobile/models/chat_list_pagination.dart';
+import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
@@ -16,6 +20,11 @@ class _ChatListPageState extends State<ChatListPage> {
   bool isLoading = true;
   List<Auction> auctions = List<Auction>();
 
+  ChatListPagination chatListPagination = ChatListPagination();
+  String _search;
+
+  TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -23,9 +32,13 @@ class _ChatListPageState extends State<ChatListPage> {
     this.refreshChats();
   }
 
-  void refreshChats() {
+  void refreshChats({int page = 1, String search = ''}) {
+    print("SEARCH = $search");
+    setState(() {
+      isLoading = true;
+    });
     getAuctionsWithActiveChat(globals.user.tokenRedis, globals.user.id,
-            globals.user.roleId == 1 ? true : false)
+            globals.user.roleId == 1 ? true : false, page, search)
         .then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
@@ -35,7 +48,8 @@ class _ChatListPageState extends State<ChatListPage> {
         return;
       }
 
-      auctions = onValue;
+      chatListPagination = null;
+      chatListPagination = onValue;
 
       setState(() {
         isLoading = false;
@@ -55,7 +69,25 @@ class _ChatListPageState extends State<ChatListPage> {
     String timestamp =
         "${unformattedDate.month.toString()}/${unformattedDate.day.toString()} ${unformattedDate.hour.toString()}:${unformattedDate.minute.toString()}";
 
-    int bidCount = 1;
+    User winner = User();
+    int amount;
+    bool winnerFound = false, isWinner = false, isOwner = false;
+
+    List<Bid> bids = auction.animal.auction.bids;
+
+    if (auction != null && auction.winnerBidId != null) {
+      for (var i = 0; i < bids.length; i++) {
+        if (bids[i].id == auction.winnerBidId) {
+          winner = bids[i].user;
+          amount = bids[i].amount;
+          winnerFound = true;
+          if (winner.id == globals.user.id) isWinner = true;
+
+          break;
+        }
+      }
+    }
+    if (auction.ownerUserId == globals.user.id) isOwner = true;
 
     return Card(
       child: Container(
@@ -66,11 +98,40 @@ class _ChatListPageState extends State<ChatListPage> {
               width: globals.mw(context) * 0.9,
               child: Column(
                 children: <Widget>[
+                  isWinner || isOwner
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              width: 85,
+                              padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                              margin: EdgeInsets.only(right: 10),
+                              decoration: BoxDecoration(
+                                  color: isWinner
+                                      ? globals.myColor("success")
+                                      : globals.myColor("warning"),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: globals.myText(
+                                  text: isWinner ? 'Pemenang' : 'Pelapak',
+                                  color: 'light',
+                                  size: 10,
+                                  align: TextAlign.center),
+                            ),
+                          ],
+                        )
+                      : Container(),
+                  SizedBox(height: 5),
                   globals.myText(
                       text: "Lelang Hewan '${auction.animal.name}'",
                       weight: "B"),
-                  globals.myText(text: "Seller: ${auction.owner.username}"),
-                  globals.myText(text: "Tanggal Menang Lelang: $timestamp"),
+                  !isOwner
+                      ? globals.myText(
+                          text: "Pelapak: ${auction.owner.username}")
+                      : Container(),
+                  winnerFound && !isWinner
+                      ? globals.myText(text: "Pemenang: ${winner.username}")
+                      : Container(),
+                  globals.myText(text: "Tanggal: $timestamp"),
                   globals.myText(
                       text: "Invoice: " + globals.generateInvoice(auction)),
                   Row(
@@ -80,28 +141,44 @@ class _ChatListPageState extends State<ChatListPage> {
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
                         child: FlatButton(
-                            color: globals.myColor("primary"),
-                            child: globals.myText(
-                                text: "Buka Obrolan", color: "light"),
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        ChatPage(auction: auction)))),
+                          color: globals.myColor("primary"),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Icon(Icons.card_travel, color: globals.myColor('light')),
+                              ),
+                              globals.myText(
+                                  text: "Lihat Lelang", color: "light"),
+                            ],
+                          ),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ProductDetailPage(
+                                        animalId: auction.animal.id,
+                                        from: 'LELANG',
+                                      ))),
+                        ),
                       ),
                       FlatButton(
-                        color: globals.myColor("primary"),
-                        child: globals.myText(
-                            text: "Lihat Lelang", color: "light"),
-                        onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ProductDetailPage(
-                                      animalId: auction.animal.id,
-                                      from: 'LELANG',
-                                    ))),
-                      ),
+                          color: globals.myColor("success"),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Icon(Icons.chat, color: globals.myColor('light')),
+                              ),
+                              globals.myText(
+                                  text: "Chat Rekber", color: "light"),
+                            ],
+                          ),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ChatPage(auction: auction))))
                     ],
                   )
                 ],
@@ -144,24 +221,125 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   Widget _buildListOfChats() {
-    return isLoading == false
-        ? auctions.length > 0
-            ? Flexible(
-                child: ListView.builder(
-                itemCount: auctions.length,
-                padding: EdgeInsets.all(5),
-                itemBuilder: (BuildContext context, int i) {
-                  return _buildChat(auctions[i]);
+    bool hasChat = true;
+
+    if (chatListPagination == null ||
+        chatListPagination.data == null ||
+        chatListPagination.total == 0) {
+      hasChat = false;
+    }
+
+    print("Has Chat $hasChat");
+
+    return Flexible(
+        child: isLoading == false
+            ? hasChat
+                ? ListView.builder(
+                    itemCount: chatListPagination.data.length,
+                    padding: EdgeInsets.all(5),
+                    itemBuilder: (BuildContext context, int i) {
+                      return _buildChat(chatListPagination.data[i]);
+                    },
+                  )
+                : Center(child: globals.myText(text: "Tidak ada Chat Rekber"))
+            : globals.isLoading());
+  }
+
+  Widget _buildSearch() {
+    return Container(
+      // margin: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              width: globals.mw(context),
+              // padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: TextFormField(
+                textInputAction: TextInputAction.next,
+                validator: (String value) {
+                  if (value.isEmpty) return 'Silahkan masukkan nomor pencarian';
                 },
+                onFieldSubmitted: (String value) {
+                  if (value.length > 0) refreshChats(page: 1, search: value);
+                },
+                onSaved: (String value) => _search = value,
+                // onFieldSubmitted: (String value) {},
+                style: TextStyle(color: Colors.black),
+                controller: searchController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        refreshChats(page: 1, search: searchController.text);
+                      },
+                      child: Icon(Icons.search),
+                    ),
+                    // filled: true,
+                    // fillColor: Colors.white,
+                    contentPadding: EdgeInsets.all(13),
+                    hintText: "Nomor Invoice",
+                    labelText: "Cari Nomor Invoice",
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5))),
               ))
-            : Center(child: globals.myText(text: "Belum ada obrolan"))
-        : globals.isLoading();
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPagination() {
+    bool hasChat = true;
+
+    if (chatListPagination == null ||
+        chatListPagination.data == null ||
+        chatListPagination.total == 0) {
+      hasChat = false;
+    }
+
+    return !hasChat
+        ? Container()
+        : Container(
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
+                  onTap: () => isLoading
+                      ? null
+                      : chatListPagination.currentPage > 1
+                          ? refreshChats(
+                              page: chatListPagination.currentPage - 1)
+                          : null,
+                  child: Icon(Icons.navigate_before,
+                      color: chatListPagination.currentPage > 1
+                          ? Colors.black
+                          : Colors.black12)),
+              globals.myText(
+                  text:
+                      "Halaman ${chatListPagination.currentPage} dari ${chatListPagination.lastPage}"),
+              GestureDetector(
+                  onTap: () => isLoading
+                      ? null
+                      : chatListPagination.currentPage <
+                              chatListPagination.lastPage
+                          ? refreshChats(
+                              page: chatListPagination.currentPage + 1)
+                          : null,
+                  child: Icon(Icons.navigate_next,
+                      color: chatListPagination.currentPage <
+                              chatListPagination.lastPage
+                          ? Colors.black
+                          : Colors.black12)),
+            ],
+          ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
+        appBar: globals.appBar(_scaffoldKey, context,
+            isSubMenu: true, showNotification: false),
         body: Scaffold(
             key: _scaffoldKey,
             drawer: drawer(context),
@@ -172,11 +350,15 @@ class _ChatListPageState extends State<ChatListPage> {
                   Center(
                     child: Column(children: <Widget>[
                       globals.myText(
-                          text: "Obrolan Aktif", weight: "B", size: 24),
-                      // globals.spacePadding(),
+                          text: "CHAT REKBER", weight: "B", size: 24),
                     ]),
                   ),
-                  _buildListOfChats()
+                  globals.spacePadding(padding: 5),
+                  _buildSearch(),
+                  globals.spacePadding(padding: 5),
+                  _buildListOfChats(),
+                  globals.spacePadding(padding: 5),
+                  _buildPagination()
                 ]),
               ),
             )));

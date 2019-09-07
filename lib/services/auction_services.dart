@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
-import 'package:jlf_mobile/models/auction.dart';
+import 'package:jlf_mobile/models/chat_list_pagination.dart';
 
 Future<int> createAuction(
     Map<String, dynamic> _data, int animalId, String token) async {
@@ -166,21 +166,30 @@ Future<String> getFirebaseChatId(String token, int auctionId) async {
   }
 }
 
-Future<List<Auction>> getAuctionsWithActiveChat(
-    String token, int userId, bool isAdmin) async {
+Future<ChatListPagination> getAuctionsWithActiveChat(
+    String token, int userId, bool isAdmin, int page, String search) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   String url = getBaseUrl();
 
   if (isAdmin)
-    url += "/auctions/active-chats-admin";
+    url += "/auctions/active-chats-admin?page=$page";
   else
-    url += "/users/" + userId.toString() + "/auctions/chats";
+    url += "/users/" + userId.toString() + "/auctions/chats?page=$page";
+
+  if (search != null && search.length > 0) url += "&search=$search";
 
   print(url);
 
   http.Response res = await http.get(url, headers: header);
+
+  print("RESULT");
+
+  print(res.body.toString());
+
+  print("MANSKUY");
+
   if (res.statusCode == 200) {
-    return auctionFromJson(res.body);
+    return chatListPaginationFromJson(res.body);
   } else if (res.statusCode == 444) {
     return null;
   } else {

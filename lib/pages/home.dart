@@ -621,7 +621,7 @@ class _HomePage extends State<HomePage> {
           ? GestureDetector(
               onTap: () => Navigator.pushNamed(context, "/verification"),
               child: Container(
-                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                 height: 35,
                 decoration: BoxDecoration(
