@@ -1276,19 +1276,13 @@ class _EditProductPageState extends State<EditProductPage> {
       ],
     );
   }
-  
-  void showVideoByCategory() {
-    AnimalCategory tamp;
-    getAnimalCategoryById(globals.user.tokenRedis, _animalCategory.id)
-        .then((onValue) {
-      tamp = onValue;
 
-      if (tamp.isVideoAllowed == 1) {
-        _isShowVideo = true;
-      } else {
-        _isShowVideo = false;
-      }
-    });
+  void showVideoByCategory() {
+    if (_animalCategory.isVideoAllowed == 1) {
+      _isShowVideo = true;
+    } else {
+      _isShowVideo = false;
+    }
   }
 
   @override
