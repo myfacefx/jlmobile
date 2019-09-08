@@ -1611,11 +1611,21 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             "Bid gagal, data diri Anda belum terverifikasi",
                             context,
                             needVerify: true);
-                      } else if (result == 4) {
+                      } else if (result == 5) {
                         await globals.showDialogs(
                             "Session anda telah berakhir, Silakan melakukan login ulang",
                             context,
                             isLogout: true);
+                      } else if (result == 6) {
+                        globals.loadingModel(context);
+                        try {
+                          final res = await getAuctionsWithActiveChatNoPaginate(
+                              globals.user.tokenRedis, globals.user.id);
+                          await globals.showDialogBlockRekber(res, context);
+                        } catch (e) {
+                          print(e.toString());
+                          Navigator.pop(context);
+                        }
                       } else {
                         await globals.showDialogs("Error", context);
                       }
@@ -1863,6 +1873,16 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             "Session anda telah berakhir, Silakan melakukan login ulang",
             context,
             isLogout: true);
+      } else if (result == 6) {
+        globals.loadingModel(context);
+        try {
+          final res = await getAuctionsWithActiveChatNoPaginate(
+              globals.user.tokenRedis, globals.user.id);
+          await globals.showDialogBlockRekber(res, context);
+        } catch (e) {
+          print(e.toString());
+          Navigator.pop(context);
+        }
       } else {
         await globals.showDialogs("Error", context);
       }

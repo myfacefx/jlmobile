@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -264,8 +265,13 @@ class _HomePage extends State<HomePage> {
                       appBar: globals.appBar(_scaffoldKey, context,
                           isSubMenu: true, showNotification: false))));
             },
-            child: FadeInImage.assetNetwork(
-                placeholder: 'assets/images/loading.gif', image: slider.link),
+            child: CachedNetworkImage(
+              imageUrl: slider.link,
+              placeholder: (context, url) =>
+                  Image.asset('assets/images/loading.gif'),
+              errorWidget: (context, url, error) =>
+                  Image.asset('assets/images/error.jpeg'),
+            ),
           ));
         });
       } else {
@@ -571,7 +577,8 @@ class _HomePage extends State<HomePage> {
           globals.myText(
               text: "Cek yuk apa rencana JLF kali ini",
               color: "light",
-              size: 16,
+              size: 17,
+              weight: "B",
               align: TextAlign.center),
         ]),
       ),
@@ -745,10 +752,13 @@ class _HomePage extends State<HomePage> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(90),
-        child: FadeInImage.assetNetwork(
+        child: CachedNetworkImage(
           fit: BoxFit.cover,
-          placeholder: 'assets/images/loading.gif',
-          image: url,
+          imageUrl: url,
+          placeholder: (context, url) =>
+              Image.asset('assets/images/loading.gif'),
+          errorWidget: (context, url, error) =>
+              Image.asset('assets/images/error.jpeg'),
         ),
       ),
     );
@@ -848,11 +858,15 @@ class _HomePage extends State<HomePage> {
           child: Container(
             width: globals.mw(context),
             padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-            child: FadeInImage.assetNetwork(
-                width: globals.mw(context) * 0.23,
-                height: isLoadingPromoB ? 20 : null,
-                placeholder: 'assets/images/loading.gif',
-                image: f.link),
+            child: CachedNetworkImage(
+              width: globals.mw(context) * 0.23,
+              height: isLoadingPromoB ? 20 : null,
+              imageUrl: f.link,
+              placeholder: (context, url) =>
+                  Image.asset('assets/images/loading.gif'),
+              errorWidget: (context, url, error) =>
+                  Image.asset('assets/images/error.jpeg'),
+            ),
           ),
         );
       }).toList(),
@@ -929,11 +943,15 @@ class _HomePage extends State<HomePage> {
           child: Container(
             width: globals.mw(context),
             padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-            child: FadeInImage.assetNetwork(
-                width: globals.mw(context) * 0.23,
-                height: isLoadingPromoB ? 20 : null,
-                placeholder: 'assets/images/loading.gif',
-                image: f.link),
+            child: CachedNetworkImage(
+              width: globals.mw(context) * 0.23,
+              height: isLoadingPromoC ? 20 : null,
+              imageUrl: f.link,
+              placeholder: (context, url) =>
+                  Image.asset('assets/images/loading.gif'),
+              errorWidget: (context, url, error) =>
+                  Image.asset('assets/images/error.jpeg'),
+            ),
           ),
         );
       }).toList(),
@@ -1229,10 +1247,14 @@ class _HomePage extends State<HomePage> {
                 children: listParner.map((f) {
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: FadeInImage.assetNetwork(
-                        width: globals.mw(context) * 0.23,
-                        placeholder: 'assets/images/loading.gif',
-                        image: f.thumbnail),
+                    child: CachedNetworkImage(
+                      width: globals.mw(context) * 0.23,
+                      imageUrl: f.thumbnail,
+                      placeholder: (context, url) =>
+                          Image.asset('assets/images/loading.gif'),
+                      errorWidget: (context, url, error) =>
+                          Image.asset('assets/images/error.jpeg'),
+                    ),
                   );
                 }).toList(),
               ),

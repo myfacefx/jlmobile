@@ -71,14 +71,19 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
             if (result) {
               deleteLocalData("user");
               globals.state = "login";
-              // await logout(globals.user.tokenRedis);
+              try {
+                logout(globals.user.tokenRedis);
+              } catch (e) {
+                print(e.toString());
+              }
+
               Navigator.of(context).pop();
               Navigator.pushNamed(context, "/login");
             }
           } else {
             Navigator.pop(context);
             Navigator.pushNamed(context, route);
-          } 
+          }
         },
         child: SizedBox(
             width: double.infinity,

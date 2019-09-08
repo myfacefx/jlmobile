@@ -21,6 +21,8 @@ Future<int> placeBid(String token, Bid _data) async {
     return 4;
   } else if (res.statusCode == 444) {
     return 5;
+  } else if (res.statusCode == 409) {
+    return 6;
   } else {
     throw Exception(res.body);
   }
