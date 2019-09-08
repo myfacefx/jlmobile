@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
+import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/chat_list_pagination.dart';
 
 Future<int> createAuction(
@@ -182,14 +183,28 @@ Future<ChatListPagination> getAuctionsWithActiveChat(
 
   http.Response res = await http.get(url, headers: header);
 
-  print("RESULT");
-
-  print(res.body.toString());
-
-  print("MANSKUY");
-
   if (res.statusCode == 200) {
     return chatListPaginationFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<List<Auction>> getAuctionsWithActiveChatNoPaginate(
+    String token, int userId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  String url = getBaseUrl();
+
+  url += "/users/$userId/auctions/chats/no-paginate";
+
+  print(url);
+
+  http.Response res = await http.get(url, headers: header);
+
+  if (res.statusCode == 200) {
+    return auctionFromJson(res.body);
   } else if (res.statusCode == 444) {
     return null;
   } else {

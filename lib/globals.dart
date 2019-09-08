@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction.dart';
+import 'package:jlf_mobile/models/chat_list_pagination.dart';
 import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
@@ -143,9 +146,9 @@ generateToken() async {
       if (fcmToken != user.firebaseToken) {
         User updateToken = User();
         updateToken.firebaseToken = fcmToken;
-
-        String result =
-            await updateUserLogin(updateToken.toJson(), user.id, user.tokenRedis);
+        print(json.encode(updateToken.toJson()));
+        String result = await updateUserLogin(
+            updateToken.toJson(), user.id, user.tokenRedis);
 
         if (result != null) {
           user.firebaseToken = fcmToken;
@@ -255,6 +258,11 @@ Future<bool> showDialogs(String content, BuildContext context,
               } else if (isLogout) {
                 deleteLocalData("user");
                 state = "login";
+                try {
+                  logout(user.tokenRedis);
+                } catch (e) {
+                  print(e.toString());
+                }
                 Navigator.of(context).pop();
                 Navigator.pushNamed(context, "/login");
               } else {
@@ -270,6 +278,150 @@ Future<bool> showDialogs(String content, BuildContext context,
                   Navigator.of(context).pop();
                 }
               }
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+String formaterTimer(int seconds) {
+  int hours = (seconds / 3600).truncate();
+  seconds = (seconds % 3600).truncate();
+  int minutes = (seconds / 60).truncate();
+
+  String hoursStr = (hours).toString().padLeft(2, '0');
+  String minutesStr = (minutes).toString().padLeft(2, '0');
+  String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+
+  if (hours == 0) {
+    return "$minutesStr:$secondsStr";
+  }
+
+  return "$hoursStr jam :$minutesStr menit :$secondsStr detik";
+}
+
+Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
+    {String title = "BELUM TERBAYAR", String text = "Tutup"}) {
+  Widget _buildCardBlocker(Auction auction) {
+    final dateNow = DateTime.now();
+    DateTime targetTime =
+        DateTime.parse(auction.winnerAcceptedDate).add(Duration(days: 1));
+
+    final differenceSec = (targetTime.difference(dateNow).inSeconds).abs();
+    String timer = formaterTimer(differenceSec);
+
+    String winnerDate = convertFormatDateTime(auction.winnerAcceptedDate);
+
+    return Container(
+      height: 120,
+      padding: EdgeInsets.all(5),
+      child: Row(
+        children: <Widget>[
+          Container(
+              height: 35,
+              child: CircleAvatar(
+                  radius: 25,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: auction.owner.photo != null &&
+                              auction.owner.photo.isNotEmpty
+                          ? FadeInImage.assetNetwork(
+                              image: auction.owner.photo,
+                              placeholder: 'assets/images/loading.gif',
+                              fit: BoxFit.cover)
+                          : Image.network('assets/images/account.png')))),
+          Column(
+            children: <Widget>[
+              myText(
+                text: generateInvoice(auction),
+                decoration: TextDecoration.underline,
+                weight: "B",
+              ),
+              myText(
+                  text: auction.owner.name,
+                  textOverflow: TextOverflow.ellipsis),
+              myText(
+                  text: auction.animal.name,
+                  textOverflow: TextOverflow.ellipsis),
+              myText(
+                  text: "Rp. " +
+                      convertToMoney(auction.winnerBid.amount.toDouble()),
+                  textOverflow: TextOverflow.ellipsis),
+              myText(text: winnerDate),
+              myText(text: "$timer", size: 12),
+            ],
+          ),
+          GestureDetector(
+            child: Icon(Icons.near_me),
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        ChatPage(auction: auction))),
+          )
+        ],
+      ),
+    );
+  }
+
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: myColor("primary"),
+        title: Center(
+          child: Text(title, style: TextStyle(color: Colors.yellow)),
+        ),
+        content: Container(
+          width: mw(context) * 0.9,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                "assets/images/new_update.png",
+                height: 180,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              myText(
+                  text:
+                      "Lakukan pelunasan rekber dahulu untuk melanjutkan proses lelang lainnya",
+                  align: TextAlign.center,
+                  color: "light",
+                  size: 16),
+              SizedBox(
+                height: 10,
+              ),
+              Divider(
+                height: 20,
+                color: Colors.black,
+              ),
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: content.length,
+                      itemBuilder: (context, int index) {
+                        return _buildCardBlocker(content[index]);
+                      }),
+                ),
+              )
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              text,
+              style: TextStyle(color: Colors.yellow),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+              Navigator.of(context).pop(true);
             },
           ),
         ],
@@ -386,7 +538,7 @@ Widget myAppBarIcon(context) {
                               padding: const EdgeInsets.all(0.0),
                               child: Center(
                                 child: Text(
-                                  "${user.historiesCount+5}",
+                                  "${user.historiesCount + 5}",
                                   style: TextStyle(fontSize: 10),
                                 ),
                               ),

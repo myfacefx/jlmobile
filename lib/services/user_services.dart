@@ -24,11 +24,9 @@ Future<Map<String, dynamic>> login(Map<String, dynamic> _data) async {
 
 Future<bool> logout(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  http.Response res = await http.get(getBaseUrl() + "/logout", headers: header);
+  http.Response res = await http.put(getBaseUrl() + "/logout", headers: header);
   if (res.statusCode == 202) {
     return true;
-  } else if (res.statusCode == 444) {
-    return false;
   } else {
     throw Exception(res.body);
   }
@@ -56,8 +54,6 @@ Future<User> getUserById(int userId, String token) async {
   http.Response res = await http
       .get(url, headers: header)
       .timeout(Duration(seconds: getTimeOut()));
-
-  print(res.body);
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);

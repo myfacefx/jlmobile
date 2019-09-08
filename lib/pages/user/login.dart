@@ -92,8 +92,6 @@ class _LoginPage extends State<LoginPage> {
       try {
         Map<String, dynamic> response = await login((loginUser.toJson()));
 
-        print(response.toString());
-
         if (response != null) {
           if (response['status'] == 'success') {
             // Successfully Login
