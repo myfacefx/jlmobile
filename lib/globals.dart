@@ -12,6 +12,7 @@ import 'package:jlf_mobile/models/chat_list_pagination.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
+import 'package:jlf_mobile/services/firebase_chat_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
 import 'package:mailer/mailer.dart' as mailer;
@@ -516,10 +517,7 @@ Widget myAppBarIcon(context) {
                     color: Colors.white,
                     size: 30,
                   ),
-                  1 != 1 &&
-                          user != null &&
-                          user.historiesCount != null &&
-                          user.historiesCount > 0
+                  user != null && user.unreadChatCount != null && user.unreadChatCount > 0
                       ? Container(
                           width: 30,
                           height: 30,
@@ -538,7 +536,7 @@ Widget myAppBarIcon(context) {
                               padding: const EdgeInsets.all(0.0),
                               child: Center(
                                 child: Text(
-                                  "${user.historiesCount + 5}",
+                                  "${user.unreadChatCount}",
                                   style: TextStyle(fontSize: 10),
                                 ),
                               ),
@@ -635,14 +633,20 @@ void getNotificationCount() async {
   if (user != null && user.id != null) {
     int historiesCount = await getHistoriesCount(user.id, user.tokenRedis);
 
-    if (user.historiesCount != null) {
+    if (historiesCount != null) {
       user.historiesCount = historiesCount;
     }
 
     int bidsCount = await getBidsCount(user.id, user.tokenRedis);
 
-    if (user.bidsCount != null) {
+    if (bidsCount != null) {
       user.bidsCount = bidsCount;
+    }
+
+    int unreadChatCount = await getUnreadChatsCount(user.id, user.tokenRedis);
+
+    if (unreadChatCount != null) {
+      user.unreadChatCount = unreadChatCount;
     }
 
     return null;

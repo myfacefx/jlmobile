@@ -30,10 +30,10 @@ class _ChatListPageState extends State<ChatListPage> {
     super.initState();
     // globals.getNotificationCount();
     this.refreshChats();
+    globals.getNotificationCount();
   }
 
   void refreshChats({int page = 1, String search = ''}) {
-    print("SEARCH = $search");
     setState(() {
       isLoading = true;
     });
@@ -71,9 +71,14 @@ class _ChatListPageState extends State<ChatListPage> {
 
     User winner = User();
     int amount;
-    bool winnerFound = false, isWinner = false, isOwner = false;
+    bool winnerFound = false,
+        isWinner = false,
+        isOwner = false,
+        isAdmin = false;
 
     List<Bid> bids = auction.animal.auction.bids;
+
+    if (auction.adminUserId == globals.user.id) isAdmin = true;
 
     if (auction != null && auction.winnerBidId != null) {
       for (var i = 0; i < bids.length; i++) {
@@ -88,6 +93,15 @@ class _ChatListPageState extends State<ChatListPage> {
       }
     }
     if (auction.ownerUserId == globals.user.id) isOwner = true;
+
+    int unreadCount = 0;
+    if (isWinner || isOwner || isAdmin) {
+      unreadCount = isWinner
+          ? auction.buyerUnreadCount
+          : isOwner
+              ? auction.sellerUnreadCount
+              : isAdmin ? auction.adminUnreadCount : 0;
+    }
 
     return Card(
       child: Container(
@@ -146,7 +160,8 @@ class _ChatListPageState extends State<ChatListPage> {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(right: 5),
-                                child: Icon(Icons.card_travel, color: globals.myColor('light')),
+                                child: Icon(Icons.card_travel,
+                                    color: globals.myColor('light')),
                               ),
                               globals.myText(
                                   text: "Lihat Lelang", color: "light"),
@@ -168,17 +183,43 @@ class _ChatListPageState extends State<ChatListPage> {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(right: 5),
-                                child: Icon(Icons.chat, color: globals.myColor('light')),
+                                child: Icon(Icons.chat,
+                                    color: globals.myColor('light')),
                               ),
                               globals.myText(
                                   text: "Chat Rekber", color: "light"),
+                              unreadCount != null && unreadCount > 0
+                                  ? Container(
+                                      margin: EdgeInsets.only(left: 5),
+                                      constraints: BoxConstraints(
+                                          minWidth: 10, minHeight: 10),
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          color: globals.myColor("danger"),
+                                          borderRadius:
+                                              BorderRadius.circular(100)),
+                                      child: Text("$unreadCount",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10)))
+                                  : Container()
                             ],
                           ),
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ChatPage(auction: auction))))
+                          onPressed: () {
+                            if (auction.firebaseChatId == null) {
+                              globals.showDialogs(
+                                  "Terjadi kesalahan pada pointing ruangan chat",
+                                  context);
+                              return null;
+                            } else {
+                              print("FIREBASECHATID ${auction.firebaseChatId}");
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ChatPage(auction: auction)));
+                            }
+                          })
                     ],
                   )
                 ],
@@ -261,7 +302,7 @@ class _ChatListPageState extends State<ChatListPage> {
                   if (value.isEmpty) return 'Silahkan masukkan nomor pencarian';
                 },
                 onFieldSubmitted: (String value) {
-                  if (value.length > 0) refreshChats(page: 1, search: value);
+                  refreshChats(page: 1, search: value);
                 },
                 onSaved: (String value) => _search = value,
                 // onFieldSubmitted: (String value) {},
