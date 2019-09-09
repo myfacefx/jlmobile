@@ -45,6 +45,7 @@ class User {
   String tokenRedis;
   int point;
   String level;
+  int unreadChatCount;
 
   User(
       {this.id,
@@ -75,7 +76,8 @@ class User {
       this.verificationStatus,
       this.tokenRedis,
       this.point,
-      this.level
+      this.level,
+      this.unreadChatCount
       });
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
@@ -123,7 +125,7 @@ class User {
             json["point"] == null ? null : json["point"],
         level:
             json["level"] == null ? null : json["level"],
-      );
+  );
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,

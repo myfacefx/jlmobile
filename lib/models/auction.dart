@@ -41,6 +41,13 @@ class Auction {
     Animal animal;
     User owner;
     User winner;
+    int sellerUnreadCount; 
+    int sellerUserId;
+    int buyerUnreadCount;
+    int buyerUserId;
+    int adminUnreadCount;
+    int adminUserId;
+    int adminId;
 
     Auction({
         this.id,
@@ -75,7 +82,14 @@ class Auction {
         this.firebaseChatId,
         this.animal,
         this.owner,
-        this.winner
+        this.winner,
+        this.sellerUnreadCount,
+        this.sellerUserId,
+        this.buyerUnreadCount,
+        this.buyerUserId,
+        this.adminUnreadCount,
+        this.adminUserId,
+        this.adminId
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -112,6 +126,13 @@ class Auction {
         animal: json["animal"] == null ? null : Animal.fromJson(json["animal"]),
         owner: json["owner"] == null ? null : User.fromJson(json["owner"]),
         winner: json["winner"] == null ? null : User.fromJson(json["winner"]),
+        sellerUnreadCount: json["seller_unread_count"],  
+        sellerUserId: json["seller_user_id"],
+        buyerUnreadCount: json["buyer_unread_count"],
+        buyerUserId: json["buyer_user_id"],
+        adminUnreadCount: json["admin_unread_count"],
+        adminUserId: json["admin_user_id"],
+        adminId: json["admin_id"] == null ? null : json["admin_id"],
     );
 
     Map<String, dynamic> toJson() => {
