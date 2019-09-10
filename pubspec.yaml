@@ -60,7 +60,6 @@ dependencies:
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
 
-  loadmore: ^1.0.4
   carousel_pro: ^1.0.0
   cached_network_image: ^1.1.1
 

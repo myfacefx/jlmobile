@@ -1187,7 +1187,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                           String firebaseChatId =
                                               await AuctionServices
                                                   .getFirebaseChatId(
-                                                      'asd', animal.auction.id);
+                                                      globals.user.tokenRedis, animal.auction.id);
                                           if (firebaseChatId == null) {
                                             await globals.showDialogs(
                                                 "Session anda telah berakhir, Silakan melakukan login ulang",
