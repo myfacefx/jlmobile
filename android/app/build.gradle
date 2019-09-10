@@ -86,6 +86,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+     aaptOptions {
+        // ffprobe is library to get information from file media (video)
+        ignoreAssetsPattern "!*ffprobe"
+    }
 }
 
 flutter {
