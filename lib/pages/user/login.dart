@@ -10,7 +10,6 @@ import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/services/version_services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -101,7 +100,7 @@ class _LoginPage extends State<LoginPage> {
             // print(user.toJson());
 
             saveLocalData('user', json.encode(response['data']));
-            print(response['data']);
+            // print(response['data']);
 
             globals.user = user;
             globals.state = "home";
@@ -257,6 +256,47 @@ class _LoginPage extends State<LoginPage> {
     return;
   }
 
+  Widget _registerManual() {
+    return Container(
+      width: 300,
+      child: Center(
+          child: GestureDetector(
+              onTap: () => Navigator.of(context).pushNamed("/register"),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(
+                      text: "Tidak punya akun? Klik ", color: "dark"),
+                  globals.myText(
+                      text: "di sini",
+                      weight: "SB",
+                      decoration: TextDecoration.underline,
+                      color: "primary"),
+                ],
+              ))),
+    );
+  }
+
+  Widget _forgetPassword() {
+    return Container(
+      width: 300,
+      child: Center(
+          child: GestureDetector(
+              onTap: () => Navigator.of(context).pushNamed("/forget-password"),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Lupa password? Klik ", color: "dark"),
+                  globals.myText(
+                      text: "di sini",
+                      weight: "SB",
+                      decoration: TextDecoration.underline,
+                      color: "primary"),
+                ],
+              ))),
+    );
+  }
+
   Widget _floatingButton(String icon) {
     Color backgr =
         icon == "Facebook" ? Color.fromRGBO(45, 80, 155, 1) : Colors.white;
@@ -264,7 +304,7 @@ class _LoginPage extends State<LoginPage> {
     Color clrText = icon != "Facebook" ? Colors.black : Colors.white;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: FloatingActionButton.extended(
         onPressed: () {
           !loginLoading ? _loginWithFacebook() : _doNothing();
@@ -371,149 +411,140 @@ class _LoginPage extends State<LoginPage> {
       },
       child: SafeArea(
         child: Scaffold(
-          body: Stack(
-            children: <Widget>[
-              _buildBackground(),
-              ListView(
-                children: <Widget>[
-                  Container(
-                      height: globals.mh(context) * 0.4,
-                      child: Center(
-                        child:
-                            Image.asset("assets/images/logo.png", height: 140),
-                      )),
-                  membersCount != null
-                      ? globals.myText(
-                          text: "$membersCount Member Terdaftar",
-                          weight: "B",
-                          align: TextAlign.center)
-                      : Container(),
-                  SizedBox(height: 8),
-                  Form(
-                    autovalidate: autoValidate,
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                            width: 300,
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                            child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              validator: (String value) {
-                                if (value.isEmpty)
-                                  return 'Username masih kosong';
-                              },
-                              onSaved: (String value) => _username = value,
-                              onFieldSubmitted: (String value) {
-                                if (value.length > 0)
-                                  FocusScope.of(context)
-                                      .requestFocus(passwordFocusNode);
-                              },
-                              style: TextStyle(color: Colors.black),
-                              controller: usernameController,
-                              decoration: InputDecoration(
-                                  // filled: true,
-                                  // fillColor: Colors.white,
-                                  contentPadding: EdgeInsets.all(13),
-                                  hintText: "Username",
-                                  labelText: "Username",
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                            )),
-                        Padding(padding: EdgeInsets.only(top: 5)),
-                        Container(
-                            width: 300,
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                            child: TextFormField(
-                              validator: (String value) {
-                                if (value.isEmpty)
-                                  return 'Password masih kosong';
-                              },
-                              onFieldSubmitted: (String value) => _logIn(),
-                              onSaved: (String value) => _password = value,
-                              focusNode: passwordFocusNode,
-                              obscureText: passwordVisibility,
-                              controller: passwordController,
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                  suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        passwordVisibility =
-                                            !passwordVisibility;
-                                      });
-                                    },
-                                    child: Icon(passwordVisibility
-                                        ? Icons.visibility
-                                        : Icons.visibility_off),
-                                  ),
-                                  contentPadding: EdgeInsets.all(13),
-                                  hintText: "Password",
-                                  labelText: "Password",
-                                  // filled: true,
-                                  // fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                            )),
-                        Container(
-                            width: 300,
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                            child: FlatButton(
-                                onPressed: () => loginLoading ? null : _logIn(),
-                                child: Text(loginLoading ? "Loading" : "LOG IN",
-                                    style:
-                                        Theme.of(context).textTheme.display4),
-                                color: loginLoading
-                                    ? Colors.grey
-                                    : Theme.of(context).primaryColor,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)))),
-                        // Container(
-                        //   width: 300,
-                        //   child: Center(
-                        //       child: GestureDetector(
-                        //           onTap: () => Navigator.of(context)
-                        //               .pushNamed("/register"),
-                        //           child: Row(
-                        //             mainAxisAlignment: MainAxisAlignment.center,
-                        //             children: <Widget>[
-                        //               globals.myText(
-                        //                   text: "Tidak punya akun? Klik ",
-                        //                   color: "dark"),
-                        //               globals.myText(
-                        //                   text: "di sini",
-                        //                   weight: "SB",
-                        //                   decoration: TextDecoration.underline,
-                        //                   color: "primary"),
-                        //             ],
-                        //           ))),
-                        // ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        _floatingButton("Facebook"),
-                        SizedBox(height: 30),
-                        _termOfServices(),
-                        SizedBox(height: 10),
-                        globals.myText(text: "${globals.version}", size: 11),
-                        SizedBox(height: 20),
-                      ],
+            body: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                _buildBackground(),
+                ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Container(
+                        height: globals.mh(context) * 0.4,
+                        child: Center(
+                          child: Image.asset("assets/images/logo.png",
+                              height: 140),
+                        )),
+                    membersCount != null
+                        ? globals.myText(
+                            text: "$membersCount Member Terdaftar",
+                            weight: "B",
+                            align: TextAlign.center)
+                        : Container(),
+                    SizedBox(height: 8),
+                    Form(
+                      autovalidate: autoValidate,
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                              width: 300,
+                              padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                              child: TextFormField(
+                                textInputAction: TextInputAction.next,
+                                validator: (String value) {
+                                  if (value.isEmpty)
+                                    return 'Username masih kosong';
+                                },
+                                onSaved: (String value) => _username = value,
+                                onFieldSubmitted: (String value) {
+                                  if (value.length > 0)
+                                    FocusScope.of(context)
+                                        .requestFocus(passwordFocusNode);
+                                },
+                                style: TextStyle(color: Colors.black),
+                                controller: usernameController,
+                                decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(13),
+                                    hintText: "Username",
+                                    labelText: "Username",
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20))),
+                              )),
+                          Padding(padding: EdgeInsets.only(top: 5)),
+                          Container(
+                              width: 300,
+                              padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                              child: TextFormField(
+                                validator: (String value) {
+                                  if (value.isEmpty)
+                                    return 'Password masih kosong';
+                                },
+                                onFieldSubmitted: (String value) => _logIn(),
+                                onSaved: (String value) => _password = value,
+                                focusNode: passwordFocusNode,
+                                obscureText: passwordVisibility,
+                                controller: passwordController,
+                                style: TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          passwordVisibility =
+                                              !passwordVisibility;
+                                        });
+                                      },
+                                      child: Icon(passwordVisibility
+                                          ? Icons.visibility
+                                          : Icons.visibility_off),
+                                    ),
+                                    contentPadding: EdgeInsets.all(13),
+                                    hintText: "Password",
+                                    labelText: "Password",
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20))),
+                              )),
+                          Container(
+                              width: 300,
+                              padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                              child: FlatButton(
+                                  onPressed: () =>
+                                      loginLoading ? null : _logIn(),
+                                  child: Text(
+                                      loginLoading ? "Loading" : "LOG IN",
+                                      style:
+                                          Theme.of(context).textTheme.display4),
+                                  color: loginLoading
+                                      ? Colors.grey
+                                      : Theme.of(context).primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20)))),
+                          // _registerManual(),
+                          // SizedBox(
+                          //   height: 10,
+                          // ),
+                          _forgetPassword(),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          _floatingButton("Facebook"),
+                          SizedBox(height: 30),
+                          _termOfServices(),
+                          SizedBox(height: 10),
+                          globals.myText(text: "${globals.version}", size: 11),
+                          SizedBox(height: 20),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Positioned(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: !loginLoading
-                      ? Container()
-                      : Container(
-                          child: Center(child: CircularProgressIndicator())),
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
+                Positioned(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: !loginLoading
+                        ? Container()
+                        : Container(
+                            child: Center(child: CircularProgressIndicator())),
+                  ),
+                )
+              ],
+            ),
+          ],
+        )),
       ),
     );
   }

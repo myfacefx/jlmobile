@@ -517,7 +517,9 @@ Widget myAppBarIcon(context) {
                     color: Colors.white,
                     size: 30,
                   ),
-                  user != null && user.unreadChatCount != null && user.unreadChatCount > 0
+                  user != null &&
+                          user.unreadChatCount != null &&
+                          user.unreadChatCount > 0
                       ? Container(
                           width: 30,
                           height: 30,
@@ -685,8 +687,11 @@ Widget buildFailedLoadingData(context, Function refresh) {
 
 String convertFormatDate(String date) {
   String newDate = "";
-  List<String> splitDate = date.split("-");
-  newDate = "${splitDate[2]}/${splitDate[1]}/${splitDate[0]}";
+  String spDate = date.split(" ")[0];
+  List<String> splitDate = spDate.split("-");
+  String month =
+      convertMonthFromDigitSimple(int.parse(splitDate[1]));
+  newDate = "${splitDate[2]}-$month-${splitDate[0]}";
   return newDate;
 }
 
@@ -757,6 +762,49 @@ String convertMonthFromDigit(int monthDigit) {
       break;
     case 12:
       month = 'Desember';
+      break;
+    default:
+  }
+
+  return month;
+}
+
+String convertMonthFromDigitSimple(int monthDigit) {
+  String month = 'Jan';
+
+  switch (monthDigit) {
+    case 2:
+      month = 'Feb';
+      break;
+    case 3:
+      month = 'Mar';
+      break;
+    case 4:
+      month = 'Apr';
+      break;
+    case 5:
+      month = 'Mei';
+      break;
+    case 6:
+      month = 'Jun';
+      break;
+    case 7:
+      month = 'Jul';
+      break;
+    case 8:
+      month = 'Ags';
+      break;
+    case 9:
+      month = 'Sep';
+      break;
+    case 10:
+      month = 'Okt';
+      break;
+    case 11:
+      month = 'Nov';
+      break;
+    case 12:
+      month = 'Des';
       break;
     default:
   }
