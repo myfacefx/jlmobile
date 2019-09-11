@@ -735,7 +735,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       DateTime birthDate,
       int duration,
       int innerIslandShipping,
-      bool isAuction) {
+      bool isAuction,
+      String createdDate) {
     //String ageNow = globals.convertToAge(birthDate);
     return Container(
       width: double.infinity,
@@ -786,8 +787,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ],
           ),
           SizedBox(height: 5),
+          globals.myText(text: globals.convertFormatDate(createdDate)),
+          SizedBox(height: 5),
           Text(
-            // "$name $gender - $ageNow",
             "${name.toUpperCase()}",
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.title.copyWith(fontSize: 12),
@@ -900,7 +902,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         widget.from == "LELANG"
                             ? animal.auction.innerIslandShipping
                             : animal.product.innerIslandShipping,
-                        widget.from == "LELANG"),
+                        widget.from == "LELANG",
+                        animal.createdAt.toString()),
                     widget.from == "LELANG"
                         ? Column(
                             children: <Widget>[

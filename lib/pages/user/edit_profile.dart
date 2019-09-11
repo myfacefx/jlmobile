@@ -480,7 +480,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 _descriptionInput(),
                 _provinceInput(),
                 regencyLoading ? globals.isLoading() : _regencyInput(),
-                _phoneNumberInput(),
+                // _phoneNumberInput(),
                 Container(
                     width: 300,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
