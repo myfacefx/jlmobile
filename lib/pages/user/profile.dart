@@ -612,31 +612,31 @@ class _ProfilePageState extends State<ProfilePage>
                   //     child: globals.myText(text: "${globals.user.point}\nPOIN", weight: "B", align: TextAlign.center)),
                   // ),
 
-                  // Container(
-                  //   alignment: Alignment.topLeft,
-                  //   width: globals.mw(context) * 0.25,
-                  //   child: FlatButton(
-                  //       onPressed: () {
-                  //         globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context);
-                  //       },
-                  //       child: Row(
-                  //         mainAxisAlignment:
-                  //             MainAxisAlignment.center,
-                  //         children: <Widget>[
-                  //           Text(
-                  //               "${globals.convertToMoney(globals.user.point.toDouble())} P",
-                  //               style: Theme.of(context)
-                  //                   .textTheme
-                  //                   .display4)
-                  //         ],
-                  //       ),
-                  //       color: isLoading
-                  //           ? Colors.grey
-                  //           : globals.myColor("warning"),
-                  //       shape: RoundedRectangleBorder(
-                  //           borderRadius:
-                  //               BorderRadius.circular(5))),
-                  // ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    width: globals.mw(context) * 0.25,
+                    child: FlatButton(
+                        onPressed: () {
+                          globals.showDialogs("Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context, title: "Kumpulkan Poinmu");
+                        },
+                        child: Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                                "${globals.convertToMoney(globals.user.point.toDouble())} P",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .display4)
+                          ],
+                        ),
+                        color: isLoading
+                            ? Colors.grey
+                            : globals.myColor("warning"),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(5))),
+                  ),
                   user.id == globals.user.id
                       ? Container(
                           alignment: Alignment.topRight,
@@ -686,8 +686,12 @@ class _ProfilePageState extends State<ProfilePage>
                               weight: "B",
                               size: 18),
                           globals.user.verificationStatus == 'verified'
-                              ? Icon(Icons.verified_user,
-                                  size: 18, color: globals.myColor("primary"))
+                              ? Padding(
+                                  padding: EdgeInsets.only(left: 2), 
+                                  child: GestureDetector(
+                                    onTap: () => globals.showDialogs("Selamat, akun anda telah terverifikasi", context),
+                                    child: Icon(Icons.verified_user, size: 18, color: globals.myColor("primary")))
+                                )
                               : Container(),
                           // globals.myText(
                           //     text: '4.5',
