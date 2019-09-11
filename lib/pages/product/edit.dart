@@ -91,9 +91,10 @@ class _EditProductPageState extends State<EditProductPage> {
   int _innerIslandShipping = 0;
   DateTime _dateOfBirth;
 
-  Subscription _subscription;
+  // Subscription _subscription;
   final _flutterVideoCompress = FlutterVideoCompress();
   String _convertedVideoPath;
+  String _sizeVideo;
   bool _isShowVideo = false;
   MultipartFile videoToSent;
 
@@ -127,10 +128,10 @@ class _EditProductPageState extends State<EditProductPage> {
   void initState() {
     super.initState();
 
-    _subscription =
-        _flutterVideoCompress.compressProgress$.subscribe((progress) {
-      debugPrint('progress: $progress');
-    });
+    // _subscription =
+    //     _flutterVideoCompress.compressProgress$.subscribe((progress) {
+    //   debugPrint('progress: $progress');
+    // });
 
     setState(() {
       // print(_animal.product.type);
@@ -608,8 +609,11 @@ class _EditProductPageState extends State<EditProductPage> {
   Future<void> getVideo() async {
     var video = await ImagePicker.pickVideo(source: ImageSource.gallery);
 
-    // limit max 5 mb
-    if (video.lengthSync() > 5500000) {
+    var videoLength = video.lengthSync();
+    _sizeVideo = (videoLength / 1048576).toStringAsFixed(2);
+
+    // limit max 30 mb
+    if (video.lengthSync() > 31457280) {
       globals.showDialogs("Ukuran Video Terlalu Besar", context);
     } else {
       setState(() {
@@ -622,7 +626,7 @@ class _EditProductPageState extends State<EditProductPage> {
             VideoQuality.MediumQuality, // default(VideoQuality.DefaultQuality)
         deleteOrigin: false, // default(false)
       );
-      debugPrint(_convertedVideo.toJson().toString());
+      // debugPrint(_convertedVideo.toJson().toString());
       _convertedVideoPath = _convertedVideo.path;
 
       setState(() {
@@ -1566,7 +1570,7 @@ class _EditProductPageState extends State<EditProductPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Upload Video (Max 5 MB)",
+                              Text("Upload Video (Max 30 MB)",
                                   style: TextStyle(color: Colors.white)),
                               Icon(Icons.video_call, color: Colors.white),
                             ],
@@ -1583,6 +1587,16 @@ class _EditProductPageState extends State<EditProductPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Text(
+                        _sizeVideo != null
+                            ? "Size Video : " + _sizeVideo + " MB"
+                            : "",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Divider(),
                       Text(
                         _convertedVideoPath ?? "",
                         style: TextStyle(
