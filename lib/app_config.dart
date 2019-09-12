@@ -11,6 +11,7 @@ class AppConfig extends InheritedWidget {
     @required this.flavorName,
     @required this.baseUrl,
     @required this.apiUrl,
+    @required this.isProduction,
     @required Widget child,
   }) : super(child: child);
 
@@ -18,6 +19,7 @@ class AppConfig extends InheritedWidget {
   final String flavorName;
   final String baseUrl;
   final String apiUrl;
+  final bool isProduction;
 
   static AppConfig of(BuildContext context) {
     return context.inheritFromWidgetOfExactType(AppConfig);
@@ -30,6 +32,7 @@ class AppConfig extends InheritedWidget {
     print("Checking local storage");
     globals.baseUrl = baseUrl;
     globals.flavor = flavorName;
+    globals.isProduction = isProduction;
     try {
       String firstInstall = await readLocalData("isNew");
       if (firstInstall != null) {

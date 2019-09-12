@@ -211,3 +211,22 @@ Future<List<Auction>> getAuctionsWithActiveChatNoPaginate(
     throw Exception(res.body);
   }
 }
+
+Future<int> editDescAuction(String token, var data, int animalId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  String url = getBaseUrl() + "/animals/$animalId/auctions/update";
+
+  print(url);
+  print(json.encode(data));
+
+  http.Response res =
+      await http.put(url, headers: header, body: json.encode(data));
+
+  if (res.statusCode == 202) {
+    return 1;
+  } else if (res.statusCode == 444) {
+    return 2;
+  } else {
+    throw Exception(res.body);
+  }
+}

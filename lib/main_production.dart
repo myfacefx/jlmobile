@@ -8,6 +8,7 @@ void main() async {
     flavorName: 'production',
     baseUrl: 'https://jlfbackend.xyz/jlf-backend-api/public',
     apiUrl: '/api',
+    isProduction: false,
     child: MyApp(),
   );
   // SystemChrome.setEnabledSystemUIOverlays([]);
