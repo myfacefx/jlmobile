@@ -11,6 +11,7 @@ import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/product_comment.dart';
 import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/pages/auction/edit.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/image_popup.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
@@ -941,6 +942,41 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         ));
   }
 
+  Widget _buildEditDescriptionAuction() {
+    return Container(
+        color: Colors.white,
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            globals.myText(
+                text: "- Ubah Deskripsi LELANG -",
+                weight: "B",
+                color: "dark",
+                size: 16),
+            Center(
+                child: GestureDetector(
+                    onTap: () async {
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  EditAuctionPage(
+                                    animalId: animal.id,
+                                    description: animal.description,
+                                  )));
+                      loadAnimal(animal.id);
+                    },
+                    child: globals.myText(
+                        text: "Klik disini untuk ubah deskripsi",
+                        weight: "B",
+                        color: "primary",
+                        align: TextAlign.center)))
+          ],
+        ));
+  }
+
   Widget _buildWinnerSection() {
     User winner;
     int amount;
@@ -1187,7 +1223,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                           String firebaseChatId =
                                               await AuctionServices
                                                   .getFirebaseChatId(
-                                                      globals.user.tokenRedis, animal.auction.id);
+                                                      globals.user.tokenRedis,
+                                                      animal.auction.id);
                                           if (firebaseChatId == null) {
                                             await globals.showDialogs(
                                                 "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -2160,6 +2197,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     widget.from == "LELANG" &&
                             (animal.ownerUserId == globals.user.id)
                         ? _buildCancelAuction()
+                        : Container(),
+
+                    widget.from == "LELANG" &&
+                            (animal.ownerUserId == globals.user.id)
+                        ? _buildEditDescriptionAuction()
                         : Container(),
 
                     widget.from == "LELANG"

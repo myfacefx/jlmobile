@@ -9,6 +9,7 @@ void main() async {
     // baseUrl: 'http://45.32.99.93/~jlfbacke/jlf-backend-api/public/',
     baseUrl: 'https://domainstaging.xyz/jlf-backend-api/public/',
     apiUrl: '/api',
+    isProduction: false,
     child: MyApp(),
   );
   //SystemChrome.setEnabledSystemUIOverlays([]);

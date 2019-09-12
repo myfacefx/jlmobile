@@ -283,6 +283,7 @@ Future<User> verifyToken(String token) async {
   final url = getBaseUrl() + "/verify-token";
 
   print(url);
+  print(token);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -292,6 +293,25 @@ Future<User> verifyToken(String token) async {
     return userFromJson(res.body);
   } else if (res.statusCode == 400) {
     return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<int> forgotPassword(String email) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/forgot-password";
+
+  print(url);
+
+  http.Response res = await http.post(url,
+      headers: header,
+      body: json.encode({"email": email})).timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return 1;
+  } else if (res.statusCode == 401) {
+    return 2;
   } else {
     throw Exception(res.body);
   }

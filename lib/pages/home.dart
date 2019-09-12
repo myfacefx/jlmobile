@@ -8,25 +8,19 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal_category.dart';
-import 'package:jlf_mobile/models/article.dart';
-import 'package:jlf_mobile/models/jlf_partner.dart';
-import 'package:jlf_mobile/models/promo.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
-import 'package:jlf_mobile/services/article_services.dart';
-import 'package:jlf_mobile/services/jlf_partner_services.dart';
+import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/static_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/services/version_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -44,27 +38,16 @@ class _HomePage extends State<HomePage> {
 
   bool isLoadingCategories = true;
   bool isLoadingPromoA = true;
-  bool isLoadingPromoB = true;
-  bool isLoadingPromoC = true;
-  bool isLoadingArticle = true;
 
-  bool isLoadingPromoVideo = true;
   bool failedDataCategories = false;
   bool alreadyUpToDate = false;
 
-  bool isLoadingPartner = true;
-
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   int membersCount = 0;
+  int animalCount = 0;
   List<Widget> listPromoA = [];
-  List<Promo> listPromoB = [];
-  List<Promo> listPromoC = [];
-  List<Promo> listVideo = [];
-  List<Article> listArticle = [];
-  List<JlfPartner> listParner = [];
-  String selectedType = "PASAR HEWAN";
 
-  int _currentArticle = 0;
+  String selectedType = "PASAR HEWAN";
 
   @override
   void initState() {
@@ -78,11 +61,6 @@ class _HomePage extends State<HomePage> {
       _getListCategoriesProduct();
 
       _loadPromosA();
-      _loadPromosB();
-      _loadPromosC();
-      _loadPromosVideo();
-      _loadArticle();
-      _loadJlfPartner();
 
       globals.getNotificationCount();
       globals.generateToken();
@@ -222,29 +200,6 @@ class _HomePage extends State<HomePage> {
     }
   }
 
-  _loadJlfPartner() {
-    getAllJlfPartner(globals.user.tokenRedis).then((onValue) async {
-      if (onValue == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
-      if (onValue.length != 0) {
-        listParner = onValue;
-      }
-
-      setState(() {
-        isLoadingPartner = false;
-      });
-    }).catchError((onError) {
-      setState(() {
-        isLoadingPartner = false;
-      });
-    });
-  }
-
   _loadPromosA() {
     getAllPromos(globals.user.tokenRedis, "iklan", "A").then((onValue) async {
       if (onValue == null) {
@@ -289,95 +244,15 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  _loadPromosB() {
-    getAllPromos(globals.user.tokenRedis, "iklan", "B").then((onValue) async {
-      if (onValue == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
-      if (onValue.length != 0) {
-        listPromoB = onValue;
-      }
-
-      setState(() {
-        isLoadingPromoB = false;
-      });
-    }).catchError((onError) {
-      setState(() {
-        isLoadingPromoB = false;
-      });
-    });
-  }
-
-  _loadPromosC() {
-    getAllPromos(globals.user.tokenRedis, "iklan", "C").then((onValue) async {
-      if (onValue == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
-      if (onValue.length != 0) {
-        listPromoC = onValue;
-      }
-
-      setState(() {
-        isLoadingPromoC = false;
-      });
-    }).catchError((onError) {
-      setState(() {
-        isLoadingPromoC = false;
-      });
-    });
-  }
-
-  _loadPromosVideo() {
-    getAllPromos(globals.user.tokenRedis, "video", "A").then((onValue) async {
-      if (onValue == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
-      if (onValue.length != 0) {
-        listVideo = onValue;
-      }
-
-      setState(() {
-        isLoadingPromoVideo = false;
-      });
-    }).catchError((onError) {
-      setState(() {
-        isLoadingPromoVideo = false;
-      });
-    });
-  }
-
-  _loadArticle() {
-    getAllArticle(globals.user.tokenRedis, "article").then((onValue) {
-      if (onValue.length != 0) {
-        listArticle = onValue;
-      }
-
-      setState(() {
-        isLoadingArticle = false;
-      });
-    }).catchError((onError) {
-      print(onError.toString());
-      setState(() {
-        isLoadingArticle = false;
-      });
-    });
-  }
-
   _refresh() {
     getUsersCount().then((onValue) {
       membersCount = onValue;
+    }).catchError((onError) {
+      globals.showDialogs(onError, context);
+    });
+
+    getAnimalsCount().then((onValue) {
+      animalCount = onValue;
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
@@ -540,67 +415,66 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  Widget _buildAsk() {
-    return GestureDetector(
-      onTap: () =>
-          launch("https://www.youtube.com/channel/UCW-Y3yIisBSOIJhV3ToA5oA"),
-      child: Container(
-        margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-        height: 64,
-        decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.circular(4)),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          globals.myText(
-              text: "TONTON PANDUAN DAN TIPS TRIK LENGKAP JLF DI SINI",
-              color: "light",
-              size: 16,
-              align: TextAlign.center),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildUpComing() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, "/upcoming");
-      },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-        height: 64,
-        decoration: BoxDecoration(
-            color: Colors.orange[400], borderRadius: BorderRadius.circular(4)),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          globals.myText(
-              text: "Cek yuk apa rencana JLF kali ini",
-              color: "light",
-              size: 17,
-              weight: "B",
-              align: TextAlign.center),
-        ]),
-      ),
-    );
-  }
+  // Widget _buildAsk() {
+  //   return GestureDetector(
+  //     onTap: () =>
+  //         launch("https://www.youtube.com/channel/UCW-Y3yIisBSOIJhV3ToA5oA"),
+  //     child: Container(
+  //       margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
+  //       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+  //       height: 64,
+  //       decoration: BoxDecoration(
+  //           color: Theme.of(context).primaryColor,
+  //           borderRadius: BorderRadius.circular(4)),
+  //       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+  //         globals.myText(
+  //             text: "TONTON PANDUAN DAN TIPS TRIK LENGKAP JLF DI SINI",
+  //             color: "light",
+  //             size: 16,
+  //             align: TextAlign.center),
+  //       ]),
+  //     ),
+  //   );
+  // }
 
   Widget _buildNumberMember() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-      height: 35,
-      decoration: BoxDecoration(
-          color: Color.fromRGBO(73, 187, 255, 1),
-          borderRadius: BorderRadius.circular(4)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        globals.myText(
-            text: "$membersCount orang telah bergabung bersama JLF saat ini",
-            color: "light",
-            size: 12,
-            weight: "N",
-            align: TextAlign.center),
-      ]),
+    String numberUser = (membersCount / 1000).toStringAsFixed(1);
+    String numberAnimal = (animalCount / 1000).toStringAsFixed(1);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Container(
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            height: 45,
+            width: globals.mw(context) * 0.45,
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(241, 171, 27, 1),
+                borderRadius: BorderRadius.circular(10)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Image.asset("assets/images/peoplecount.png"),
+                globals.myText(text: numberUser + "K Users", color: "light")
+              ],
+            )),
+        Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 10, 16),
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            height: 45,
+            width: globals.mw(context) * 0.45,
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(209, 43, 65, 1),
+                borderRadius: BorderRadius.circular(10)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Image.asset("assets/images/animalcount.png"),
+                globals.myText(text: numberAnimal + "K Animals", color: "light")
+              ],
+            ))
+      ],
     );
   }
 
@@ -650,6 +524,28 @@ class _HomePage extends State<HomePage> {
     } else {
       return Container();
     }
+  }
+
+  Widget _buildEventHewan() {
+    return Container(
+        margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        height: 60,
+        width: globals.mw(context) * 0.45,
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(49, 122, 229, 1),
+            borderRadius: BorderRadius.circular(5)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Image.asset("assets/images/calendar.png"),
+            globals.myText(
+                text: "15 EVENT HEWAN BARU, SUDAH LIHAT ?",
+                color: "light",
+                weight: "B",
+                size: 14)
+          ],
+        ));
   }
 
   Widget _buildTitle() {
@@ -835,321 +731,12 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
-  Widget _buildPromotionB() {
-    final slider = CarouselSlider(
-      aspectRatio: 3,
-      viewportFraction: 3.0,
-      height: 200,
-      enableInfiniteScroll: true,
-      onPageChanged: (index) {
-        setState(() {
-          _currentArticle = index;
-        });
-      },
-      items: listPromoB.map((f) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => WebviewScaffold(
-                    url: f.name,
-                    appBar: globals.appBar(_scaffoldKey, context,
-                        isSubMenu: true, showNotification: false))));
-          },
-          child: Container(
-            width: globals.mw(context),
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-            child: CachedNetworkImage(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingPromoB ? 20 : null,
-              imageUrl: f.link,
-              placeholder: (context, url) =>
-                  Image.asset('assets/images/loading.gif'),
-              errorWidget: (context, url, error) =>
-                  Image.asset('assets/images/error.jpeg'),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-    return Stack(
-      children: <Widget>[
-        Container(
-          child: slider,
-        ),
-        Positioned(
-          right: 10,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            onTap: () {
-              slider.nextPage(
-                  duration: Duration(milliseconds: 500), curve: Curves.linear);
-            },
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.black.withOpacity(0.7),
-              child: Icon(
-                Icons.arrow_forward_ios,
-                size: 18,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          left: 10,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            onTap: () {
-              slider.previousPage(
-                  duration: Duration(milliseconds: 500), curve: Curves.linear);
-            },
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.black.withOpacity(0.7),
-              child: Icon(
-                Icons.arrow_back_ios,
-                size: 18,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildPromotionC() {
-    final slider = CarouselSlider(
-      aspectRatio: 3,
-      viewportFraction: 3.0,
-      height: 200,
-      enableInfiniteScroll: true,
-      onPageChanged: (index) {
-        setState(() {
-          _currentArticle = index;
-        });
-      },
-      items: listPromoC.map((f) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => WebviewScaffold(
-                    url: f.name,
-                    appBar: globals.appBar(_scaffoldKey, context,
-                        isSubMenu: true, showNotification: false))));
-          },
-          child: Container(
-            width: globals.mw(context),
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-            child: CachedNetworkImage(
-              width: globals.mw(context) * 0.23,
-              height: isLoadingPromoC ? 20 : null,
-              imageUrl: f.link,
-              placeholder: (context, url) =>
-                  Image.asset('assets/images/loading.gif'),
-              errorWidget: (context, url, error) =>
-                  Image.asset('assets/images/error.jpeg'),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-    return Stack(
-      children: <Widget>[
-        Container(
-          child: slider,
-        ),
-        Positioned(
-          right: 10,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            onTap: () {
-              slider.nextPage(
-                  duration: Duration(milliseconds: 500), curve: Curves.linear);
-            },
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.black.withOpacity(0.7),
-              child: Icon(
-                Icons.arrow_forward_ios,
-                size: 18,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          left: 10,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            onTap: () {
-              slider.previousPage(
-                  duration: Duration(milliseconds: 500), curve: Curves.linear);
-            },
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.black.withOpacity(0.7),
-              child: Icon(
-                Icons.arrow_back_ios,
-                size: 18,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildVideoA() {
-    final slider = CarouselSlider(
-      aspectRatio: 3,
-      viewportFraction: 3.0,
-      height: 200,
-      enableInfiniteScroll: true,
-      onPageChanged: (index) {
-        setState(() {
-          _currentArticle = index;
-        });
-      },
-      items: listVideo.map((f) {
-        String videoId;
-        videoId = YoutubePlayer.convertUrlToId(f.link);
-        return Container(
-          width: globals.mw(context),
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 16),
-          child: YoutubePlayer(
-            context: context,
-            videoId: videoId,
-            flags: YoutubePlayerFlags(
-                showVideoProgressIndicator: true, autoPlay: false),
-            videoProgressIndicatorColor: Colors.amber,
-            progressColors: ProgressColors(
-              playedColor: Colors.amber,
-              handleColor: Colors.amberAccent,
-            ),
-          ),
-        );
-      }).toList(),
-    );
-    return Stack(
-      children: <Widget>[
-        Container(
-          child: slider,
-        ),
-        Positioned(
-          right: 10,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-              onTap: () {
-                slider.nextPage(
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.linear);
-              },
-              child: CircleAvatar(
-                radius: 15,
-                backgroundColor: Colors.black.withOpacity(0.7),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 18,
-                  color: Colors.white,
-                ),
-              )),
-        ),
-        Positioned(
-          left: 10,
-          top: 0,
-          bottom: 0,
-          child: GestureDetector(
-            onTap: () {
-              slider.previousPage(
-                  duration: Duration(milliseconds: 500), curve: Curves.linear);
-            },
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.black.withOpacity(0.7),
-              child: Icon(
-                Icons.arrow_back_ios,
-                size: 18,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
   Widget _buildLaranganBinatang() {
-    return Container(
-        padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
-        child: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Color.fromRGBO(68, 182, 236, 1),
-              ),
-              width: globals.mw(context),
-              height: 120,
-            ),
-            Positioned(
-              top: 10,
-              left: 10,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    width: globals.mw(context) * 0.6,
-                    child: globals.myText(
-                        text: "Daftar binatang yang tidak boleh dijual di JLF",
-                        color: "light",
-                        size: 17,
-                        weight: "B"),
-                  )
-                ],
-              ),
-            ),
-            Positioned(
-              bottom: 10,
-              left: 10,
-              child: OutlineButton(
-                padding: EdgeInsets.only(left: 12, right: 8),
-                borderSide: BorderSide(color: Colors.white),
-                highlightColor: Colors.white10,
-                highlightedBorderColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(100))),
-                onPressed: () {
-                  Navigator.pushNamed(context, "/blacklist-animal");
-                },
-                child: Row(
-                  children: <Widget>[
-                    Text("Lihat selengkapnya",
-                        style: TextStyle(color: Colors.white, fontSize: 12)),
-                    Icon(
-                      Icons.chevron_right,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              right: 10,
-              top: 10,
-              bottom: 10,
-              child: Container(
-                height: 90,
-                child: Image.asset("assets/images/larangan_binatang.png"),
-              ),
-            )
-          ],
+    return GestureDetector(
+        onTap: () => Navigator.pushNamed(context, "/blacklist-animal"),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
+          child: Image.asset("assets/images/daftar_binatang_dilarang.jpg"),
         ));
   }
 
@@ -1228,123 +815,6 @@ class _HomePage extends State<HomePage> {
                 ]))));
   }
 
-  Widget _buildPartner() {
-    return Container(
-        height: 115,
-        margin: EdgeInsets.all(5),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-                padding: EdgeInsets.all(5),
-                child: globals.myText(
-                    text: "PARTNER JLF", color: 'dark', size: 15)),
-            Expanded(
-              child: ListView(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                children: listParner.map((f) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: CachedNetworkImage(
-                      width: globals.mw(context) * 0.23,
-                      imageUrl: f.thumbnail,
-                      placeholder: (context, url) =>
-                          Image.asset('assets/images/loading.gif'),
-                      errorWidget: (context, url, error) =>
-                          Image.asset('assets/images/error.jpeg'),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-        ));
-  }
-
-  Widget _buildArticle() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-              padding: EdgeInsets.only(bottom: 5),
-              child: globals.myText(
-                  text: "ARTIKEL PILIHAN JLF", color: 'dark', size: 15)),
-          Stack(
-            children: <Widget>[
-              Container(
-                child: CarouselSlider(
-                  aspectRatio: 3,
-                  autoPlay: true,
-                  viewportFraction: 3.0,
-                  height: 200,
-                  enableInfiniteScroll: true,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentArticle = index;
-                    });
-                  },
-                  items: listArticle.map((f) {
-                    return ImageOverlay(image: f.image);
-                  }).toList(),
-                ),
-              ),
-              Positioned(
-                  top: 10,
-                  left: 10,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      globals.myText(
-                          text: "JLF", color: 'light', weight: "XB", size: 25)
-                    ],
-                  )),
-              Positioned(
-                  bottom: 10,
-                  left: 10,
-                  right: 10,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                          width: globals.mw(context) * 0.6,
-                          child: globals.myText(
-                              text: listArticle[_currentArticle].description,
-                              color: "light")),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => WebviewScaffold(
-                                  url: listArticle[_currentArticle].link,
-                                  appBar: globals.appBar(_scaffoldKey, context,
-                                      isSubMenu: true,
-                                      showNotification: false))));
-                        },
-                        child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 5),
-                            width: globals.mw(context) * 0.2,
-                            // Button
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Container(
-                                child: globals.myText(
-                                    text: "BACA",
-                                    weight: "B",
-                                    align: TextAlign.center))),
-                      )
-                    ],
-                  ))
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -1365,40 +835,11 @@ class _HomePage extends State<HomePage> {
                     children: <Widget>[
                       _buildVerificationStatus(),
                       isLoadingPromoA ? globals.isLoading() : _buildCarousel(),
-                      _buildAsk(),
+                      _buildLaranganBinatang(),
                       _buildNumberMember(),
                       _buildTitle(),
                       _buildGridCategory(animalCategories),
-                      _buildLaranganBinatang(),
-                      _buildUpComing(),
-                      _buildPartner(),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                          child: globals.myText(
-                              text: "EVENT JLF", color: 'dark', size: 15)),
-                      isLoadingPromoB
-                          ? globals.isLoading()
-                          : _buildPromotionB(),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
-                          child: globals.myText(
-                              text: "SPONSORED SELLER JLF",
-                              color: 'dark',
-                              size: 15)),
-                      isLoadingPromoC
-                          ? globals.isLoading()
-                          : _buildPromotionC(),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                          child: globals.myText(
-                              text: "VIDEO TUTORIAL JLF",
-                              color: 'dark',
-                              size: 15)),
-                      isLoadingPromoVideo
-                          ? globals.isLoading()
-                          : _buildVideoA(),
-                      isLoadingArticle ? globals.isLoading() : _buildArticle(),
-                      Divider(),
+                      _buildEventHewan(),
                       _buildDonation(),
                     ],
                   ),

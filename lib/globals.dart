@@ -20,6 +20,7 @@ import 'package:mailer/smtp_server.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 String version = "v0.1.6";
+bool isProduction = false;
 
 /// Global Function to return Screen Height
 double mh(BuildContext context) {
@@ -695,6 +696,16 @@ String convertFormatDate(String date) {
   return newDate;
 }
 
+String convertFormatDayMonth(String date) {
+  String newDate = "";
+  String spDate = date.split(" ")[0];
+  List<String> splitDate = spDate.split("-");
+  String month =
+      convertMonthFromDigitSimple(int.parse(splitDate[1])).toUpperCase();
+  newDate = "${splitDate[2]} $month";
+  return newDate;
+}
+
 String convertFormatDateTimeProduct(String date) {
   String newDate = "";
   List<String> split = date.split(" ");
@@ -1026,6 +1037,10 @@ Future<bool> confirmDialog(String content, context,
 void mailError(String errrorFrom, String cause) async {
   String username = 'joe.technubi@gmail.com';
   String password = 'kmzway87AAA';
+
+  if(!isProduction){
+    return;
+  }
 
   final smtpServer = gmail(username, password);
 

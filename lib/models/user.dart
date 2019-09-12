@@ -137,6 +137,7 @@ class User {
         "password": password == null ? null : password,
         "phone_number": phoneNumber,
         "address": address,
+        "token_redis":tokenRedis,
         "photo": photo == null ? null : photo,
         "role_id": roleId == null ? null : roleId,
         "regency_id": regencyId == null ? null : regencyId,

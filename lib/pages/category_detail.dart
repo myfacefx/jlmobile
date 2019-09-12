@@ -787,8 +787,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ],
           ),
           SizedBox(height: 5),
-          globals.myText(text: globals.convertFormatDate(createdDate)),
-          SizedBox(height: 5),
           Text(
             "${name.toUpperCase()}",
             overflow: TextOverflow.ellipsis,
@@ -808,7 +806,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               )
             ],
           ),
-          SizedBox(height: 5)
+          SizedBox(height: 5),
+          globals.myText(text:"Tanggal mulai :"+ globals.convertFormatDayMonth(createdDate), size: 10),
+          SizedBox(height: 5),
         ],
       ),
     );

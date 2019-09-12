@@ -302,6 +302,23 @@ Future<int> create(Map<String, dynamic> _data, String token,
   }
 }
 
+Future<int> getAnimalsCount() async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/animals/count";
+
+  print(url);
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return int.parse(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 // Future<int> updateAnimal(
 //     String token, Map<String, dynamic> _data, int id) async {
 //   final header = {"Content-Type": "application/json", "Authorization": token};
@@ -342,7 +359,7 @@ Future<int> updateAnimal(String token, Map<String, dynamic> _data, int id,
 
   print(uri);
 
-   if (res.statusCode == 202) {
+  if (res.statusCode == 202) {
     return 1;
   } else if (res.statusCode == 444) {
     return 2;
