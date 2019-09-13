@@ -12,7 +12,7 @@ const kPrimaryLight = const Color.fromRGBO(255, 98, 98, 1);
 const kPrimaryDark = const Color.fromRGBO(186, 39, 75, 1);
 
 ThemeData buildThemeData() {
-  final baseTheme = ThemeData.light();
+  final baseTheme = ThemeData(fontFamily: 'RobotoMono');
   return baseTheme.copyWith(
       appBarTheme: AppBarTheme(
         color: globals.user != null
