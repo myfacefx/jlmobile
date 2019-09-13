@@ -20,3 +20,19 @@ Future<List<Promo>> getAllPromos(
     throw Exception(res.body);
   }
 }
+
+Future<int> getCountPromos(String type, String location) async {
+  final header = {"Content-Type": "application/json"};
+
+  final url = getBaseUrl() + "/type/$type/location/$location/promos/count";
+  print(url);
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+  if (res.statusCode == 200) {
+    return int.parse(res.body);
+  } else {
+    throw Exception(res.body);
+  }
+}

@@ -68,6 +68,11 @@ class _LoginPage extends State<LoginPage> {
       } else {
         print("Already Up To Date Version");
       }
+    }).catchError((onError) async {
+      await globals.showDialogs(
+          "Maaf, Server Sedang Dalam Maintenance,\nSilakan Coba Beberapa Saat Lagi",
+          context);
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     });
   }
 

@@ -21,6 +21,7 @@ import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/services/version_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -45,6 +46,7 @@ class _HomePage extends State<HomePage> {
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   int membersCount = 0;
   int animalCount = 0;
+  int promosCountC = 0;
   List<Widget> listPromoA = [];
 
   String selectedType = "PASAR HEWAN";
@@ -145,6 +147,11 @@ class _HomePage extends State<HomePage> {
           alreadyUpToDate = true;
         });
       }
+    }).catchError((onError) async {
+      await globals.showDialogs(
+          "Maaf, Server Sedang Dalam Maintenance,\nSilakan Coba Beberapa Saat Lagi",
+          context);
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     });
   }
 
@@ -216,6 +223,9 @@ class _HomePage extends State<HomePage> {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => WebviewScaffold(
+                      displayZoomControls: true,
+                      scrollBar: true,
+                      withZoom: true,
                       url: slider.name,
                       appBar: globals.appBar(_scaffoldKey, context,
                           isSubMenu: true, showNotification: false))));
@@ -253,6 +263,12 @@ class _HomePage extends State<HomePage> {
 
     getAnimalsCount().then((onValue) {
       animalCount = onValue;
+    }).catchError((onError) {
+      globals.showDialogs(onError, context);
+    });
+
+    getCountPromos("iklan", "c").then((onValue) {
+      promosCountC = onValue;
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
@@ -529,21 +545,32 @@ class _HomePage extends State<HomePage> {
   Widget _buildEventHewan() {
     return Container(
         margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
         height: 60,
         width: globals.mw(context) * 0.45,
         decoration: BoxDecoration(
             color: Color.fromRGBO(49, 122, 229, 1),
             borderRadius: BorderRadius.circular(5)),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/images/calendar.png"),
+            Image.asset(
+              "assets/images/calendar.png",
+              height: 33,
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(""),
+            ),
             globals.myText(
-                text: "15 EVENT HEWAN BARU, SUDAH LIHAT ?",
+                text: "$promosCountC EVENT HEWAN BARU, SUDAH LIHAT ?",
                 color: "light",
                 weight: "B",
-                size: 14)
+                size: 14),
+            Expanded(
+              flex: 2,
+              child: Text(""),
+            ),
           ],
         ));
   }
@@ -771,48 +798,13 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildDonation() {
-    return Container(
-        margin: EdgeInsets.all(5),
-        child: Card(
-            color: globals.myColor('primary'),
-            child: Container(
-                padding: EdgeInsets.all(12),
-                child: Row(children: <Widget>[
-                  Image.asset('assets/images/donation.png', height: 55),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            globals.myText(
-                                text: "DONASI ANDA SANGAT BERARTI BAGI KAMI",
-                                color: "light",
-                                weight: "B"),
-                            SizedBox(height: 5),
-                            globals.myText(
-                                text:
-                                    "JLF terus tumbuh dan berusahan menjadi tempat yang nyaman bagi pemain fauna, dengan donasi Anda akan sangat membantu kami bertumbuh lebih cepat",
-                                color: "light",
-                                size: 12),
-                            SizedBox(height: 5),
-                            OutlineButton(
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
-                                Navigator.pushNamed(context, "/donasi");
-                              },
-                              color: Colors.transparent,
-                              highlightColor: Colors.white10,
-                              highlightedBorderColor: Colors.white,
-                              borderSide: BorderSide(color: Colors.white),
-                              child: Text("DONASI",
-                                  style: Theme.of(context).textTheme.display4),
-                            )
-                          ]),
-                    ),
-                  )
-                ]))));
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, "/donasi"),
+      child: Container(
+        padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
+        child: Image.asset('assets/images/donation_banner.png'),
+      ),
+    );
   }
 
   @override

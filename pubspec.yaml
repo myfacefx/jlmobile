@@ -72,7 +72,6 @@ flutter:
     - assets/images/logo.png
     - assets/images/image_not_found.png
     - assets/images/comment.png
-    - assets/images/donation.png
     - assets/images/intro/1.png
     - assets/images/intro/2.png
     - assets/images/intro/3.png
@@ -92,6 +91,7 @@ flutter:
     - assets/images/daftar_binatang_dilarang.jpg
     - assets/images/jlf-blue.png
     - assets/images/pets_login.jpg                
+    - assets/images/donation_banner.png
 
   fonts:
   - family: RobotoMono
