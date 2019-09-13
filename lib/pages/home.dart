@@ -8,15 +8,18 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/static_services.dart';
+import 'package:jlf_mobile/services/top_seller_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/services/version_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,11 +42,13 @@ class _HomePage extends State<HomePage> {
 
   bool isLoadingCategories = true;
   bool isLoadingPromoA = true;
+  bool isLoadingTopSellers = true;
 
   bool failedDataCategories = false;
   bool alreadyUpToDate = false;
 
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
+  List<TopSeller> topSellers = List<TopSeller>();
   int membersCount = 0;
   int animalCount = 0;
   int promosCountC = 0;
@@ -129,6 +134,26 @@ class _HomePage extends State<HomePage> {
   dispose() {
     super.dispose();
     if (_sub != null) _sub.cancel();
+  }
+
+  void refreshPromotedTopSeller() {
+    setState(() {
+      isLoadingTopSellers = true;
+    });
+    getPromotedTopSeller(globals.user.tokenRedis)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+      setState(() {
+        topSellers = onValue;
+        isLoadingTopSellers = false;
+      });
+    });
   }
 
   void _checkVersion() {
@@ -272,6 +297,7 @@ class _HomePage extends State<HomePage> {
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
+    refreshPromotedTopSeller();
   }
 
   List<Widget> getTemplatePromo() {
@@ -575,6 +601,130 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
+  Widget _buildSponsoredProduct() {
+    return Container(
+        margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
+        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+        height: 30,
+        width: globals.mw(context) * 0.45,
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(34, 34, 34, 1),
+            borderRadius: BorderRadius.circular(5)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              "assets/images/sponsored_product.png",
+              height: 11,
+            ),
+            globals.myText(
+                text: " SPONSORED PRODUCTS",
+                color: "light",
+                weight: "B",
+                size: 14),
+            Expanded(
+              flex: 2,
+              child: Text(""),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildPromotedSeller() {
+    return Container(
+        margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
+        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+        height: 30,
+        width: globals.mw(context) * 0.45,
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(34, 34, 34, 1),
+            borderRadius: BorderRadius.circular(5)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              "assets/images/promoted_seller.png",
+              height: 11,
+            ),
+            globals.myText(
+                text: " PROMOTED SELLERS",
+                color: "light",
+                weight: "B",
+                size: 14),
+            Expanded(
+              flex: 2,
+              child: Text(""),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildPromotedSellerItems() {
+    return Container(
+        margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
+        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+        height: 100,
+        width: globals.mw(context) * 0.45,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(255,255,255, 1),
+            borderRadius: BorderRadius.circular(5)),
+        child: isLoadingTopSellers
+            ? globals.isLoading()
+            : topSellers.length > 0
+                ? ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: false,
+                    itemBuilder: (context, index) {
+                      return _templateTopSellerProfile(topSellers[index]);
+                    },
+                    itemCount: topSellers.length,
+                  )
+                : globals.myText(
+                    text: "Belum ada top seller pada kategori ini"));
+  }
+
+  Widget _templateTopSellerProfile(TopSeller topSeller) {
+    return GestureDetector(
+      onTap: () {
+        topSeller.userId != null
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        ProfilePage(userId: topSeller.userId)))
+            : null;
+      },
+      child: Column(
+        children: <Widget>[
+          Container(
+              child: Container(
+                  width: 80,
+                  child: Container(
+                      height: 65,
+                      child: CircleAvatar(
+                          radius: 75,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: topSeller.thumbnail != null ||
+                                      topSeller.user.photo != null
+                                  ? FadeInImage.assetNetwork(
+                                      fit: BoxFit.cover,
+                                      placeholder: 'assets/images/loading.gif',
+                                      image: topSeller.thumbnail != null
+                                          ? topSeller.thumbnail
+                                          : topSeller.user.photo)
+                                  : Image.asset(
+                                      'assets/images/account.png')))))),
+          globals.myText(
+              text: topSeller.user != null ? topSeller.user.username : ' ',
+              weight: "B",
+              textOverflow: TextOverflow.ellipsis)
+        ],
+      ),
+    );
+  }
+
   Widget _buildTitle() {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
@@ -832,6 +982,10 @@ class _HomePage extends State<HomePage> {
                       _buildTitle(),
                       _buildGridCategory(animalCategories),
                       _buildEventHewan(),
+                      _buildSponsoredProduct(),
+                      _buildPromotedSellerItems(),
+                      _buildPromotedSeller(),
+                      _buildPromotedSellerItems(),
                       _buildDonation(),
                     ],
                   ),
