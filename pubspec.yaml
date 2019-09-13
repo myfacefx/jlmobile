@@ -92,6 +92,8 @@ flutter:
     - assets/images/jlf-blue.png
     - assets/images/pets_login.jpg                
     - assets/images/donation_banner.png
+    - assets/images/sponsored_product.png
+    - assets/images/promoted_seller.png
 
   fonts:
   - family: RobotoMono
