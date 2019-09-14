@@ -273,7 +273,7 @@ class _HomePage extends State<HomePage> {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => WebviewScaffold(
-                      displayZoomControls: true,
+                      // displayZoomControls: true,
                       scrollBar: true,
                       withZoom: true,
                       url: slider.name,
@@ -639,7 +639,7 @@ class _HomePage extends State<HomePage> {
       },
       child: Container(
         child: Padding(
-          padding: const EdgeInsets.only(right: 5),
+          padding: const EdgeInsets.only(right: 13),
           child: Stack(
             children: <Widget>[
               Container(
@@ -685,7 +685,6 @@ class _HomePage extends State<HomePage> {
                     children: <Widget>[
                       Icon(Icons.timer, color: Colors.white, size: 14),
                       globals.myText(
-                          // text: "+ ${auction.auctionEventParticipant.auctionEvent.extraPoint} POIN",
                           text: " ${globals.convertTimer(auction.auctionEventParticipant.auctionEvent.endDate)}",
                           weight: "B",
                           color: 'light',
@@ -734,13 +733,13 @@ class _HomePage extends State<HomePage> {
               ],
             )),
         Container(
-            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             height: 90,
             alignment: Alignment.center,
-            // decoration: BoxDecoration(
-            //     color: Color.fromRGBO(255, 255, 255, 1),
-            //     borderRadius: BorderRadius.circular(5)),
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(255, 255, 255, 1),
+                borderRadius: BorderRadius.circular(5)),
             child: isLoadingAuctionEvents
                 ? globals.isLoading()
                 : hotAuctions.length > 0
