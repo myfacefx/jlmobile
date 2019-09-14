@@ -8,6 +8,7 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
@@ -17,6 +18,7 @@ import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
+import 'package:jlf_mobile/services/auction_event_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/static_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
@@ -43,12 +45,14 @@ class _HomePage extends State<HomePage> {
   bool isLoadingCategories = true;
   bool isLoadingPromoA = true;
   bool isLoadingTopSellers = true;
+  bool isLoadingAuctionEvents = true;
 
   bool failedDataCategories = false;
   bool alreadyUpToDate = false;
 
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
   List<TopSeller> topSellers = List<TopSeller>();
+  List<Auction> hotAuctions = List<Auction>();
   int membersCount = 0;
   int animalCount = 0;
   int promosCountC = 0;
@@ -66,6 +70,7 @@ class _HomePage extends State<HomePage> {
       _verificationCheck();
       _refresh();
       _getListCategoriesProduct();
+      _getHotAuctions();
 
       _loadPromosA();
 
@@ -78,6 +83,27 @@ class _HomePage extends State<HomePage> {
     initUniLinksStream();
 
     handleAppLifecycleState();
+  }
+
+  _getHotAuctions() {
+    setState(() {
+     isLoadingAuctionEvents = true; 
+    });
+
+    getAuctionEventParticipants(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+
+      setState(() {
+        hotAuctions = onValue;
+        isLoadingAuctionEvents = false; 
+      });
+    });    
   }
 
   handleAppLifecycleState() {
@@ -140,8 +166,7 @@ class _HomePage extends State<HomePage> {
     setState(() {
       isLoadingTopSellers = true;
     });
-    getPromotedTopSeller(globals.user.tokenRedis)
-        .then((onValue) async {
+    getPromotedTopSeller(globals.user.tokenRedis).then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
             "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -601,6 +626,138 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
+  Widget _templateHotAuction(Auction auction) {
+    return GestureDetector(
+      onTap: () async {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => ProductDetailPage(
+                      animalId: auction.animalId,
+                      from: "LELANG",
+                    )));
+      },
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                  width: 80,
+                  child: Container(
+                      height: 70,
+                      child: CircleAvatar(
+                          radius: 75,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: auction.animal.animalImages[0].thumbnail != null
+                                  ? FadeInImage.assetNetwork(
+                                      fit: BoxFit.cover,
+                                      placeholder: 'assets/images/loading.gif',
+                                      image: auction.animal.animalImages[0].thumbnail)
+                                  : Image.asset(
+                                      'assets/images/account.png'))))),
+              Positioned(
+                bottom: 5,
+                child: Container(
+                  width: 80,
+                  decoration: BoxDecoration(
+                      color: globals.myColor("hot-auction"),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: globals.myText(
+                      text: "+ ${auction.auctionEventParticipant.auctionEvent.extraPoint} POIN",
+                      weight: "B",
+                      color: 'light',
+                      textOverflow: TextOverflow.ellipsis,
+                      align: TextAlign.center),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                child: Container(
+                  width: 80,
+                  decoration: BoxDecoration(
+                      color: globals.myColor("hot-auction"),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.timer, color: Colors.white, size: 14),
+                      globals.myText(
+                          // text: "+ ${auction.auctionEventParticipant.auctionEvent.extraPoint} POIN",
+                          text: " ${globals.convertTimer(auction.auctionEventParticipant.auctionEvent.endDate)}",
+                          weight: "B",
+                          color: 'light',
+                          textOverflow: TextOverflow.ellipsis,
+                          align: TextAlign.center),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAuctionEvents() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+            padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+            height: 25,
+            // width: 20,
+            width: 145,
+            decoration: BoxDecoration(
+                color: globals.myColor("hot-auction"),
+                borderRadius: BorderRadius.circular(5)),
+            child: Row(
+              children: <Widget>[
+                Image.asset(
+                  "assets/images/hot_auction.png",
+                  height: 14,
+                ),
+                globals.myText(
+                    text: " LELANG PANAS ",
+                    color: "light",
+                    weight: "B",
+                    size: 14),
+                Image.asset(
+                  "assets/images/hot_auction.png",
+                  height: 14,
+                ),
+              ],
+            )),
+        Container(
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+            height: 90,
+            alignment: Alignment.center,
+            // decoration: BoxDecoration(
+            //     color: Color.fromRGBO(255, 255, 255, 1),
+            //     borderRadius: BorderRadius.circular(5)),
+            child: isLoadingAuctionEvents
+                ? globals.isLoading()
+                : hotAuctions.length > 0
+                    ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: false,
+                        itemBuilder: (context, index) {
+                          return _templateHotAuction(hotAuctions[index]);
+                        },
+                        itemCount: hotAuctions.length,
+                      )
+                    : globals.myText(
+                        text: "Belum ada lelang panas saat ini"))
+      ],
+    );
+  }
+
   Widget _buildSponsoredProduct() {
     return Container(
         margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
@@ -667,7 +824,7 @@ class _HomePage extends State<HomePage> {
         width: globals.mw(context) * 0.45,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: Color.fromRGBO(255,255,255, 1),
+            color: Color.fromRGBO(255, 255, 255, 1),
             borderRadius: BorderRadius.circular(5)),
         child: isLoadingTopSellers
             ? globals.isLoading()
@@ -982,6 +1139,7 @@ class _HomePage extends State<HomePage> {
                       _buildTitle(),
                       _buildGridCategory(animalCategories),
                       _buildEventHewan(),
+                      _buildAuctionEvents(),
                       _buildSponsoredProduct(),
                       _buildPromotedSellerItems(),
                       _buildPromotedSeller(),
