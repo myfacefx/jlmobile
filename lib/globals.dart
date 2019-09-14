@@ -893,6 +893,9 @@ Color myColor([String color = "default"]) {
     case "danger":
       returnedColor = Colors.red;
       break;
+    case "hot-auction":
+      returnedColor = Color.fromRGBO(221, 136, 68, 1);
+      break;
     case "warning":
       returnedColor = Colors.deepOrange;
       break;

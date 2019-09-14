@@ -48,6 +48,7 @@ class Auction {
     int adminUnreadCount;
     int adminUserId;
     int adminId;
+    AuctionEventParticipant auctionEventParticipant;
 
     Auction({
         this.id,
@@ -89,7 +90,8 @@ class Auction {
         this.buyerUserId,
         this.adminUnreadCount,
         this.adminUserId,
-        this.adminId
+        this.adminId,
+        this.auctionEventParticipant
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -133,6 +135,7 @@ class Auction {
         adminUnreadCount: json["admin_unread_count"],
         adminUserId: json["admin_user_id"],
         adminId: json["admin_id"] == null ? null : json["admin_id"],
+        auctionEventParticipant: json["auction_event_participant"] == null ? null : AuctionEventParticipant.fromJson(json["auction_event_participant"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -169,5 +172,94 @@ class Auction {
         "animal": animal == null ? null : animal.toJson(),
         "owner": owner == null ? null : owner.toJson(),
         "winner": winner == null ? null : winner.toJson(),
+        "auction_event_participant": auctionEventParticipant == null ? null : auctionEventParticipant.toJson(),
     }..removeWhere( (key, val) => val == null);
+}
+
+class AuctionEventParticipant {
+    int id;
+    int auctionId;
+    int auctionEventId;
+    dynamic createdAt;
+    dynamic updatedAt;
+    dynamic deletedAt;
+    AuctionEvent auctionEvent;
+
+    AuctionEventParticipant({
+        this.id,
+        this.auctionId,
+        this.auctionEventId,
+        this.createdAt,
+        this.updatedAt,
+        this.deletedAt,
+        this.auctionEvent,
+    });
+
+    factory AuctionEventParticipant.fromJson(Map<String, dynamic> json) => AuctionEventParticipant(
+        id: json["id"] == null ? null : json["id"],
+        auctionId: json["auction_id"] == null ? null : json["auction_id"],
+        auctionEventId: json["auction_event_id"] == null ? null : json["auction_event_id"],
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
+        deletedAt: json["deleted_at"],
+        auctionEvent: json["auction_event"] == null ? null : AuctionEvent.fromJson(json["auction_event"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "auction_id": auctionId == null ? null : auctionId,
+        "auction_event_id": auctionEventId == null ? null : auctionEventId,
+        "created_at": createdAt,
+        "updated_at": updatedAt,
+        "deleted_at": deletedAt,
+        "auction_event": auctionEvent == null ? null : auctionEvent.toJson(),
+    };
+}
+
+class AuctionEvent {
+    int id;
+    String name;
+    dynamic startDate;
+    dynamic endDate;
+    int extraPoint;
+    int active;
+    dynamic createdAt;
+    dynamic updatedAt;
+    dynamic deletedAt;
+
+    AuctionEvent({
+        this.id,
+        this.name,
+        this.startDate,
+        this.endDate,
+        this.extraPoint,
+        this.active,
+        this.createdAt,
+        this.updatedAt,
+        this.deletedAt,
+    });
+
+    factory AuctionEvent.fromJson(Map<String, dynamic> json) => AuctionEvent(
+        id: json["id"] == null ? null : json["id"],
+        name: json["name"] == null ? null : json["name"],
+        startDate: json["start_date"],
+        endDate: json["end_date"],
+        extraPoint: json["extra_point"] == null ? null : json["extra_point"],
+        active: json["active"] == null ? null : json["active"],
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
+        deletedAt: json["deleted_at"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "name": name == null ? null : name,
+        "start_date": startDate,
+        "end_date": endDate,
+        "extra_point": extraPoint == null ? null : extraPoint,
+        "active": active == null ? null : active,
+        "created_at": createdAt,
+        "updated_at": updatedAt,
+        "deleted_at": deletedAt,
+    };
 }

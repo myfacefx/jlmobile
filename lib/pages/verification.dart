@@ -397,7 +397,7 @@ class _VerificationPageState extends State<VerificationPage> {
                                     SizedBox(height: 8),
                                     globals.myText(
                                         text:
-                                            "Hai sobat JLF, dalam rangka meningkatkan keamanansekaligus membrantas kasus lelang sebelumnya, maka pihak kami mewajibkan para bidder dan seller melakukan verifikasi dengan tanda pengenal (Kartu Pelajar/KTP/SIM/Kartu Member Mall/Kartu lainnya dengan identitas jelas). Verifikasi ini hanya dilakukan sekali saja.",
+                                            "Hai sobat JLF, dalam rangka meningkatkan keamanan sekaligus membrantas kasus lelang sebelumnya, maka pihak kami mewajibkan para bidder dan seller melakukan verifikasi dengan tanda pengenal (Kartu Pelajar/KTP/SIM/Kartu Member Mall/Kartu lainnya dengan identitas jelas). Verifikasi ini hanya dilakukan sekali saja.",
                                         align: TextAlign.center),
                                     globals.myText(
                                         text:

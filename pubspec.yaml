@@ -26,9 +26,10 @@ dependencies:
       url: https://github.com/yudaprama/flutter_facebook_login
       ref: android-x
   flutter_video_compress: ^0.3.7+8
+  
+  # Firebase Notifications
   firebase_storage: ^3.0.4
 
-  # Firebase Notifications
   firebase_core: ^0.4.0+6
   # firebase_auth:
   cloud_firestore: ^0.12.5+2
@@ -94,6 +95,7 @@ flutter:
     - assets/images/donation_banner.png
     - assets/images/sponsored_product.png
     - assets/images/promoted_seller.png
+    - assets/images/hot_auction.png
 
   fonts:
   - family: RobotoMono
