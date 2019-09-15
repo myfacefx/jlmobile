@@ -368,6 +368,23 @@ Future<int> updateAnimal(String token, Map<String, dynamic> _data, int id,
   }
 }
 
+Future<List<Animal>> getSponsoredProducts(String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  final url = getBaseUrl() + "/is-sponsored-animals";
+
+  print(url);
+
+  http.Response res = await http.get(url, headers: header);
+  if (res.statusCode == 200) {
+    return animalFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 // Future<bool> deleteImage(String token, int animalImageId) async {
 //   final header = {"Content-Type": "application/json"};
 //   final url = getBaseUrl() + "/animal-images/$animalImageId";
