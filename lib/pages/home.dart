@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
@@ -44,15 +45,17 @@ class _HomePage extends State<HomePage> {
 
   bool isLoadingCategories = true;
   bool isLoadingPromoA = true;
-  bool isLoadingTopSellers = true;
+  bool isLoadingPromotedTopSellers = true;
+  bool isLoadingSponsoredProducts = true;
   bool isLoadingAuctionEvents = true;
 
   bool failedDataCategories = false;
   bool alreadyUpToDate = false;
 
   List<AnimalCategory> animalCategories = List<AnimalCategory>();
-  List<TopSeller> topSellers = List<TopSeller>();
+  List<TopSeller> promotedTopSellers = List<TopSeller>();
   List<Auction> hotAuctions = List<Auction>();
+  List<Animal> sponsoredProducts = List<Animal>();
   int membersCount = 0;
   int animalCount = 0;
   int promosCountC = 0;
@@ -71,6 +74,8 @@ class _HomePage extends State<HomePage> {
       _refresh();
       _getListCategoriesProduct();
       _getHotAuctions();
+      _getSponsoredProducts();
+      _getPromotedTopSeller();
 
       _loadPromosA();
 
@@ -87,7 +92,7 @@ class _HomePage extends State<HomePage> {
 
   _getHotAuctions() {
     setState(() {
-     isLoadingAuctionEvents = true; 
+      isLoadingAuctionEvents = true;
     });
 
     getAuctionEventParticipants(globals.user.tokenRedis).then((onValue) async {
@@ -101,9 +106,30 @@ class _HomePage extends State<HomePage> {
 
       setState(() {
         hotAuctions = onValue;
-        isLoadingAuctionEvents = false; 
+        isLoadingAuctionEvents = false;
       });
-    });    
+    });
+  }
+
+  _getSponsoredProducts() {
+    setState(() {
+      isLoadingSponsoredProducts = true;
+    });
+
+    getSponsoredProducts(globals.user.tokenRedis).then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+
+      setState(() {
+        sponsoredProducts = onValue;
+        isLoadingSponsoredProducts = false;
+      });
+    });
   }
 
   handleAppLifecycleState() {
@@ -162,9 +188,9 @@ class _HomePage extends State<HomePage> {
     if (_sub != null) _sub.cancel();
   }
 
-  void refreshPromotedTopSeller() {
+  void _getPromotedTopSeller() {
     setState(() {
-      isLoadingTopSellers = true;
+      isLoadingPromotedTopSellers = true;
     });
     getPromotedTopSeller(globals.user.tokenRedis).then((onValue) async {
       if (onValue == null) {
@@ -175,8 +201,8 @@ class _HomePage extends State<HomePage> {
         return;
       }
       setState(() {
-        topSellers = onValue;
-        isLoadingTopSellers = false;
+        promotedTopSellers = onValue;
+        isLoadingPromotedTopSellers = false;
       });
     });
   }
@@ -322,7 +348,6 @@ class _HomePage extends State<HomePage> {
     }).catchError((onError) {
       globals.showDialogs(onError, context);
     });
-    refreshPromotedTopSeller();
   }
 
   List<Widget> getTemplatePromo() {
@@ -650,11 +675,13 @@ class _HomePage extends State<HomePage> {
                           radius: 75,
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: auction.animal.animalImages[0].thumbnail != null
+                              child: auction.animal.animalImages[0].thumbnail !=
+                                      null
                                   ? FadeInImage.assetNetwork(
                                       fit: BoxFit.cover,
                                       placeholder: 'assets/images/loading.gif',
-                                      image: auction.animal.animalImages[0].thumbnail)
+                                      image: auction
+                                          .animal.animalImages[0].thumbnail)
                                   : Image.asset(
                                       'assets/images/account.png'))))),
               Positioned(
@@ -665,7 +692,8 @@ class _HomePage extends State<HomePage> {
                       color: globals.myColor("hot-auction"),
                       borderRadius: BorderRadius.circular(5)),
                   child: globals.myText(
-                      text: "+ ${auction.auctionEventParticipant.auctionEvent.extraPoint} POIN",
+                      text:
+                          "+ ${auction.auctionEventParticipant.auctionEvent.extraPoint} POIN",
                       weight: "B",
                       color: 'light',
                       textOverflow: TextOverflow.ellipsis,
@@ -685,7 +713,8 @@ class _HomePage extends State<HomePage> {
                     children: <Widget>[
                       Icon(Icons.timer, color: Colors.white, size: 14),
                       globals.myText(
-                          text: " ${globals.convertTimer(auction.auctionEventParticipant.auctionEvent.endDate)}",
+                          text:
+                              " ${globals.convertTimer(auction.auctionEventParticipant.auctionEvent.endDate)}",
                           weight: "B",
                           color: 'light',
                           textOverflow: TextOverflow.ellipsis,
@@ -751,93 +780,123 @@ class _HomePage extends State<HomePage> {
                         },
                         itemCount: hotAuctions.length,
                       )
-                    : globals.myText(
-                        text: "Belum ada lelang panas saat ini"))
+                    : globals.myText(text: "Belum ada lelang panas saat ini"))
       ],
     );
   }
 
   Widget _buildSponsoredProduct() {
-    return Container(
-        margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-        height: 30,
-        width: globals.mw(context) * 0.45,
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(34, 34, 34, 1),
-            borderRadius: BorderRadius.circular(5)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              "assets/images/sponsored_product.png",
-              height: 11,
-            ),
-            globals.myText(
-                text: " SPONSORED PRODUCTS",
-                color: "light",
-                weight: "B",
-                size: 14),
-            Expanded(
-              flex: 2,
-              child: Text(""),
-            ),
-          ],
-        ));
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
+              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+              height: 30,
+              width: globals.mw(context) * 0.45,
+              decoration: BoxDecoration(
+                  color: Color.fromRGBO(34, 34, 34, 1),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    "assets/images/sponsored_product.png",
+                    height: 11,
+                  ),
+                  globals.myText(
+                      text: " SPONSORED PRODUCTS",
+                      color: "light",
+                      weight: "B",
+                      size: 14),
+                  Expanded(
+                    flex: 2,
+                    child: Text(""),
+                  ),
+                ],
+              )),
+          Container(
+              margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
+              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+              height: 90,
+              // width: globals.mw(context) * 0.45,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  borderRadius: BorderRadius.circular(5)),
+              child: isLoadingSponsoredProducts
+                  ? globals.isLoading()
+                  : sponsoredProducts.length > 0
+                      ? ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: false,
+                          itemBuilder: (context, index) {
+                            return _templateSponsoredProducts(
+                                sponsoredProducts[index]);
+                          },
+                          itemCount: sponsoredProducts.length,
+                        )
+                      : globals.myText(
+                          text: "Belum ada sponsored product saat ini"))
+        ]);
   }
 
   Widget _buildPromotedSeller() {
-    return Container(
-        margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-        height: 30,
-        width: globals.mw(context) * 0.45,
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(34, 34, 34, 1),
-            borderRadius: BorderRadius.circular(5)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              "assets/images/promoted_seller.png",
-              height: 11,
-            ),
-            globals.myText(
-                text: " PROMOTED SELLERS",
-                color: "light",
-                weight: "B",
-                size: 14),
-            Expanded(
-              flex: 2,
-              child: Text(""),
-            ),
-          ],
-        ));
-  }
-
-  Widget _buildPromotedSellerItems() {
-    return Container(
-        margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
-        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-        height: 100,
-        width: globals.mw(context) * 0.45,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(255, 255, 255, 1),
-            borderRadius: BorderRadius.circular(5)),
-        child: isLoadingTopSellers
-            ? globals.isLoading()
-            : topSellers.length > 0
-                ? ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: false,
-                    itemBuilder: (context, index) {
-                      return _templateTopSellerProfile(topSellers[index]);
-                    },
-                    itemCount: topSellers.length,
-                  )
-                : globals.myText(
-                    text: "Belum ada top seller pada kategori ini"));
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
+              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+              height: 30,
+              width: globals.mw(context) * 0.45,
+              decoration: BoxDecoration(
+                  color: Color.fromRGBO(34, 34, 34, 1),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    "assets/images/promoted_seller.png",
+                    height: 11,
+                  ),
+                  globals.myText(
+                      text: " PROMOTED SELLERS",
+                      color: "light",
+                      weight: "B",
+                      size: 14),
+                  Expanded(
+                    flex: 2,
+                    child: Text(""),
+                  ),
+                ],
+              )),
+          Container(
+              margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
+              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+              height: 100,
+              // width: globals.mw(context) * 0.45,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  borderRadius: BorderRadius.circular(5)),
+              child: isLoadingPromotedTopSellers
+                  ? globals.isLoading()
+                  : promotedTopSellers.length > 0
+                      ? ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: false,
+                          itemBuilder: (context, index) {
+                            return _templateTopSellerProfile(
+                                promotedTopSellers[index]);
+                          },
+                          itemCount: promotedTopSellers.length,
+                        )
+                      : globals.myText(
+                          text: "Belum ada promoted seller pada kategori ini"))
+        ]);
   }
 
   Widget _templateTopSellerProfile(TopSeller topSeller) {
@@ -877,6 +936,46 @@ class _HomePage extends State<HomePage> {
               weight: "B",
               textOverflow: TextOverflow.ellipsis)
         ],
+      ),
+    );
+  }
+
+  Widget _templateSponsoredProducts(Animal animal) {
+    return GestureDetector(
+      onTap: () async {
+        animal.id != null
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => ProductDetailPage(
+                          animalId: animal.id,
+                          from: "PASAR HEWAN",
+                        )))
+            : null;
+      },
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 13),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                  width: 80,
+                  child: Container(
+                      height: 70,
+                      child: CircleAvatar(
+                          radius: 75,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: animal.animalImages[0].thumbnail != null
+                                  ? FadeInImage.assetNetwork(
+                                      fit: BoxFit.cover,
+                                      placeholder: 'assets/images/loading.gif',
+                                      image: animal.animalImages[0].thumbnail)
+                                  : Image.asset(
+                                      'assets/images/account.png'))))),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1140,9 +1239,9 @@ class _HomePage extends State<HomePage> {
                       _buildEventHewan(),
                       _buildAuctionEvents(),
                       _buildSponsoredProduct(),
-                      _buildPromotedSellerItems(),
+                      // _buildPromotedSellerItems(),
                       _buildPromotedSeller(),
-                      _buildPromotedSellerItems(),
+                      // _buildPromotedSellerItems(),
                       _buildDonation(),
                     ],
                   ),
