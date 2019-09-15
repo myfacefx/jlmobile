@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
         '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
         '/verification': (BuildContext context) => VerificationPage(),
         '/upcoming': (BuildContext context) => UpComingPage(),
-        '/forget-password': (BuildContext context) => ForgotPasswordPage(),
+        '/forget-password': (BuildContext context) => ForgotPasswordPage(), 
 
         // '/edit-product': (BuildContext context) => EditProductPage()
       },
