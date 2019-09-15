@@ -793,8 +793,8 @@ class _HomePage extends State<HomePage> {
           Container(
               margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
               padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              height: 30,
-              width: globals.mw(context) * 0.45,
+              // height: 30,
+              width: globals.mw(context) * 0.55,
               decoration: BoxDecoration(
                   color: Color.fromRGBO(34, 34, 34, 1),
                   borderRadius: BorderRadius.circular(5)),
@@ -850,8 +850,8 @@ class _HomePage extends State<HomePage> {
           Container(
               margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
               padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              height: 30,
-              width: globals.mw(context) * 0.45,
+              // height: 30,
+              width: globals.mw(context) * 0.55,
               decoration: BoxDecoration(
                   color: Color.fromRGBO(34, 34, 34, 1),
                   borderRadius: BorderRadius.circular(5)),
