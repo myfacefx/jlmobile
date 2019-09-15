@@ -157,7 +157,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         isLoading = false;
       });
     });
-    
+
     globals.getNotificationCount();
   }
 
@@ -1037,26 +1037,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5))),
                     )),
-                Container(
-                  width: 150,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Foto (Max 5)",
-                            style: TextStyle(color: Colors.white)),
-                        Icon(Icons.add_photo_alternate, color: Colors.white),
-                      ],
-                    ),
-                    color: Theme.of(context).primaryColor,
-                    onPressed: loadAssets,
-                  ),
-                ),
-                _buildGridViewImages(),
-                SizedBox(height: 10),
-
                 _isShowVideo == true
                     ? Container(
                         width: 250,
@@ -1103,6 +1083,25 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     ],
                   ),
                 ),
+                Container(
+                  width: 150,
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Foto (Max 5)",
+                            style: TextStyle(color: Colors.white)),
+                        Icon(Icons.add_photo_alternate, color: Colors.white),
+                      ],
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    onPressed: loadAssets,
+                  ),
+                ),
+                _buildGridViewImages(),
+                SizedBox(height: 10),
 
                 Divider(),
 
