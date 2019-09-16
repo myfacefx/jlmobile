@@ -823,6 +823,15 @@ String convertMonthFromDigitSimple(int monthDigit) {
   return month;
 }
 
+String convertFormatDateDayMonth(String date) {
+  String newDate = "";
+  List<String> split = date.split(" ");
+  List<String> splitDate = split[0].split("-");
+  newDate =
+      "${splitDate[2]}/${splitDate[1]}";
+  return newDate;
+}
+
 Widget isLoading() {
   return Container(
     child: Center(
