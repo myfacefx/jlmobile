@@ -721,7 +721,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     color: globals.myColor("primary")),
                 padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
                 child: globals.myText(
-                    text: "${globals.convertTimer(expiryTime)}",
+                    text: "tersisa ${globals.convertTimer(expiryTime)}",
                     size: 10,
                     color: "light"),
               )
