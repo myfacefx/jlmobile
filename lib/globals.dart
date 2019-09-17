@@ -932,6 +932,9 @@ Color myColor([String color = "default"]) {
     case "dark":
       returnedColor = Colors.grey[700];
       break;
+    case "grey":
+      returnedColor = Colors.grey;
+      break;
     case "unprime2":
       returnedColor = Color.fromRGBO(0, 0, 32, 1);
       break;

@@ -26,6 +26,8 @@ dependencies:
       url: https://github.com/yudaprama/flutter_facebook_login
       ref: android-x
   flutter_video_compress: ^0.3.7+8
+
+  # flutter_swiper: ^1.1.6
   
   # Firebase Notifications
   firebase_storage: ^3.0.4

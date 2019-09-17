@@ -583,6 +583,8 @@ class _ProfilePageState extends State<ProfilePage>
   Widget _profile() {
     var registeredDate = DateTime.parse(user.createdAt.toString());
 
+    String userPoint = globals.user.point > 999 ? (globals.user.point / 1000).toStringAsFixed(1) : globals.user.point.toString();
+
     return Container(
       padding: EdgeInsets.all(5),
       width: globals.mw(context),
@@ -591,52 +593,45 @@ class _ProfilePageState extends State<ProfilePage>
               padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Stack(
                 children: <Widget>[
-                  // user.id == globals.user.id
-                  //     ? GestureDetector(
-                  //         onTap: () {
-                  //           Navigator.pushNamed(context, "/edit-profile");
-                  //         },
-                  //         child: Container(
-                  //             alignment: Alignment.centerRight,
-                  //             child: Icon(Icons.edit,
-                  //                 color: globals.myColor("primary"))),
-                  //       )
-                  //     : Container(),
-                  // GestureDetector(
-                  //   onTap: () => globals.showDialogs("Point didapatkan ketika berhasil menjadi pemenang sebuah lelang, poin yang didapatkan adalah 0.1% dari nominal bid", context),
-                  //   child: Container(
-                  //     alignment: Alignment.topLeft,
-                  //     width: globals.mw(context) * 0.2,
-                  //     padding:
-                  //         EdgeInsets.fromLTRB(10, 15, 0, 0),
-                  //     child: globals.myText(text: "${globals.user.point}\nPOIN", weight: "B", align: TextAlign.center)),
-                  // ),
-
-                  Container(
-                    alignment: Alignment.topLeft,
-                    width: globals.mw(context) * 0.25,
-                    child: FlatButton(
-                        onPressed: () {
-                          globals.showDialogs("Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context, title: "Kumpulkan Poinmu");
-                        },
-                        child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                                "${globals.convertToMoney(globals.user.point.toDouble())} P",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .display4)
-                          ],
+                  user.id == globals.user.id ? 
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.topLeft,
+                        // width: globals.mw(context) * 0.25,
+                        width: 87,
+                        child: ButtonTheme(
+                          height: 25,
+                          child: FlatButton(
+                              onPressed: () {
+                                globals.showDialogs("Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context, title: "Kumpulkan Poinmu");
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                children: <Widget>[
+                                  globals.myText(text: "$userPoint POIN", color: "light", size: 12, weight: "B")
+                                ],
+                              ),
+                              color: isLoading
+                                  ? Colors.grey
+                                  : globals.myColor("warning"),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(5))),
                         ),
-                        color: isLoading
-                            ? Colors.grey
-                            : globals.myColor("warning"),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(5))),
-                  ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                                globals.showDialogs("Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context, title: "Kumpulkan Poinmu");
+                              },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Icon(Icons.info_outline, color: globals.myColor("warning")),
+                        ),
+                      )
+                    ],
+                  ) : Container(),
                   user.id == globals.user.id
                       ? Container(
                           alignment: Alignment.topRight,
@@ -746,12 +741,8 @@ class _ProfilePageState extends State<ProfilePage>
                       user.description != null && user.description.isNotEmpty
                           ? Container(
                               padding: EdgeInsets.symmetric(vertical: 8),
-                              child: Text(
-                                  user.description != null
-                                      ? user.description
-                                      : '',
-                                  style: TextStyle(color: Colors.grey)))
-                          : Container(),
+                              child: globals.myText(text: user.description != null ? user.description : '', color: 'grey', align: TextAlign.center),
+                          ) : Container(),
                       user.id == globals.user.id
                           ? FlatButton(
                               // shape: CircleBorder(),
