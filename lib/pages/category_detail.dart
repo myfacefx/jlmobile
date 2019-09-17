@@ -713,7 +713,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         globals.myText(
-            text: globals.convertFormatDateDayMonth(createdDate), size: 10),
+            text: globals.convertFormatDateDayMonth(createdDate, monthName:true), size: 10),
         isAuction
             ? Container(
                 decoration: BoxDecoration(
@@ -925,6 +925,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     widget.from == "LELANG"
                         ? Column(
                             children: <Widget>[
+                              SizedBox(height: 10),
                               _buildChips(
                                   "Harga Awal",
                                   globals.convertToMoney(
