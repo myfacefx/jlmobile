@@ -690,8 +690,7 @@ String convertFormatDate(String date) {
   String newDate = "";
   String spDate = date.split(" ")[0];
   List<String> splitDate = spDate.split("-");
-  String month =
-      convertMonthFromDigitSimple(int.parse(splitDate[1]));
+  String month = convertMonthFromDigitSimple(int.parse(splitDate[1]));
   newDate = "${splitDate[2]}-$month-${splitDate[0]}";
   return newDate;
 }
@@ -718,6 +717,9 @@ String convertFormatDateTimeProduct(String date) {
 
 String convertFormatDateTime(String date) {
   String newDate = "";
+  if (date == null || date == "") {
+    return "-";
+  }
   List<String> split = date.split(" ");
   List<String> splitTime = split[1].split(":");
 
@@ -829,9 +831,10 @@ String convertFormatDateDayMonth(String date, {bool monthName = false}) {
   List<String> split = date.split(" ");
   List<String> splitDate = split[0].split("-");
 
-  month = monthName ? convertMonthFromDigitSimple(int.parse(splitDate[1])) : splitDate[1];
-  newDate =
-      "${splitDate[2]}/$month";
+  month = monthName
+      ? convertMonthFromDigitSimple(int.parse(splitDate[1]))
+      : splitDate[1];
+  newDate = "${splitDate[2]}/$month";
   return newDate;
 }
 
@@ -1056,7 +1059,7 @@ void mailError(String errrorFrom, String cause) async {
   String username = 'joe.technubi@gmail.com';
   String password = 'kmzway87AAA';
 
-  if(!isProduction){
+  if (!isProduction) {
     return;
   }
 
