@@ -101,9 +101,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildVideo() {
     print(animal.videoPath);
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
         margin: EdgeInsets.fromLTRB(2, 2, 2, 0),
         // height: 40,
+        alignment: Alignment.center,
         color: Colors.white,
         child: InkWell(
             child: Text(
@@ -366,6 +367,11 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   text: "Pengiriman dalam pulau saja",
                   color: "dark",
                   size: 13)),
+      SizedBox(
+        height: 8,
+      ),
+      Divider(),
+      animal.videoPath != null ? _buildVideo() : Container(),
     ];
     return Container(
       color: Colors.white,
@@ -2184,7 +2190,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             : Container()
                         : Container(),
                     _buildImage(),
-                    animal.videoPath != null ? _buildVideo() : Container(),
                     SizedBox(
                       height: 8,
                     ),

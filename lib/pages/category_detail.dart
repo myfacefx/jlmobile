@@ -620,7 +620,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         },
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Search',
+            hintText: 'Cari Lokasi / Nama Seller / Nama Hewan',
             hintStyle: TextStyle(fontSize: 10)),
       ),
     );

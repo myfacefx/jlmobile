@@ -287,8 +287,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     var videoLength = video.lengthSync();
     _sizeVideo = (videoLength / 1048576).toStringAsFixed(2);
 
-    // limit max 30 mb
-    if (video.lengthSync() > 31457280) {
+    // limit max 35 mb
+    if (video.lengthSync() > 36700160) { // byte in binary
       globals.showDialogs("Ukuran Video Terlalu Besar", context);
     } else {
       setState(() {
@@ -1046,7 +1046,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Upload Video (Max 30 MB)",
+                              Text("Upload Video (Max 35 MB)",
                                   style: TextStyle(color: Colors.white)),
                               Icon(Icons.video_call, color: Colors.white),
                             ],
