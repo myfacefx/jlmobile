@@ -179,6 +179,19 @@ class _LoginPage extends State<LoginPage> {
     setState(() {
       loginLoading = true;
     });
+
+    // di uncoment cuk, terus di isi email sama fbId ne
+    // User searchUser = User();
+    //     searchUser.email = profile['email'];
+    //     searchUser.facebookUserId = profile['id'];
+
+    //     print("FB LOGIN LOOKUP");
+    //     print(searchUser.toJson());
+    //     // List<User> users = await getByEmail(searchUser.toJson());
+    //     List<User> users = await fbLoginSearch(searchUser.toJson());
+
+    //     print("####USERS TO STRING#####" + users.toString());
+    //     return;
     FacebookLoginResult result = await facebookLogin
         .logInWithReadPermissions(['email', 'public_profile']);
 
@@ -291,7 +304,7 @@ class _LoginPage extends State<LoginPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  globals.myText(text: "Lupa password? Klik ", color: "dark"),
+                  globals.myText(text: "Reset password, Klik ", color: "dark"),
                   globals.myText(
                       text: "di sini",
                       weight: "SB",

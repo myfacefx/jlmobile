@@ -75,7 +75,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         Navigator.pop(context);
         if (result == 1) {
           globals.showDialogs(
-              "Password berhasil di reset, silahkan check email yang digunakan",
+              "Untuk menjaga keamanan password anda kami akan mengirimkan password baru anda, jika anda ingin mengganti silahkan login dan ganti melalui menu edit profile",
               context,
               isDouble: true);
         } else if (result == 2) {
