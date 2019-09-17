@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -48,6 +49,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   List<TopSeller> topSellers = List<TopSeller>();
 
   TextEditingController searchController = TextEditingController();
+
+  int _activeTopSellerPage = 0;
+  List<Widget> _topSellerPages = List<Widget>();
 
   String nextUrl;
   bool isLast = false;
@@ -130,6 +134,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         return;
       }
       setState(() {
+        _registerTopSellerCarousel(onValue);
         topSellers = onValue;
         isLoadingTopSellers = false;
       });
@@ -151,8 +156,51 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       }
       setState(() {
         topSellers = onValue;
+        _registerTopSellerCarousel(onValue);
         isLoadingTopSellers = false;
       });
+    });
+  }
+
+  _registerTopSellerCarousel(List<TopSeller> topSellers) {
+    setState(() {
+      _topSellerPages = List<Widget>();
+      if (topSellers.length > 0) {
+        // yxy
+
+        List<Widget> firstRowWidget = List<Widget>();
+        List<Widget> secondRowWidget = List<Widget>();
+
+        for (var topSeller in topSellers) {
+          if (firstRowWidget.length < 3) firstRowWidget.add(_templateHeaderTopSellerProfile(topSeller, height: 62));
+          else if (secondRowWidget.length < 3) secondRowWidget.add(_templateHeaderTopSellerProfile(topSeller, height: 62));
+          else {
+            _topSellerPages.add(Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[ Row(children: firstRowWidget), SizedBox(height: 10), Row(children: secondRowWidget)])));
+            firstRowWidget = List<Widget>();
+            secondRowWidget = List<Widget>();
+          }
+        }
+
+        if (secondRowWidget.length > 0) _topSellerPages.add(Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[ Row(children: firstRowWidget), SizedBox(height: 10), Row(children: secondRowWidget)])));
+        else if (firstRowWidget.length > 0) _topSellerPages.add(Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[ Row(children: firstRowWidget) ])));
+
+        // 1x4 
+        // int i = 0;
+
+        // List<Widget> rowWidget = List<Widget>();
+
+        // for (var topSeller in topSellers) {
+        //   rowWidget.add(_templateHeaderTopSellerProfile(topSeller));
+
+        //   i++;
+        //   if (i == 4) {
+        //     _topSellerPages.add(Row(children: rowWidget));
+        //     rowWidget = List<Widget>();
+        //   }
+        // }
+
+        // if (rowWidget.length > 0) _topSellerPages.add(Row(children: rowWidget));
+      }
     });
   }
 
@@ -286,31 +334,44 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   //top container
   Widget _buildcontSub(String name, String count, int subCategory) {
-    return GestureDetector(
-      onTap: () {
-        if (currentIdSubCategory != subCategory) {
-          currentIdSubCategory = subCategory;
-          currentSubCategory = name;
-          _refresh(subCategory, name, widget.from);
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-        margin: EdgeInsets.fromLTRB(10, 5, 0, 5),
-        decoration: BoxDecoration(
-            color: name.contains(currentSubCategory)
-                ? Colors.blueGrey
-                : Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.circular(25)),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(
-            "$name ($count)",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10),
-          )
-        ]),
-      ),
-    );
+    return Container(
+        // padding: EdgeInsets.fromLTRB(, 5, 10, 5),
+        margin: EdgeInsets.fromLTRB(5, 5, 0, 5),
+        child: ButtonTheme(
+            height: 25,
+            child: FlatButton(
+                onPressed: () {
+                  if (currentIdSubCategory != subCategory) {
+                    currentIdSubCategory = subCategory;
+                    currentSubCategory = name;
+                    _refresh(subCategory, name, widget.from);
+                  }
+                },
+                color: name.contains(currentSubCategory)
+                    ? Colors.blueGrey
+                    : globals.myColor("primary"),
+                child: globals.myText(
+                    text: "${name.toUpperCase()} ($count)",
+                    align: TextAlign.center,
+                    size: 10,
+                    color: "light"),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25))))
+        // padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+        // margin: EdgeInsets.fromLTRB(10, 5, 0, 5),
+        // decoration: BoxDecoration(
+        //     color: name.contains(currentSubCategory)
+        //         ? Colors.blueGrey
+        //         : Theme.of(context).primaryColor,
+        //     borderRadius: BorderRadius.circular(25)),
+        // child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        //   Text(
+        //     "$name ($count)",
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(fontSize: 10),
+        //   )
+        // ]),
+        );
   }
 
   Widget _buildCategory() {
@@ -338,7 +399,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     }
 
     return Container(
-        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: GridView.count(
             physics: ScrollPhysics(),
             shrinkWrap: true,
@@ -348,60 +410,191 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   Widget _buildTopCont() {
+    int _type = 0;
+    String name = "Buat Lelang";
+    if (widget.from == "LELANG") {
+      _type = 1;
+      name = "Lelang";
+    } else if (widget.from == "PASAR HEWAN") {
+      _type = 2;
+      name = "Hewan";
+    } else if (widget.from == "ACCESSORY") {
+      _type = 3;
+      name = "Aksesoris";
+    }
+
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(top: 16, bottom: 16),
+      padding: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
+          Row(children: <Widget>[
+            Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
+                  height: 90,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(90),
+                    child: FadeInImage.assetNetwork(
+                      fit: BoxFit.cover,
+                      placeholder: 'assets/images/loading.gif',
+                      image: animalCategory.image,
+                    ),
+                  ),
+                ),
+                globals.myText(
+                    text: animalCategory.name.toUpperCase(),
+                    size: 14,
+                    weight: "B",
+                    align: TextAlign.center),
+                // ButtonTheme(
+                //   // minWidth: double.infinity,
+                //   height: 25,
+                //   child: RaisedButton(
+                //       color: Color.fromRGBO(222, 188, 123, 1),
+                //       onPressed: () {},
+                //       child: Row(
+                //         children: <Widget>[
+                //           Icon(Icons.bookmark, color: globals.myColor("dark"), size: 17),
+                //           globals.myText(text: " Artikel ", color: "dark"),
+                //         ],
+                //       )),
+                // ),
+                ButtonTheme(
+                  // minWidth: double.infinity,
+                  height: 25,
+                  child: RaisedButton(
+                      color: Color.fromRGBO(227, 136, 133, 1),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    CreateAuctionPage(
+                                      type: _type,
+                                      categoryId: widget.animalCategory.id,
+                                      subCategoryId: currentIdSubCategory,
+                                    )));
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.add_circle, size: 17),
+                          globals.myText(text: " $name"),
+                        ],
+                      )),
+                ),
+              ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(90),
-              child: FadeInImage.assetNetwork(
-                fit: BoxFit.cover,
-                placeholder: 'assets/images/loading.gif',
-                image: animalCategory.image,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          allAuctionCounts > 0
-              ? Text(
-                  "$allAuctionCounts Hewan",
-                  style: Theme.of(context)
-                      .textTheme
-                      .title
-                      .copyWith(fontWeight: FontWeight.w300),
-                )
-              : Container(),
-          SizedBox(
-            height: 8,
-          ),
-          allPlayerCounts > 0
-              ? Text(
-                  "$allPlayerCounts Pemain",
-                  style: Theme.of(context).textTheme.subtitle,
-                )
-              : Container(),
-          SizedBox(
-            height: 8,
-          ),
-          _buildCategory(),
+            Flexible(child: _buildCarousel())
+          ]),
+          // SizedBox(
+          //   height: 8,
+          // ),
+          // allAuctionCounts > 0
+          //     ? Text(
+          //         "$allAuctionCounts Hewan",
+          //         style: Theme.of(context)
+          //             .textTheme
+          //             .title
+          //             .copyWith(fontWeight: FontWeight.w300),
+          //       )
+          //     : Container(),
+          // SizedBox(
+          //   height: 8,
+          // ),
+          // allPlayerCounts > 0
+          //     ? Text(
+          //         "$allPlayerCounts Pemain",
+          //         style: Theme.of(context).textTheme.subtitle,
+          //       )
+          //     : Container(),
+          // SizedBox(
+          //   height: 8,
+          // ),
         ],
       ),
     );
   }
-  //top container
+
+  Widget _buildCarousel() {
+    return _topSellerPages.length > 0
+        ? Stack(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+                // width: globals.mw(context) * 0.7,
+                height: 190,
+                child: CarouselSlider(
+                  // aspectRatio: 1,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 25),
+                  viewportFraction: 1.0,
+                  height: 190,
+                  enableInfiniteScroll: true,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _activeTopSellerPage = index;
+                    });
+                  },
+                  items: _topSellerPages,
+                ),
+              ),
+            ],
+          )
+        : Container();
+  }
+
+  Widget _buildHeaderTopSeller() {
+    // return
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: topSellers.length > 0
+          ? Card(
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: <Widget>[
+                    // Container(
+                    //   padding: EdgeInsets.only(left: 15, bottom: 5, top: 5),
+                    //   alignment: Alignment.centerLeft,
+                    //   // child: globals.myText(text: "STAR SELLERS", weight: "B"),
+                    // ),
+                    Container(
+                        height: 200,
+                        alignment: Alignment.center,
+                        child: isLoadingTopSellers
+                            ? globals.isLoading()
+                            : topSellers.length > 0
+                                ? ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: false,
+                                    itemBuilder: (context, index) {
+                                      return _templateHeaderTopSellerProfile(
+                                          topSellers[index]);
+                                    },
+                                    itemCount: topSellers.length,
+                                  )
+                                : globals.myText(
+                                    text:
+                                        "Belum ada top seller pada kategori ini")),
+                  ],
+                ),
+              ),
+            )
+          : Center(
+              child: globals.myText(
+                  text: "Belum ada star seller di kategori ini",
+                  align: TextAlign.center)),
+    );
+  }
 
   //title add post bid
-
   Widget _buildTitle() {
     int _type = 0;
     String name = "Buat Lelang";
@@ -496,6 +689,46 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                                           : topSeller.user.photo)
                                   : Image.asset(
                                       'assets/images/account.png')))))),
+          globals.myText(
+              text: topSeller.user != null ? topSeller.user.username : ' ',
+              weight: "B",
+              textOverflow: TextOverflow.ellipsis)
+        ],
+      ),
+    );
+  }
+
+  Widget _templateHeaderTopSellerProfile(TopSeller topSeller, {double height: 42}) {
+    return GestureDetector(
+      onTap: () {
+        topSeller.userId != null
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        ProfilePage(userId: topSeller.userId)))
+            : null;
+      },
+      child: Column(
+        children: <Widget>[
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              child: Container(
+                  alignment: Alignment.center,
+                  width: height,
+                  child: Container(
+                      height: height,
+                      child: CircleAvatar(
+                          radius: 85,
+                          child: topSeller.thumbnail != null ||
+                                  topSeller.user.photo != null
+                              ? FadeInImage.assetNetwork(
+                                  fit: BoxFit.cover,
+                                  placeholder: 'assets/images/loading.gif',
+                                  image: topSeller.thumbnail != null
+                                      ? topSeller.thumbnail
+                                      : topSeller.user.photo)
+                              : Image.asset('assets/images/account.png'))))),
           globals.myText(
               text: topSeller.user != null ? topSeller.user.username : ' ',
               weight: "B",
@@ -807,7 +1040,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ],
           ),
           SizedBox(height: 5),
-          globals.myText(text:"Tanggal mulai :"+ globals.convertFormatDayMonth(createdDate), size: 10),
+          globals.myText(
+              text: "Tanggal mulai :" +
+                  globals.convertFormatDayMonth(createdDate),
+              size: 10),
           SizedBox(height: 5),
         ],
       ),
@@ -997,16 +1233,18 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             children: <Widget>[
               _buildTopCont(),
               SizedBox(
-                height: 8,
-              ),
-              _buildTitle(),
-              SizedBox(
                 height: 16,
               ),
-              _buildTopSeller(),
-              SizedBox(
-                height: 16,
-              ),
+              _buildCategory(),
+              SizedBox(height: 16),
+              // _buildTitle(),
+              // SizedBox(
+              //   height: 16,
+              // ),
+              // _buildTopSeller(),
+              // SizedBox(
+              //   height: 16,
+              // ),
               _buildSearch(),
               SizedBox(
                 height: 16,
