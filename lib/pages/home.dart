@@ -791,9 +791,9 @@ class _HomePage extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              // height: 30,
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+              height: 25,
               width: globals.mw(context) * 0.55,
               decoration: BoxDecoration(
                   color: Color.fromRGBO(34, 34, 34, 1),
@@ -817,8 +817,8 @@ class _HomePage extends State<HomePage> {
                 ],
               )),
           Container(
-              margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+              margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               height: 90,
               // width: globals.mw(context) * 0.45,
               alignment: Alignment.center,
@@ -848,9 +848,9 @@ class _HomePage extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              // height: 30,
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+              height: 25,
               width: globals.mw(context) * 0.55,
               decoration: BoxDecoration(
                   color: Color.fromRGBO(34, 34, 34, 1),
@@ -874,9 +874,9 @@ class _HomePage extends State<HomePage> {
                 ],
               )),
           Container(
-              margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              height: 100,
+              margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              height: 90,
               // width: globals.mw(context) * 0.45,
               alignment: Alignment.center,
               decoration: BoxDecoration(
