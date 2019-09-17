@@ -903,30 +903,50 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           );
   }
 
-  Widget _buildTime(
-      String expiryTime, String username, String photo, bool isAuction) {
+  Widget _buildTime(String username, String photo) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Row(children: <Widget>[
-          Container(
-              height: 15,
-              child: CircleAvatar(
-                  radius: 10,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: photo != null && photo.isNotEmpty
-                          ? FadeInImage.assetNetwork(
-                              image: photo,
-                              placeholder: 'assets/images/loading.gif',
-                              fit: BoxFit.cover)
-                          : Image.asset('assets/images/account.png')))),
-          Container(
-              child: globals.myText(
-                  text: "$username",
-                  size: 10,
-                  textOverflow: TextOverflow.ellipsis))
-        ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+                height: 25,
+                width: 30,
+                padding: EdgeInsets.only(right: 5),
+                child: CircleAvatar(
+                    radius: 25,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: photo != null && photo.isNotEmpty
+                            ? FadeInImage.assetNetwork(
+                                image: photo,
+                                placeholder: 'assets/images/loading.gif',
+                                fit: BoxFit.cover)
+                            : Image.asset('assets/images/account.png')))),
+            Container(
+                width: globals.mw(context) * 0.3,
+                child: globals.myText(
+                    text: "$username $username $username $username",
+                    size: 14,
+                    textOverflow: TextOverflow.ellipsis)),
+          ],
+        ),
+        globals.user.verificationStatus == 'verified'
+            ? Icon(Icons.verified_user,
+                size: 18, color: globals.myColor("primary"))
+            : Container(),
+      ],
+    );
+  }
+
+  Widget _buildDetailDate(
+      String expiryTime, bool isAuction, String createdDate) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        globals.myText(
+            text: globals.convertFormatDateDayMonth(createdDate, monthName:true), size: 10),
         isAuction
             ? Container(
                 decoration: BoxDecoration(
@@ -934,7 +954,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     color: globals.myColor("primary")),
                 padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
                 child: globals.myText(
-                    text: "${globals.convertTimer(expiryTime)}",
+                    text: "tersisa ${globals.convertTimer(expiryTime)}",
                     size: 10,
                     color: "light"),
               )
@@ -1039,12 +1059,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               )
             ],
           ),
-          SizedBox(height: 5),
-          globals.myText(
-              text: "Tanggal mulai :" +
-                  globals.convertFormatDayMonth(createdDate),
-              size: 10),
-          SizedBox(height: 5),
         ],
       ),
     );
@@ -1117,13 +1131,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     SizedBox(
                       height: 5,
                     ),
-                    _buildTime(
+                    _buildTime(animal.owner.username, animal.owner.photo),
+                    Divider(color: Color.fromRGBO(210, 208, 208, 1)),
+                    _buildDetailDate(
                         widget.from == "LELANG"
                             ? animal.auction.expiryDate
                             : null,
-                        animal.owner.username,
-                        animal.owner.photo,
-                        widget.from == "LELANG"),
+                        widget.from == "LELANG",
+                        animal.createdAt.toString()),
                     isNotError
                         ? _buildImage(animal.animalImages[0].thumbnail)
                         : globals.failLoadImage(),
@@ -1143,6 +1158,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                     widget.from == "LELANG"
                         ? Column(
                             children: <Widget>[
+                              SizedBox(height: 10),
                               _buildChips(
                                   "Harga Awal",
                                   globals.convertToMoney(
