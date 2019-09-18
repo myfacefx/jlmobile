@@ -781,7 +781,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   // sort and search
   Widget dropdownSortBy() {
     List<String> item = widget.from == "LELANG"
-        ? <String>['Populer', 'Terbaru']
+        ? <String>['Populer', 'Terbaru', 'Expiry Date']
         : <String>['Populer', 'Terbaru', 'Termurah'];
     return DropdownButton<String>(
         value: selectedSortBy,
