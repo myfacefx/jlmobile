@@ -172,19 +172,45 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         List<Widget> secondRowWidget = List<Widget>();
 
         for (var topSeller in topSellers) {
-          if (firstRowWidget.length < 3) firstRowWidget.add(_templateHeaderTopSellerProfile(topSeller, height: 62));
-          else if (secondRowWidget.length < 3) secondRowWidget.add(_templateHeaderTopSellerProfile(topSeller, height: 62));
+          if (firstRowWidget.length < 3)
+            firstRowWidget
+                .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
+          else if (secondRowWidget.length < 3)
+            secondRowWidget
+                .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
           else {
-            _topSellerPages.add(Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[ Row(children: firstRowWidget), SizedBox(height: 10), Row(children: secondRowWidget)])));
+            _topSellerPages.add(Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                  Row(children: firstRowWidget),
+                  SizedBox(height: 10),
+                  Row(children: secondRowWidget)
+                ])));
             firstRowWidget = List<Widget>();
             secondRowWidget = List<Widget>();
           }
         }
 
-        if (secondRowWidget.length > 0) _topSellerPages.add(Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[ Row(children: firstRowWidget), SizedBox(height: 10), Row(children: secondRowWidget)])));
-        else if (firstRowWidget.length > 0) _topSellerPages.add(Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[ Row(children: firstRowWidget) ])));
+        if (secondRowWidget.length > 0)
+          _topSellerPages.add(Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                Row(children: firstRowWidget),
+                SizedBox(height: 10),
+                Row(children: secondRowWidget)
+              ])));
+        else if (firstRowWidget.length > 0)
+          _topSellerPages.add(Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[Row(children: firstRowWidget)])));
 
-        // 1x4 
+        // 1x4
         // int i = 0;
 
         // List<Widget> rowWidget = List<Widget>();
@@ -414,18 +440,18 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     String name = "Buat Lelang";
     if (widget.from == "LELANG") {
       _type = 1;
-      name = "Lelang";
+      name = "Buat\nLelang";
     } else if (widget.from == "PASAR HEWAN") {
       _type = 2;
-      name = "Hewan";
+      name = "Jual\nHewan";
     } else if (widget.from == "ACCESSORY") {
       _type = 3;
-      name = "Aksesoris";
+      name = "Jual\nProduk";
     }
 
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: <Widget>[
           Row(children: <Widget>[
@@ -467,7 +493,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 // ),
                 ButtonTheme(
                   // minWidth: double.infinity,
-                  height: 25,
+                  height: 38,
                   child: RaisedButton(
                       color: Color.fromRGBO(227, 136, 133, 1),
                       onPressed: () {
@@ -476,15 +502,20 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     CreateAuctionPage(
-                                      type: _type,
-                                      categoryId: widget.animalCategory.id,
-                                      subCategoryId: currentIdSubCategory,
-                                    )));
+                                        type: _type,
+                                        categoryId: widget.animalCategory.id,
+                                        subCategoryId: currentIdSubCategory)));
                       },
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Icon(Icons.add_circle, size: 17),
-                          globals.myText(text: " $name"),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Icon(Icons.add_circle, size: 17),
+                          ),
+                          globals.myText(
+                              text: " $name", align: TextAlign.center),
                         ],
                       )),
                 ),
@@ -527,11 +558,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             children: <Widget>[
               Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
-                // width: globals.mw(context) * 0.7,
+                padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                 height: 190,
                 child: CarouselSlider(
-                  // aspectRatio: 1,
                   autoPlay: true,
                   autoPlayInterval: Duration(seconds: 25),
                   viewportFraction: 1.0,
@@ -560,11 +589,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 color: Colors.white,
                 child: Column(
                   children: <Widget>[
-                    // Container(
-                    //   padding: EdgeInsets.only(left: 15, bottom: 5, top: 5),
-                    //   alignment: Alignment.centerLeft,
-                    //   // child: globals.myText(text: "STAR SELLERS", weight: "B"),
-                    // ),
                     Container(
                         height: 200,
                         alignment: Alignment.center,
@@ -582,7 +606,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                                   )
                                 : globals.myText(
                                     text:
-                                        "Belum ada top seller pada kategori ini")),
+                                        "Belum ada star seller pada kategori ini")),
                   ],
                 ),
               ),
@@ -698,7 +722,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _templateHeaderTopSellerProfile(TopSeller topSeller, {double height: 42}) {
+  Widget _templateHeaderTopSellerProfile(TopSeller topSeller,
+      {double height: 42}) {
     return GestureDetector(
       onTap: () {
         topSeller.userId != null
@@ -946,13 +971,15 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         globals.myText(
-            text: globals.convertFormatDateDayMonth(createdDate, monthName:true), size: 10),
+            text:
+                globals.convertFormatDateDayMonth(createdDate, monthName: true),
+            size: 10),
         isAuction
             ? Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: getColorExpirationTime(globals.convertDateToHour(expiryTime))
-                ),
+                    color: getColorExpirationTime(
+                        globals.convertDateToHour(expiryTime))),
                 padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
                 child: globals.myText(
                     text: "tersisa ${globals.convertTimer(expiryTime)}",

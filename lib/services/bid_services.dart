@@ -28,22 +28,22 @@ Future<int> placeBid(String token, Bid _data) async {
   }
 }
 
-// Future<bool> deleteBid(String token, int bidId) async {
-//   final header = {"Content-Type": "application/json", "Authorization": token};
+Future<bool> deleteBid(String token, int bidId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
 
-//   final url = getBaseUrl() + "/bids/$bidId";
+  final url = getBaseUrl() + "/bids/$bidId";
 
-//   print(url);
+  print(url);
 
-//   http.Response res = await http
-//       .delete(url, headers: header)
-//       .timeout(Duration(seconds: getTimeOut()));
+  http.Response res = await http
+      .delete(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
 
-//   if (res.statusCode == 204) {
-//     return true;
-//   } else if (res.statusCode == 406) {
-//     return false;
-//   } else {
-//     throw Exception(res.body);
-//   }
-// }
+  if (res.statusCode == 204) {
+    return true;
+  } else if (res.statusCode == 406) {
+    return false;
+  } else {
+    throw Exception(res.body);
+  }
+}

@@ -157,7 +157,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                   List<int> listOfHistoryId = List<int>();
                                   listOfHistoryId.add(histories[i].id);
 
-                                  print("List of ID $listOfHistoryId");
+                                  // print("List of ID $listOfHistoryId");
 
                                   return InkWell(
                                     onTap: () {
@@ -175,9 +175,27 @@ class _NotificationPageState extends State<NotificationPage> {
                                                           from: "LELANG",
                                                         )));
                                       } else {
-                                        globals.showDialogs(
-                                            "Notifikasi Jual Beli dalam pengembangan",
-                                            context);
+                                        if (histories[i].animalId != null) {
+                                          String from = 'LELANG';
+
+                                          if (histories[i].type != null) {
+                                            from = histories[i].type != 'auction' ? '' : 'LELANG'; 
+                                          }
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        ProductDetailPage(
+                                                          animalId: histories[i].animalId,
+                                                          from: from,
+                                                        )));
+                                        } else {
+                                          globals.showDialogs(
+                                              "Notifikasi jual beli terbaru yang dapat menggunakan fitur ini",
+                                              context);
+                                        }
                                       }
                                     },
                                     child: Card(

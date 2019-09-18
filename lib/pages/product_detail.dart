@@ -750,35 +750,39 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
-  // void _delete(Bid bid) async {
-  //   if (globals.user.id != animal.auction.ownerUserId) {
-  //     globals.showDialogs(
-  //         "Hanya pemilik lelang yang dapat menghapus bid", context);
-  //     return;
-  //   }
+  void _delete(Bid bid) async {
+    if (globals.user.id != animal.auction.ownerUserId) {
+      globals.showDialogs(
+          "Hanya pemilik lelang yang dapat menghapus bid", context);
+      return;
+    }
 
-  //   var response = await globals.confirmDialog(
-  //       "Yakin menghapus bid sebesar ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?",
-  //       context);
+    if (animal.auction.winnerBidId != null) {
+      globals.showDialogs(
+          "Lelang telah dimenangkan", context);
+      return;
+    }
 
-  //   // Map<String, dynamic> formData = Map<String, dynamic>();
-  //   // formData['owner_user_id'] = animal.auction.ownerUserId;
+    var response = await globals.confirmDialog("Yakin menghapus bid sebesar Rp. ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?", context, "Menghapus Bid");
 
-  //   if (response) {
-  //     try {
-  //       bool response = await BidServices.delete("Token", bid.id);
+    // Map<String, dynamic> formData = Map<String, dynamic>();
+    // formData['owner_user_id'] = animal.auction.ownerUserId;
 
-  //       if (response) {
-  //         await globals.showDialogs("Berhasil menghapus bid", context);
-  //         // Navigator.pop(context);
-  //         loadAnimal(animal.id);
-  //       }
-  //     } catch (e) {
-  //       globals.showDialogs(e.toString(), context);
-  //       print(e.toString());
-  //     }
-  //   }
-  // }
+    if (response) {
+      try {
+        bool response = await deleteBid(globals.user.tokenRedis, bid.id);
+
+        if (response) {
+          await globals.showDialogs("Berhasil menghapus bid", context);
+          // Navigator.pop(context);
+          loadAnimal(animal.id);
+        }
+      } catch (e) {
+        globals.showDialogs(e.toString(), context);
+        print(e.toString());
+      }
+    }
+  }
 
   TableRow _buildTableRow(bool isFirst, String name, String date, double amount,
       int userId, Bid bid) {
@@ -816,6 +820,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             globals.convertFormatDateTimeProduct(date),
             style: Theme.of(context).textTheme.display1,
           ),
+          Expanded(
+              child: animal.auction.winnerBidId == null && animal.auction.ownerUserId == globals.user.id
+                  ? GestureDetector(
+                      onTap: () => _delete(bid),
+                      child: Icon(Icons.delete,
+                          size: 15, color: globals.myColor("warning")))
+                  : Container())
         ],
       ),
       Row(
@@ -1707,22 +1718,23 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
           SizedBox(height: 10),
           textField(),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                onPressed: () {
-                  _addBid(this.animal.auction.buyItNow.toInt());
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                child: globals.myText(
-                    text: "Beli Sekarang / BIN", color: "light", size: 15),
-                color: globals.myColor("primary"),
-              ),
-            ),
-          )
+          // Hide BIN
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 20),
+          //   child: SizedBox(
+          //     width: double.infinity,
+          //     child: RaisedButton(
+          //       onPressed: () {
+          //         _addBid(this.animal.auction.buyItNow.toInt());
+          //       },
+          //       shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(20)),
+          //       child: globals.myText(
+          //           text: "Beli Sekarang / BIN", color: "light", size: 15),
+          //       color: globals.myColor("primary"),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );
