@@ -23,6 +23,10 @@ Future<Paginate> getAnimalAuctionByCategory(String token, int animalCategoryId,
     String sortBy, String filterName, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
+  if(sortBy == "Expiry Date") {
+    sortBy = "Expiry_Date";
+  }
+
   String params = "?";
   if (sortBy.length > 0) {
     params = params + "sort_by=$sortBy";
@@ -51,6 +55,10 @@ Future<Paginate> getAnimalAuctionBySubCategory(
     String filterName,
     int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
+
+    if(sortBy == "Expiry Date") {
+    sortBy = "Expiry_Date";
+  }
 
   String params = "?";
   if (sortBy.length > 0) {
