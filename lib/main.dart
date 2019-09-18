@@ -12,6 +12,7 @@ import 'package:jlf_mobile/pages/faq.dart';
 import 'package:jlf_mobile/pages/home.dart';
 import 'package:jlf_mobile/pages/how_to.dart';
 import 'package:jlf_mobile/pages/intro.dart';
+import 'package:jlf_mobile/pages/list_event.dart';
 import 'package:jlf_mobile/pages/our_bid.dart';
 import 'package:jlf_mobile/pages/our_product.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
@@ -91,7 +92,8 @@ class MyApp extends StatelessWidget {
         '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
         '/verification': (BuildContext context) => VerificationPage(),
         '/upcoming': (BuildContext context) => UpComingPage(),
-        '/forget-password': (BuildContext context) => ForgotPasswordPage(), 
+        '/forget-password': (BuildContext context) => ForgotPasswordPage(),
+        '/list-event': (BuildContext context) => ListEventPage(),
 
         // '/edit-product': (BuildContext context) => EditProductPage()
       },

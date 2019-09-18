@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/models/auction.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:jlf_mobile/services/firebase_chat_services.dart'
     as FirebaseChatServices;
@@ -46,44 +47,44 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    
+
     _resetChatUnreadCount();
   }
 
   void _resetChatUnreadCount() {
     Map<String, dynamic> _data = Map<String, dynamic>();
-      _data['id'] = globals.user.id;
-      _data['firebase_chat_id'] = auction.firebaseChatId;
+    _data['id'] = globals.user.id;
+    _data['firebase_chat_id'] = auction.firebaseChatId;
 
-      _data['seller_user_id'] = auction.ownerUserId;
-      _data['buyer_user_id'] = auction.winnerBid.userId;
-      _data['admin_user_id'] = auction.adminId;
-      _data['role'] = null;
+    _data['seller_user_id'] = auction.ownerUserId;
+    _data['buyer_user_id'] = auction.winnerBid.userId;
+    _data['admin_user_id'] = auction.adminId;
+    _data['role'] = null;
 
-      if (auction.ownerUserId == globals.user.id) {
-        _data['role'] = 'seller';
-      } else if (auction.adminId == globals.user.id) {
-        _data['role'] = 'admin';
-      } else if (auction.winnerBid.userId == globals.user.id) {
-        _data['role'] = 'buyer';
-      }
+    if (auction.ownerUserId == globals.user.id) {
+      _data['role'] = 'seller';
+    } else if (auction.adminId == globals.user.id) {
+      _data['role'] = 'admin';
+    } else if (auction.winnerBid.userId == globals.user.id) {
+      _data['role'] = 'buyer';
+    }
 
-      if (_data['role'] != null) {
-        FirebaseChatServices.resetUnreadCount(globals.user.tokenRedis, _data)
-        .then((onValue) async {
-          if (onValue == 5) {
-            await globals.showDialogs(
-                "Session anda telah berakhir, Silakan melakukan login ulang",
-                context,
-                isLogout: true);
-            return;
-          }
-        }).catchError((onError) {
-          globals.showDialogs(onError.toString(), context);
-        });
-      } else {
-        print("Error update firebase chat counts, role unspecified");
-      }
+    if (_data['role'] != null) {
+      FirebaseChatServices.resetUnreadCount(globals.user.tokenRedis, _data)
+          .then((onValue) async {
+        if (onValue == 5) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+          return;
+        }
+      }).catchError((onError) {
+        globals.showDialogs(onError.toString(), context);
+      });
+    } else {
+      print("Error update firebase chat counts, role unspecified");
+    }
   }
 
   Widget _buildMessages() {
@@ -262,6 +263,30 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  void popUpImage(String image) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Gambar", style: TextStyle(color: Colors.black)),
+          content: PhotoView(
+            imageProvider: NetworkImage(
+              image,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Tutup"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _chatMessages(DocumentSnapshot document, int index) {
     if (messagesScrollController.hasClients) {
       if (hasNewMessage == true) {
@@ -327,10 +352,16 @@ class _ChatPageState extends State<ChatPage> {
                                 decoration: TextDecoration.underline,
                                 size: 11),
                             document['type'] == 1
-                                ? FadeInImage.assetNetwork(
-                                    image: document['content'],
-                                    placeholder: 'assets/images/loading.gif',
-                                    fit: BoxFit.cover)
+                                ? GestureDetector(
+                                    onTap: () {
+                                      popUpImage(document['content']);
+                                    },
+                                    child: FadeInImage.assetNetwork(
+                                        image: document['content'],
+                                        placeholder:
+                                            'assets/images/loading.gif',
+                                        fit: BoxFit.cover),
+                                  )
                                 : globals.myText(text: document['content']),
                             Container(
                                 alignment: Alignment.centerRight,
@@ -393,7 +424,7 @@ class _ChatPageState extends State<ChatPage> {
 
       if (_data['role'] != null) {
         FirebaseChatServices.update(globals.user.tokenRedis, _data)
-        .then((onValue) async {
+            .then((onValue) async {
           if (onValue == 5) {
             await globals.showDialogs(
                 "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -403,7 +434,6 @@ class _ChatPageState extends State<ChatPage> {
           }
 
           // print("$onValue");
-
         }).catchError((onError) {
           globals.showDialogs(onError.toString(), context);
         });

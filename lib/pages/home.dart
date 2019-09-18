@@ -485,7 +485,7 @@ class _HomePage extends State<HomePage> {
             autoPlay: true,
             autoPlayInterval: Duration(seconds: 25),
             viewportFraction: 3.0,
-            height: 200,
+            height: 218,
             enableInfiniteScroll: true,
             onPageChanged: (index) {
               setState(() {
@@ -619,36 +619,41 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildEventHewan() {
-    return Container(
-        margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-        padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-        height: 60,
-        width: globals.mw(context) * 0.45,
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(49, 122, 229, 1),
-            borderRadius: BorderRadius.circular(5)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              "assets/images/calendar.png",
-              height: 33,
-            ),
-            Expanded(
-              flex: 3,
-              child: Text(""),
-            ),
-            globals.myText(
-                text: "$promosCountC EVENT HEWAN BARU, SUDAH LIHAT ?",
-                color: "light",
-                weight: "B",
-                size: 14),
-            Expanded(
-              flex: 2,
-              child: Text(""),
-            ),
-          ],
-        ));
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed("/list-event");
+      },
+      child: Container(
+          margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
+          padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+          height: 60,
+          width: globals.mw(context) * 0.45,
+          decoration: BoxDecoration(
+              color: Color.fromRGBO(49, 122, 229, 1),
+              borderRadius: BorderRadius.circular(5)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                "assets/images/calendar.png",
+                height: 33,
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(""),
+              ),
+              globals.myText(
+                  text: "$promosCountC EVENT HEWAN BARU, SUDAH LIHAT ?",
+                  color: "light",
+                  weight: "B",
+                  size: 14),
+              Expanded(
+                flex: 2,
+                child: Text(""),
+              ),
+            ],
+          )),
+    );
   }
 
   Widget _templateHotAuction(Auction auction) {
@@ -791,9 +796,9 @@ class _HomePage extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              // height: 30,
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+              height: 25,
               width: globals.mw(context) * 0.55,
               decoration: BoxDecoration(
                   color: Color.fromRGBO(34, 34, 34, 1),
@@ -817,8 +822,8 @@ class _HomePage extends State<HomePage> {
                 ],
               )),
           Container(
-              margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+              margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               height: 90,
               // width: globals.mw(context) * 0.45,
               alignment: Alignment.center,
@@ -848,9 +853,9 @@ class _HomePage extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              margin: EdgeInsets.fromLTRB(10, 16, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              // height: 30,
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+              height: 25,
               width: globals.mw(context) * 0.55,
               decoration: BoxDecoration(
                   color: Color.fromRGBO(34, 34, 34, 1),
@@ -874,9 +879,9 @@ class _HomePage extends State<HomePage> {
                 ],
               )),
           Container(
-              margin: EdgeInsets.fromLTRB(10, 0, 10, 8),
-              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-              height: 100,
+              margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              height: 90,
               // width: globals.mw(context) * 0.45,
               alignment: Alignment.center,
               decoration: BoxDecoration(
