@@ -3,6 +3,7 @@
 //     final history = historyFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction.dart';
 
 List<History> historyFromJson(String str) => new List<History>.from(json.decode(str).map((x) => History.fromJson(x)));
@@ -19,6 +20,9 @@ class History {
     DateTime updatedAt;
     dynamic deletedAt;
     Auction auction;
+    Animal animal;
+    int animalId;
+    String type;
 
     History({
         this.id,
@@ -30,6 +34,9 @@ class History {
         this.updatedAt,
         this.deletedAt,
         this.auction,
+        this.animal,
+        this.animalId,
+        this.type
     });
 
     factory History.fromJson(Map<String, dynamic> json) => new History(
@@ -42,6 +49,9 @@ class History {
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"],
         auction: json["auction"] == null ? null : Auction.fromJson(json["auction"]),
+        animal: json["animal"] == null ? null : Animal.fromJson(json["animal"]),
+        animalId: json["animal_id"],
+        type: json["type"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -54,5 +64,8 @@ class History {
         "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
         "deleted_at": deletedAt,
         "auction": auction == null ? null : auction.toJson(),
+        "animal": animal == null ? null : animal.toJson(),
+        "animal_id": animalId,
+        "type": type,
     };
 }
