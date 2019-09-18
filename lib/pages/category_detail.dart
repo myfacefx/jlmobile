@@ -927,8 +927,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             Container(
                 width: globals.mw(context) * 0.3,
                 child: globals.myText(
-                    text: "$username $username $username $username",
-                    size: 14,
+                    text: "$username",
+                    size: 12,
                     textOverflow: TextOverflow.ellipsis)),
           ],
         ),
@@ -951,7 +951,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             ? Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: globals.myColor("primary")),
+                    color: getColorExpirationTime(globals.convertDateToHour(expiryTime))
+                ),
                 padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
                 child: globals.myText(
                     text: "tersisa ${globals.convertTimer(expiryTime)}",
@@ -1236,6 +1237,26 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
   // card animals
+
+  /*
+   * Get Color by Expiration Time
+   *
+   * @param int $expirationTime
+   * @return Color
+   */
+  Color getColorExpirationTime($expirationTime) {
+    Color color;
+
+    if ($expirationTime <= 2) {
+      color = Colors.red;
+    } else if ($expirationTime > 2 && $expirationTime < 5) {
+      color = Colors.yellow;
+    } else {
+      color = Colors.green;
+    }
+
+    return color;
+  }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 

@@ -884,6 +884,12 @@ String convertTimer(String expiryTime) {
   return def;
 }
 
+int convertDateToHour(String dateTime) {
+  final date = DateTime.parse(dateTime);
+  final dateNow = DateTime.now();
+  return (dateNow.difference(date).inHours).abs();
+}
+
 /// get color by Style Name : `primary`,`unprime`,`secondary`,`active`,`warnig`,`danger`,`disabled`.
 Color myColor([String color = "default"]) {
   Color returnedColor;
