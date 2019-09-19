@@ -208,9 +208,10 @@ class _ProfilePageState extends State<ProfilePage>
       child: ClipRRect(
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.fitWidth,
           placeholder: 'assets/images/loading.gif',
           image: image,
+          width: 200,
         ),
       ),
     );
