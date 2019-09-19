@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
@@ -605,7 +606,16 @@ class _ProfilePageState extends State<ProfilePage>
                           height: 25,
                           child: FlatButton(
                               onPressed: () {
-                                globals.showDialogs("Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context, title: "Kumpulkan Poinmu");
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => WebviewScaffold(
+                                      // displayZoomControls: true,
+                                      scrollBar: true,
+                                      withZoom: true,
+                                      url: 'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
+                                      appBar: globals.appBar(_scaffoldKey, context,
+                                          isSubMenu: true, showNotification: false))));
+                                // 
+                                // globals.showDialogs("Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context, title: "Kumpulkan Poinmu");
                               },
                               child: Row(
                                 mainAxisAlignment:
