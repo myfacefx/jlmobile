@@ -758,12 +758,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     }
 
     if (animal.auction.winnerBidId != null) {
-      globals.showDialogs(
-          "Lelang telah dimenangkan", context);
+      globals.showDialogs("Lelang telah dimenangkan", context);
       return;
     }
 
-    var response = await globals.confirmDialog("Yakin menghapus bid sebesar Rp. ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?", context, "Menghapus Bid");
+    var response = await globals.confirmDialog(
+        "Yakin menghapus bid sebesar Rp. ${globals.convertToMoney(bid.amount.toDouble())} oleh ${bid.user.username}?",
+        context,
+        "Menghapus Bid");
 
     // Map<String, dynamic> formData = Map<String, dynamic>();
     // formData['owner_user_id'] = animal.auction.ownerUserId;
@@ -821,7 +823,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             style: Theme.of(context).textTheme.display1,
           ),
           Expanded(
-              child: animal.auction.winnerBidId == null && animal.auction.ownerUserId == globals.user.id
+              child: animal.auction.winnerBidId == null &&
+                      animal.auction.ownerUserId == globals.user.id
                   ? GestureDetector(
                       onTap: () => _delete(bid),
                       child: Icon(Icons.delete,
@@ -1671,6 +1674,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             context,
                             isLogout: true);
                       } else if (result == 6) {
+                        await globals.showDialogs("Tawaran terpasang", context);
                         globals.loadingModel(context);
                         try {
                           final res = await getAuctionsWithActiveChatNoPaginate(
@@ -1757,22 +1761,32 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 : MainAxisAlignment.end,
             children: <Widget>[
               //avatar
-              sellerId != auctionComment.userId
-                  ? Container(
-                      height: 35,
-                      child: CircleAvatar(
-                          radius: 25,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: auctionComment.user.photo != null &&
-                                      auctionComment.user.photo.isNotEmpty
-                                  ? FadeInImage.assetNetwork(
-                                      image: auctionComment.user.photo,
-                                      placeholder: 'assets/images/loading.gif',
-                                      fit: BoxFit.cover)
-                                  : Image.network(
-                                      'assets/images/account.png'))))
-                  : Container(),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ProfilePage(userId: auctionComment.userId)));
+                },
+                child: sellerId != auctionComment.userId
+                    ? Container(
+                        height: 35,
+                        child: CircleAvatar(
+                            radius: 25,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: auctionComment.user.photo != null &&
+                                        auctionComment.user.photo.isNotEmpty
+                                    ? FadeInImage.assetNetwork(
+                                        image: auctionComment.user.photo,
+                                        placeholder:
+                                            'assets/images/loading.gif',
+                                        fit: BoxFit.cover)
+                                    : Image.network(
+                                        'assets/images/account.png'))))
+                    : Container(),
+              ),
               Container(
                 width: globals.mw(context) * 0.7,
                 child: Column(
@@ -1834,22 +1848,32 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 : MainAxisAlignment.end,
             children: <Widget>[
               //avatar
-              sellerId != productComment.userId
-                  ? Container(
-                      height: 35,
-                      child: CircleAvatar(
-                          radius: 25,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: productComment.user.photo != null &&
-                                      productComment.user.photo.isNotEmpty
-                                  ? FadeInImage.assetNetwork(
-                                      image: productComment.user.photo,
-                                      placeholder: 'assets/images/loading.gif',
-                                      fit: BoxFit.cover)
-                                  : Image.network(
-                                      'assets/images/account.png'))))
-                  : Container(),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ProfilePage(userId: productComment.userId)));
+                },
+                child: sellerId != productComment.userId
+                    ? Container(
+                        height: 35,
+                        child: CircleAvatar(
+                            radius: 25,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: productComment.user.photo != null &&
+                                        productComment.user.photo.isNotEmpty
+                                    ? FadeInImage.assetNetwork(
+                                        image: productComment.user.photo,
+                                        placeholder:
+                                            'assets/images/loading.gif',
+                                        fit: BoxFit.cover)
+                                    : Image.network(
+                                        'assets/images/account.png'))))
+                    : Container(),
+              ),
               Container(
                 width: globals.mw(context) * 0.7,
                 child: Column(
