@@ -18,6 +18,7 @@ import 'package:share/share.dart';
 import 'package:mailer/mailer.dart' as mailer;
 import 'package:mailer/smtp_server.dart';
 import 'package:url_launcher/url_launcher.dart';
+// import 'package:simple_share/simple_share.dart';
 
 String version = "v0.1.6";
 bool isProduction = false;
@@ -67,7 +68,8 @@ void share(String from, Animal animal) {
     String subCategory = animal.animalSubCategory.name;
 
     if (from == "LELANG") {
-      param = "/type/animalf1-${animal.id}";
+      // param = "/type/animalf1-${animal.id}";
+      param = "?lelang=${animal.id}";
       String openBid =
           convertToMoney(double.parse(animal.auction.openBid.toString()));
       String bin =
@@ -79,7 +81,7 @@ void share(String from, Animal animal) {
           "Dilelang ${animal.name} ($category - $subCategory) dengan harga awal Rp. $openBid, beli sekarang (BIN) Rp. $bin, dan kelipatan Rp. $multiply";
     }
     if (from == "PASAR HEWAN") {
-      param = "/type/animalf2-${animal.id}";
+      param = "?jual-beli=${animal.id}";
       String price =
           convertToMoney(double.parse(animal.product.price.toString()));
       text =
@@ -88,8 +90,16 @@ void share(String from, Animal animal) {
     //  dijual / dilelang {{nama barang}} harga {{}} cek segera
   }
 
-  Share.share(
-      text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com$param');
+  print("https://juallelangfauna.com$param");
+//  SimpleShare.share(
+//                   title: "Share my message",
+//                   msg:
+//                       "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod " +
+//                           "tempor incidunt ut labore et dolore magna aliqua.",
+//                 );
+  // Share.share(
+
+  //     text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com$param');
 }
 
 String baseUrl = "http://192.168.100.119:8000";
@@ -307,17 +317,17 @@ String formaterTimer(int seconds) {
 Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
     {String title = "BELUM TERBAYAR", String text = "Tutup"}) {
   Widget _buildCardBlocker(Auction auction) {
-    final dateNow = DateTime.now();
-    DateTime targetTime =
-        DateTime.parse(auction.winnerAcceptedDate).add(Duration(days: 1));
+    // final dateNow = DateTime.now();
+    // DateTime targetTime =
+    //     DateTime.parse(auction.winnerAcceptedDate).add(Duration(days: 1));
 
-    final differenceSec = (targetTime.difference(dateNow).inSeconds).abs();
-    String timer = formaterTimer(differenceSec);
+    // final differenceSec = (targetTime.difference(dateNow).inSeconds).abs();
+    // String timer = formaterTimer(differenceSec);
 
     String winnerDate = convertFormatDateTime(auction.winnerAcceptedDate);
 
     return Container(
-      height: 120,
+      height: 100,
       padding: EdgeInsets.all(5),
       child: Row(
         children: <Widget>[
@@ -352,7 +362,7 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
                       convertToMoney(auction.winnerBid.amount.toDouble()),
                   textOverflow: TextOverflow.ellipsis),
               myText(text: winnerDate),
-              myText(text: "$timer", size: 12),
+              // myText(text: "$timer", size: 12),
             ],
           ),
           GestureDetector(
@@ -372,33 +382,28 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        backgroundColor: myColor("primary"),
+        backgroundColor: Colors.white,
         title: Center(
-          child: Text(title, style: TextStyle(color: Colors.yellow)),
+          child: Text(title, style: TextStyle(color: Colors.black)),
         ),
         content: Container(
-          width: mw(context) * 0.9,
+          width: mw(context),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                "assets/images/new_update.png",
-                height: 180,
-              ),
-              SizedBox(
-                height: 20,
+                "assets/images/block-rekber.jpeg",
               ),
               myText(
                   text:
                       "Lakukan pelunasan rekber dahulu untuk melanjutkan proses lelang lainnya",
                   align: TextAlign.center,
-                  color: "light",
                   size: 16),
               SizedBox(
                 height: 10,
               ),
               Divider(
-                height: 20,
+                height: 10,
                 color: Colors.black,
               ),
               Expanded(
@@ -419,7 +424,7 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
           FlatButton(
             child: Text(
               text,
-              style: TextStyle(color: Colors.yellow),
+              style: TextStyle(color: Colors.black),
             ),
             onPressed: () {
               Navigator.of(context).pop(true);

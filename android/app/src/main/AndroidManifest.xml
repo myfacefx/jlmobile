@@ -47,7 +47,7 @@
                 <data
                 android:scheme="https"
                 android:host="juallelangfauna.com"
-                android:pathPrefix="/type/animal"
+                
                 />
             </intent-filter>
         </activity>

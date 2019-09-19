@@ -269,9 +269,14 @@ class _ChatPageState extends State<ChatPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Gambar", style: TextStyle(color: Colors.black)),
-          content: PhotoView(
-            imageProvider: NetworkImage(
-              image,
+          content: Container(
+            color: Colors.white,
+            width: globals.mw(context),
+            child: PhotoView(
+              backgroundDecoration: BoxDecoration(color: Colors.white),
+              imageProvider: NetworkImage(
+                image,
+              ),
             ),
           ),
           actions: <Widget>[
