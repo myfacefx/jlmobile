@@ -997,11 +997,13 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       height: 128,
       color: Colors.white,
       child: ClipRRect(
+
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
-          fit: BoxFit.cover,
+          fit: BoxFit.fitWidth,
           placeholder: 'assets/images/loading.gif',
           image: image,
+          width: 200,
         ),
       ),
     );
