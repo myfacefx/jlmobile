@@ -1003,6 +1003,9 @@ class _HomePage extends State<HomePage> {
                 color: selectedType == "PASAR HEWAN" ? null : "disabled"),
           ),
           Text("  |  ", style: Theme.of(context).textTheme.headline),
+          /*
+           * Commented siapa tau besok butuh
+           * 
           GestureDetector(
             onTap: () {
               if (selectedType != "ACCESSORY") {
@@ -1015,6 +1018,7 @@ class _HomePage extends State<HomePage> {
                 size: 16,
                 color: selectedType == "ACCESSORY" ? null : "disabled"),
           ),
+          */
           Text("  |  ", style: Theme.of(context).textTheme.headline),
           GestureDetector(
             onTap: () async {

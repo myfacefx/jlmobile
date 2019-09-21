@@ -70,7 +70,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     SelectProduct(id: 0, name: "Draf"),
     SelectProduct(id: 1, name: "Lelang"),
     SelectProduct(id: 2, name: "Produk Jual"),
-    SelectProduct(id: 3, name: "Produk Aksesoris"),
+    // SelectProduct(id: 3, name: "Produk Aksesoris"),
   ];
 
   var imagesBase64 = List<String>();
