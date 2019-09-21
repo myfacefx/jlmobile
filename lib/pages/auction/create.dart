@@ -105,7 +105,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
     // _subscription =
     //     _flutterVideoCompress.compressProgress$.subscribe((progress) {
-    //   debugPrint('progress: $progress');
+    //   debugglobals.debugPrint('progress: $progress');
     // });
 
     this.isLoading = true;
@@ -301,7 +301,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
             VideoQuality.MediumQuality, // default(VideoQuality.DefaultQuality)
         deleteOrigin: false, // default(false)
       );
-      // debugPrint(_convertedVideo.toJson().toString());
+      // debugglobals.debugPrint(_convertedVideo.toJson().toString());
       _convertedVideoPath = _convertedVideo.path;
 
       setState(() {
@@ -491,7 +491,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         Navigator.pop(context);
         globals.showDialogs(e.toString(), context);
         globals.mailError("Create product / auction", e.toString());
-        print(e);
+        globals.debugPrint(e);
       }
     } else {
       setState(() {

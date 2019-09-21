@@ -69,7 +69,7 @@ void share(String from, Animal animal) {
 
     if (from == "LELANG") {
       // param = "/type/animalf1-${animal.id}";
-      param = "?lelang=${animal.id}";
+      param = "?animal=${animal.id}&type=LL";
       String openBid =
           convertToMoney(double.parse(animal.auction.openBid.toString()));
       String bin =
@@ -81,7 +81,7 @@ void share(String from, Animal animal) {
           "Dilelang ${animal.name} ($category - $subCategory) dengan harga awal Rp. $openBid, beli sekarang (BIN) Rp. $bin, dan kelipatan Rp. $multiply";
     }
     if (from == "PASAR HEWAN") {
-      param = "?jual-beli=${animal.id}";
+      param = "?animal=${animal.id}&type=PS";
       String price =
           convertToMoney(double.parse(animal.product.price.toString()));
       text =
@@ -90,16 +90,10 @@ void share(String from, Animal animal) {
     //  dijual / dilelang {{nama barang}} harga {{}} cek segera
   }
 
-  print("https://juallelangfauna.com$param");
-//  SimpleShare.share(
-//                   title: "Share my message",
-//                   msg:
-//                       "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod " +
-//                           "tempor incidunt ut labore et dolore magna aliqua.",
-//                 );
-  // Share.share(
+  print("https://juallelangfauna.com/$param");
 
-  //     text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com$param');
+  Share.share(
+      text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com/$param');
 }
 
 String baseUrl = "http://192.168.100.119:8000";
@@ -332,54 +326,55 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
 
     String winnerDate = convertFormatDateTime(auction.winnerAcceptedDate);
 
-    return Container(
-      height: 100,
-      padding: EdgeInsets.all(5),
-      child: Row(
-        children: <Widget>[
-          Container(
-              height: 35,
-              child: CircleAvatar(
-                  radius: 25,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: auction.owner.photo != null &&
-                              auction.owner.photo.isNotEmpty
-                          ? FadeInImage.assetNetwork(
-                              image: auction.owner.photo,
-                              placeholder: 'assets/images/loading.gif',
-                              fit: BoxFit.cover)
-                          : Image.network('assets/images/account.png')))),
-          Column(
-            children: <Widget>[
-              myText(
-                text: generateInvoice(auction),
-                decoration: TextDecoration.underline,
-                weight: "B",
-              ),
-              myText(
-                  text: auction.owner.name,
-                  textOverflow: TextOverflow.ellipsis),
-              myText(
-                  text: auction.animal.name,
-                  textOverflow: TextOverflow.ellipsis),
-              myText(
-                  text: "Rp. " +
-                      convertToMoney(auction.winnerBid.amount.toDouble()),
-                  textOverflow: TextOverflow.ellipsis),
-              myText(text: winnerDate),
-              // myText(text: "$timer", size: 12),
-            ],
-          ),
-          GestureDetector(
-            child: Icon(Icons.near_me),
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        ChatPage(auction: auction))),
-          )
-        ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => ChatPage(auction: auction)));
+      },
+      child: Container(
+        height: 100,
+        padding: EdgeInsets.all(5),
+        child: Row(
+          children: <Widget>[
+            Container(
+                height: 35,
+                child: CircleAvatar(
+                    radius: 25,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: auction.owner.photo != null &&
+                                auction.owner.photo.isNotEmpty
+                            ? FadeInImage.assetNetwork(
+                                image: auction.owner.photo,
+                                placeholder: 'assets/images/loading.gif',
+                                fit: BoxFit.cover)
+                            : Image.network('assets/images/account.png')))),
+            Column(
+              children: <Widget>[
+                myText(
+                  text: generateInvoice(auction),
+                  decoration: TextDecoration.underline,
+                  weight: "B",
+                ),
+                myText(
+                    text: auction.owner.name,
+                    textOverflow: TextOverflow.ellipsis),
+                myText(
+                    text: auction.animal.name,
+                    textOverflow: TextOverflow.ellipsis),
+                myText(
+                    text: "Rp. " +
+                        convertToMoney(auction.winnerBid.amount.toDouble()),
+                    textOverflow: TextOverflow.ellipsis),
+                myText(text: winnerDate),
+                // myText(text: "$timer", size: 12),
+              ],
+            ),
+            Icon(Icons.near_me),
+          ],
+        ),
       ),
     );
   }
@@ -414,14 +409,15 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
               ),
               Expanded(
                 child: Container(
-                  color: Colors.white,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: content.length,
-                      itemBuilder: (context, int index) {
-                        return _buildCardBlocker(content[index]);
-                      }),
-                ),
+                    color: Colors.white,
+                    child: Scrollbar(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: content.length,
+                          itemBuilder: (context, int index) {
+                            return _buildCardBlocker(content[index]);
+                          }),
+                    )),
               )
             ],
           ),
@@ -1128,4 +1124,10 @@ Future<bool> showUpdate(
         },
       ) ??
       false;
+}
+
+void debugPrint(content) {
+  if (!isProduction) {
+    return print(content);
+  }
 }

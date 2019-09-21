@@ -8,7 +8,7 @@ Future<int> addCommentProduct(String token, ProductComment _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/product-comment";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))

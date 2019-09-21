@@ -107,7 +107,7 @@ class _EditAuctionPageState extends State<EditAuctionPage> {
                 Navigator.pop(context);
                 globals.showDialogs(
                     "Terjadi kesalahan, coba untuk hubungi admin", context);
-                print(e.toString());
+                globals.debugPrint(e.toString());
                 globals.mailError("Edit desc auction", e.toString());
               }
             }

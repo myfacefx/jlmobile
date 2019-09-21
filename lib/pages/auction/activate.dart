@@ -120,7 +120,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         isLoading = false;
       });
     }).catchError((onError) {
-      print(onError.toString());
+      globals.debugPrint(onError.toString());
     }).then((_) {
       this._name = animal.name;
       this._animalCategory = animal.animalSubCategory.animalCategory;
@@ -197,7 +197,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      print(e.toString());
+      globals.debugPrint(e.toString());
       globals.showDialogs("Gagal menghapus data", context);
     }
   }
@@ -269,7 +269,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
           Navigator.pushNamed(context, "/profile");
         } catch (e) {
           globals.showDialogs(e.toString(), context);
-          print(e);
+          globals.debugPrint(e);
           setState(() {
             isLoading = false;
           });
@@ -295,7 +295,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         try {
           int response =
               await createProduct(formData, animal.id, globals.user.tokenRedis);
-          print(response);
+          globals.debugPrint(response);
           if (response == 1) {
             await globals.showDialogs(message, context);
           } else if (response == 3) {
@@ -312,7 +312,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
           Navigator.pushNamed(context, "/profile");
         } catch (e) {
           globals.showDialogs(e.toString(), context);
-          print(e);
+          globals.debugPrint(e);
           setState(() {
             isLoading = false;
           });
@@ -338,7 +338,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
         try {
           int response =
               await createProduct(formData, animal.id, globals.user.tokenRedis);
-          print(response);
+          globals.debugPrint(response);
           if (response == 1) {
             await globals.showDialogs(message, context);
           } else if (response == 3) {
@@ -355,7 +355,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
           Navigator.pushNamed(context, "/profile");
         } catch (e) {
           globals.showDialogs(e.toString(), context);
-          print(e);
+          globals.debugPrint(e);
           setState(() {
             isLoading = false;
           });

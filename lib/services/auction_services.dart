@@ -10,7 +10,7 @@ Future<int> createAuction(
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$animalId/auctions/create";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))
@@ -31,7 +31,7 @@ Future<dynamic> cancelAuction(String token, int auctionId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$auctionId/cancel";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .put(url, headers: header)
@@ -52,7 +52,7 @@ Future<dynamic> cancelAuction(String token, int auctionId) async {
 //   final header = {"Content-Type": "application/json", "Authorization": token};
 //   final url = getBaseUrl() + "/auctions/$auctionId/start";
 
-//   print(url);
+//   debugPrint(url);
 
 //   http.Response res = await http
 //       .put(url, headers: header)
@@ -71,7 +71,7 @@ Future<bool> autoClose(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/autoClose";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -92,7 +92,7 @@ Future<bool> autoClose(String token) async {
 //   final header = {"Content-Type": "application/json", "Authorization": token};
 //   final url = getBaseUrl() + "/auctions/checkFirebaseChatId";
 
-//   print(url);
+//   debugPrint(url);
 
 //   http.Response res = await http
 //       .get(url, headers: header)
@@ -112,7 +112,7 @@ Future<dynamic> updateFirebaseChatId(
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$id/set-chat-room";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
@@ -131,7 +131,7 @@ Future<int> deleteAuction(String token, int id) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$id";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .delete(url, headers: header)
@@ -152,7 +152,7 @@ Future<String> getFirebaseChatId(String token, int auctionId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/auctions/$auctionId/get-chat-room";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -179,7 +179,7 @@ Future<ChatListPagination> getAuctionsWithActiveChat(
 
   if (search != null && search.length > 0) url += "&search=$search";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
 
@@ -199,7 +199,7 @@ Future<List<Auction>> getAuctionsWithActiveChatNoPaginate(
 
   url += "/users/$userId/auctions/chats/no-paginate";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
 
@@ -216,8 +216,8 @@ Future<int> editDescAuction(String token, var data, int animalId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   String url = getBaseUrl() + "/animals/$animalId/auctions/update";
 
-  print(url);
-  print(json.encode(data));
+  debugPrint(url);
+  debugPrint(json.encode(data));
 
   http.Response res =
       await http.put(url, headers: header, body: json.encode(data));

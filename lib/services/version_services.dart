@@ -6,7 +6,7 @@ Future<Version> verifyVersion(String version) async {
   final header = {"Content-Type": "application/json"};
 
   final url = getBaseUrl() + "/check-version/$version";
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)

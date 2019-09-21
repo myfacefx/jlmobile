@@ -29,7 +29,7 @@ class AppConfig extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 
   Future<Null> checkLocalData() async {
-    print("Checking local storage");
+    globals.debugPrint("Checking local storage");
     globals.baseUrl = baseUrl;
     globals.flavor = flavorName;
     globals.isProduction = isProduction;
@@ -39,13 +39,13 @@ class AppConfig extends InheritedWidget {
         String userData = await readLocalData("user");
         if (userData != null) {
           User newUser = userFromJson(userData);
-          print("User Found = ${newUser.username}");
+          globals.debugPrint("User Found = ${newUser.username}");
 
-          print("verify token");
+          globals.debugPrint("verify token");
           final resVerify = await verifyToken(newUser.tokenRedis);
           if (resVerify != null) {
-            print("verifed token");
-            print(resVerify.tokenRedis);
+            globals.debugPrint("verifed token");
+            globals.debugPrint(resVerify.tokenRedis);
             globals.user = resVerify;
 
             globals.state = 'home';
@@ -58,7 +58,7 @@ class AppConfig extends InheritedWidget {
             }
             // globals.state = globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "verification" : "home";
           } else {
-            print("token not found");
+            globals.debugPrint("token not found");
             deleteLocalData("user");
             globals.state = "login";
           }
@@ -71,7 +71,7 @@ class AppConfig extends InheritedWidget {
       }
     } catch (e) {
       globals.state = "login";
-      print("readLocalData(userData) : ${e.toString()}");
+      globals.debugPrint("readLocalData(userData) : ${e.toString()}");
     }
   }
 }

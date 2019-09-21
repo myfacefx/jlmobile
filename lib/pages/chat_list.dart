@@ -212,7 +212,7 @@ class _ChatListPageState extends State<ChatListPage> {
                                   context);
                               return null;
                             } else {
-                              print("FIREBASECHATID ${auction.firebaseChatId}");
+                              globals.debugPrint("FIREBASECHATID ${auction.firebaseChatId}");
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -270,7 +270,7 @@ class _ChatListPageState extends State<ChatListPage> {
       hasChat = false;
     }
 
-    print("Has Chat $hasChat");
+    globals.debugPrint("Has Chat $hasChat");
 
     return Flexible(
         child: isLoading == false

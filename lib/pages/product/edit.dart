@@ -130,11 +130,11 @@ class _EditProductPageState extends State<EditProductPage> {
 
     // _subscription =
     //     _flutterVideoCompress.compressProgress$.subscribe((progress) {
-    //   debugPrint('progress: $progress');
+    //   debugglobals.debugPrint('progress: $progress');
     // });
 
     setState(() {
-      // print(_animal.product.type);
+      // globals.debugPrint(_animal.product.type);
       // _name = _animal.name;
 
       nameController.text = _animal.name;
@@ -626,7 +626,7 @@ class _EditProductPageState extends State<EditProductPage> {
             VideoQuality.MediumQuality, // default(VideoQuality.DefaultQuality)
         deleteOrigin: false, // default(false)
       );
-      // debugPrint(_convertedVideo.toJson().toString());
+      // debugglobals.debugPrint(_convertedVideo.toJson().toString());
       _convertedVideoPath = _convertedVideo.path;
 
       setState(() {
@@ -732,7 +732,7 @@ class _EditProductPageState extends State<EditProductPage> {
   //       }
   //     }).catchError((onError) {
   //       Navigator.pop(context);
-  //       print(onError.toString());
+  //       globals.debugPrint(onError.toString());
   //       globals.showDialogs("Gagal menunggah foto produk, Coba lagi.", context);
   //       globals.mailError("_uploadImageAndReset", onError.toString());
   //     });
@@ -777,7 +777,7 @@ class _EditProductPageState extends State<EditProductPage> {
         }
       }).catchError((onError) {
         Navigator.pop(context);
-        print(onError.toString());
+        globals.debugPrint(onError.toString());
         globals.showDialogs("Gagal menutup produk, Coba lagi.", context);
         globals.mailError("Hapus Product", onError.toString());
       });
@@ -785,8 +785,8 @@ class _EditProductPageState extends State<EditProductPage> {
   }
 
   _update() async {
-    print("To Delete = $animalImageIdToDelete");
-    print("To Record = ${imagesBase64.toString()}");
+    globals.debugPrint("To Delete = $animalImageIdToDelete");
+    globals.debugPrint("To Record = ${imagesBase64.toString()}");
     if (isLoading) return;
 
     if (arrayAnimalImages.length == 0 && imagesBase64.length == 0) {
@@ -820,7 +820,7 @@ class _EditProductPageState extends State<EditProductPage> {
       formDataAnimal['add_images'] = imagesBase64;
       formDataAnimal['delete_images'] = animalImageIdToDelete;
 
-      print(formDataAnimal);
+      globals.debugPrint(formDataAnimal);
 
       try {
         int responseProduct = await updateProduct(
@@ -954,7 +954,7 @@ class _EditProductPageState extends State<EditProductPage> {
 
       try {
         // bool response = await create(formData);
-        // print(response);
+        // globals.debugPrint(response);
 
         Navigator.pop(context);
         await globals.showDialogs(message, context);
@@ -963,7 +963,7 @@ class _EditProductPageState extends State<EditProductPage> {
       } catch (e) {
         Navigator.pop(context);
         globals.showDialogs(e.toString(), context);
-        print(e);
+        globals.debugPrint(e);
       }
     } else {
       setState(() {

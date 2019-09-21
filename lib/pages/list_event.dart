@@ -147,20 +147,20 @@ class _ListEventPageState extends State<ListEventPage> {
                           await ImageDownloader.open(path).catchError((error) {
                             if (error is PlatformException) {
                               if (error.code == "preview_error") {
-                                print(error.message);
+                                globals.debugPrint(error.message);
                               }
                             }
                           });
                         } on PlatformException catch (error) {
                           if (error is PlatformException) {
                             if (error.code == "404") {
-                              print("Not Found Error.");
+                              globals.debugPrint("Not Found Error.");
                               globals.showDialogs(
                                   "File Not Found 404", context);
                               globals.mailError("Download image event",
                                   "image not found 404");
                             } else if (error.code == "unsupported_file") {
-                              print("UnSupported FIle Error.");
+                              globals.debugPrint("UnSupported FIle Error.");
                               globals.showDialogs(
                                   "UnSupported FIle Error.", context);
                               globals.mailError("Download image event",
@@ -168,7 +168,7 @@ class _ListEventPageState extends State<ListEventPage> {
                             }
                           }
 
-                          print(error);
+                          globals.debugPrint(error);
                         }
                         Navigator.pop(context);
                       },

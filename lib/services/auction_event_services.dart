@@ -7,7 +7,7 @@ Future<List<Auction>> getAuctionEventParticipants(String token) async {
 
   final url = getBaseUrl() + "/auctions/events";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
   if (res.statusCode == 200) {

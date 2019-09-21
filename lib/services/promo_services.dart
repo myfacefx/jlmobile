@@ -7,7 +7,7 @@ Future<List<Promo>> getAllPromos(
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/type/$type/location/$location/promos";
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -25,7 +25,7 @@ Future<int> getCountPromos(String type, String location) async {
   final header = {"Content-Type": "application/json"};
 
   final url = getBaseUrl() + "/type/$type/location/$location/promos/count";
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)

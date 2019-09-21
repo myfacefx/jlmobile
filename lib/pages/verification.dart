@@ -43,7 +43,7 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void _requestPermission() async {
-    print("Checking Permission storage + camera");
+    globals.debugPrint("Checking Permission storage + camera");
     PermissionStatus permissionStorage = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage);
     PermissionStatus permissionCamera =
@@ -123,7 +123,7 @@ class _VerificationPageState extends State<VerificationPage> {
           "Pastikan data yang akan dikirim sudah sesuai dan data yang sesungguh-sungguhnya",
           context);
 
-      print(response);
+      globals.debugPrint(response);
 
       if (response) {
         setState(() {
@@ -140,7 +140,7 @@ class _VerificationPageState extends State<VerificationPage> {
           formData['ktp_base64'] = _ktpBase64;
           formData['selfie_base64'] = _selfieBase64;
 
-          print(formData.toString());
+          globals.debugPrint(formData.toString());
 
           Map<String, dynamic> response = await updateVerification(
               formData, globals.user.id, globals.user.tokenRedis);
@@ -152,7 +152,7 @@ class _VerificationPageState extends State<VerificationPage> {
                 isLogout: true);
           }
 
-          print(response);
+          globals.debugPrint(response);
 
           if (response != null) {
             globals.user.identityNumber = updateUser.identityNumber;
@@ -180,7 +180,7 @@ class _VerificationPageState extends State<VerificationPage> {
         } catch (e) {
           // globals.showDialogs(
           //   "Terjadi error, silahkan ulangi kembali", context);
-          // print(e.toString());
+          // globals.debugPrint(e.toString());
           // globals.mailError("KTP Verification", e.toString());
 
           Navigator.of(context).pop();
@@ -281,7 +281,7 @@ class _VerificationPageState extends State<VerificationPage> {
   _sendWhatsApp(phone, message) async {
     if (phone.isNotEmpty && message.isNotEmpty) {
       String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';
-      print(url);
+      globals.debugPrint(url);
       if (await canLaunch(url)) {
         await launch(url);
       } else {
@@ -292,7 +292,7 @@ class _VerificationPageState extends State<VerificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(_verificationStatus != null ? _verificationStatus : "KOSONG");
+    globals.debugPrint(_verificationStatus != null ? _verificationStatus : "KOSONG");
     String display = 'Verifikasi Pending';
     String color = 'warning';
 

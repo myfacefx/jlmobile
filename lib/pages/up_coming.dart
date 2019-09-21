@@ -22,7 +22,7 @@ class _UpComingPageState extends State<UpComingPage>
       if (onValue.length > 0) {
         if (onValue[0].imageUpcoming != "" &&
             onValue[0].imageUpcoming != null) {
-          print(onValue[0].imageUpcoming);
+          globals.debugPrint(onValue[0].imageUpcoming);
           url = onValue[0].imageUpcoming;
         }
       }

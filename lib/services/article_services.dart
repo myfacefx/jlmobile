@@ -6,7 +6,7 @@ Future<List<Article>> getAllArticle(String token, String type) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/type/$type/article";
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)

@@ -8,7 +8,7 @@ Future<int> createProduct(
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animals/$animalId/products/create";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))
@@ -29,7 +29,7 @@ Future<int> sold(String token, int productId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/sold/products/$productId";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .put(url, headers: header)
@@ -51,7 +51,7 @@ Future<int> deleteProduct(String token, int productId) async {
 
   final url = getBaseUrl() + "/products/$productId";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.delete(url, headers: header);
   if (res.statusCode == 204) {
@@ -70,8 +70,8 @@ Future<int> updateProduct(
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/products/$id";
 
-  print(url);
-  // print(json.encode(_data));
+  debugPrint(url);
+  // debugPrint(json.encode(_data));
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut() + 270));

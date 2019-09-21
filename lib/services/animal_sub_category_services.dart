@@ -6,7 +6,7 @@ Future<List<AnimalSubCategory>> getAnimalSubCategoryByCategoryId(
     String token, int id) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/animal-categories/$id/animal-sub-categories";
-  print(url);
+  debugPrint(url);
   http.Response res = await http.get(url, headers: header);
   if (res.statusCode == 200) {
     return animalSubCategoryFromJson(res.body);
