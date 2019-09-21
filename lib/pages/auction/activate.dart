@@ -92,7 +92,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   List<SelectProduct> selectProducts = [
     SelectProduct(id: 1, name: "Lelang"),
     SelectProduct(id: 2, name: "Produk Jual"),
-    SelectProduct(id: 3, name: "Produk Aksesoris"),
+    // SelectProduct(id: 3, name: "Produk Aksesoris"),
   ];
 
   @override
