@@ -1018,8 +1018,8 @@ class _HomePage extends State<HomePage> {
                 size: 16,
                 color: selectedType == "ACCESSORY" ? null : "disabled"),
           ),
-          */
           Text("  |  ", style: Theme.of(context).textTheme.headline),
+          */
           GestureDetector(
             onTap: () async {
               bool res = false;
