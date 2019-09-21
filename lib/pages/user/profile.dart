@@ -634,7 +634,8 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                       GestureDetector(
                         onTap: () {
-                                globals.showDialogs("Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!", context, title: "Kumpulkan Poinmu");
+                          // Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!
+                                globals.showDialogs("Dapatkan poin setiap menyelesaikan transaksi lelang, pemilik lelang mendapat 2 poin, sedangkan untuk pemenang lelang mendapat 1 poin. Cek hadiah yang tersedia dengan klik pada tombol poin.", context, title: "Tukarkan Poin dengan Hadiah Menarik");
                               },
                         child: Padding(
                           padding: const EdgeInsets.only(left: 5),
