@@ -562,7 +562,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                 height: 190,
                 child: CarouselSlider(
                   autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 25),
+                  autoPlayInterval: Duration(seconds: 5),
                   viewportFraction: 1.0,
                   height: 190,
                   enableInfiniteScroll: true,
