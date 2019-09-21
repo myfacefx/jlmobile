@@ -495,7 +495,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   // minWidth: double.infinity,
                   height: 38,
                   child: RaisedButton(
-                      color: Color.fromRGBO(227, 136, 133, 1),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25)),
+                      color: globals.myColor("primary"),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -512,10 +514,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(right: 5),
-                            child: Icon(Icons.add_circle, size: 17),
+                            child: Icon(
+                              Icons.add_circle,
+                              size: 17,
+                              color: Colors.white,
+                            ),
                           ),
                           globals.myText(
-                              text: " $name", align: TextAlign.center),
+                              text: " $name",
+                              align: TextAlign.center,
+                              color: "light"),
                         ],
                       )),
                 ),
@@ -922,6 +930,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.65,
                   crossAxisCount: 2),
               itemBuilder: (BuildContext context, int index) {
+                print(" ========= " + animals[index].id.toString());
+                // print("#######"+animals[index].auction.innerIslandShipping.toString());
                 return _buildCard(animals[index]);
               },
             ),
@@ -970,10 +980,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        globals.myText(
-            text:
-                globals.convertFormatDate(createdDate),
-            size: 10),
+        globals.myText(text: globals.convertFormatDate(createdDate), size: 10),
         isAuction
             ? Container(
                 decoration: BoxDecoration(
@@ -997,7 +1004,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       height: 128,
       color: Colors.white,
       child: ClipRRect(
-
         borderRadius: BorderRadius.circular(1),
         child: FadeInImage.assetNetwork(
           fit: BoxFit.fitWidth,
@@ -1021,6 +1027,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       bool isAuction,
       String createdDate) {
     //String ageNow = globals.convertToAge(birthDate);
+
     return Container(
       width: double.infinity,
       child: Column(
