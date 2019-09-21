@@ -21,10 +21,11 @@ dependencies:
   permission_handler: '^3.2.0'
   mailer: ^2.2.1
   video_player: ^0.10.2
-  flutter_facebook_login:
-    git: 
-      url: https://github.com/yudaprama/flutter_facebook_login
-      ref: android-x
+  # flutter_facebook_login:
+  #   git: 
+  #     url: https://github.com/yudaprama/flutter_facebook_login
+  #     ref: android-x
+  flutter_facebook_login: ^2.0.1
   flutter_video_compress: ^0.3.7+8
 
   # flutter_swiper: ^1.1.6
