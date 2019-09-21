@@ -972,7 +972,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       children: <Widget>[
         globals.myText(
             text:
-                globals.convertFormatDateDayMonth(createdDate, monthName: true),
+                globals.convertFormatDate(createdDate),
             size: 10),
         isAuction
             ? Container(
