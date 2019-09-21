@@ -419,7 +419,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         this.allAuctionCounts = countAll;
       });
 
-      list.add(_buildcontSub("ALL", countAll.toString(), null));
+      // list.add(_buildcontSub("ALL", countAll.toString(), null));
 
       return list.reversed.toList();
     }
@@ -930,8 +930,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.65,
                   crossAxisCount: 2),
               itemBuilder: (BuildContext context, int index) {
-                print(" ========= " + animals[index].id.toString());
-                // print("#######"+animals[index].auction.innerIslandShipping.toString());
                 return _buildCard(animals[index]);
               },
             ),
