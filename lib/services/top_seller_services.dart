@@ -8,7 +8,7 @@ Future<List<TopSeller>> getTopSellersByCategoryId(
 
   final url = getBaseUrl() + "/animal-categories/$animalCategoryId/top-sellers";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
   if (res.statusCode == 200) {
@@ -27,7 +27,7 @@ Future<List<TopSeller>> getTopSellersBySubCategoryId(
   final url =
       getBaseUrl() + "/animal-sub-categories/$animalSubCategoryId/top-sellers";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
   if (res.statusCode == 200) {
@@ -44,7 +44,7 @@ Future<List<TopSeller>> getPromotedTopSeller(String token) async {
 
   final url = getBaseUrl() + "/is-promoted-top-sellers";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
   if (res.statusCode == 200) {

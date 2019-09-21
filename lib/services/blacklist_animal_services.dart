@@ -6,7 +6,7 @@ Future<List<BlacklistAnimal>> getAllBlacklistAnimal(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/blacklist-animals";
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)

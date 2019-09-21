@@ -9,7 +9,7 @@ Future<Map<String, dynamic>> login(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/login";
 
-  print(url);
+  debugPrint(url);
   http.Response res =
       await http.post(url, headers: header, body: json.encode(_data));
 
@@ -69,7 +69,7 @@ Future<String> updateUserLogin(
   final header = {"Content-Type": "application/json", "Authorization": token};
   final String url = getBaseUrl() + "/users/$userId/update";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
@@ -89,13 +89,13 @@ Future<Map<String, dynamic>> updateVerification(
   final header = {"Content-Type": "application/json", "Authorization": token};
   final String url = getBaseUrl() + "/users/$userId/update-verification";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut() + 200));
 
-  print(res.statusCode);
+  debugPrint(res.statusCode);
 
   var response = json.decode(res.body);
 
@@ -113,7 +113,7 @@ Future<String> updateProfilePicture(
   final header = {"Content-Type": "application/json", "Authorization": token};
   final String url = getBaseUrl() + "/users/$userId/updateProfilePicture";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(_data))
@@ -194,7 +194,7 @@ Future<List<User>> fbLoginSearch(Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/users/facebook-login-search";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .post(url, headers: header, body: json.encode(_data))
@@ -228,7 +228,7 @@ Future<int> getBidsCount(int userId, String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/users/$userId/bids/count";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -247,7 +247,7 @@ Future<int> getUsersCount() async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/users/count";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -264,14 +264,14 @@ Future<bool> getUsersByPhoneNumber(String phoneNumber) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/users/$phoneNumber/phone-number";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {
-    print(res.body);
+    debugPrint(res.body);
     return res.body == "true" ? true : false;
   } else {
     throw Exception(res.body);
@@ -282,8 +282,8 @@ Future<User> verifyToken(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/verify-token";
 
-  print(url);
-  print(token);
+  debugPrint(url);
+  debugPrint(token);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -302,7 +302,7 @@ Future<int> forgotPassword(String email) async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/forgot-password";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.post(url,
       headers: header,

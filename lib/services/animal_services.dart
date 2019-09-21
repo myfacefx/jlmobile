@@ -7,7 +7,7 @@ import 'package:jlf_mobile/models/pagination.dart';
 
 Future<Paginate> getLoadMore(String token, String nextUrl) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(nextUrl);
+  debugPrint(nextUrl);
 
   http.Response res = await http.get(nextUrl, headers: header);
   if (res.statusCode == 200) {
@@ -35,7 +35,7 @@ Future<Paginate> getAnimalAuctionByCategory(String token, int animalCategoryId,
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() + "/animals/category/$animalCategoryId/auction$params");
+  debugPrint(getBaseUrl() + "/animals/category/$animalCategoryId/auction$params");
   http.Response res = await http.get(
       getBaseUrl() + "/animals/category/$animalCategoryId/auction$params",
       headers: header);
@@ -68,7 +68,7 @@ Future<Paginate> getAnimalAuctionBySubCategory(
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() +
+  debugPrint(getBaseUrl() +
       "/animals/sub-category/$animalSubCategoryId/auction$params");
   http.Response res = await http.get(
       getBaseUrl() +
@@ -95,7 +95,7 @@ Future<Paginate> getAnimalProductByCategory(String token, int animalCategoryId,
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() + "/animals/category/$animalCategoryId/product$params");
+  debugPrint(getBaseUrl() + "/animals/category/$animalCategoryId/product$params");
   http.Response res = await http.get(
       getBaseUrl() + "/animals/category/$animalCategoryId/product$params",
       headers: header);
@@ -124,7 +124,7 @@ Future<Paginate> getAnimalProductBySubCategory(
     params = params + "&animal_name=$filterName";
   }
 
-  print(getBaseUrl() +
+  debugPrint(getBaseUrl() +
       "/animals/sub-category/$animalSubCategoryId/product$params");
   http.Response res = await http.get(
       getBaseUrl() +
@@ -142,7 +142,7 @@ Future<Paginate> getAnimalProductBySubCategory(
 Future<Animal> getAnimalById(String token, int animalId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  print(getBaseUrl() + "/animals/$animalId");
+  debugPrint(getBaseUrl() + "/animals/$animalId");
   http.Response res =
       await http.get(getBaseUrl() + "/animals/$animalId", headers: header);
   if (res.statusCode == 200) {
@@ -157,7 +157,7 @@ Future<Animal> getAnimalById(String token, int animalId) async {
 Future<int> deleteAnimalById(String token, int animalId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  print(getBaseUrl() + "/animals/$animalId");
+  debugPrint(getBaseUrl() + "/animals/$animalId");
   http.Response res =
       await http.delete(getBaseUrl() + "/animals/$animalId", headers: header);
   if (res.statusCode == 204) {
@@ -174,7 +174,7 @@ Future<int> deleteAnimalById(String token, int animalId) async {
 Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/users/$userId/animals/draft";
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
 
@@ -190,7 +190,7 @@ Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId) async {
 Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  print(getBaseUrl() + "/users/$userId/auctions/animals");
+  debugPrint(getBaseUrl() + "/users/$userId/auctions/animals");
   http.Response res = await http
       .get(getBaseUrl() + "/users/$userId/auctions/animals", headers: header);
   if (res.statusCode == 200) {
@@ -205,7 +205,7 @@ Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
 Future<List<Animal>> getUserProductAnimals(String token, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  print(getBaseUrl() + "/users/$userId/products/animals");
+  debugPrint(getBaseUrl() + "/users/$userId/products/animals");
   http.Response res = await http
       .get(getBaseUrl() + "/users/$userId/products/animals", headers: header);
   if (res.statusCode == 200) {
@@ -224,7 +224,7 @@ Future<List<Animal>> getUserBidsAnimals(
 
   params = params + "sort_by=$sortBy";
 
-  print(getBaseUrl() + "/users/$userId/bids/animals$params");
+  debugPrint(getBaseUrl() + "/users/$userId/bids/animals$params");
   http.Response res = await http.get(
       getBaseUrl() + "/users/$userId/bids/animals$params",
       headers: header);
@@ -244,7 +244,7 @@ Future<List<Animal>> getUserCommentAuctionAnimals(
 
   params = params + "sort_by=$sortBy";
 
-  print(getBaseUrl() + "/users/$userId/comments-auction/animals$params");
+  debugPrint(getBaseUrl() + "/users/$userId/comments-auction/animals$params");
   http.Response res = await http.get(
       getBaseUrl() + "/users/$userId/comments-auction/animals$params",
       headers: header);
@@ -264,7 +264,7 @@ Future<List<Animal>> getUserCommentProductAnimals(
 
   params = params + "sort_by=$sortBy";
 
-  print(getBaseUrl() + "/users/$userId/comments-product/animals$params");
+  debugPrint(getBaseUrl() + "/users/$userId/comments-product/animals$params");
   http.Response res = await http.get(
       getBaseUrl() + "/users/$userId/comments-product/animals$params",
       headers: header);
@@ -283,7 +283,6 @@ Future<int> create(Map<String, dynamic> _data, String token,
   http.MultipartRequest request = new http.MultipartRequest("POST", uri);
   request.fields['data'] = json.encode(_data);
   if (videoToSent != null) {
-    print("==========haleluya");
     request.files.add(videoToSent);
   }
 
@@ -293,7 +292,7 @@ Future<int> create(Map<String, dynamic> _data, String token,
   http.StreamedResponse response = await request.send();
   http.Response res = await http.Response.fromStream(response);
 
-  print(uri);
+  debugPrint(uri);
 
   if (res.statusCode == 201) {
     return 1;
@@ -314,7 +313,7 @@ Future<int> getAnimalsCount() async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/animals/count";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -333,7 +332,7 @@ Future<int> getAnimalsCount() async {
 
 //   final url = getBaseUrl() + "/animals/$id";
 
-//   print(url);
+//   debugPrint(url);
 
 //   http.Response res = await http
 //       .put(url, headers: header, body: json.encode(_data))
@@ -352,11 +351,10 @@ Future<int> getAnimalsCount() async {
 Future<int> updateAnimal(String token, Map<String, dynamic> _data, int id,
     [http.MultipartFile videoToSent]) async {
   var uri = Uri.parse(getBaseUrl() + "/animals-update/$id");
-  // print(json.encode(_data));
+  // debugPrint(json.encode(_data));
   http.MultipartRequest request = new http.MultipartRequest("POST", uri);
   request.fields['data'] = json.encode(_data);
   if (videoToSent != null) {
-    print("==========haleluya");
     request.files.add(videoToSent);
   }
   request.headers['Authorization'] = token;
@@ -365,7 +363,7 @@ Future<int> updateAnimal(String token, Map<String, dynamic> _data, int id,
   http.StreamedResponse response = await request.send();
   http.Response res = await http.Response.fromStream(response);
 
-  print(uri);
+  debugPrint(uri);
 
   if (res.statusCode == 202) {
     return 1;
@@ -381,7 +379,7 @@ Future<List<Animal>> getSponsoredProducts(String token) async {
 
   final url = getBaseUrl() + "/is-sponsored-animals";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
   if (res.statusCode == 200) {
@@ -397,7 +395,7 @@ Future<List<Animal>> getSponsoredProducts(String token) async {
 //   final header = {"Content-Type": "application/json"};
 //   final url = getBaseUrl() + "/animal-images/$animalImageId";
 
-//   print(url);
+//   debugPrint(url);
 
 //   http.Response res = await http
 //       .delete(url, headers: header)
@@ -417,14 +415,14 @@ Future<List<Animal>> getSponsoredProducts(String token) async {
 //   final header = {"Content-Type": "application/json", "Authorization": token};
 //   final url = getBaseUrl() + "/animals/$animalId/animal-images";
 
-//   print(url);
+//   debugPrint(url);
 
 //   http.Response res = await http
 //       .post(url, headers: header, body: json.encode(_data))
 //       .timeout(Duration(minutes: 10));
 
 //   if (res.statusCode == 201) {
-//     // print(res.body);
+//     // debugPrint(res.body);
 //     return true;
 //   } else {
 //     throw Exception(res.body);

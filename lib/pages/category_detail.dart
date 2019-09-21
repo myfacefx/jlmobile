@@ -98,7 +98,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       });
     }).catchError((onError) {
       globals.showDialogs(onError.toString(), context);
-      print(onError.toString());
+      globals.debugPrint(onError.toString());
     });
 
     getProvinces().then((onValue) {
@@ -320,7 +320,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           isLoading = false;
         });
       }).catchError((onError) {
-        print(onError.toString());
+        globals.debugPrint(onError.toString());
         globals.showDialogs(onError.toString(), context);
       });
 
@@ -347,7 +347,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           isLoading = false;
         });
       }).catchError((onError) {
-        print(onError.toString());
+        globals.debugPrint(onError.toString());
         if (!mounted) return;
         globals.showDialogs(onError.toString(), context);
       });

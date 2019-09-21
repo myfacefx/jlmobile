@@ -7,7 +7,7 @@ Future<int> update(String token, Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/firebase-chats/update";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res =
       await http.put(url, headers: header, body: json.encode(_data));
@@ -33,7 +33,7 @@ Future<int> resetUnreadCount(String token, Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/firebase-chats/reset";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res =
       await http.put(url, headers: header, body: json.encode(_data));
@@ -59,7 +59,7 @@ Future<int> getUnreadChatsCount(int userId, String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/users/$userId/firebase-chats/count";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)

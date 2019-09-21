@@ -1,11 +1,12 @@
 import 'package:jlf_mobile/globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/models/animal_category.dart';
+import 'package:jlf_mobile/globals.dart' as globals;
 
 Future<List<AnimalCategory>> getAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  print(getBaseUrl() + "/animal/animal-categories");
+  globals.debugPrint(getBaseUrl() + "/animal/animal-categories");
 
   http.Response res = await http.get(getBaseUrl() + "/animal/animal-categories",
       headers: header);
@@ -21,7 +22,7 @@ Future<List<AnimalCategory>> getAnimalCategory(String token) async {
 Future<List<AnimalCategory>> getAnimalCategoryWithoutCount(
     String token, String type) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/type/$type/animal-categories");
+  globals.debugPrint(getBaseUrl() + "/type/$type/animal-categories");
   http.Response res = await http
       .get(getBaseUrl() + "/type/$type/animal-categories", headers: header);
   if (res.statusCode == 200) {
@@ -35,7 +36,7 @@ Future<List<AnimalCategory>> getAnimalCategoryWithoutCount(
 
 Future<List<AnimalCategory>> getAccessoryAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/accessory/animal-categories");
+  globals.debugPrint(getBaseUrl() + "/accessory/animal-categories");
   http.Response res = await http
       .get(getBaseUrl() + "/accessory/animal-categories", headers: header);
   if (res.statusCode == 200) {
@@ -49,7 +50,7 @@ Future<List<AnimalCategory>> getAccessoryAnimalCategory(String token) async {
 
 Future<List<AnimalCategory>> getProductAnimalCategory(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(getBaseUrl() + "/product/animal-categories");
+  globals.debugPrint(getBaseUrl() + "/product/animal-categories");
   http.Response res = await http
       .get(getBaseUrl() + "/product/animal-categories", headers: header);
   if (res.statusCode == 200) {
@@ -64,7 +65,7 @@ Future<List<AnimalCategory>> getProductAnimalCategory(String token) async {
 Future<AnimalCategory> getAnimalCategoryById(String token, int animalCategoryId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  print(getBaseUrl() +
+  globals.debugPrint(getBaseUrl() +
       "/animal-categories/$animalCategoryId");
   http.Response res = await http.get(
       getBaseUrl() +

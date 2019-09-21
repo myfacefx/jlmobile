@@ -6,7 +6,7 @@ Future<List<Province>> getProvinces() async {
   final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/provinces";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)

@@ -6,7 +6,7 @@ import 'package:jlf_mobile/models/bid.dart';
 
 Future<int> placeBid(String token, Bid _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  print(json.encode(_data));
+  debugPrint(json.encode(_data));
   http.Response res = await http
       .post(getBaseUrl() + "/bids", headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut()));
@@ -33,7 +33,7 @@ Future<bool> deleteBid(String token, int bidId) async {
 
   final url = getBaseUrl() + "/bids/$bidId";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .delete(url, headers: header)

@@ -83,7 +83,7 @@ class _ChatPageState extends State<ChatPage> {
         globals.showDialogs(onError.toString(), context);
       });
     } else {
-      print("Error update firebase chat counts, role unspecified");
+      globals.debugPrint("Error update firebase chat counts, role unspecified");
     }
   }
 
@@ -97,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
                 .orderBy('timestamp', descending: false)
                 .snapshots(),
             builder: (context, snapshot) {
-              print(snapshot.toString());
+              globals.debugPrint(snapshot.toString());
               if (!snapshot.hasData) {
                 return Center(child: globals.isLoading());
               } else {
@@ -156,7 +156,7 @@ class _ChatPageState extends State<ChatPage> {
   _sendWhatsApp(phone, message) async {
     if (phone.isNotEmpty && message.isNotEmpty) {
       String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';
-      print(url);
+      globals.debugPrint(url);
       if (await canLaunch(url)) {
         await launch(url);
       } else {
@@ -407,7 +407,7 @@ class _ChatPageState extends State<ChatPage> {
           'type': type
         });
 
-        print("Message sent");
+        globals.debugPrint("Message sent");
       });
 
       Map<String, dynamic> _data = Map<String, dynamic>();
@@ -438,12 +438,12 @@ class _ChatPageState extends State<ChatPage> {
             return;
           }
 
-          // print("$onValue");
+          // globals.debugPrint("$onValue");
         }).catchError((onError) {
           globals.showDialogs(onError.toString(), context);
         });
       } else {
-        print("Error update firebase chat counts, role unspecified");
+        globals.debugPrint("Error update firebase chat counts, role unspecified");
       }
     }
   }

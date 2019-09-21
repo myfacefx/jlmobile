@@ -6,7 +6,7 @@ Future<List<JlfPartner>> getAllJlfPartner(String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
   final url = getBaseUrl() + "/jlf-partners";
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)

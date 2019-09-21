@@ -42,7 +42,7 @@ class _BlacklistAnimalPageState extends State<BlacklistAnimalPage> {
       _generateBlacklistedUserCard();
     }).catchError((onError) {
       failedDataFetching = true;
-      print(onError.toString());
+      globals.debugPrint(onError.toString());
     }).then((_) {
       isLoading = false;
 

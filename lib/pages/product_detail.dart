@@ -71,7 +71,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         now.hour >= expiry_date.hour &&
         now.minute >= expiry_date.minute &&
         now.second >= expiry_date.second) {
-      print("AUCTION EXPIRED");
+      globals.debugPrint("AUCTION EXPIRED");
       setState(() {
         auctionHasExpired = true;
       });
@@ -99,7 +99,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildVideo() {
-    print(animal.videoPath);
+    globals.debugPrint(animal.videoPath);
     return Container(
         // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
         margin: EdgeInsets.fromLTRB(2, 2, 2, 0),
@@ -429,7 +429,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 }
               }).catchError((onError) {
                 Navigator.pop(context);
-                print(onError.toString());
+                globals.debugPrint(onError.toString());
                 globals.showDialogs(
                     "Gagal menandai produk telah terjual, Coba lagi.", context);
                 globals.mailError("Sold Product", onError.toString());
@@ -596,9 +596,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             Navigator.pop(context);
                             globals.showDialogs(e.toString(), context);
                             globals.mailError("Cancel Lelang", e.toString());
-                            print(e);
-                            print("######################");
-                            print(e.toString());
+                            globals.debugPrint(e);
+                            globals.debugPrint("######################");
+                            globals.debugPrint(e.toString());
                           }
                         })
                   ],
@@ -781,7 +781,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         }
       } catch (e) {
         globals.showDialogs(e.toString(), context);
-        print(e.toString());
+        globals.debugPrint(e.toString());
       }
     }
   }
@@ -1006,8 +1006,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     bool isWinner = false;
 
     String invoice;
-    print("WINNER SECTION");
-    print("WINNERBIDID : " + animal.auction.winnerBidId.toString());
+    globals.debugPrint("WINNER SECTION");
+    globals.debugPrint("WINNERBIDID : " + animal.auction.winnerBidId.toString());
 
     if (animal.auction.winnerBidId != null) {
       for (var i = 0; i < animal.auction.bids.length; i++) {
@@ -1063,7 +1063,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                               }
                             }).catchError((onError) {
                               Navigator.pop(context);
-                              print(onError.toString());
+                              globals.debugPrint(onError.toString());
                               globals.showDialogs(
                                   "Gagal menutup lelang, Coba lagi.", context);
                             });
@@ -1228,7 +1228,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                             chatLoading = false;
                                           });
 
-                                          print(animal.auction.firebaseChatId);
+                                          globals.debugPrint(animal.auction.firebaseChatId);
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -1252,7 +1252,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                 isLogout: true);
                                           }
 
-                                          print(
+                                          globals.debugPrint(
                                               "FirebaseChatId = $firebaseChatId");
 
                                           if (firebaseChatId == null ||
@@ -1431,9 +1431,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     //                                         Navigator.pop(context);
     //                                         globals.showDialogs(
     //                                             e.toString(), context);
-    //                                         print(e);
-    //                                         print("######################");
-    //                                         print(e.toString());
+    //                                         globals.debugPrint(e);
+    //                                         globals.debugPrint("######################");
+    //                                         globals.debugPrint(e.toString());
     //                                       }
     //                                     })
     //                               ],
@@ -1681,7 +1681,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                               globals.user.tokenRedis, globals.user.id);
                           await globals.showDialogBlockRekber(res, context);
                         } catch (e) {
-                          print(e.toString());
+                          globals.debugPrint(e.toString());
                           Navigator.pop(context);
                         }
                       } else {
@@ -1692,7 +1692,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       Navigator.pop(context);
                       loadAnimal(animal.id);
                     } catch (e) {
-                      print(e.toString());
+                      globals.debugPrint(e.toString());
                       Navigator.pop(context);
                       globals.showDialogs(e.toString(), context);
                       globals.mailError("Biding", e.toString());
@@ -1953,13 +1953,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             context,
             isLogout: true);
       } else if (result == 6) {
+        await globals.showDialogs("Komentar terkirim", context);
         globals.loadingModel(context);
         try {
           final res = await getAuctionsWithActiveChatNoPaginate(
               globals.user.tokenRedis, globals.user.id);
           await globals.showDialogBlockRekber(res, context);
         } catch (e) {
-          print(e.toString());
+          globals.debugPrint(e.toString());
           Navigator.pop(context);
         }
       } else {

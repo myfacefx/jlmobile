@@ -74,7 +74,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
               try {
                 logout(globals.user.tokenRedis);
               } catch (e) {
-                print(e.toString());
+                globals.debugPrint(e.toString());
               }
 
               Navigator.of(context).pop();

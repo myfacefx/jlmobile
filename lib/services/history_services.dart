@@ -9,7 +9,7 @@ Future<List<History>> getHistories(String token, int userId) async {
 
   final url = getBaseUrl() + "/users/$userId/histories";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
@@ -29,13 +29,13 @@ Future<dynamic> setHistories(String token, List<int> listOfHistoryId) async {
 
   final url = getBaseUrl() + "/histories/mark";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .put(url, headers: header, body: json.encode(listOfHistoryId))
       .timeout(Duration(seconds: getTimeOut()));
 
-  print(res.statusCode);
+  debugPrint(res.statusCode);
 
   if (res.statusCode == 202) {
     return true;
@@ -53,13 +53,13 @@ Future<bool> deleteHistory(String token, int historyId) async {
 
   final url = getBaseUrl() + "/history/$historyId";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .delete(url, headers: header)
       .timeout(Duration(seconds: getTimeOut()));
 
-  print(res.statusCode);
+  debugPrint(res.statusCode);
 
   if (res.statusCode == 204) {
     return true;

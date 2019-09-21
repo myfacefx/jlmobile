@@ -135,7 +135,7 @@ class _HomePage extends State<HomePage> {
   handleAppLifecycleState() {
     AppLifecycleState _lastLifecyleState;
     SystemChannels.lifecycle.setMessageHandler((msg) {
-      print('SystemChannels> $msg');
+      globals.debugPrint('SystemChannels> $msg');
 
       switch (msg) {
         case "AppLifecycleState.paused":
@@ -208,17 +208,17 @@ class _HomePage extends State<HomePage> {
   }
 
   void _checkVersion() {
-    print("Checking Version");
+    globals.debugPrint("Checking Version");
     verifyVersion(globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
         final result = await globals.showUpdate(
             onValue.url, onValue.isForceUpdate, onValue.message, context);
-        print(result);
+        globals.debugPrint(result);
         if (!result) {
           _checkVersion();
         }
       } else {
-        print("Already Up To Date Version");
+        globals.debugPrint("Already Up To Date Version");
         setState(() {
           alreadyUpToDate = true;
         });
@@ -255,17 +255,21 @@ class _HomePage extends State<HomePage> {
   }
 
   void checkAppLink(Uri link) {
-    int animalId;
-    String from;
-    List<String> tamp = link.pathSegments[1].split("f")[1].split("-");
+    try {
+      int animalId = int.parse(link.queryParameters["animal"]);
+      String from;
 
-    if (tamp[0] == "1") {
-      from = "LELANG";
-    } else if (tamp[0] == "2") {
-      from = "PASAR HEWAN";
+      if (link.queryParameters["type"] == "LL") {
+        from = "LELANG";
+      } else if (link.queryParameters["type"] == "PS") {
+        from = "PASAR HEWAN";
+      }
+
+      pushToPage(animalId, from);
+    } catch (e) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => NotFoundPage()));
     }
-    animalId = int.parse(tamp[1]);
-    pushToPage(animalId, from);
   }
 
   void pushToPage(animalId, from) {
@@ -1035,7 +1039,7 @@ class _HomePage extends State<HomePage> {
                 }
                 Navigator.pop(context);
               } catch (e) {
-                print(e.toString());
+                globals.debugPrint(e.toString());
                 Navigator.pop(context);
               }
 
@@ -1190,7 +1194,8 @@ class _HomePage extends State<HomePage> {
           currentAnimal = animals[i];
 
           if (selectedType == 'LELANG') {
-            if (currentAnimal.name.toUpperCase() != 'ANJING' && currentAnimal.name.toUpperCase() != 'KUCING') {
+            if (currentAnimal.name.toUpperCase() != 'ANJING' &&
+                currentAnimal.name.toUpperCase() != 'KUCING') {
               list.add(cardAnimal(currentAnimal));
             }
           } else {

@@ -7,7 +7,7 @@ Future<List<Regency>> getRegenciesByProvinceId(provinceId) async {
 
   final url = getBaseUrl() + "/provinces/$provinceId/regencies";
 
-  print(url);
+  debugPrint(url);
 
   http.Response res = await http
       .get(url, headers: header)
