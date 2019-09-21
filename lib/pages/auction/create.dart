@@ -169,9 +169,15 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
             _selectProduct.id == 3 ? "accessory" : "animal")
         .then((onValue) {
       animalCategories = onValue;
-
       setState(() {
         isLoading = false;
+
+        // Remove Anjing + Kucing if LELANG
+        if (_selectProduct.id == 1) {
+          animalCategories.removeWhere((item) => item.name.toUpperCase() == 'ANJING');
+          animalCategories.removeWhere((item) => item.name.toUpperCase() == 'KUCING');
+        }
+
       });
     }).catchError((onError) {
       // failedDataCategories = true;
@@ -842,13 +848,14 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           if (_selectProduct.id != selectProd.id) {
                             _selectProduct = selectProd;
 
-                            if (labelNamaType == "Hewan" &&
-                                selectProd.id == 3) {
-                              _refreshCategory();
-                            } else if (labelNamaType == "Aksesoris" &&
-                                selectProd.id != 3) {
-                              _refreshCategory();
-                            }
+                            // if (labelNamaType == "Hewan" &&
+                            //     selectProd.id == 3) {
+                            //   _refreshCategory();
+                            // } else if (labelNamaType == "Aksesoris" &&
+                            //     selectProd.id != 3) {
+                            //   _refreshCategory();
+                            // }
+                            _refreshCategory();
 
                             if (_selectProduct.id == 3) {
                               labelNamaType = "Aksesoris";
