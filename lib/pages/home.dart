@@ -1181,12 +1181,21 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
-  Widget _buildGridCategory(List<AnimalCategory> animals) {
+  Widget _buildGridCategory(List<AnimalCategory> animals, String selectedType) {
     List<Widget> listMyWidgets() {
       List<Widget> list = List();
       if (!isLoadingCategories) {
+        var currentAnimal;
         for (var i = 0; i < animals.length; i++) {
-          list.add(cardAnimal(animals[i]));
+          currentAnimal = animals[i];
+
+          if (selectedType == 'LELANG') {
+            if (currentAnimal.name.toUpperCase() != 'ANJING' && currentAnimal.name.toUpperCase() != 'KUCING') {
+              list.add(cardAnimal(currentAnimal));
+            }
+          } else {
+            list.add(cardAnimal(currentAnimal));
+          }
         }
       }
 
@@ -1244,7 +1253,7 @@ class _HomePage extends State<HomePage> {
                       _buildLaranganBinatang(),
                       _buildNumberMember(),
                       _buildTitle(),
-                      _buildGridCategory(animalCategories),
+                      _buildGridCategory(animalCategories, selectedType),
                       _buildEventHewan(),
                       _buildAuctionEvents(),
                       _buildSponsoredProduct(),
