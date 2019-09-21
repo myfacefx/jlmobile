@@ -106,6 +106,8 @@ String baseUrl = "http://192.168.100.119:8000";
 String flavor = "Development";
 String state = "Login";
 
+String norek = '8165246817';
+
 User user;
 
 // Global timeout setting
@@ -117,6 +119,10 @@ int getTimeOut() {
 
 String getBaseUrl() {
   return baseUrl;
+}
+
+String getNorek() {
+  return norek;
 }
 
 String generateInvoice(Auction auction) {

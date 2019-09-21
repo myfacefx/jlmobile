@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 
 class DonasiPage extends StatefulWidget {
@@ -51,7 +52,21 @@ class _DonasiPageState extends State<DonasiPage>
                 children: <Widget>[ 
                   Container(
                     width: globals.mw(context),
-                    child: Image.asset("assets/images/donation.jpeg", width: globals.mw(context), fit: BoxFit.fitWidth),
+                    child: 
+                      Column(
+                        children: <Widget>[
+                          FlatButton(
+                            color: globals.myColor("primary"),
+                            child: globals.myText(
+                                text: "Tekan disini untuk Copy Nomor Rekening JLF", color: "light"),
+                            onPressed: () {
+                              Clipboard.setData(new ClipboardData(text:globals.getNorek()));
+                              globals.showDialogs("Berhasil menyalin nomor rekening", context);
+                            },
+                          ),
+                          Image.asset("assets/images/donation.jpeg", width: globals.mw(context), fit: BoxFit.fitWidth)
+                        ],
+                      ),
                   ),
                 ]
               )
