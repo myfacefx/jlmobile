@@ -69,8 +69,8 @@ class _ListEventPageState extends State<ListEventPage> {
       children: <Widget>[
         GestureDetector(
           onTap: () {
-            print('tapped');
-            print(slider.items);
+            globals.debugPrint('tapped');
+            globals.debugPrint(slider.items);
             Navigator.push(
                   context,
                   MaterialPageRoute(
