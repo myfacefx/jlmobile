@@ -339,6 +339,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (croppedFile != null) _uploadPhoto(croppedFile);
+    else setState(() { photoUploading = false; });
   }
 
   String _randomDigits(int count) {
