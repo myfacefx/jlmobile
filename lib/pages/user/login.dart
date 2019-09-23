@@ -419,6 +419,28 @@ class _LoginPage extends State<LoginPage> {
         ]));
   }
 
+  Widget _loginProblem() {
+    return Container(
+      width: 300,
+      child: Center(
+          child: GestureDetector(
+              onTap: () {
+                globals.sendWhatsApp(globals.getNohpAdmin(), "Tolong di bantu min, saya mengalami susah Login");
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  globals.myText(text: "Susah login? ", color: "dark"),
+                  globals.myText(
+                      text: "Hubungi Admin kami",
+                      weight: "SB",
+                      decoration: TextDecoration.underline,
+                      color: "primary"),
+                ],
+              ))),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
@@ -538,6 +560,8 @@ class _LoginPage extends State<LoginPage> {
                         height: 15,
                       ),
                       _floatingButton("Facebook"),
+                      SizedBox(height: 15),
+                      _loginProblem(),
                       SizedBox(height: 30),
                       _termOfServices(),
                       SizedBox(height: 10),

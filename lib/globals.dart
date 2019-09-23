@@ -101,6 +101,7 @@ String flavor = "Development";
 String state = "Login";
 
 String norek = '8165246817';
+String nohpAdmin = '6282223304275';
 
 User user;
 
@@ -117,6 +118,10 @@ String getBaseUrl() {
 
 String getNorek() {
   return norek;
+}
+
+String getNohpAdmin() {
+  return nohpAdmin;
 }
 
 String generateInvoice(Auction auction) {
@@ -1129,5 +1134,16 @@ Future<bool> showUpdate(
 void debugPrint(content) {
   if (!isProduction) {
     return print(content);
+  }
+}
+
+void sendWhatsApp(phone, message) async {
+  if (phone.isNotEmpty && message.isNotEmpty) {
+    String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
