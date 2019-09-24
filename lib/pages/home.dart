@@ -1276,7 +1276,9 @@ class _HomePage extends State<HomePage> {
             color: Color.fromRGBO(0, 0, 0, 0),
             child: FittedBox(
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  globals.sendOTP(globals.user.phoneNumber);
+                },
                 child: Image.asset(
                       "assets/images/floatingbutton.png"
                     ),
