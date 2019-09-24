@@ -27,6 +27,7 @@ dependencies:
   #     ref: android-x
   flutter_facebook_login: ^2.0.1
   flutter_video_compress: ^0.3.7+8
+  flutter_pdfview: ^1.0.0+9
 
   # flutter_swiper: ^1.1.6
   
