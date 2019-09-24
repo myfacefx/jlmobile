@@ -1270,6 +1270,21 @@ class _HomePage extends State<HomePage> {
                   ),
           ),
         ),
+        floatingActionButton: Container(
+            height: 120,
+            width: 120,
+            color: Color.fromRGBO(0, 0, 0, 0),
+            child: FittedBox(
+              child: FloatingActionButton(
+                onPressed: () {},
+                child: Image.asset(
+                      "assets/images/floatingbutton.png"
+                    ),
+                backgroundColor: Color.fromRGBO(0, 0, 0, 0),
+                elevation: 0,
+              ),
+            ),
+          )
       ),
     );
   }

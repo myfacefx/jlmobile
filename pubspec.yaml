@@ -102,6 +102,7 @@ flutter:
     - assets/images/promoted_seller.png
     - assets/images/hot_auction.png
     - assets/images/block-rekber.jpeg
+    - assets/images/floatingbutton.png
     
 
   fonts:
