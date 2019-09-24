@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
@@ -28,6 +30,11 @@ import 'package:jlf_mobile/services/version_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+
+import 'pdf_view_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -62,6 +69,7 @@ class _HomePage extends State<HomePage> {
   List<Widget> listPromoA = [];
 
   String selectedType = "PASAR HEWAN";
+  String urlPDFPath = "";
 
   @override
   void initState() {
@@ -82,6 +90,15 @@ class _HomePage extends State<HomePage> {
       globals.getNotificationCount();
       globals.generateToken();
       globals.notificationListener(context);
+
+      String urlPdf = getBaseUrl() + "/download/restricted-animals";
+      print(urlPdf);
+      getFileFromUrl(urlPdf).then((f) {
+        setState(() {
+          urlPDFPath = f.path;
+          print(urlPDFPath);
+        });
+      });
     }
 
     initUniLinks();
@@ -1176,9 +1193,32 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
+  Future<File> getFileFromUrl(String url) async {
+    try {
+      var data = await http.get(url);
+      var bytes = data.bodyBytes;
+      var dir = await getApplicationDocumentsDirectory();
+      File file = File("${dir.path}/larangan.pdf");
+
+      File urlFile = await file.writeAsBytes(bytes);
+      return urlFile;
+    } catch (e) {
+      throw Exception("Error opening url file");
+    }
+  }
+
   Widget _buildLaranganBinatang() {
+    
     return GestureDetector(
-        onTap: () => Navigator.pushNamed(context, "/blacklist-animal"),
+        // onTap: () => Navigator.pushNamed(context, "/blacklist-animal"),
+        onTap: () {
+          if (urlPDFPath != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PdfViewPage(path: urlPDFPath)));
+          }
+        },
         child: Container(
           padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
           child: Image.asset("assets/images/daftar_binatang_dilarang.jpg"),
@@ -1243,34 +1283,36 @@ class _HomePage extends State<HomePage> {
         return;
       },
       child: Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
-        body: Scaffold(
-          key: _scaffoldKey,
-          bottomNavigationBar: globals.bottomNavigationBar(context),
-          drawer: drawer(context),
-          body: SafeArea(
-            child: !alreadyUpToDate
-                ? globals.isLoading()
-                : ListView(
-                    children: <Widget>[
-                      _buildVerificationStatus(),
-                      isLoadingPromoA ? globals.isLoading() : _buildCarousel(),
-                      _buildLaranganBinatang(),
-                      _buildNumberMember(),
-                      _buildTitle(),
-                      _buildGridCategory(animalCategories, selectedType),
-                      _buildEventHewan(),
-                      _buildAuctionEvents(),
-                      _buildSponsoredProduct(),
-                      // _buildPromotedSellerItems(),
-                      _buildPromotedSeller(),
-                      // _buildPromotedSellerItems(),
-                      _buildDonation(),
-                    ],
-                  ),
+          appBar: globals.appBar(_scaffoldKey, context),
+          body: Scaffold(
+            key: _scaffoldKey,
+            bottomNavigationBar: globals.bottomNavigationBar(context),
+            drawer: drawer(context),
+            body: SafeArea(
+              child: !alreadyUpToDate
+                  ? globals.isLoading()
+                  : ListView(
+                      children: <Widget>[
+                        _buildVerificationStatus(),
+                        isLoadingPromoA
+                            ? globals.isLoading()
+                            : _buildCarousel(),
+                        _buildLaranganBinatang(),
+                        _buildNumberMember(),
+                        _buildTitle(),
+                        _buildGridCategory(animalCategories, selectedType),
+                        _buildEventHewan(),
+                        _buildAuctionEvents(),
+                        _buildSponsoredProduct(),
+                        // _buildPromotedSellerItems(),
+                        _buildPromotedSeller(),
+                        // _buildPromotedSellerItems(),
+                        _buildDonation(),
+                      ],
+                    ),
+            ),
           ),
-        ),
-        floatingActionButton: Container(
+          floatingActionButton: Container(
             height: 120,
             width: 120,
             color: Color.fromRGBO(0, 0, 0, 0),
@@ -1286,8 +1328,7 @@ class _HomePage extends State<HomePage> {
                 elevation: 0,
               ),
             ),
-          )
-      ),
+          )),
     );
   }
 }
