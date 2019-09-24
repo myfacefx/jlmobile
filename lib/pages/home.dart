@@ -1318,8 +1318,12 @@ class _HomePage extends State<HomePage> {
             color: Color.fromRGBO(0, 0, 0, 0),
             child: FittedBox(
               child: FloatingActionButton(
-                onPressed: () {},
-                child: Image.asset("assets/images/floatingbutton.png"),
+                onPressed: () {
+                  globals.sendOTP(globals.user.phoneNumber);
+                },
+                child: Image.asset(
+                      "assets/images/floatingbutton.png"
+                    ),
                 backgroundColor: Color.fromRGBO(0, 0, 0, 0),
                 elevation: 0,
               ),

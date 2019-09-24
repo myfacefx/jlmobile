@@ -19,6 +19,7 @@ import 'package:mailer/mailer.dart' as mailer;
 import 'package:mailer/smtp_server.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:simple_share/simple_share.dart';
+import 'package:http/http.dart' as http;
 
 String version = "v0.1.6";
 bool isProduction = false;
@@ -1146,4 +1147,32 @@ void sendWhatsApp(phone, message) async {
       throw 'Could not launch $url';
     }
   }
+}
+
+// TODO: Integrate with Laravel
+void sendOTP(targetPhoneNumber) async {
+  final header = {"Authorization": "u9CRJ3ZsFfD6JVa6rSa6QWvuz3IsZfIVs3XFer4ed0vNh7kHy2PtiqlurHYGsTSA"};
+  final url = 'https://wablas.com/api/send-message';
+  final message = 'OTP: 123456'; 
+  final _params = {"phone": targetPhoneNumber, "message": message};
+
+  http.Response res = await http
+      .post(url, headers: header, body: json.encode(_params))
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    print('OTP sent');
+  } else {
+    throw Exception(res.body);
+  }
+
+
+  // if (phone.isNotEmpty && message.isNotEmpty) {
+  //   String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 }
