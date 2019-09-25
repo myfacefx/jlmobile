@@ -461,6 +461,14 @@ class _HomePage extends State<HomePage> {
     });
   }
 
+  void _getListCategoriesPetShop() {
+     setState(() {});
+  }
+
+  void _getListCategoriesVeterinarian() {
+     setState(() {});
+  }
+
   void _getAccessoryAnimalCategory() {
     setState(() {
       failedDataCategories = false;
@@ -1008,8 +1016,10 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildTitle() {
     return Container(
+      height: 15,
       margin: EdgeInsets.fromLTRB(10, 0, 10, 16),
-      child: Row(
+      child: ListView(
+        scrollDirection: Axis.horizontal,
         children: <Widget>[
           GestureDetector(
             onTap: () {
@@ -1024,23 +1034,6 @@ class _HomePage extends State<HomePage> {
                 color: selectedType == "PASAR HEWAN" ? null : "disabled"),
           ),
           Text("  |  ", style: Theme.of(context).textTheme.headline),
-          /*
-           * Commented siapa tau besok butuh
-           * 
-          GestureDetector(
-            onTap: () {
-              if (selectedType != "ACCESSORY") {
-                selectedType = "ACCESSORY";
-                _getAccessoryAnimalCategory();
-              }
-            },
-            child: globals.myText(
-                text: "AKSESORIS",
-                size: 16,
-                color: selectedType == "ACCESSORY" ? null : "disabled"),
-          ),
-          Text("  |  ", style: Theme.of(context).textTheme.headline),
-          */
           GestureDetector(
             onTap: () async {
               bool res = false;
@@ -1074,7 +1067,32 @@ class _HomePage extends State<HomePage> {
                 size: 16,
                 color: selectedType == "LELANG" ? null : "disabled"),
           ),
-          Expanded(child: Text("")),
+          Text("  |  ", style: Theme.of(context).textTheme.headline),
+          GestureDetector(
+            onTap: () {
+              if (selectedType != "PET SHOP") {
+                selectedType = "PET SHOP";
+                _getListCategoriesPetShop();
+              }
+            },
+            child: globals.myText(
+                text: "PET SHOP",
+                size: 16,
+                color: selectedType == "PET SHOP" ? null : "disabled"),
+          ),
+          Text("  |  ", style: Theme.of(context).textTheme.headline),
+          GestureDetector(
+            onTap: () {
+              if (selectedType != "DOKTER HEWAN") {
+                selectedType = "DOKTER HEWAN";
+                _getListCategoriesVeterinarian();
+              }
+            },
+            child: globals.myText(
+                text: "DOKTER HEWAN",
+                size: 16,
+                color: selectedType == "DOKTER HEWAN" ? null : "disabled"),
+          ),
         ],
       ),
     );
@@ -1226,7 +1244,12 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildGridCategory(List<AnimalCategory> animals, String selectedType) {
-    List<Widget> listMyWidgets() {
+    if (selectedType == 'PET SHOP') {
+      return _buildPetShop();
+    } else if (selectedType == 'DOKTER HEWAN') {
+      return _buildVeterinarian();
+    } else {
+      List<Widget> listMyWidgets() {
       List<Widget> list = List();
       if (!isLoadingCategories) {
         var currentAnimal;
@@ -1259,6 +1282,73 @@ class _HomePage extends State<HomePage> {
                     childAspectRatio: 2,
                     crossAxisCount: 2,
                     children: listMyWidgets()));
+    }
+  }
+
+  Widget _buildPetShop() {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 150,
+            height: 150,
+            child: Image.asset('assets/images/map.png'),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    'We Still Travel Around Indonesia to Find More Pet Shop for You..', 
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVeterinarian() {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 150,
+            height: 150,
+            child: Image.asset('assets/images/veterinarian.png'),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    'Comming soon..', 
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   _exitDialog() {
