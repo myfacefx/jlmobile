@@ -40,10 +40,12 @@ Future<User> register(Map<String, dynamic> _data) async {
       .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(minutes: 60));
 
+      var response = json.decode(res.body);
+
   if (res.statusCode == 200) {
     return userFromJson(res.body);
   } else {
-    throw Exception(res.body);
+    throw Exception(response["content"]);
   }
 }
 

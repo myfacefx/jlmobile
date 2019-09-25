@@ -57,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage>
         user = onValue;
         isLoading = false;
       }).catchError((onError) {
-        print(onError.toString());
+        globals.debugPrint(onError.toString());
         globals.showDialogs(onError.toString(), context);
       });
     }

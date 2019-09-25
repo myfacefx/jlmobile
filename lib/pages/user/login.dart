@@ -57,7 +57,7 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void _checkVersion() {
-    print("Checking Version");
+    globals.debugPrint("Checking Version");
     verifyVersion(globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
         final result = await globals.showUpdate(
@@ -66,7 +66,7 @@ class _LoginPage extends State<LoginPage> {
           _checkVersion();
         }
       } else {
-        print("Already Up To Date Version");
+        globals.debugPrint("Already Up To Date Version");
       }
     }).catchError((onError) async {
       await globals.showDialogs(
@@ -102,10 +102,10 @@ class _LoginPage extends State<LoginPage> {
 
             User user = userFromJson(json.encode(response['data']));
 
-            // print(user.toJson());
+            // globals.debugPrint(user.toJson());
 
             saveLocalData('user', json.encode(response['data']));
-            // print(response['data']);
+            // globals.debugPrint(response['data']);
 
             globals.user = user;
             globals.state = "home";
@@ -121,7 +121,7 @@ class _LoginPage extends State<LoginPage> {
 
             Navigator.of(context).pop();
 
-            // print("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
+            // globals.debugPrint("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
             Navigator.pushNamed(
                 context,
                 globals.user.verificationStatus == null ||
@@ -130,20 +130,20 @@ class _LoginPage extends State<LoginPage> {
                     : "/");
           } else {
             globals.showDialogs(response['message'], context);
-            print("ERR: " + response.toString());
+            globals.debugPrint("ERR: " + response.toString());
           }
         }
 
         // if (userResult.statusCode == 1) {
         //   saveLocalData('user', userToJson(userResult));
-        //   print(userToJson(userResult));
+        //   globals.debugPrint(userToJson(userResult));
 
         //   globals.user = userResult;
         //   globals.state = "home";
 
         //   Navigator.of(context).pop();
 
-        //   print("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
+        //   globals.debugPrint("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
         //   Navigator.pushNamed(context, globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "/verification" : "/");
 
         // } else if (userResult.statusCode == 2) {
@@ -160,9 +160,14 @@ class _LoginPage extends State<LoginPage> {
           loginLoading = false;
         });
       } catch (e) {
-        globals.showDialogs(e.toString(), context);
-        print(e.toString());
-        // globals.mailError("Login", e.toString());
+        try {
+          globals.showDialogs(e.toString().split(":")[1], context);
+          globals.debugPrint(e.toString());
+          // globals.mailError("Login", e.toString());
+        } catch (e) {
+          globals.showDialogs(e.toString(), context);
+        }
+
         setState(() {
           loginLoading = false;
         });
@@ -185,39 +190,39 @@ class _LoginPage extends State<LoginPage> {
     //     searchUser.email = profile['email'];
     //     searchUser.facebookUserId = profile['id'];
 
-    //     print("FB LOGIN LOOKUP");
-    //     print(searchUser.toJson());
+    //     globals.debugPrint("FB LOGIN LOOKUP");
+    //     globals.debugPrint(searchUser.toJson());
     //     // List<User> users = await getByEmail(searchUser.toJson());
     //     List<User> users = await fbLoginSearch(searchUser.toJson());
 
-    //     print("####USERS TO STRING#####" + users.toString());
+    //     globals.debugPrint("####USERS TO STRING#####" + users.toString());
     //     return;
     FacebookLoginResult result = await facebookLogin
         .logInWithReadPermissions(['email', 'public_profile']);
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        print("####FACEBOOK OUTPUT#####");
+        globals.debugPrint("####FACEBOOK OUTPUT#####");
 
         var graphResponse = await http.get(
             'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,address,gender,location,picture.type(large).redirect(false)&access_token=${result.accessToken.token}');
 
         var profile = json.decode(graphResponse.body);
-        print(profile.toString());
+        globals.debugPrint(profile.toString());
 
         User searchUser = User();
         searchUser.email = profile['email'];
         searchUser.facebookUserId = profile['id'];
 
-        print("FB LOGIN LOOKUP");
-        print(searchUser.toJson());
+        globals.debugPrint("FB LOGIN LOOKUP");
+        globals.debugPrint(searchUser.toJson());
         // List<User> users = await getByEmail(searchUser.toJson());
         List<User> users = await fbLoginSearch(searchUser.toJson());
 
-        print("####USERS TO STRING#####" + users.toString());
+        globals.debugPrint("####USERS TO STRING#####" + users.toString());
 
         if (users.length > 0) {
-          print("USER FOUND, login");
+          globals.debugPrint("USER FOUND, login");
           // Similar email found, user registered
           saveLocalData("user", userToJson(users[0]));
 
@@ -232,12 +237,12 @@ class _LoginPage extends State<LoginPage> {
           registerUser.facebookUserId = profile['id'];
           registerUser.photo = profile['picture']['data']['url'];
 
-          print("USER NOT FOUND, registering");
+          globals.debugPrint("USER NOT FOUND, registering");
           // No similar email found, user will be pushed to register page
 
           globals.state = "register";
 
-          // print(profile['email']);
+          // globals.debugPrint(profile['email']);
 
           Navigator.push(
               context,
@@ -425,7 +430,8 @@ class _LoginPage extends State<LoginPage> {
       child: Center(
           child: GestureDetector(
               onTap: () {
-                globals.sendWhatsApp(globals.getNohpAdmin(), "Tolong di bantu min, saya mengalami susah Login");
+                globals.sendWhatsApp(globals.getNohpAdmin(),
+                    "Tolong di bantu min, saya mengalami susah Login");
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -66,8 +66,8 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       updateUser.password = _password;
 
       try {
-        String result =
-            await updateUserLogin(updateUser.toJson(), _id, globals.user.tokenRedis);
+        String result = await updateUserLogin(
+            updateUser.toJson(), _id, globals.user.tokenRedis);
 
         if (result != null) {
           Navigator.of(context).pop();
