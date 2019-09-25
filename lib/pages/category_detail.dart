@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,6 +14,7 @@ import 'package:jlf_mobile/pages/auction/create.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
+import 'package:jlf_mobile/services/promo_category_services.dart';
 import 'package:jlf_mobile/services/province_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
 
@@ -34,8 +37,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   bool isLoadingLoadMore = false;
   bool isLoadingProvince = true;
   bool isLoadingTopSellers = true;
+  bool isLoadingPromos = true;
   String currentSubCategory = "ALL";
   int currentIdSubCategory;
+
+  int _current = 0;
 
   int allAuctionCounts = 0;
   int allPlayerCounts = 0;
@@ -52,6 +58,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   int _activeTopSellerPage = 0;
   List<Widget> _topSellerPages = List<Widget>();
+  List<Widget> _promoCategory = List<Widget>();
 
   String nextUrl;
   bool isLast = false;
@@ -112,6 +119,27 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     });
 
     globals.getNotificationCount();
+
+    getAllPromosCategory(globals.user.tokenRedis, this.animalCategory.id)
+        .then((onValue) {
+      if (onValue.length > 0) {
+        onValue.forEach((f) {
+          _promoCategory.add(
+            CachedNetworkImage(
+              height: 75,
+              imageUrl: f.link,
+              placeholder: (context, url) =>
+                  Image.asset('assets/images/loading.gif'),
+              errorWidget: (context, url, error) =>
+                  Image.asset('assets/images/error.jpeg'),
+            ),
+          );
+        });
+        setState(() {
+          isLoadingPromos = false;
+        });
+      }
+    });
   }
 
   @override
@@ -209,23 +237,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[Row(children: firstRowWidget)])));
-
-        // 1x4
-        // int i = 0;
-
-        // List<Widget> rowWidget = List<Widget>();
-
-        // for (var topSeller in topSellers) {
-        //   rowWidget.add(_templateHeaderTopSellerProfile(topSeller));
-
-        //   i++;
-        //   if (i == 4) {
-        //     _topSellerPages.add(Row(children: rowWidget));
-        //     rowWidget = List<Widget>();
-        //   }
-        // }
-
-        // if (rowWidget.length > 0) _topSellerPages.add(Row(children: rowWidget));
       }
     });
   }
@@ -359,45 +370,45 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   //top container
-  Widget _buildcontSub(String name, String count, int subCategory) {
+  Widget _buildcontSub(AnimalSubCategory animalSubCategory) {
     return Container(
-        // padding: EdgeInsets.fromLTRB(, 5, 10, 5),
-        margin: EdgeInsets.fromLTRB(5, 5, 0, 5),
-        child: ButtonTheme(
-            height: 25,
-            child: FlatButton(
-                onPressed: () {
-                  if (currentIdSubCategory != subCategory) {
-                    currentIdSubCategory = subCategory;
-                    currentSubCategory = name;
-                    _refresh(subCategory, name, widget.from);
-                  }
-                },
-                color: name.contains(currentSubCategory)
-                    ? Colors.blueGrey
-                    : globals.myColor("primary"),
-                child: globals.myText(
-                    text: "${name.toUpperCase()} ($count)",
-                    align: TextAlign.center,
-                    size: 10,
-                    color: "light"),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25))))
-        // padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-        // margin: EdgeInsets.fromLTRB(10, 5, 0, 5),
-        // decoration: BoxDecoration(
-        //     color: name.contains(currentSubCategory)
-        //         ? Colors.blueGrey
-        //         : Theme.of(context).primaryColor,
-        //     borderRadius: BorderRadius.circular(25)),
-        // child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        //   Text(
-        //     "$name ($count)",
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(fontSize: 10),
-        //   )
-        // ]),
-        );
+        margin: EdgeInsets.fromLTRB(10, 5, 0, 10),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Column(
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: CachedNetworkImage(
+                  height: 75,
+                  imageUrl: animalSubCategory.thumbnail,
+                  placeholder: (context, url) =>
+                      Image.asset('assets/images/loading.gif'),
+                  errorWidget: (context, url, error) =>
+                      Image.asset('assets/images/error.jpeg'),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    width: 75,
+                    child: globals.myText(
+                        text:
+                            "${animalSubCategory.name} ( ${animalSubCategory.animalsCount} )",
+                        color: "light-blue",
+                        size: 10,
+                        align: TextAlign.center),
+                  )
+                ],
+              )
+            ],
+          ),
+        ));
   }
 
   Widget _buildCategory() {
@@ -408,10 +419,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       int countAll = 0;
 
       for (var i = 0; i < animalSubCategories.length; i++) {
-        list.add(_buildcontSub(
-            animalSubCategories[i].name,
-            animalSubCategories[i].animalsCount.toString(),
-            animalSubCategories[i].id));
+        list.add(_buildcontSub(animalSubCategories[i]));
         countAll += animalSubCategories[i].animalsCount;
       }
 
@@ -419,19 +427,17 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         this.allAuctionCounts = countAll;
       });
 
-      // list.add(_buildcontSub("ALL", countAll.toString(), null));
-
       return list.reversed.toList();
     }
 
     return Container(
+        height: 150,
         color: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        child: GridView.count(
+        child: ListView(
             physics: ScrollPhysics(),
             shrinkWrap: true,
-            childAspectRatio: 2.3,
-            crossAxisCount: 3,
+            scrollDirection: Axis.horizontal,
             children: listMyWidgets()));
   }
 
@@ -453,138 +459,55 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(children: <Widget>[
-            Column(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
-                  height: 90,
-                  width: 90,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(90),
-                    child: FadeInImage.assetNetwork(
-                      fit: BoxFit.cover,
-                      placeholder: 'assets/images/loading.gif',
-                      image: animalCategory.image,
-                    ),
-                  ),
-                ),
-                globals.myText(
-                    text: animalCategory.name.toUpperCase(),
-                    size: 14,
-                    weight: "B",
-                    align: TextAlign.center),
-                // ButtonTheme(
-                //   // minWidth: double.infinity,
-                //   height: 25,
-                //   child: RaisedButton(
-                //       color: Color.fromRGBO(222, 188, 123, 1),
-                //       onPressed: () {},
-                //       child: Row(
-                //         children: <Widget>[
-                //           Icon(Icons.bookmark, color: globals.myColor("dark"), size: 17),
-                //           globals.myText(text: " Artikel ", color: "dark"),
-                //         ],
-                //       )),
-                // ),
-                ButtonTheme(
-                  // minWidth: double.infinity,
-                  height: 38,
-                  child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                      color: globals.myColor("primary"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    CreateAuctionPage(
-                                        type: _type,
-                                        categoryId: widget.animalCategory.id,
-                                        subCategoryId: currentIdSubCategory)));
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: Icon(
-                              Icons.add_circle,
-                              size: 17,
-                              color: Colors.white,
-                            ),
-                          ),
-                          globals.myText(
-                              text: " $name",
-                              align: TextAlign.center,
-                              color: "light"),
-                        ],
-                      )),
-                ),
-              ],
-            ),
-            Flexible(child: _buildCarousel())
-          ]),
-          // SizedBox(
-          //   height: 8,
-          // ),
-          // allAuctionCounts > 0
-          //     ? Text(
-          //         "$allAuctionCounts Hewan",
-          //         style: Theme.of(context)
-          //             .textTheme
-          //             .title
-          //             .copyWith(fontWeight: FontWeight.w300),
-          //       )
-          //     : Container(),
-          // SizedBox(
-          //   height: 8,
-          // ),
-          // allPlayerCounts > 0
-          //     ? Text(
-          //         "$allPlayerCounts Pemain",
-          //         style: Theme.of(context).textTheme.subtitle,
-          //       )
-          //     : Container(),
-          // SizedBox(
-          //   height: 8,
-          // ),
+          SizedBox(
+            height: 16,
+          ),
+          globals.myText(
+              text: animalCategory.name.toUpperCase(), weight: "B", size: 16),
+          SizedBox(
+            height: 16,
+          ),
+          globals.myText(text: "Our Categories", weight: "B"),
+          isLoadingPromos ? globals.isLoading() : _buildCarouselTop()
         ],
       ),
     );
   }
 
-  Widget _buildCarousel() {
-    return _topSellerPages.length > 0
-        ? Stack(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                height: 190,
-                child: CarouselSlider(
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 2),
-                  viewportFraction: 1.0,
-                  height: 190,
-                  enableInfiniteScroll: true,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _activeTopSellerPage = index;
-                    });
-                  },
-                  items: _topSellerPages,
-                ),
-              ),
-            ],
+  Widget _buildSponsoredSeller() {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: globals.myText(
+                text: "Sponsored Seller", size: 18, weight: "XB"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+            height: 190,
+            child: CarouselSlider(
+              autoPlay: true,
+              autoPlayInterval: Duration(seconds: 2),
+              viewportFraction: 1.0,
+              height: 190,
+              enableInfiniteScroll: true,
+              onPageChanged: (index) {
+                setState(() {
+                  _activeTopSellerPage = index;
+                });
+              },
+              items: _topSellerPages,
+            ),
           )
-        : Container();
+        ],
+      ),
+    );
   }
 
   Widget _buildHeaderTopSeller() {
@@ -721,9 +644,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                                           : topSeller.user.photo)
                                   : Image.asset(
                                       'assets/images/account.png')))))),
+          SizedBox(
+            height: 10,
+          ),
           globals.myText(
-              text: topSeller.user != null ? topSeller.user.username : ' ',
-              weight: "B",
+              text: "100 POIN",
+              size: 10,
+              align: TextAlign.center,
+              color: "unprime",
               textOverflow: TextOverflow.ellipsis)
         ],
       ),
@@ -777,12 +705,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             child: Container(
               color: Colors.white,
               child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(left: 15, bottom: 5, top: 5),
+                    padding: EdgeInsets.only(left: 15, bottom: 10, top: 5),
                     alignment: Alignment.centerLeft,
-                    child: globals.myText(text: "STAR SELLERS", weight: "B"),
+                    child: globals.myText(text: "TOP SELLERS", weight: "B"),
                   ),
                   Container(
                       height: 100,
@@ -1294,6 +1221,83 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  Widget _buildDokterHewan() {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, "/donasi"),
+      child: Container(
+        padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
+        child: Image.asset('assets/images/bannerdokterhewanhd.jpg'),
+      ),
+    );
+  }
+
+  Widget _buildBottomBanner() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, "/donasi"),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
+            child: Image.asset('assets/images/ceritajlf.jpg',
+                width: globals.mw(context) * 0.45),
+          ),
+        ),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, "/donasi"),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
+            child: Image.asset(
+              'assets/images/sponsorseller.jpg',
+              width: globals.mw(context) * 0.45,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildCarouselTop() {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: CarouselSlider(
+            aspectRatio: 3,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 25),
+            viewportFraction: 3.0,
+            height: 218,
+            enableInfiniteScroll: true,
+            onPageChanged: (index) {
+              setState(() {
+                _current = index;
+              });
+            },
+            items: _promoCategory,
+          ),
+        ),
+        Positioned(
+            bottom: 10,
+            left: 0.0,
+            right: 0.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _buildDoted(_current + 1, _promoCategory.length)
+              ],
+            ))
+      ],
+    );
+  }
+
+  Widget _buildDoted(int index, int total) {
+    return Container(
+      child:
+          globals.myText(text: "$index / $total", color: "light", weight: "XB"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1303,19 +1307,17 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           child: ListView(
             children: <Widget>[
               _buildTopCont(),
-              SizedBox(
-                height: 16,
-              ),
+              
               _buildCategory(),
               SizedBox(height: 16),
-              // _buildTitle(),
-              // SizedBox(
-              //   height: 16,
-              // ),
-              // _buildTopSeller(),
-              // SizedBox(
-              //   height: 16,
-              // ),
+              _buildSponsoredSeller(),
+              SizedBox(height: 16),
+              _buildDokterHewan(),
+              SizedBox(height: 16),
+              _buildTopSeller(),
+              SizedBox(height: 16),
+              _buildBottomBanner(),
+              SizedBox(height: 16),
               _buildSearch(),
               SizedBox(
                 height: 16,

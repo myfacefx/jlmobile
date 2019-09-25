@@ -30,7 +30,7 @@ class _NotificationPageState extends State<NotificationPage> {
     globals.getNotificationCount();
     _recognizerTap = TapGestureRecognizer()
       ..onTap = () {
-        //  print();
+        //  globals.debugPrint();
       };
   }
 
@@ -65,7 +65,7 @@ class _NotificationPageState extends State<NotificationPage> {
         return;
       }
     }).catchError((onError) {
-      print(onError.toString());
+      globals.debugPrint(onError.toString());
     });
   }
 
@@ -152,12 +152,12 @@ class _NotificationPageState extends State<NotificationPage> {
                                     }
                                   }
 
-                                  // print(informationBuild);
+                                  // globals.debugPrint(informationBuild);
 
                                   List<int> listOfHistoryId = List<int>();
                                   listOfHistoryId.add(histories[i].id);
 
-                                  // print("List of ID $listOfHistoryId");
+                                  // globals.debugPrint("List of ID $listOfHistoryId");
 
                                   return InkWell(
                                     onTap: () {

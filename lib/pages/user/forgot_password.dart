@@ -88,7 +88,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         Navigator.pop(context);
         globals.showDialogs(
             "Terjadi kesalahan, coba untuk hubungi admin", context);
-        print(e.toString());
+        globals.debugPrint(e.toString());
         globals.mailError("Forgot password", e.toString());
       }
     }

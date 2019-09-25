@@ -104,7 +104,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void requestPermission() async {
-    print("Checking Permission storage");
+    globals.debugPrint("Checking Permission storage");
     PermissionStatus permissionStorage = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage);
     PermissionStatus permissionCamera =
@@ -323,7 +323,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         photoUploading = true;
       });
-      // print(imageFile);
+      // globals.debugPrint(imageFile);
       _cropImage(imageFile);
       // uploadFile();
     }
@@ -379,14 +379,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       globals.showDialogs("Foto berhasil diubah", context);
 
-      print("Success update foto");
+      globals.debugPrint("Success update foto");
       setState(() {
         photoUploading = false;
       });
     } catch (error) {
       globals.showDialogs(
           "Gagal mengunggah foto, silahkan coba kembali", context);
-      print(error);
+      globals.debugPrint(error);
       globals.mailError("Update image profile", error.toString());
       setState(() {
         photoUploading = false;

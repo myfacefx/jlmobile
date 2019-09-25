@@ -91,7 +91,7 @@ void share(String from, Animal animal) {
     //  dijual / dilelang {{nama barang}} harga {{}} cek segera
   }
 
-  print("https://juallelangfauna.com/$param");
+  debugPrint("https://juallelangfauna.com/$param");
 
   Share.share(
       text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com/$param');
@@ -155,7 +155,8 @@ String generateInvoice(Auction auction) {
 FirebaseMessaging _fcm = FirebaseMessaging();
 generateToken() async {
   // Firestore _db = Firestore.instance;
-  print("Previous Token firebase ${user.firebaseToken}");
+  debugPrint("Previous Token firebase ${user.firebaseToken}");
+  debugPrint("Previous Token Rediss ${user.tokenRedis}");
 
   if (user != null) {
     String fcmToken = await _fcm.getToken();
@@ -164,24 +165,24 @@ generateToken() async {
       if (fcmToken != user.firebaseToken) {
         User updateToken = User();
         updateToken.firebaseToken = fcmToken;
-        print(json.encode(updateToken.toJson()));
+        debugPrint(json.encode(updateToken.toJson()));
         String result = await updateUserLogin(
             updateToken.toJson(), user.id, user.tokenRedis);
 
         if (result != null) {
           user.firebaseToken = fcmToken;
-          print("User's Token updated: $fcmToken");
+          debugPrint("User's Token updated: $fcmToken");
         } else {
-          print("FAIL TO UPDATE USER'S TOKEN");
+          debugPrint("FAIL TO UPDATE USER'S TOKEN");
         }
       } else {
-        print("Current token already the same");
+        debugPrint("Current token already the same");
       }
     } else {
-      print("GOT NULL FROM REQUEST TOKEN");
+      debugPrint("GOT NULL FROM REQUEST TOKEN");
     }
   } else if (user != null && user.firebaseToken != null) {
-    print("User Token has already set: ${user.firebaseToken}");
+    debugPrint("User Token has already set: ${user.firebaseToken}");
   }
 }
 
@@ -190,7 +191,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 notificationListener(context) {
   _fcm.configure(onMessage: (Map<String, dynamic> message) async {
-    print("onMessage: $message");
+    debugPrint("onMessage: $message");
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
@@ -218,14 +219,14 @@ notificationListener(context) {
 
     // Scaffold.of(context).showSnackBar(snackbar);
   }, onLaunch: (Map<String, dynamic> message) async {
-    print("onLaunch: $message");
+    debugPrint("onLaunch: $message");
   }, onResume: (Map<String, dynamic> message) async {
-    print("onResume: $message");
+    debugPrint("onResume: $message");
   });
 }
 
 Future onSelectNotification(String payload) async {
-  print(payload);
+  debugPrint(payload);
 }
 
 Future _showNotificationWithDefaultSound(Map<String, dynamic> message) async {
@@ -279,7 +280,7 @@ Future<bool> showDialogs(String content, BuildContext context,
                 try {
                   logout(user.tokenRedis);
                 } catch (e) {
-                  print(e.toString());
+                  debugPrint(e.toString());
                 }
                 Navigator.of(context).pop();
                 Navigator.pushNamed(context, "/login");
@@ -920,6 +921,9 @@ Color myColor([String color = "default"]) {
       // blue navy
       returnedColor = Color.fromRGBO(60, 90, 153, 1);
       break;
+    case "light-blue":
+      returnedColor = Color.fromRGBO(73, 187, 255, 1);
+      break;
     case "mimosa":
       // for current bid
       returnedColor = Color.fromRGBO(239, 192, 80, 1);
@@ -1079,6 +1083,7 @@ void mailError(String errrorFrom, String cause) async {
   String password = 'kmzway87AAA';
 
   if (!isProduction) {
+    debugPrint(cause);
     return;
   }
 
@@ -1094,7 +1099,7 @@ void mailError(String errrorFrom, String cause) async {
     ..html = cause;
 
   await mailer.send(message, smtpServer);
-  print("sended");
+  debugPrint("sended");
 }
 
 Future<bool> showUpdate(
@@ -1151,9 +1156,12 @@ void sendWhatsApp(phone, message) async {
 
 // TODO: Integrate with Laravel
 void sendOTP(targetPhoneNumber) async {
-  final header = {"Authorization": "u9CRJ3ZsFfD6JVa6rSa6QWvuz3IsZfIVs3XFer4ed0vNh7kHy2PtiqlurHYGsTSA"};
+  final header = {
+    "Authorization":
+        "u9CRJ3ZsFfD6JVa6rSa6QWvuz3IsZfIVs3XFer4ed0vNh7kHy2PtiqlurHYGsTSA"
+  };
   final url = 'https://wablas.com/api/send-message';
-  final message = 'OTP: 123456'; 
+  final message = 'OTP: 123456';
   final _params = {"phone": targetPhoneNumber, "message": message};
 
   http.Response res = await http
@@ -1161,11 +1169,10 @@ void sendOTP(targetPhoneNumber) async {
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {
-    print('OTP sent');
+    debugPrint('OTP sent');
   } else {
     throw Exception(res.body);
   }
-
 
   // if (phone.isNotEmpty && message.isNotEmpty) {
   //   String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';

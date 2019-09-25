@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void requestPermission() async {
-    print("Checking Permission storage");
+    globals.debugPrint("Checking Permission storage");
     PermissionStatus permissionStorage = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage);
     PermissionStatus permissionCamera =
@@ -193,7 +193,7 @@ class _RegisterPageState extends State<RegisterPage> {
       user.facebookUserId = _facebookUserId;
       user.roleId = 2;
 
-      print(user.toJson());
+      globals.debugPrint(user.toJson());
 
       Map<String, dynamic> formData = user.toJson();
 
@@ -213,9 +213,14 @@ class _RegisterPageState extends State<RegisterPage> {
           Navigator.pushNamed(context, "/");
         }
       } catch (e) {
-        print(e);
-        globals.showDialogs(e.toString(), context);
-        globals.mailError("Register", e.toString());
+        try {
+          globals.debugPrint(e);
+          globals.showDialogs(e.toString().split(":")[1], context);
+          globals.mailError("Register", e.toString());
+        } catch (e) {
+          globals.showDialogs(e.toString(), context);
+        }
+
         setState(() {
           registerLoading = false;
           autoValidate = true;
@@ -235,7 +240,7 @@ class _RegisterPageState extends State<RegisterPage> {
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if (imageFile != null) {
-      // print(imageFile);
+      // globals.debugPrint(imageFile);
       _cropImage(imageFile);
       // uploadFile();
     }
