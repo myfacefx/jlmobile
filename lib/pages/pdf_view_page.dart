@@ -11,7 +11,10 @@ class PdfViewPage extends StatefulWidget {
 }
 
 class _PdfViewPageState extends State<PdfViewPage> {
+  int _totalPages = 0;
+  int _currentPage = 0;
   bool pdfReady = false;
+  PDFViewController _pdfViewController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +36,12 @@ class _PdfViewPageState extends State<PdfViewPage> {
               },
               onRender: (_pages) {
                 setState(() {
-                  // _totalPages = _pages;
+                  _totalPages = _pages;
                   pdfReady = true;
                 });
               },
               onViewCreated: (PDFViewController vc) {
-                // _pdfViewController = vc;
+                _pdfViewController = vc;
               },
               onPageChanged: (int page, int total) {
                 setState(() {});
