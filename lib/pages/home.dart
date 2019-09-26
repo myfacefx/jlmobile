@@ -1320,7 +1320,8 @@ class _HomePage extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
             child: GestureDetector(
               onTap: () {
-                globals.sendWhatsApp(globals.getNohpAdmin(), "Hai, saya tertarik untuk membantu PET SHOP di JLF nih");
+                var message = "Hai admin, saya berminat untuk dijadikan kontent pet shop. Prosesnya gimana ya?";
+                globals.sendWhatsApp(globals.getNohpAdmin(), message);
                 print('tapped');
               },
               child: Column(
@@ -1364,7 +1365,7 @@ class _HomePage extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    'Coming soon..', 
+                    'We Still Travel Around Indonesia to Find More Veterinarian for You..', 
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold
@@ -1373,6 +1374,35 @@ class _HomePage extends State<HomePage> {
                   ),
                 )
               ],
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
+            child: GestureDetector(
+              onTap: () {
+                var message = "Hai admin, saya berminat untuk dijadikan kontent dokter hewan. Prosesnya gimana ya?";
+                globals.sendWhatsApp(globals.getNohpAdmin(), message);
+              },
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Text(
+                      'interested to help?', 
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        fontSize: 11,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],
