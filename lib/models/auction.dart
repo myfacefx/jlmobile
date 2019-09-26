@@ -41,13 +41,13 @@ class Auction {
     Animal animal;
     User owner;
     User winner;
-    int sellerUnreadCount; 
-    int sellerUserId;
-    int buyerUnreadCount;
-    int buyerUserId;
-    int adminUnreadCount;
-    int adminUserId;
-    int adminId;
+    dynamic sellerUnreadCount; 
+    dynamic sellerUserId;
+    dynamic buyerUnreadCount;
+    dynamic buyerUserId;
+    dynamic adminUnreadCount;
+    dynamic adminUserId;
+    dynamic adminId;
     AuctionEventParticipant auctionEventParticipant;
 
     Auction({
@@ -128,13 +128,13 @@ class Auction {
         animal: json["animal"] == null ? null : Animal.fromJson(json["animal"]),
         owner: json["owner"] == null ? null : User.fromJson(json["owner"]),
         winner: json["winner"] == null ? null : User.fromJson(json["winner"]),
-        sellerUnreadCount: json["seller_unread_count"] == null ? null : int.parse(json['seller_unread_count']),  
-        sellerUserId: json["seller_user_id"] == null ? null : int.parse(json['seller_user_id']),
-        buyerUnreadCount: json["buyer_unread_count"] == null ? null : int.parse(json['buyer_unread_count']),
-        buyerUserId: json["buyer_user_id"] == null ? null : int.parse(json['buyer_user_id']),
-        adminUnreadCount: json["admin_unread_count"] == null ? null : int.parse(json['admin_unread_count']),
-        adminUserId: json["admin_user_id"] == null ? null : int.parse(json['admin_user_id']),
-        adminId: json["admin_id"] == null ? null : json["admin_id"],
+        sellerUnreadCount: json["seller_unread_count"] == null ? null : int.parse(json['seller_unread_count'].toString()),  
+        sellerUserId: json["seller_user_id"] == null ? null : json['seller_user_id'] is int ? json['seller_user_id'] : int.parse(json['seller_user_id']),
+        buyerUnreadCount: json["buyer_unread_count"] == null ? null : json['buyer_unread_count'] is int ? json['buyer_unread_count'] : int.parse(json['buyer_unread_count']),
+        buyerUserId: json["buyer_user_id"] == null ? null : json['buyer_user_id'] is int ? json['buyer_user_id'] : int.parse(json['buyer_user_id']), 
+        adminUnreadCount: json["admin_unread_count"] == null ? null : json['admin_unread_count'] is int ? json['admin_unread_count'] : int.parse(json['admin_unread_count']), 
+        adminUserId: json["admin_user_id"] == null ? null : json['admin_user_id'] is int ? json['admin_user_id'] : int.parse(json['admin_user_id']), 
+        adminId: json["admin_id"] == null ? null : json['admin_id'] is int ? json['admin_id'] : int.parse(json['admin_id']), 
         auctionEventParticipant: json["auction_event_participant"] == null ? null : AuctionEventParticipant.fromJson(json["auction_event_participant"]),
     );
 
