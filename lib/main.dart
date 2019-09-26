@@ -16,6 +16,7 @@ import 'package:jlf_mobile/pages/list_event.dart';
 import 'package:jlf_mobile/pages/our_bid.dart';
 import 'package:jlf_mobile/pages/our_product.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
+import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/pages/setting.dart';
 import 'package:jlf_mobile/pages/up_coming.dart';
 import 'package:jlf_mobile/pages/user/edit_password.dart';
@@ -23,6 +24,7 @@ import 'package:jlf_mobile/pages/user/edit_profile.dart';
 import 'package:jlf_mobile/pages/user/forgot_password.dart';
 import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/pages/user/notification.dart';
+import 'package:jlf_mobile/pages/user/point_history.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/pages/verification.dart';
@@ -86,6 +88,7 @@ class MyApp extends StatelessWidget {
         '/our-product': (BuildContext context) => OurProducTopPage(),
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
         '/notification': (BuildContext context) => NotificationPage(),
+        '/point-history': (BuildContext context) => PointHistoryPage(),
         '/intro': (BuildContext context) => IntroPage(),
         '/chat-list': (BuildContext context) => ChatListPage(),
         '/donasi': (BuildContext context) => DonasiPage(),
@@ -94,6 +97,7 @@ class MyApp extends StatelessWidget {
         '/upcoming': (BuildContext context) => UpComingPage(),
         '/forget-password': (BuildContext context) => ForgotPasswordPage(),
         '/list-event': (BuildContext context) => ListEventPage(),
+        '/send-otp': (BuildContext context) => SendOTPPage(),
 
         // '/edit-product': (BuildContext context) => EditProductPage()
       },
