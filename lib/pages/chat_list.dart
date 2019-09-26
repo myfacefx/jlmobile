@@ -47,7 +47,7 @@ class _ChatListPageState extends State<ChatListPage> {
             isLogout: true);
         return;
       }
-
+      
       chatListPagination = null;
       chatListPagination = onValue;
 
