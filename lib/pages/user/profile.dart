@@ -632,15 +632,63 @@ class _ProfilePageState extends State<ProfilePage>
                                       BorderRadius.circular(5))),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          // Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!
-                                globals.showDialogs("Dapatkan poin setiap menyelesaikan transaksi lelang, pemilik lelang mendapat 2 poin, sedangkan untuk pemenang lelang mendapat 1 poin. Cek hadiah yang tersedia dengan klik pada tombol poin.", context, title: "Tukarkan Poin dengan Hadiah Menarik");
-                              },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: Icon(Icons.info_outline, color: globals.myColor("warning")),
-                        ),
+                      Column(
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              // Poin didapatkan ketika berhasil menjadi pemenang sebuah lelang/menjual barang lelang, poin yang didapatkan adalah 1 poin setiap Rp. 5.000 dari bid.\n\nTunggu kejutan dari kami untuk point tertinggi, menangkan lelangmu dan raih hadiahnya!
+                                    globals.showDialogs("Dapatkan poin setiap menyelesaikan transaksi lelang, pemilik lelang mendapat 2 poin, sedangkan untuk pemenang lelang mendapat 1 poin. Cek hadiah yang tersedia dengan klik pada tombol poin.", context, title: "Tukarkan Poin dengan Hadiah Menarik");
+                                  },
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: Icon(Icons.info_outline, color: globals.myColor("warning")),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              var text = RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: 'Dapatkan kupon undian setelah menyelesaikan transaksi Lelang atau Jual beli dengan menggunakan rekber JLF.'),
+                                    TextSpan(text: ' Member JLF', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    TextSpan(text: ' akan mendapatkan masing-masing'),
+                                    TextSpan(text: ' 1 kupon', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    TextSpan(text: ' undian untuk'),
+                                    TextSpan(text: ' 5 kali', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    TextSpan(text: ' menjual atau membeli atau melelang menggunakan rekber JLF.'),
+                                  ],
+                                ),
+                              );
+                              showDialog(
+                                context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Informasi'),
+                                      content: text,
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text('Tutup'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 5),
+                              height: 30,
+                              width: 30,
+                              child: Image.asset('assets/images/coupon.png'),
+                            )
+                          )
+                        ],
                       )
                     ],
                   ) : Container(),
