@@ -11,6 +11,7 @@ import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/chat_list_pagination.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
+import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/firebase_chat_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
@@ -263,8 +264,8 @@ Future<bool> showDialogs(String content, BuildContext context,
               ? FlatButton(
                   child: Text("Verifikasi Sekarang"),
                   onPressed: () {
-                    Navigator.of(context).pop(true);
-                    Navigator.pushNamed(context, "/verification");
+                    // Navigator.of(context).pop(true);
+                    // Navigator.pushNamed(context, "/verification");
                   },
                 )
               : Container(),
@@ -296,6 +297,44 @@ Future<bool> showDialogs(String content, BuildContext context,
                   Navigator.of(context).pop();
                 }
               }
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<bool> showDialogsVerificationOptions(
+    String content, BuildContext context,
+    {String title = "Perhatian",
+    String route = "",
+    String option1 = "Via OTP WA",
+    String option2 = "Via KTP",
+    String phoneNumber, int userId}) {
+  
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title, style: TextStyle(color: Colors.black)),
+        content: myText(text: content),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Via KTP"),
+            onPressed: () {
+              Navigator.pushNamed(context, "/verification");
+            },
+          ),
+          FlatButton(
+            child: Text("Via OTP WA"),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          SendOTPPage(phoneNumber: phoneNumber, userId: userId)));
+              // Navigator.of(context).pop(true);
             },
           ),
         ],
@@ -1151,9 +1190,12 @@ void sendWhatsApp(phone, message) async {
 
 // TODO: Integrate with Laravel
 void sendOTP(targetPhoneNumber) async {
-  final header = {"Authorization": "u9CRJ3ZsFfD6JVa6rSa6QWvuz3IsZfIVs3XFer4ed0vNh7kHy2PtiqlurHYGsTSA"};
+  final header = {
+    "Authorization":
+        "u9CRJ3ZsFfD6JVa6rSa6QWvuz3IsZfIVs3XFer4ed0vNh7kHy2PtiqlurHYGsTSA"
+  };
   final url = 'https://wablas.com/api/send-message';
-  final message = 'OTP: 123456'; 
+  final message = 'OTP: 123456';
   final _params = {"phone": targetPhoneNumber, "message": message};
 
   http.Response res = await http
@@ -1165,7 +1207,6 @@ void sendOTP(targetPhoneNumber) async {
   } else {
     throw Exception(res.body);
   }
-
 
   // if (phone.isNotEmpty && message.isNotEmpty) {
   //   String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';

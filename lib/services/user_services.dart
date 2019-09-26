@@ -108,6 +108,30 @@ Future<Map<String, dynamic>> updateVerification(
   }
 }
 
+Future<Map<String, dynamic>> updateVerificationByOTP(
+    int userId, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final String url = getBaseUrl() + "/users/$userId/verifyByOTP";
+
+  debugPrint(url);
+
+  http.Response res = await http
+      .put(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut() + 200));
+
+  debugPrint(res.statusCode);
+
+  var response = json.decode(res.body);
+
+  if (res.statusCode == 202) {
+    return response;
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(response['message']);
+  }
+}
+
 Future<String> updateProfilePicture(
     Map<String, dynamic> _data, int userId, String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
@@ -304,9 +328,9 @@ Future<int> forgotPassword(String email) async {
 
   debugPrint(url);
 
-  http.Response res = await http.post(url,
-      headers: header,
-      body: json.encode({"email": email})).timeout(Duration(seconds: getTimeOut()));
+  http.Response res = await http
+      .post(url, headers: header, body: json.encode({"email": email}))
+      .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {
     return 1;
