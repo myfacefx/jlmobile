@@ -19,6 +19,7 @@ ThemeData buildThemeData() {
             ? globals.user.roleId == 1 ? kPrimaryLight : kPrimaryColor
             : kPrimaryColor,
       ),
+      canvasColor: globals.myColor("light-blue"),
       accentColor: kPrimaryColor,
       primaryColor: kPrimaryColor,
       primaryColorDark: Colors.white,
