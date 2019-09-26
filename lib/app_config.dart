@@ -62,7 +62,6 @@ class AppConfig extends InheritedWidget {
             deleteLocalData("user");
             globals.state = "login";
           }
-
         } else {
           globals.state = "login";
         }
@@ -71,7 +70,7 @@ class AppConfig extends InheritedWidget {
       }
     } catch (e) {
       globals.state = "login";
-      globals.debugPrint("readLocalData(userData) : ${e.toString()}");
+      globals.mailError("app_config", e.toString());
     }
   }
 }

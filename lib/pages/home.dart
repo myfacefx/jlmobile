@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/animal.dart';
@@ -27,12 +28,9 @@ import 'package:jlf_mobile/services/static_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/services/version_services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 
 import 'pdf_view_page.dart';
 
@@ -462,11 +460,11 @@ class _HomePage extends State<HomePage> {
   }
 
   void _getListCategoriesPetShop() {
-     setState(() {});
+    setState(() {});
   }
 
   void _getListCategoriesVeterinarian() {
-     setState(() {});
+    setState(() {});
   }
 
   void _getAccessoryAnimalCategory() {
@@ -1226,7 +1224,6 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _buildLaranganBinatang() {
-    
     return GestureDetector(
         // onTap: () => Navigator.pushNamed(context, "/blacklist-animal"),
         onTap: () {
@@ -1250,38 +1247,38 @@ class _HomePage extends State<HomePage> {
       return _buildVeterinarian();
     } else {
       List<Widget> listMyWidgets() {
-      List<Widget> list = List();
-      if (!isLoadingCategories) {
-        var currentAnimal;
-        for (var i = 0; i < animals.length; i++) {
-          currentAnimal = animals[i];
+        List<Widget> list = List();
+        if (!isLoadingCategories) {
+          var currentAnimal;
+          for (var i = 0; i < animals.length; i++) {
+            currentAnimal = animals[i];
 
-          if (selectedType == 'LELANG') {
-            if (currentAnimal.name.toUpperCase() != 'ANJING' &&
-                currentAnimal.name.toUpperCase() != 'KUCING') {
+            if (selectedType == 'LELANG') {
+              if (currentAnimal.name.toUpperCase() != 'ANJING' &&
+                  currentAnimal.name.toUpperCase() != 'KUCING') {
+                list.add(cardAnimal(currentAnimal));
+              }
+            } else {
               list.add(cardAnimal(currentAnimal));
             }
-          } else {
-            list.add(cardAnimal(currentAnimal));
           }
         }
+
+        return list;
       }
 
-      return list;
-    }
-
-    return failedDataCategories
-        ? globals.buildFailedLoadingData(context, _getListCategoriesAuction)
-        : isLoadingCategories
-            ? Container(child: Center(child: CircularProgressIndicator()))
-            : Container(
-                margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                child: GridView.count(
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    childAspectRatio: 2,
-                    crossAxisCount: 2,
-                    children: listMyWidgets()));
+      return failedDataCategories
+          ? globals.buildFailedLoadingData(context, _getListCategoriesAuction)
+          : isLoadingCategories
+              ? Container(child: Center(child: CircularProgressIndicator()))
+              : Container(
+                  margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: GridView.count(
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      childAspectRatio: 2,
+                      crossAxisCount: 2,
+                      children: listMyWidgets()));
     }
   }
 
@@ -1302,11 +1299,9 @@ class _HomePage extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    'We Still Travel Around Indonesia to Find More Pet Shop for You..', 
+                    'We Still Travel Around Indonesia to Find More Pet Shop for You..',
                     style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold
-                    ),
+                        color: Colors.black, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                 )
@@ -1320,7 +1315,8 @@ class _HomePage extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
             child: GestureDetector(
               onTap: () {
-                var message = "Hai admin, saya berminat untuk dijadikan kontent pet shop. Prosesnya gimana ya?";
+                var message =
+                    "Hai admin, saya berminat untuk dijadikan kontent pet shop. Prosesnya gimana ya?";
                 globals.sendWhatsApp(globals.getNohpAdmin(), message);
                 print('tapped');
               },
@@ -1329,7 +1325,7 @@ class _HomePage extends State<HomePage> {
                   Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      'interested to help?', 
+                      'interested to help?',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -1365,11 +1361,9 @@ class _HomePage extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    'We Still Travel Around Indonesia to Find More Veterinarian for You..', 
+                    'We Still Travel Around Indonesia to Find More Veterinarian for You..',
                     style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold
-                    ),
+                        color: Colors.black, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                 )
@@ -1383,7 +1377,8 @@ class _HomePage extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
             child: GestureDetector(
               onTap: () {
-                var message = "Hai admin, saya berminat untuk dijadikan kontent dokter hewan. Prosesnya gimana ya?";
+                var message =
+                    "Hai admin, saya berminat untuk dijadikan kontent dokter hewan. Prosesnya gimana ya?";
                 globals.sendWhatsApp(globals.getNohpAdmin(), message);
               },
               child: Column(
@@ -1391,7 +1386,7 @@ class _HomePage extends State<HomePage> {
                   Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      'interested to help?', 
+                      'interested to help?',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -1470,9 +1465,7 @@ class _HomePage extends State<HomePage> {
                 onPressed: () {
                   globals.sendOTP(globals.user.phoneNumber);
                 },
-                child: Image.asset(
-                      "assets/images/floatingbutton.png"
-                    ),
+                child: Image.asset("assets/images/floatingbutton.png"),
                 backgroundColor: Color.fromRGBO(0, 0, 0, 0),
                 elevation: 0,
               ),

@@ -69,7 +69,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           _promoCategory.add(
             CachedNetworkImage(
               height: 75,
-              imageUrl: f.link,
+              imageUrl: f.link ?? "-",
               placeholder: (context, url) => Image.asset(
                 'assets/images/loading.gif',
                 height: 65,
@@ -211,7 +211,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                   borderRadius: BorderRadius.circular(5.0),
                   child: CachedNetworkImage(
                     height: 75,
-                    imageUrl: animalSubCategory.thumbnail,
+                    imageUrl: animalSubCategory.thumbnail ?? "-",
                     placeholder: (context, url) =>
                         Image.asset('assets/images/loading.gif', height: 75),
                     errorWidget: (context, url, error) => Image.asset(

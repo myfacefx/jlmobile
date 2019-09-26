@@ -313,7 +313,7 @@ Future<User> verifyToken(String token) async {
 
   http.Response res = await http
       .get(url, headers: header)
-      .timeout(Duration(seconds: getTimeOut()));
+      .timeout(Duration(seconds: 7));
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);
