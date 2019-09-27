@@ -23,15 +23,27 @@ class _SendOTPPageState extends State<SendOTPPage> {
   String _phoneNumberSubs;
   bool _isPressed = false;
   String _otpKey;
+  // String _compareOtpKey;
   String _messageOTP;
   int _start = 120;
   int _current = 120;
-  TextEditingController _controller;
+  var _controller = TextEditingController();
+  bool _isLoading = true;
+  CountdownTimer _countDownTimer;
+  var subCountDownTimer;
 
   @override
   void initState() {
     super.initState();
     _phoneNumberSubs = _phoneNumber.substring(_phoneNumber.length - 5);
+  }
+
+  @override
+  void dispose() {
+    subCountDownTimer.cancel();
+    _countDownTimer = null;
+    super.dispose();
+    _controller.dispose();
   }
 
   _SendOTPPageState(String phoneNumber, int userId) {
@@ -40,20 +52,20 @@ class _SendOTPPageState extends State<SendOTPPage> {
   }
 
   void startTimer() {
-    CountdownTimer countDownTimer = new CountdownTimer(
+    _countDownTimer = new CountdownTimer(
       new Duration(seconds: _start),
       new Duration(seconds: 1),
     );
 
-    var sub = countDownTimer.listen(null);
-    sub.onData((duration) {
+    subCountDownTimer = _countDownTimer.listen(null);
+    subCountDownTimer.onData((duration) {
       setState(() {
         _current = _start - duration.elapsed.inSeconds;
       });
     });
 
-    sub.onDone(() {
-      sub.cancel();
+    subCountDownTimer.onDone(() {
+      subCountDownTimer.cancel();
     });
   }
 
@@ -69,7 +81,7 @@ class _SendOTPPageState extends State<SendOTPPage> {
   _sendOTP() async {
     generateRandomOTP();
     _messageOTP =
-        "<#> DON'T SHARE THIS WITH ANYONE.Your SECRET OTP CODE :" + _otpKey;
+        "[JLF] DON'T SHARE THIS WITH ANYONE. YOUR SECRET OTP CODE :" + _otpKey + ". Kunjungi Kami di http://juallelangfauna.com/";
 
     var formData = Map<String, dynamic>();
     formData['phone'] = _phoneNumber;
@@ -83,9 +95,10 @@ class _SendOTPPageState extends State<SendOTPPage> {
             context,
             isLogout: true);
       }
+      _isLoading = false;
     } catch (error) {
       Navigator.pop(context);
-      globals.showDialogs(e.toString(), context);
+      globals.showDialogs("Internal Server Error - SOTP-01", context);
     }
   }
 
@@ -99,10 +112,13 @@ class _SendOTPPageState extends State<SendOTPPage> {
             context,
             isLogout: true);
       }
-      SnackBar(content: Text('Yay! Sudah Terverifikasi'));
+
+      _isLoading = false;
+      globals.showDialogs('Yay! Sudah Terverifikasi', context, route: "/");
     } catch (error) {
       Navigator.pop(context);
-      globals.showDialogs(e.toString(), context);
+      globals.showDialogs(
+          "Gagal Verifikasi Data, Silakan hubungi admin", context);
     }
   }
 
@@ -154,14 +170,17 @@ class _SendOTPPageState extends State<SendOTPPage> {
                   color: Colors.black,
                 ),
                 controller: _controller,
+                maxLength: 6,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Masukan OTP'),
-                validator: (value) {
+                decoration: InputDecoration(labelText: 'Masukkan OTP'),
+                validator: (String value) {
                   if (value.isEmpty) {
                     return 'Please enter some text';
                   }
+                },
+                onSaved: (value) {
                   setState(() {
-                    _controller.text = value;
+                    // _compareOtpKey = _controller.text;
                   });
                 },
               ),
@@ -171,7 +190,7 @@ class _SendOTPPageState extends State<SendOTPPage> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
-                          startTimer();
+                          // startTimer();
                           _controller.text == _otpKey
                               ? _verifyByOTP(_userId)
                               : globals.showDialogs("OTP Salah", context);
