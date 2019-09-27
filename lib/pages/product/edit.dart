@@ -56,6 +56,9 @@ class _EditProductPageState extends State<EditProductPage> {
   TextEditingController quantityController = TextEditingController();
 
   TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionAnimalController = TextEditingController();
+  TextEditingController descriptionDeliveryController = TextEditingController();
+  TextEditingController descriptionWarantyController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   // TextEditingController p = TextEditingController();
   // TextEditingController nameController = TextEditingController();
@@ -80,6 +83,9 @@ class _EditProductPageState extends State<EditProductPage> {
   var imagesBase64 = List<String>();
 
   String _name;
+  String _descriptionAnimal;
+  String _descriptionDelivery;
+  String _descriptionWarranty;
   String _description;
   String _openBid;
   String _bin;
@@ -139,6 +145,9 @@ class _EditProductPageState extends State<EditProductPage> {
 
       nameController.text = _animal.name;
       descriptionController.text = _animal.description;
+      descriptionAnimalController.text = _animal.descriptionAnimal;
+      descriptionDeliveryController.text = _animal.descriptionDelivery;
+      descriptionWarantyController.text = _animal.descriptionWarranty;
       priceController.text = _animal.product.price.toString();
 
       _innerIslandShipping = _animal.product.innerIslandShipping;
@@ -613,7 +622,8 @@ class _EditProductPageState extends State<EditProductPage> {
     _sizeVideo = (videoLength / 1048576).toStringAsFixed(2);
 
     // limit max 35 mb
-    if (video.lengthSync() > 36700160) { // in binary
+    if (video.lengthSync() > 36700160) {
+      // in binary
       globals.showDialogs("Ukuran Video Terlalu Besar", context);
     } else {
       setState(() {
@@ -810,6 +820,9 @@ class _EditProductPageState extends State<EditProductPage> {
       Animal animal = Animal();
       animal.animalSubCategoryId = _animalSubCategory.id;
       animal.name = _name;
+      animal.descriptionAnimal = _descriptionAnimal;
+      animal.descriptionDelivery = _descriptionDelivery;
+      animal.descriptionWarranty = _descriptionWarranty;
       animal.description = _description;
 
       Product product = Product();
@@ -888,6 +901,9 @@ class _EditProductPageState extends State<EditProductPage> {
       // animal.dateOfBirth = _dateOfBirth;
       animal.dateOfBirth = DateTime.now();
 
+      animal.descriptionAnimal = _descriptionAnimal;
+      animal.descriptionDelivery = _descriptionDelivery;
+      animal.descriptionWarranty = _descriptionWarranty;
       animal.description = _description;
       animal.ownerUserId = globals.user.id;
       animal.regencyId = globals.user.regencyId;
@@ -1509,6 +1525,91 @@ class _EditProductPageState extends State<EditProductPage> {
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: TextFormField(
+                      controller: descriptionAnimalController,
+                      // initialValue: _description,
+                      // focusNode: descriptionFocusNode,
+                      onSaved: (String value) {
+                        _descriptionAnimal = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 8,
+                      onFieldSubmitted: (String value) {},
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Deskripsi hewan wajib diisi';
+                        }
+                      },
+                      textCapitalization: TextCapitalization.sentences,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(13),
+                          hintText:
+                              "Tuliskan deskripsi $labelNamaType",
+                          labelText: "Deskripsi Hewan",
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                    )),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: TextFormField(
+                      controller: descriptionDeliveryController,
+                      // initialValue: _description,
+                      // focusNode: descriptionFocusNode,
+                      onSaved: (String value) {
+                        _descriptionDelivery = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 8,
+                      onFieldSubmitted: (String value) {},
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Deskripsi pengiriman wajib diisi';
+                        }
+                      },
+                      textCapitalization: TextCapitalization.sentences,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(13),
+                          hintText: "Tuliskan deskripsi pengiriman",
+                          labelText: "Deskripsi Pengiriman",
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                    )),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: TextFormField(
+                      controller: descriptionWarantyController,
+                      // initialValue: _description,
+                      // focusNode: descriptionFocusNode,
+                      onSaved: (String value) {
+                        _descriptionWarranty = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 8,
+                      onFieldSubmitted: (String value) {},
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Deskripsi garansi wajib diisi';
+                        }
+                      },
+                      textCapitalization: TextCapitalization.sentences,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(13),
+                          hintText: "Tuliskan deskripsi garansi",
+                          labelText: "Deskripsi Garnsi",
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                    )),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: TextFormField(
                       controller: descriptionController,
                       // initialValue: _description,
                       focusNode: descriptionFocusNode,
@@ -1520,16 +1621,15 @@ class _EditProductPageState extends State<EditProductPage> {
                       onFieldSubmitted: (String value) {},
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Deskripsi wajib diisi';
+                          return 'Jika Tidak Ada isi dengan -';
                         }
                       },
                       textCapitalization: TextCapitalization.sentences,
                       style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(13),
-                          hintText:
-                              "Tuliskan deskripsi $labelNamaType, jenis pengiriman dan catatan penting lainnya",
-                          labelText: "Deskripsi",
+                          hintText: "Tuliskan catatan lainnya",
+                          labelText: "Catatan Lain",
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5))),
