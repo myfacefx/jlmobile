@@ -76,6 +76,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   var imagesBase64 = List<String>();
 
   String _name;
+  String _descriptionAnimal;
+  String _descriptionDelivery;
+  String _descriptionWarranty;
   String _description;
 
   int _auctionDuration;
@@ -174,10 +177,11 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
 
         // Remove Anjing + Kucing if LELANG
         if (_selectProduct.id == 1) {
-          animalCategories.removeWhere((item) => item.name.toUpperCase() == 'ANJING');
-          animalCategories.removeWhere((item) => item.name.toUpperCase() == 'KUCING');
+          animalCategories
+              .removeWhere((item) => item.name.toUpperCase() == 'ANJING');
+          animalCategories
+              .removeWhere((item) => item.name.toUpperCase() == 'KUCING');
         }
-
       });
     }).catchError((onError) {
       // failedDataCategories = true;
@@ -294,7 +298,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     _sizeVideo = (videoLength / 1048576).toStringAsFixed(2);
 
     // limit max 35 mb
-    if (video.lengthSync() > 36700160) { // byte in binary
+    if (video.lengthSync() > 36700160) {
+      // byte in binary
       globals.showDialogs("Ukuran Video Terlalu Besar", context);
     } else {
       setState(() {
@@ -399,6 +404,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       // animal.dateOfBirth = _dateOfBirth;
       animal.dateOfBirth = DateTime.now();
 
+      animal.descriptionAnimal = _descriptionAnimal;
+      animal.descriptionDelivery = _descriptionDelivery;
+      animal.descriptionWarranty = _descriptionWarranty;
       animal.description = _description;
       animal.ownerUserId = globals.user.id;
       animal.regencyId = globals.user.regencyId;
@@ -1021,6 +1029,82 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                     width: globals.mw(context) * 0.95,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: TextFormField(
+                      onSaved: (String value) {
+                        _descriptionAnimal = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 8,
+                      onFieldSubmitted: (String value) {},
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Deskripsi Hewan wajib diisi';
+                        }
+                      },
+                      textCapitalization: TextCapitalization.sentences,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(13),
+                          hintText:
+                              "Tuliskan deskripsi $labelNamaType",
+                          labelText: "Deskripsi Hewan",
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                    )),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: TextFormField(
+                      onSaved: (String value) {
+                        _descriptionDelivery = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 8,
+                      onFieldSubmitted: (String value) {},
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Deskripsi Pengiriman wajib diisi';
+                        }
+                      },
+                      textCapitalization: TextCapitalization.sentences,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(13),
+                          hintText: "Tuliskan deskripsi pengiriman",
+                          labelText: "Deskripsi Pengiriman",
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                    )),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: TextFormField(
+                      onSaved: (String value) {
+                        _descriptionWarranty = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 8,
+                      onFieldSubmitted: (String value) {},
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Deskripsi Garansi wajib diisi';
+                        }
+                      },
+                      textCapitalization: TextCapitalization.sentences,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(13),
+                          hintText: "Tuliskan deskripsi garansi",
+                          labelText: "Deskripsi Garansi",
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                    )),
+                Container(
+                    width: globals.mw(context) * 0.95,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: TextFormField(
                       focusNode: descriptionFocusNode,
                       onSaved: (String value) {
                         _description = value;
@@ -1030,7 +1114,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       onFieldSubmitted: (String value) {},
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Deskripsi wajib diisi';
+                          return 'Jika Tidak Ada isi dengan -';
                         }
                       },
                       textCapitalization: TextCapitalization.sentences,
@@ -1038,8 +1122,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(13),
                           hintText:
-                              "Tuliskan deskripsi $labelNamaType, jenis pengiriman dan catatan penting lainnya",
-                          labelText: "Deskripsi",
+                              "Catatan wajib diisi",
+                          labelText: "Catatan Lain",
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5))),

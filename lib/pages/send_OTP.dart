@@ -80,8 +80,9 @@ class _SendOTPPageState extends State<SendOTPPage> {
 
   _sendOTP() async {
     generateRandomOTP();
-    _messageOTP =
-        "[JLF] DON'T SHARE THIS WITH ANYONE. YOUR SECRET OTP CODE :" + _otpKey + ". Kunjungi Kami di http://juallelangfauna.com/";
+    _messageOTP = "[JLF] DON'T SHARE THIS WITH ANYONE. YOUR SECRET OTP CODE :" +
+        _otpKey +
+        ". Kunjungi Kami di http://juallelangfauna.com/";
 
     var formData = Map<String, dynamic>();
     formData['phone'] = _phoneNumber;
@@ -204,7 +205,7 @@ class _SendOTPPageState extends State<SendOTPPage> {
                       SizedBox(
                         width: 8,
                       ),
-                      globals.myText(text: "$_current" + "s"),
+                      // globals.myText(text: "$_current" + "s"),
                       SizedBox(
                         width: 8,
                       ),

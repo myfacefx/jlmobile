@@ -21,6 +21,9 @@ class Animal {
     int animalSubCategoryId;
     String name;
     String gender;
+    String descriptionAnimal;
+    String descriptionDelivery;
+    String descriptionWarranty;
     String description;
     DateTime dateOfBirth;
     int regencyId;
@@ -41,6 +44,9 @@ class Animal {
         this.animalSubCategoryId,
         this.name,
         this.gender,
+        this.descriptionAnimal,
+        this.descriptionDelivery,
+        this.descriptionWarranty,
         this.description,
         this.dateOfBirth,
         this.regencyId,
@@ -62,6 +68,9 @@ class Animal {
         animalSubCategoryId: json["animal_sub_category_id"] == null ? null : json["animal_sub_category_id"],
         name: json["name"] == null ? null : json["name"],
         gender: json["gender"] == null ? null : json["gender"],
+        descriptionAnimal: json["description_animal"] == null ? null : json["description_animal"],
+        descriptionDelivery: json["description_delivery"] == null ? null : json["description_delivery"],
+        descriptionWarranty: json["description_warranty"] == null ? null : json["description_warranty"],
         description: json["description"] == null ? null : json["description"],
         dateOfBirth: json["date_of_birth"] == null ? null : DateTime.parse(json["date_of_birth"]),
         regencyId: json["regency_id"] == null ? null : json["regency_id"],
@@ -83,6 +92,9 @@ class Animal {
         "animal_sub_category_id": animalSubCategoryId == null ? null : animalSubCategoryId,
         "name": name == null ? null : name,
         "gender": gender == null ? null : gender,
+        "description_animal": descriptionAnimal == null ? null : descriptionAnimal,
+        "description_delivery": descriptionDelivery == null ? null : descriptionDelivery,
+        "description_warranty": descriptionWarranty == null ? null : descriptionWarranty,
         "description": description == null ? null : description,
         "date_of_birth": dateOfBirth == null ? null : "${dateOfBirth.year.toString().padLeft(4, '0')}-${dateOfBirth.month.toString().padLeft(2, '0')}-${dateOfBirth.day.toString().padLeft(2, '0')}",
         "regency_id": regencyId == null ? null : regencyId,
