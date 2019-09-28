@@ -7,11 +7,9 @@ import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
-import 'package:jlf_mobile/models/province.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/pages/sub_category_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
-import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/promo_category_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
 
@@ -47,8 +45,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   List<Animal> animals = List<Animal>();
   List<TopSeller> topSellers = List<TopSeller>();
-
-  TextEditingController searchController = TextEditingController();
 
   int _activeTopSellerPage = 0;
   List<Widget> _topSellerPages = List<Widget>();
@@ -92,27 +88,6 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   void initState() {
     super.initState();
     refreshTopSellerByCategoryId(animalCategory.id);
-  }
-
-  void refreshTopSellerBySubCategoryId(animalSubCategoryId) {
-    setState(() {
-      isLoadingTopSellers = true;
-    });
-    getTopSellersBySubCategoryId(globals.user.tokenRedis, animalSubCategoryId)
-        .then((onValue) async {
-      if (onValue == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
-      setState(() {
-        _registerTopSellerCarousel(onValue);
-        topSellers = onValue;
-        isLoadingTopSellers = false;
-      });
-    });
   }
 
   void refreshTopSellerByCategoryId(animalCategoryId) {
@@ -264,7 +239,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     return Container(
         height: 150,
         color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
         child: ListView(
             physics: ScrollPhysics(),
             shrinkWrap: true,
@@ -275,19 +250,26 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   Widget _buildTopCont() {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
             height: 16,
           ),
-          globals.myText(
-              text: animalCategory.name.toUpperCase(), weight: "B", size: 16),
+          Container(
+            width: globals.mw(context),
+            padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+            color: Color.fromRGBO(242, 242, 242, 1),
+            child: globals.myText(
+                text: animalCategory.name.toUpperCase(), weight: "B", size: 16),
+          ),
           SizedBox(
             height: 16,
           ),
-          globals.myText(text: "Our Categories", weight: "B"),
+          Padding(
+            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: globals.myText(text: "Our Categories", weight: "B"),
+          ),
           isLoadingPromos ? globals.isLoading() : _buildCarouselTop()
         ],
       ),
@@ -341,37 +323,45 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                         ProfilePage(userId: topSeller.userId)))
             : null;
       },
-      child: Column(
-        children: <Widget>[
-          Container(
-              child: Container(
-                  width: 80,
-                  child: Container(
-                      height: 65,
-                      child: CircleAvatar(
-                          radius: 75,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: topSeller.thumbnail != null ||
-                                      topSeller.user.photo != null
-                                  ? FadeInImage.assetNetwork(
-                                      fit: BoxFit.cover,
-                                      placeholder: 'assets/images/loading.gif',
-                                      image: topSeller.thumbnail != null
-                                          ? topSeller.thumbnail
-                                          : topSeller.user.photo)
-                                  : Image.asset(
-                                      'assets/images/account.png')))))),
-          SizedBox(
-            height: 10,
-          ),
-          globals.myText(
-              text: "100 POIN",
-              size: 10,
-              align: TextAlign.center,
-              color: "unprime",
-              textOverflow: TextOverflow.ellipsis)
-        ],
+      child: Container(
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300], width: 1),
+            borderRadius: BorderRadius.circular(5.0)),
+        child: Column(
+          children: <Widget>[
+            Container(
+                child: Container(
+                    width: 100,
+                    child: Container(
+                        height: 65,
+                        child: CircleAvatar(
+                            radius: 75,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: topSeller.thumbnail != null ||
+                                        topSeller.user.photo != null
+                                    ? FadeInImage.assetNetwork(
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            'assets/images/loading.gif',
+                                        image: topSeller.thumbnail != null
+                                            ? topSeller.thumbnail
+                                            : topSeller.user.photo)
+                                    : Image.asset(
+                                        'assets/images/account.png')))))),
+            SizedBox(
+              height: 10,
+            ),
+            globals.myText(
+                text: "100 POIN",
+                size: 10,
+                align: TextAlign.center,
+                color: "unprime",
+                textOverflow: TextOverflow.ellipsis)
+          ],
+        ),
       ),
     );
   }
@@ -419,8 +409,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   Widget _buildTopSeller() {
     return Card(
+      elevation: 0,
       child: Container(
         color: Colors.white,
+        padding: EdgeInsets.only(bottom: 15),
         child: Column(
           children: <Widget>[
             Container(
@@ -522,10 +514,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               Container(
                   padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                   child: CarouselSlider(
-                    aspectRatio: 3,
                     autoPlay: true,
                     autoPlayInterval: Duration(seconds: 25),
-                    viewportFraction: 3.0,
+                    viewportFraction: 5.0,
                     height: 218,
                     enableInfiniteScroll: true,
                     onPageChanged: (index) {

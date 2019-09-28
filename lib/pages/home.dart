@@ -606,7 +606,7 @@ class _HomePage extends State<HomePage> {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Belum mengajukan verifikasi Tanda Pengenal';
+        display = 'Konfirmasi Nomor WA mu dapatkan 5 Poin JLF Gratis';
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
@@ -1308,7 +1308,7 @@ class _HomePage extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    'We Still Travel Around Indonesia to Find More Pet Shop for You..',
+                    'Saat Ini Kami Masih Berkeliling Mengumpulkan Partner',
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
@@ -1327,14 +1327,13 @@ class _HomePage extends State<HomePage> {
                 var message =
                     "Hai admin, saya berminat untuk dijadikan kontent pet shop. Prosesnya gimana ya?";
                 globals.sendWhatsApp(globals.getNohpAdmin(), message);
-                print('tapped');
               },
               child: Column(
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      'interested to help?',
+                      'Tertarik bergabung ?',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -1370,7 +1369,7 @@ class _HomePage extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    'We Still Travel Around Indonesia to Find More Veterinarian for You..',
+                    'Saat Ini Kami Masih Berkeliling Mengumpulkan Partner',
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
@@ -1395,7 +1394,7 @@ class _HomePage extends State<HomePage> {
                   Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      'interested to help?',
+                      'Tertarik bergabung ?',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
