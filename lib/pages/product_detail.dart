@@ -231,17 +231,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     width: globals.mw(context) * 0.45,
                     alignment: Alignment.centerRight,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.pinkAccent
-                    ),
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.pinkAccent),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("Berakhir ${globals.convertFormatDateTime(animal.auction.expiryDate)}", 
-                          style: TextStyle(
-                            fontSize: 10
-                          ),
+                        Text(
+                          "Berakhir ${globals.convertFormatDateTime(animal.auction.expiryDate)}",
+                          style: TextStyle(fontSize: 10),
                         ),
                       ],
                     )),
@@ -385,9 +383,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    globals.myText(text: animal.owner.username, color: "light",  size: 18),
-                    globals.myText(text: animal.owner.regency.name, color: "light",  size: 10),
-                    globals.myText(text: 'bergabung sejak ${globals.convertFormatDate(animal.owner.createdAt.toString())}' , color: "light", size: 10),
+                    globals.myText(
+                        text: animal.owner.username, color: "light", size: 18),
+                    globals.myText(
+                        text: animal.owner.regency.name,
+                        color: "light",
+                        size: 10),
+                    globals.myText(
+                        text:
+                            'bergabung sejak ${globals.convertFormatDate(animal.owner.createdAt.toString())}',
+                        color: "light",
+                        size: 10),
                   ],
                 ),
               ),
@@ -415,8 +421,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                     color: globals.myColor())))),
                   ),
                   SizedBox(
-                      height: 5,
-                    ),
+                    height: 5,
+                  ),
                   GestureDetector(
                     onTap: () {
                       String phone =
@@ -437,7 +443,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 ],
               ),
             ],
-          )  
+          )
         ],
       ),
     );
@@ -452,19 +458,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           // Desc
           Container(
             width: globals.mw(context) * 0.70,
-            child: 
-            Column(
+            child: Column(
               children: <Widget>[
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    "${animal.name}",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.lightBlue,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
+                  child: Text("${animal.name}",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.lightBlue,
+                          fontWeight: FontWeight.bold)),
                 ),
                 SizedBox(
                   height: 6,
@@ -475,7 +477,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     children: <Widget>[
                       GestureDetector(
                         child: globals.myText(
-                            text: "${animal.animalSubCategory.animalCategory.name}",
+                            text:
+                                "${animal.animalSubCategory.animalCategory.name}",
                             color: "dark",
                             size: 11),
                       ),
@@ -490,20 +493,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   ),
                 ),
                 Container(
-                  alignment: Alignment.centerLeft,
-                  child: globals.myText(
-                            text: "Diposting : ${globals.convertFormatDate(animal.createdAt.toString())}",
-                            color: "dark",
-                            size: 11)
-                ),
+                    alignment: Alignment.centerLeft,
+                    child: globals.myText(
+                        text:
+                            "Diposting : ${globals.convertFormatDate(animal.createdAt.toString())}",
+                        color: "dark",
+                        size: 11)),
               ],
             ),
           ),
           // Buttons
           Container(
             width: globals.mw(context) * 0.10,
-            child: 
-            Column(
+            child: Column(
               children: <Widget>[
                 Column(
                   children: <Widget>[
@@ -516,31 +518,35 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                               radius: 15,
                               child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
-                                  child: Icon(Icons.share, color: Colors.white, size: 15)))),
+                                  child: Icon(Icons.share,
+                                      color: Colors.white, size: 15)))),
                     ),
                     SizedBox(height: 5),
-                    isAuction ? 
-                    GestureDetector(
-                      onTap: () async {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EditAuctionPage(
-                                      animalId: animal.id,
-                                      description: animal.description,
-                                    )));
-                        loadAnimal(animal.id);
-                      },
-                      child: Container(
-                          height: 25,
-                          child: CircleAvatar(
-                              backgroundColor: globals.myColor('primary'),
-                              radius: 15,
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Icon(Icons.edit, color: Colors.white, size: 15)))),
-                    ) : Container()
+                    isAuction
+                        ? GestureDetector(
+                            onTap: () async {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          EditAuctionPage(
+                                            animalId: animal.id,
+                                            description: animal.description,
+                                          )));
+                              loadAnimal(animal.id);
+                            },
+                            child: Container(
+                                height: 25,
+                                child: CircleAvatar(
+                                    backgroundColor: globals.myColor('primary'),
+                                    radius: 15,
+                                    child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        child: Icon(Icons.edit,
+                                            color: Colors.white, size: 15)))),
+                          )
+                        : Container()
                   ],
                 ),
               ],
@@ -566,19 +572,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "Deskripsi Produk",
-                    color: "grey",
-                    size: 13,
-                    align: TextAlign.start),
+                      text: "Deskripsi Produk",
+                      color: "grey",
+                      size: 13,
+                      align: TextAlign.start),
                 ),
 
                 // Desc
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "${animal.descriptionAnimal}",
-                    color: "dark",
-                    size: 13),
+                      text: "${animal.descriptionAnimal}",
+                      color: "dark",
+                      size: 13),
                 ),
               ],
             ),
@@ -589,7 +595,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             width: globals.mw(context) * 0.10,
             child: GestureDetector(
               onTap: () {
-                Clipboard.setData(new ClipboardData(text: animal.descriptionAnimal));
+                Clipboard.setData(
+                    new ClipboardData(text: animal.descriptionAnimal));
                 globals.showDialogs("Berhasil menyalin deskripsi", context);
               },
               child: Container(
@@ -626,19 +633,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "Deskripsi Pengiriman",
-                    color: "grey",
-                    size: 13,
-                    align: TextAlign.start),
+                      text: "Deskripsi Pengiriman",
+                      color: "grey",
+                      size: 13,
+                      align: TextAlign.start),
                 ),
 
                 // Desc
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "${animal.descriptionDelivery}",
-                    color: "dark",
-                    size: 13),
+                      text: "${animal.descriptionDelivery}",
+                      color: "dark",
+                      size: 13),
                 ),
               ],
             ),
@@ -649,7 +656,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             width: globals.mw(context) * 0.10,
             child: GestureDetector(
               onTap: () {
-                Clipboard.setData(new ClipboardData(text: animal.descriptionDelivery));
+                Clipboard.setData(
+                    new ClipboardData(text: animal.descriptionDelivery));
                 globals.showDialogs("Berhasil menyalin deskripsi", context);
               },
               child: Container(
@@ -686,19 +694,19 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "Deskripsi Garansi",
-                    color: "grey",
-                    size: 13,
-                    align: TextAlign.start),
+                      text: "Deskripsi Garansi",
+                      color: "grey",
+                      size: 13,
+                      align: TextAlign.start),
                 ),
 
                 // Desc
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "${animal.descriptionWarranty}",
-                    color: "dark",
-                    size: 13),
+                      text: "${animal.descriptionWarranty}",
+                      color: "dark",
+                      size: 13),
                 ),
               ],
             ),
@@ -709,7 +717,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             width: globals.mw(context) * 0.10,
             child: GestureDetector(
               onTap: () {
-                Clipboard.setData(new ClipboardData(text: animal.descriptionWarranty));
+                Clipboard.setData(
+                    new ClipboardData(text: animal.descriptionWarranty));
                 globals.showDialogs("Berhasil menyalin deskripsi", context);
               },
               child: Container(
@@ -746,19 +755,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "Informasi Lainnya",
-                    color: "grey",
-                    size: 13,
-                    align: TextAlign.start),
+                      text: "Informasi Lainnya",
+                      color: "grey",
+                      size: 13,
+                      align: TextAlign.start),
                 ),
 
                 // Desc
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "${animal.description}",
-                    color: "dark",
-                    size: 13),
+                      text: "${animal.description}", color: "dark", size: 13),
                 ),
               ],
             ),
@@ -806,17 +813,16 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: globals.myText(
-                    text: "Jenis Pengiriman",
-                    color: "grey",
-                    size: 13,
-                    align: TextAlign.start),
+                      text: "Jenis Pengiriman",
+                      color: "grey",
+                      size: 13,
+                      align: TextAlign.start),
                 ),
 
                 // Desc
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: 
-                    innerIslandShipping == false
+                  child: innerIslandShipping == false
                       ? globals.myText(
                           text: "Pengiriman ke seluruh nusantara",
                           color: "dark",
@@ -835,7 +841,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
             width: globals.mw(context) * 0.10,
             child: GestureDetector(
               onTap: () {
-                Clipboard.setData(new ClipboardData(text: animal.descriptionWarranty));
+                Clipboard.setData(
+                    new ClipboardData(text: animal.descriptionWarranty));
                 globals.showDialogs("Berhasil menyalin deskripsi", context);
               },
               child: Container(
@@ -858,27 +865,27 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   }
 
   Widget _buildChatAdmin() {
-    return
-      RaisedButton(
-        color: Color.fromRGBO(109, 105, 105, 1),
-        padding: EdgeInsets.all(20),
-        onPressed: () {
-          String message =
-              "${animal.name}-(${animal.id}), ${widget.from}, tolong di bantu min, saya mau bertanya";
-          _sendWhatsApp(globals.getNohpAdmin(), message);
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Container(
-              width: 30,
-              height: 30,
-              child: Image.asset('assets/images/customer-service.png'),
-            ),
-            globals.myText(text: "KLIK DISINI UNTUK HUBUNGI ADMIN", color: 'light', size: 16)
-          ],
-        ),
-      );
+    return RaisedButton(
+      color: Color.fromRGBO(109, 105, 105, 1),
+      padding: EdgeInsets.all(20),
+      onPressed: () {
+        String message =
+            "${animal.name}-(${animal.id}), ${widget.from}, tolong di bantu min, saya mau bertanya";
+        _sendWhatsApp(globals.getNohpAdmin(), message);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Container(
+            width: 30,
+            height: 30,
+            child: Image.asset('assets/images/customer-service.png'),
+          ),
+          globals.myText(
+              text: "KLIK DISINI UNTUK HUBUNGI ADMIN", color: 'light', size: 16)
+        ],
+      ),
+    );
   }
 
   Widget _cancelAuction() {
@@ -1347,7 +1354,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
     String invoice;
     globals.debugPrint("WINNER SECTION");
-    globals.debugPrint("WINNERBIDID : " + animal.auction.winnerBidId.toString());
+    globals
+        .debugPrint("WINNERBIDID : " + animal.auction.winnerBidId.toString());
 
     if (animal.auction.winnerBidId != null) {
       for (var i = 0; i < animal.auction.bids.length; i++) {
@@ -1568,7 +1576,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                             chatLoading = false;
                                           });
 
-                                          globals.debugPrint(animal.auction.firebaseChatId);
+                                          globals.debugPrint(
+                                              animal.auction.firebaseChatId);
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -2005,7 +2014,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             context);
                       } else if (result == 4) {
                         await globals.showDialogsVerificationOptions(
-                            "Bid gagal, data diri Anda belum terverifikasi",
+                            "Untuk memastikan lelang berjalan baik , silahkan verifikasi akun anda terlebih dahulu",
                             context,
                             phoneNumber: globals.user.phoneNumber,
                             userId: globals.user.id);
@@ -2550,7 +2559,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ],
         ));
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -2575,7 +2584,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     (animal.ownerUserId == globals.user.id)
                         ? Container()
                         : _buildOwnerDetail(),
-                    
+
                     _buildDesc(widget.from == "LELANG"),
 
                     widget.from == "LELANG" &&

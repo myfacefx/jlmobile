@@ -308,10 +308,10 @@ Future<bool> showDialogs(String content, BuildContext context,
 
 Future<bool> showDialogsVerificationOptions(
     String content, BuildContext context,
-    {String title = "Perhatian",
+    {String title = "Konfirmasi Dulu Yuk!",
     String route = "",
     String option1 = "Via OTP WA",
-    String option2 = "Via KTP",
+    String option2 = "Dengan Data Diri",
     String phoneNumber,
     int userId}) {
   return showDialog(
@@ -322,7 +322,7 @@ Future<bool> showDialogsVerificationOptions(
         content: myText(text: content),
         actions: <Widget>[
           FlatButton(
-            child: Text("Via KTP"),
+            child: Text("Dengan Data Diri"),
             onPressed: () {
               Navigator.pushNamed(context, "/verification");
             },
