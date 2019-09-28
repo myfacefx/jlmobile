@@ -1,10 +1,14 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
+import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
+import 'package:jlf_mobile/services/top_seller_services.dart';
 
 import 'auction/create.dart';
 
@@ -31,10 +35,41 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
   bool isLoading = true;
   bool isLoadingLoadMore = false;
   bool isLast = false;
+  int _activeTopSellerPage = 0;
   int _type = 0;
   String nextUrl;
   TextEditingController searchController = TextEditingController();
   List<Animal> animals = List<Animal>();
+  List<TopSeller> topSellers = List<TopSeller>();
+  List<Widget> _sponsoredSellerPages = List<Widget>();
+
+  bool isLoadingTopSellers = true;
+
+  @override
+  void initState() {
+    super.initState();
+    refreshTopSellerBySubCategoryId(animalCategory.id);
+  }
+
+  void refreshTopSellerBySubCategoryId(animalSubCategoryId) {
+    setState(() {
+      isLoadingTopSellers = true;
+    });
+    getTopSellersBySubCategoryId(globals.user.tokenRedis, animalSubCategoryId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+      setState(() {
+        topSellers = onValue;
+        isLoadingTopSellers = false;
+      });
+    });
+  }
 
   _SubCategoryDetailPageState(
       AnimalCategory animalCategory, int animalSubCategoryId, String from) {
@@ -87,6 +122,117 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
     });
   }
 
+  void refreshTopSellerByCategoryId(animalCategoryId) {
+    setState(() {
+      isLoadingTopSellers = true;
+    });
+    getTopSellersByCategoryId(globals.user.tokenRedis, animalCategoryId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+      setState(() {
+        topSellers = onValue;
+        isLoadingTopSellers = false;
+        _registerTopSellerCarousel(onValue);
+      });
+    });
+  }
+
+  _registerTopSellerCarousel(List<TopSeller> topSellers) {
+    setState(() {
+      _sponsoredSellerPages = List<Widget>();
+      if (topSellers.length > 0) {
+        List<Widget> firstRowWidget = List<Widget>();
+        List<Widget> secondRowWidget = List<Widget>();
+
+        for (var topSeller in topSellers) {
+          if (firstRowWidget.length < 3)
+            firstRowWidget
+                .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
+          else if (secondRowWidget.length < 3)
+            secondRowWidget
+                .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
+          else {
+            _sponsoredSellerPages.add(Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                  Row(children: firstRowWidget),
+                  SizedBox(height: 10),
+                  Row(children: secondRowWidget)
+                ])));
+            firstRowWidget = List<Widget>();
+            secondRowWidget = List<Widget>();
+          }
+        }
+
+        if (secondRowWidget.length > 0)
+          _sponsoredSellerPages.add(Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                Row(children: firstRowWidget),
+                SizedBox(height: 10),
+                Row(children: secondRowWidget)
+              ])));
+        else if (firstRowWidget.length > 0)
+          _sponsoredSellerPages.add(Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[Row(children: firstRowWidget)])));
+      }
+    });
+  }
+
+  Widget _templateHeaderTopSellerProfile(TopSeller topSeller,
+      {double height: 42}) {
+    return GestureDetector(
+      onTap: () {
+        topSeller.userId != null
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        ProfilePage(userId: topSeller.userId)))
+            : null;
+      },
+      child: Column(
+        children: <Widget>[
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              child: Container(
+                  alignment: Alignment.center,
+                  width: height,
+                  child: Container(
+                      height: height,
+                      child: CircleAvatar(
+                          radius: 85,
+                          child: topSeller.thumbnail != null ||
+                                  topSeller.user.photo != null
+                              ? FadeInImage.assetNetwork(
+                                  fit: BoxFit.cover,
+                                  placeholder: 'assets/images/loading.gif',
+                                  image: topSeller.thumbnail != null
+                                      ? topSeller.thumbnail
+                                      : topSeller.user.photo)
+                              : Image.asset('assets/images/account.png'))))),
+          globals.myText(
+              text: topSeller.user != null ? topSeller.user.username : ' ',
+              weight: "B",
+              textOverflow: TextOverflow.ellipsis)
+        ],
+      ),
+    );
+  }
+
   Future<bool> _loadmore() async {
     if (nextUrl == null) {
       return false;
@@ -131,6 +277,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                 : globals.myColor("unprime")),
         child: globals.myText(
             text: animalSubCategory.name,
+            size: 12,
             color: "light",
             align: TextAlign.center),
       ),
@@ -139,7 +286,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
 
   Widget _buildSubCategory() {
     return Container(
-        height: 30,
+        height: 25,
         color: Colors.white,
         alignment: Alignment.center,
         child: ListView.builder(
@@ -203,9 +350,6 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       globals.debugPrint(onError.toString());
       globals.showDialogs(onError.toString(), context);
     });
-
-    // refreshTopSellerBySubCategoryId(subCategoryId);
-    // refreshTopSellers();if (subCategoryId != null) {
   }
 
   Widget _buildSearch() {
@@ -267,7 +411,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
         ? <String>['Populer', 'Terbaru', 'Expiry Date']
         : <String>['Populer', 'Terbaru', 'Termurah'];
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white, width: 1),
         borderRadius: BorderRadius.circular(5),
@@ -298,7 +442,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
 
   Widget _buildTextSearch() {
     return Container(
-      width: globals.mw(context) * 0.3,
+      width: globals.mw(context) * 0.25,
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       height: 30,
       decoration: BoxDecoration(
@@ -317,7 +461,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
         decoration: InputDecoration(
             border: InputBorder.none,
             hintText: 'Nama / Seller / Kota',
-            hintStyle: TextStyle(fontSize: 10)),
+            hintStyle: TextStyle(fontSize: 9)),
       ),
     );
   }
@@ -745,6 +889,132 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
   }
   // card animals
 
+  Widget _buildTopSeller() {
+    return Card(
+      elevation: 0,
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(bottom: 15),
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 15, bottom: 10, top: 10),
+              alignment: Alignment.centerLeft,
+              child: globals.myText(text: "TOP SELLERS", weight: "B"),
+            ),
+            Container(
+                height: topSellers.length > 0 ? 100 : 40,
+                alignment: Alignment.center,
+                child: isLoadingTopSellers
+                    ? globals.isLoading()
+                    : topSellers.length > 0
+                        ? ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: false,
+                            itemBuilder: (context, index) {
+                              return _templateTopSellerProfile(
+                                  topSellers[index]);
+                            },
+                            itemCount: topSellers.length,
+                          )
+                        : globals.myText(
+                            text: "Belum ada top seller pada kategori ini")),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _templateTopSellerProfile(TopSeller topSeller) {
+    return GestureDetector(
+      onTap: () {
+        topSeller.userId != null
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        ProfilePage(userId: topSeller.userId)))
+            : null;
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300], width: 1),
+            borderRadius: BorderRadius.circular(5.0)),
+        child: Column(
+          children: <Widget>[
+            Container(
+                child: Container(
+                    width: 100,
+                    child: Container(
+                        height: 65,
+                        child: CircleAvatar(
+                            radius: 75,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: topSeller.thumbnail != null ||
+                                        topSeller.user.photo != null
+                                    ? FadeInImage.assetNetwork(
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            'assets/images/loading.gif',
+                                        image: topSeller.thumbnail != null
+                                            ? topSeller.thumbnail
+                                            : topSeller.user.photo)
+                                    : Image.asset(
+                                        'assets/images/account.png')))))),
+            SizedBox(
+              height: 10,
+            ),
+            globals.myText(
+                text: "100 POIN",
+                size: 10,
+                align: TextAlign.center,
+                color: "unprime",
+                textOverflow: TextOverflow.ellipsis)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSponsoredSeller() {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: globals.myText(
+                text: "Sponsored Seller", size: 18, weight: "XB"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+            height: _sponsoredSellerPages.length != 0 ? 190 : 50,
+            child: _sponsoredSellerPages.length != 0
+                ? CarouselSlider(
+                    autoPlay: true,
+                    autoPlayInterval: Duration(seconds: 2),
+                    viewportFraction: 1.0,
+                    height: 190,
+                    enableInfiniteScroll: true,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _activeTopSellerPage = index;
+                      });
+                    },
+                    items: _sponsoredSellerPages,
+                  )
+                : globals.myText(text: "Belum Tersedia Sponsored Seller"),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -768,7 +1038,8 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
               child: ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  _buildCheckTopSeller(),
+                  _buildSponsoredSeller(),
+                  _buildTopSeller(),
                   isLoading
                       ? Center(
                           child: CircularProgressIndicator(),
