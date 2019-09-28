@@ -64,7 +64,16 @@ class _DonasiPageState extends State<DonasiPage>
                               globals.showDialogs("Berhasil menyalin nomor rekening", context);
                             },
                           ),
-                          Image.asset("assets/images/donation.jpeg", width: globals.mw(context), fit: BoxFit.fitWidth)
+                          Image.asset("assets/images/donation.jpeg", width: globals.mw(context), fit: BoxFit.fitWidth),
+                          FlatButton(
+                            color: globals.myColor("primary"),
+                            child: globals.myText(
+                                text: "atau Tekan disini untuk Hubungi Admin WA JLF", color: "light"),
+                            onPressed: () {
+                                globals.sendWhatsApp(globals.getNohpAdmin(),
+                                "Halo, saya ingin membantu dalam bentuk donasi nih.");
+                            },
+                          ),
                         ],
                       ),
                   ),
