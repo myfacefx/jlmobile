@@ -22,6 +22,8 @@ class Static {
   String emailCs;
   String noTelpCs;
   String imageUpcoming;
+  String howToJoinHotAuctionImageUrl;
+  String rewardImageUrl;
   dynamic deletedAt;
   dynamic createdAt;
   dynamic updatedAt;
@@ -40,7 +42,10 @@ class Static {
       this.deletedAt,
       this.createdAt,
       this.updatedAt,
-      this.imageUpcoming});
+      this.imageUpcoming,
+      this.howToJoinHotAuctionImageUrl,
+      this.rewardImageUrl
+      });
 
   factory Static.fromJson(Map<String, dynamic> json) => new Static(
         id: json["id"] == null ? null : json["id"],
@@ -51,6 +56,10 @@ class Static {
         changeLog: json["change_log"] == null ? null : json["change_log"],
         imageUpcoming:
             json["image_upcoming"] == null ? null : json["image_upcoming"],
+        howToJoinHotAuctionImageUrl:
+            json["how_to_join_hot_auction_image_url"] == null ? null : json["how_to_join_hot_auction_image_url"],
+        rewardImageUrl:
+            json["reward_image_url"] == null ? null : json["reward_image_url"],
         rekBer1: json["rek_ber1"] == null ? null : json["rek_ber1"],
         rekBer2: json["rek_ber2"] == null ? null : json["rek_ber2"],
         rekBer3: json["rek_ber3"] == null ? null : json["rek_ber3"],
@@ -67,6 +76,8 @@ class Static {
         "pop_up_text": popUpText == null ? null : popUpText,
         "version": version == null ? null : version,
         "change_log": changeLog == null ? null : changeLog,
+        "how_to_join_hot_auction_image_url": howToJoinHotAuctionImageUrl == null ? null : howToJoinHotAuctionImageUrl,
+        "reward_image_url": rewardImageUrl == null ? null : rewardImageUrl,
         "rek_ber1": rekBer1 == null ? null : rekBer1,
         "rek_ber2": rekBer2 == null ? null : rekBer2,
         "rek_ber3": rekBer3 == null ? null : rekBer3,

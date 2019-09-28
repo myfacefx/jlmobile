@@ -20,6 +20,7 @@ import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
+import 'package:jlf_mobile/pages/how_to_join_hot_auction.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_event_services.dart';
@@ -782,11 +783,19 @@ class _HomePage extends State<HomePage> {
                   "assets/images/hot_auction.png",
                   height: 14,
                 ),
-                globals.myText(
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => HowToJoinHotAuctionPage()));
+                  },
+                  child: globals.myText(
                     text: " LELANG PANAS ",
                     color: "light",
                     weight: "B",
                     size: 14),
+                ),
                 Image.asset(
                   "assets/images/hot_auction.png",
                   height: 14,

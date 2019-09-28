@@ -28,6 +28,7 @@ import 'package:jlf_mobile/pages/user/point_history.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/pages/verification.dart';
+import 'package:jlf_mobile/pages/reward.dart';
 import 'package:jlf_mobile/themes.dart';
 
 void main() => runApp(MyApp());
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
         '/forget-password': (BuildContext context) => ForgotPasswordPage(),
         '/list-event': (BuildContext context) => ListEventPage(),
         '/send-otp': (BuildContext context) => SendOTPPage(),
+        '/reward': (BuildContext context) => RewardPage(),
 
         // '/edit-product': (BuildContext context) => EditProductPage()
       },
