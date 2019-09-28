@@ -40,7 +40,7 @@ Future<User> register(Map<String, dynamic> _data) async {
       .post(url, headers: header, body: json.encode(_data))
       .timeout(Duration(minutes: 60));
 
-      var response = json.decode(res.body);
+  var response = json.decode(res.body);
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);
@@ -52,6 +52,23 @@ Future<User> register(Map<String, dynamic> _data) async {
 Future<User> getUserById(int userId, String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   final url = getBaseUrl() + "/users/$userId";
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return userFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+Future<User> getUserByEmail(String email) async {
+  final header = {"Content-Type": "application/json"};
+  final url = getBaseUrl() + "/users/$email" + "/email";
 
   http.Response res = await http
       .get(url, headers: header)
@@ -311,9 +328,8 @@ Future<User> verifyToken(String token) async {
   debugPrint(url);
   debugPrint(token);
 
-  http.Response res = await http
-      .get(url, headers: header)
-      .timeout(Duration(seconds: 7));
+  http.Response res =
+      await http.get(url, headers: header).timeout(Duration(seconds: 7));
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);

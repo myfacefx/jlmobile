@@ -91,11 +91,11 @@ class _HomePage extends State<HomePage> {
       globals.notificationListener(context);
 
       String urlPdf = getBaseUrl() + "/download/restricted-animals";
-      print(urlPdf);
+      globals.debugPrint(urlPdf);
       getFileFromUrl(urlPdf).then((f) {
         setState(() {
           urlPDFPath = f.path;
-          print(urlPDFPath);
+          globals.debugPrint(urlPDFPath);
         });
       });
     }
