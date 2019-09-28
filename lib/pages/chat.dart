@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/models/auction.dart';
+import 'package:jlf_mobile/pages/form_rekber.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:jlf_mobile/services/firebase_chat_services.dart'
@@ -55,6 +56,7 @@ class _ChatPageState extends State<ChatPage> {
     Map<String, dynamic> _data = Map<String, dynamic>();
     _data['id'] = globals.user.id;
     _data['firebase_chat_id'] = auction.firebaseChatId;
+    _data['auction_id'] = auction.id;
 
     _data['seller_user_id'] = auction.ownerUserId;
     _data['buyer_user_id'] = auction.winnerBid.userId;
@@ -207,53 +209,53 @@ class _ChatPageState extends State<ChatPage> {
                             align: TextAlign.center)),
                   ),
                   SizedBox(height: 10),
-                  Center(
-                      child: globals.myText(
-                          text: "LEMBAR FORM SELLER", weight: "B", size: 15)),
-                  globals.myText(
-                      text: "Silahkan bagi seller untuk mengisi data berikut"),
-                  SizedBox(height: 8),
-                  globals.myText(text: "Nama Penjual:", align: TextAlign.left),
-                  globals.myText(text: "Nama Pembeli:", align: TextAlign.left),
-                  globals.myText(
-                      text: "Kode Unik (5 Digit):", align: TextAlign.left),
-                  globals.myText(
-                      text: "Jenis Hewan/Barang:", align: TextAlign.left),
-                  globals.myText(
-                      text: "Garansi Hewan/Barang:", align: TextAlign.left),
-                  globals.myText(
-                      text: "Batas waktu pengambilan paket:",
-                      align: TextAlign.left),
-                  globals.myText(
-                      text: "Nominal Transaksi:", align: TextAlign.left),
-                  globals.myText(
-                      text: "Nomor Rekening Penjual: ..... Bank: ....",
-                      align: TextAlign.left),
-                  globals.myText(
-                      text: "Nomor Rekening Pembeli: ..... Bank: ....",
-                      align: TextAlign.left),
-                  SizedBox(height: 8),
-                  globals.myText(
-                      text:
-                          "(Note: Kolom garansi yang tidak diisi akan dianggap TIDAK BERGARANSI)",
-                      weight: "B",
-                      align: TextAlign.center),
-                  Padding(
-                      padding: EdgeInsets.only(top: 5),
-                      child: Center(
-                        child: FlatButton(
-                          color: globals.myColor("primary"),
-                          child: globals.myText(
-                              text: "Salin Form Diatas", color: "light"),
-                          onPressed: () {
-                            Clipboard.setData(new ClipboardData(
-                                text:
-                                    'LEMBAR FORM SELLER\n\nNama Penjual:\nNama Pembeli:\nKode Unik (5 Digit):\nJenis Hewan/Barang:\nGaransi Hewan/Barang:\nBatas waktu pengambilan paket:\nNominal transaksi:\nRekening Penjual: ..... Bank: ......\nRekening Pembeli : ..... Bank ..... \n\n(Nb: kolom garansi yg tidak diisi akan dianggap TIDAK BERGARANSI)'));
-                            globals.showDialogs(
-                                "Berhasil menyalin form", context);
-                          },
-                        ),
-                      ))
+                  // Center(
+                  //     child: globals.myText(
+                  //         text: "LEMBAR FORM SELLER", weight: "B", size: 15)),
+                  // globals.myText(
+                  //     text: "Silahkan bagi seller untuk mengisi data berikut"),
+                  // SizedBox(height: 8),
+                  // globals.myText(text: "Nama Penjual:", align: TextAlign.left),
+                  // globals.myText(text: "Nama Pembeli:", align: TextAlign.left),
+                  // globals.myText(
+                  //     text: "Kode Unik (5 Digit):", align: TextAlign.left),
+                  // globals.myText(
+                  //     text: "Jenis Hewan/Barang:", align: TextAlign.left),
+                  // globals.myText(
+                  //     text: "Garansi Hewan/Barang:", align: TextAlign.left),
+                  // globals.myText(
+                  //     text: "Batas waktu pengambilan paket:",
+                  //     align: TextAlign.left),
+                  // globals.myText(
+                  //     text: "Nominal Transaksi:", align: TextAlign.left),
+                  // globals.myText(
+                  //     text: "Nomor Rekening Penjual: ..... Bank: ....",
+                  //     align: TextAlign.left),
+                  // globals.myText(
+                  //     text: "Nomor Rekening Pembeli: ..... Bank: ....",
+                  //     align: TextAlign.left),
+                  // SizedBox(height: 8),
+                  // globals.myText(
+                  //     text:
+                  //         "(Note: Kolom garansi yang tidak diisi akan dianggap TIDAK BERGARANSI)",
+                  //     weight: "B",
+                  //     align: TextAlign.center),
+                  // Padding(
+                  //     padding: EdgeInsets.only(top: 5),
+                  //     child: Center(
+                  //       child: FlatButton(
+                  //         color: globals.myColor("primary"),
+                  //         child: globals.myText(
+                  //             text: "Salin Form Diatas", color: "light"),
+                  //         onPressed: () {
+                  //           Clipboard.setData(new ClipboardData(
+                  //               text:
+                  //                   'LEMBAR FORM SELLER\n\nNama Penjual:\nNama Pembeli:\nKode Unik (5 Digit):\nJenis Hewan/Barang:\nGaransi Hewan/Barang:\nBatas waktu pengambilan paket:\nNominal transaksi:\nRekening Penjual: ..... Bank: ......\nRekening Pembeli : ..... Bank ..... \n\n(Nb: kolom garansi yg tidak diisi akan dianggap TIDAK BERGARANSI)'));
+                  //           globals.showDialogs(
+                  //               "Berhasil menyalin form", context);
+                  //         },
+                  //       ),
+                  //     ))
                 ],
               ),
             ),
@@ -412,12 +414,14 @@ class _ChatPageState extends State<ChatPage> {
 
       Map<String, dynamic> _data = Map<String, dynamic>();
       _data['id'] = globals.user.id;
+      _data['auction_id'] = auction.id;
       _data['firebase_chat_id'] = auction.firebaseChatId;
+      _data['message'] = content;
 
-      _data['seller_user_id'] = auction.ownerUserId;
-      _data['buyer_user_id'] = auction.winnerBid.userId;
-      _data['admin_user_id'] = auction.adminId;
-      _data['role'] = null;
+      // _data['seller_user_id'] = auction.ownerUserId;
+      // _data['buyer_user_id'] = auction.winnerBid.userId;
+      // _data['admin_user_id'] = auction.adminId;
+      // _data['role'] = null;
 
       if (auction.ownerUserId == globals.user.id) {
         _data['role'] = 'seller';
@@ -491,6 +495,21 @@ class _ChatPageState extends State<ChatPage> {
     ));
   }
 
+  Widget _buildFormRekber() {
+    return Container(
+      width: globals.mw(context),
+      child: RaisedButton(
+        child: globals.myText(text: "FORM REKBER", weight: "B", color: "light"),
+        color: globals.myColor("primary"), 
+        onPressed: () =>  Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  FormRekberPage())),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -501,9 +520,10 @@ class _ChatPageState extends State<ChatPage> {
             // drawer: drawer(context),sx
             body: SafeArea(
                 child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
                     child: Column(
                       children: <Widget>[
+                        _buildFormRekber(),
                         _buildMessages(),
                         _buildKeyboardInput()
                       ],
