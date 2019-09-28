@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/pages/verify_pin.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
+  bool _isMatch = false;
 
   Widget _textInputEmail() {
     return Container(
@@ -70,26 +72,65 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     if (formKey.currentState.validate()) {
       try {
-        globals.loadingModel(context);
-        final result = await forgotPassword(emailController.text);
-        Navigator.pop(context);
-        if (result == 1) {
-          globals.showDialogs(
-              "Untuk menjaga keamanan password anda kami akan mengirimkan password baru anda, jika anda ingin mengganti silahkan login dan ganti melalui menu edit profile",
-              context,
-              isDouble: true);
-        } else if (result == 2) {
-          globals.showDialogs("Email tidak ditemukan", context);
-        } else {
-          globals.showDialogs(
-              "Terjadi kesalahan, coba untuk hubungi admin", context);
-        }
+        _verifyByOTP();
       } catch (e) {
         Navigator.pop(context);
         globals.showDialogs(
             "Terjadi kesalahan, coba untuk hubungi admin", context);
         globals.debugPrint(e.toString());
         globals.mailError("Forgot password", e.toString());
+      }
+    }
+  }
+
+  void _verifyByOTP() async {
+    String _phoneNumber;
+    try {
+      final result = await getUserByEmail(emailController.text);
+
+      if (result == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        _isMatch = false;
+      }
+      setState(() {
+        _phoneNumber = result.phoneNumber;
+      });
+      _awaitResultFromOTP(context, _phoneNumber);
+    } catch (e) {
+      Navigator.pop(context);
+      globals.showDialogs(
+          "Terjadi kesalahan, coba untuk hubungi admin", context);
+      globals.debugPrint(e.toString());
+      globals.mailError("Forgot password", e.toString());
+    }
+  }
+
+  void _awaitResultFromOTP(BuildContext context, _phoneNumber) async {
+    final resultFromOTP = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) =>
+                VerifyPinPage(phoneNumber: _phoneNumber)));
+    setState(() {
+      _isMatch = resultFromOTP;
+    });
+
+    if (_isMatch == true) {
+      final result = await forgotPassword(emailController.text);
+      Navigator.pop(context);
+      if (result == 1) {
+        globals.showDialogs(
+            "Untuk menjaga keamanan password anda kami akan mengirimkan password baru anda, jika anda ingin mengganti silahkan login dan ganti melalui menu edit profile",
+            context,
+            isLogout: true);
+      } else if (result == 2) {
+        globals.showDialogs("Email tidak ditemukan", context);
+      } else {
+        globals.showDialogs(
+            "Terjadi kesalahan, coba untuk hubungi admin", context);
       }
     }
   }
@@ -126,7 +167,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: globals.myText(text: "Kirim", color: "light"),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
-                          onPressed: () => _resetPassword(),
+                          onPressed: () => _verifyByOTP(),
                         )
                       ],
                     )

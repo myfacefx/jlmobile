@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/globals.dart';
 
-Future<Map<String, dynamic>> sendOTP(Map<String, dynamic> _data, String token) async {
-  final header = {"Content-Type": "application/json" , "Authorization": token};
+Future<Map<String, dynamic>> sendOTP(Map<String, dynamic> _data) async {
+  final header = {"Content-Type": "application/json"};
   final url = getBaseUrl() + "/send-OTP";
 
   debugPrint(url);

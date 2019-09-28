@@ -312,8 +312,8 @@ Future<bool> showDialogsVerificationOptions(
     String route = "",
     String option1 = "Via OTP WA",
     String option2 = "Via KTP",
-    String phoneNumber, int userId}) {
-  
+    String phoneNumber,
+    int userId}) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -333,8 +333,8 @@ Future<bool> showDialogsVerificationOptions(
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          SendOTPPage(phoneNumber: phoneNumber, userId: userId)));
+                      builder: (BuildContext context) => SendOTPPage(
+                          phoneNumber: phoneNumber, userId: userId)));
               // Navigator.of(context).pop(true);
             },
           ),
@@ -342,6 +342,48 @@ Future<bool> showDialogsVerificationOptions(
       );
     },
   );
+}
+
+/// Global Function to confirm user when back key will resulting in closing App
+Future<bool> willExit(BuildContext context,
+    {String titleText = "Perhatian",
+    String contentText = "Apakah anda yakin akan keluar?",
+    String cancelText = "Batal",
+    String exitText = "Keluar"}) {
+  return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(titleText),
+            content: Text(contentText, style: TextStyle(color: Colors.black)),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  exitText,
+                  // style: TextStyle(color: Colors.black)
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              FlatButton(
+                child: Text(
+                  cancelText,
+                  // style: TextStyle(color: Colors.black)
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              VerticalDivider(
+                width: 10,
+                color: Colors.black,
+              ),
+            ],
+          );
+        },
+      ) ??
+      false;
 }
 
 String formaterTimer(int seconds) {

@@ -89,7 +89,7 @@ class _SendOTPPageState extends State<SendOTPPage> {
     formData['message'] = _messageOTP;
 
     try {
-      final res = await sendOTP(formData, globals.user.tokenRedis);
+      final res = await sendOTP(formData);
       if (res == null) {
         await globals.showDialogs(
             "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -191,7 +191,9 @@ class _SendOTPPageState extends State<SendOTPPage> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
-                          // startTimer();
+                          if (mounted) {
+                            startTimer();
+                          }
                           _controller.text == _otpKey
                               ? _verifyByOTP(_userId)
                               : globals.showDialogs("OTP Salah", context);
@@ -205,7 +207,7 @@ class _SendOTPPageState extends State<SendOTPPage> {
                       SizedBox(
                         width: 8,
                       ),
-                      // globals.myText(text: "$_current" + "s"),
+                      globals.myText(text: "$_current" + "s"),
                       SizedBox(
                         width: 8,
                       ),
