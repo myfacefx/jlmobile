@@ -404,6 +404,7 @@ String formaterTimer(int seconds) {
 
 Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
     {String title = "BELUM TERBAYAR", String text = "Tutup"}) {
+  int countAuction = content.length;
   Widget _buildCardBlocker(Auction auction) {
     // final dateNow = DateTime.now();
     // DateTime targetTime =
@@ -491,6 +492,12 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
               SizedBox(
                 height: 10,
               ),
+              myText(
+                  text:
+                      "Berikut $countAuction Lelang yang Perlu Kamu Lunasi :",
+                  align: TextAlign.center,
+                  size: 14,
+                  color: "danger"),
               Divider(
                 height: 10,
                 color: Colors.black,
