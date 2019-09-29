@@ -8,12 +8,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction.dart';
-import 'package:jlf_mobile/models/chat_list_pagination.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
-import 'package:jlf_mobile/services/firebase_chat_services.dart';
+import 'package:jlf_mobile/services/auction_chat_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
 import 'package:mailer/mailer.dart' as mailer;
@@ -22,7 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 // import 'package:simple_share/simple_share.dart';
 import 'package:http/http.dart' as http;
 
-String version = "v0.1.6";
+String version = "v0.1.7";
 bool isProduction = false;
 
 /// Global Function to return Screen Height
@@ -758,7 +757,13 @@ void getNotificationCount() async {
   }
 }
 
+String printWhenNotNull(var variable) {
+  return variable == null ? "-" : variable;
+}
+
+
 String convertToMoney(double number) {
+  if (number == null) return "-";
   var moneyMasked = new MoneyMaskedTextController(
     decimalSeparator: '',
     precision: 0,
@@ -789,6 +794,7 @@ Widget buildFailedLoadingData(context, Function refresh) {
 }
 
 String convertFormatDate(String date) {
+  if (date == null) return "-";
   String newDate = "";
   String spDate = date.split(" ")[0];
   List<String> splitDate = spDate.split("-");

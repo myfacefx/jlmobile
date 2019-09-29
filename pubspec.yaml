@@ -1,7 +1,7 @@
 name: jlf_mobile
-description: A new Flutter project.
+description: Jual Lelang Fauna.
 
-version: 0.1.6
+version: 0.1.7
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -33,14 +33,22 @@ dependencies:
 
   # flutter_swiper: ^1.1.6
   
-  # Firebase Notifications
-  firebase_storage: ^3.0.4
-
-  firebase_core: ^0.4.0+6
+  # Firebase
+  firebase_storage: ^3.0.6
+  firebase_core: ^0.4.0+9
   # firebase_auth:
   cloud_firestore: ^0.12.5+2
-  firebase_messaging: ^5.0.4
-  firebase_analytics: ^4.0.2
+  firebase_messaging: 5.1.5
+  firebase_analytics: ^5.0.2
+
+  # firebase_storage: ^3.0.4
+  # firebase_core: ^0.4.0+6
+  # # firebase_auth:
+  # cloud_firestore: ^0.12.5+2
+  # firebase_messaging: ^5.0.4
+  # firebase_analytics: ^4.0.2
+
+  datetime_picker_formfield: ^0.4.3
   
   url_launcher: ^5.0.3
 

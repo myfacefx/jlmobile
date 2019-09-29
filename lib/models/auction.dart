@@ -1,3 +1,4 @@
+import 'package:jlf_mobile/models/auction_chat.dart';
 import 'package:jlf_mobile/models/auction_comment.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/winner_bid.dart';
@@ -49,6 +50,8 @@ class Auction {
     dynamic adminUserId;
     dynamic adminId;
     AuctionEventParticipant auctionEventParticipant;
+    AuctionChat chat;
+    int transactionId;
 
     Auction({
         this.id,
@@ -91,7 +94,9 @@ class Auction {
         this.adminUnreadCount,
         this.adminUserId,
         this.adminId,
-        this.auctionEventParticipant
+        this.auctionEventParticipant,
+        this.chat,
+        this.transactionId
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -136,6 +141,8 @@ class Auction {
         adminUserId: json["admin_user_id"] == null ? null : json['admin_user_id'] is int ? json['admin_user_id'] : int.parse(json['admin_user_id']), 
         adminId: json["admin_id"] == null ? null : json['admin_id'] is int ? json['admin_id'] : int.parse(json['admin_id']), 
         auctionEventParticipant: json["auction_event_participant"] == null ? null : AuctionEventParticipant.fromJson(json["auction_event_participant"]),
+        chat: json["chat"] == null ? null : AuctionChat.fromJson(json["chat"]),
+        transactionId: json["transaction_id"] == null ? null : json["transaction_id"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -173,6 +180,8 @@ class Auction {
         "owner": owner == null ? null : owner.toJson(),
         "winner": winner == null ? null : winner.toJson(),
         "auction_event_participant": auctionEventParticipant == null ? null : auctionEventParticipant.toJson(),
+        "chat": chat == null ? null : chat.toJson(),
+        "transaction_id": transactionId == null ? null : transactionId,
     }..removeWhere( (key, val) => val == null);
 }
 

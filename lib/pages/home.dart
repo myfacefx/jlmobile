@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
@@ -104,6 +105,13 @@ class _HomePage extends State<HomePage> {
     initUniLinksStream();
 
     handleAppLifecycleState();
+ 
+    subscribeFCM();
+  }
+
+  subscribeFCM() {
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    firebaseMessaging.subscribeToTopic('announcement');
   }
 
   _getHotAuctions() {
@@ -1219,6 +1227,7 @@ class _HomePage extends State<HomePage> {
   }
 
   Future<File> getFileFromUrl(String url) async {
+    print(url);
     try {
       var data = await http.get(url);
       var bytes = data.bodyBytes;
