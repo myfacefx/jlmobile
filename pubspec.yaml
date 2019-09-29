@@ -120,7 +120,11 @@ flutter:
     - assets/images/map.png
     - assets/images/veterinarian.png
     - assets/images/coupon.png
-    - assets/images/customer-service.png
+    - assets/images/admin.png
+    - assets/images/edit.png
+    - assets/images/copy.png
+    - assets/images/more.png
+    - assets/images/share.png
     
     
 

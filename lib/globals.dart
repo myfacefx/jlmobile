@@ -946,6 +946,16 @@ String convertFormatDateDayMonth(String date, {bool monthName = false}) {
   return newDate;
 }
 
+String convertFormatFullDate(String date) {
+  if (date == null) return "-";
+  String newDate = "";
+  String spDate = date.split(" ")[0];
+  List<String> splitDate = spDate.split("-");
+  String month = convertMonthFromDigit(int.parse(splitDate[1]));
+  newDate = "${splitDate[2]} $month ${splitDate[0]}";
+  return newDate;
+}
+
 Widget isLoading() {
   return Container(
     child: Center(
