@@ -7,11 +7,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/models/auction.dart';
-import 'package:jlf_mobile/pages/form_rekber.dart';
+import 'package:jlf_mobile/models/transaction.dart' as Transaction;
+import 'package:jlf_mobile/pages/transaction/detail.dart';
+import 'package:jlf_mobile/services/transaction_services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:jlf_mobile/services/firebase_chat_services.dart'
-    as FirebaseChatServices;
+import 'package:jlf_mobile/services/auction_chat_services.dart'
+    as AuctionChatServices;
 
 class ChatPage extends StatefulWidget {
   final Auction auction;
@@ -72,7 +74,7 @@ class _ChatPageState extends State<ChatPage> {
     }
 
     if (_data['role'] != null) {
-      FirebaseChatServices.resetUnreadCount(globals.user.tokenRedis, _data)
+      AuctionChatServices.resetUnreadCount(globals.user.tokenRedis, _data)
           .then((onValue) async {
         if (onValue == 5) {
           await globals.showDialogs(
@@ -432,7 +434,7 @@ class _ChatPageState extends State<ChatPage> {
       }
 
       if (_data['role'] != null) {
-        FirebaseChatServices.update(globals.user.tokenRedis, _data)
+        AuctionChatServices.update(globals.user.tokenRedis, _data)
             .then((onValue) async {
           if (onValue == 5) {
             await globals.showDialogs(
@@ -501,13 +503,37 @@ class _ChatPageState extends State<ChatPage> {
       child: RaisedButton(
         child: globals.myText(text: "FORM REKBER", weight: "B", color: "light"),
         color: globals.myColor("primary"), 
-        onPressed: () =>  Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  FormRekberPage())),
+        onPressed: () => _loadTransaction(),
       )
     );
+  }
+
+  _loadTransaction() async {
+    String message = 'Error';
+    
+    if (auction.transactionId == null) {
+      Transaction.Transaction transaction = await getOrGenerateAuctionTransaction(auction.id, globals.user.tokenRedis);
+      
+      debugPrint("TRX: " + transaction.toJson().toString());
+      
+      if (transaction == null) {
+        message += ', silahkan coba ulangi';
+      } else {
+        auction.transactionId = transaction.id;
+        setState((){});
+      }
+    }
+
+    if (auction.transactionId == null) {
+      globals.showDialogs(message, context);
+      return false;
+    } else {
+      Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    TransactionDetailPage(transactionId: auction.transactionId)));
+    }
   }
 
   @override

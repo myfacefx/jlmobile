@@ -5,7 +5,7 @@ import 'package:jlf_mobile/globals.dart';
 
 Future<int> update(String token, Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  final url = getBaseUrl() + "/firebase-chats/update";
+  final url = getBaseUrl() + "/auction-chats/update";
 
   debugPrint(url);
 
@@ -31,7 +31,7 @@ Future<int> update(String token, Map<String, dynamic> _data) async {
 
 Future<int> resetUnreadCount(String token, Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  final url = getBaseUrl() + "/firebase-chats/reset";
+  final url = getBaseUrl() + "/auction-chats/reset";
 
   debugPrint(url);
 
@@ -57,7 +57,7 @@ Future<int> resetUnreadCount(String token, Map<String, dynamic> _data) async {
 
 Future<int> getUnreadChatsCount(int userId, String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  final url = getBaseUrl() + "/users/$userId/firebase-chats/count";
+  final url = getBaseUrl() + "/users/$userId/auction-chats/count";
 
   debugPrint(url);
 
@@ -73,3 +73,4 @@ Future<int> getUnreadChatsCount(int userId, String token) async {
     throw Exception(res.body);
   }
 }
+

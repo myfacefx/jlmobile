@@ -119,10 +119,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         List<Widget> secondRowWidget = List<Widget>();
 
         for (var topSeller in topSellers) {
-          if (firstRowWidget.length < 3)
+          if (firstRowWidget.length < 4)
             firstRowWidget
                 .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
-          else if (secondRowWidget.length < 3)
+          else if (secondRowWidget.length < 4)
             secondRowWidget
                 .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
           else {
@@ -294,7 +294,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             child: _topSellerPages.length != 0
                 ? CarouselSlider(
                     autoPlay: true,
-                    autoPlayInterval: Duration(seconds: 2),
+                    autoPlayInterval: Duration(seconds: 15),
                     viewportFraction: 1.0,
                     height: 190,
                     enableInfiniteScroll: true,
@@ -381,7 +381,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
       child: Column(
         children: <Widget>[
           Container(
-              margin: EdgeInsets.symmetric(horizontal: 5),
+              margin: EdgeInsets.symmetric(horizontal: 15),
               child: Container(
                   alignment: Alignment.center,
                   width: height,
