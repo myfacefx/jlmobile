@@ -645,28 +645,62 @@ class _ProfilePageState extends State<ProfilePage>
                                                 BorderRadius.circular(5))),
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () async {
-                                    await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                PointHistoryPage()));
-                                  },
-                                  child: Icon(Icons.history,
-                                      color: globals.myColor("warning")),
-                                ),
                               ],
                             ),
                             Column(
                               children: <Widget>[
                                 GestureDetector(
                                   onTap: () {
-                                    globals.showDialogs(
-                                        "Dapatkan poin setiap menyelesaikan transaksi lelang, pemilik lelang mendapat 2 poin, sedangkan untuk pemenang lelang mendapat 1 poin. Cek hadiah yang tersedia dengan klik pada tombol poin.",
-                                        context,
-                                        title:
-                                            "Tukarkan Poin dengan Hadiah Menarik");
+                                    var text = RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            color: Colors.black,
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text:
+                                                    'Dapatkan poin setiap menyelesaikan transaksi lelang, pemilik lelang mendapat 2 poin, sedangkan untuk pemenang lelang mendapat 1 poin. Cek hadiah yang tersedia dengan klik pada tombol poin.'),
+                                          ],
+                                        ),
+                                      );
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Tukarkan Poin dengan Hadiah Menarik'),
+                                            content: text,
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                child: Text('Cek Hadiah'),
+                                                onPressed: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              WebviewScaffold(
+                                                                  // displayZoomControls: true,
+                                                                  scrollBar: true,
+                                                                  withZoom: true,
+                                                                  url:
+                                                                      'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
+                                                                  appBar: globals.appBar(
+                                                                      _scaffoldKey,
+                                                                      context,
+                                                                      isSubMenu: true,
+                                                                      showNotification:
+                                                                          false))));
+                                                },
+                                              ),
+                                              FlatButton(
+                                                child: Text('Tutup'),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 5),
