@@ -124,26 +124,35 @@ class _OurProductPageState extends State<OurProductPage> {
   // sort and search
   Widget dropdownSortBy() {
     List<String> item = <String>['Terbaru', 'Populer'];
-    return DropdownButton<String>(
-        value: selectedSortBy,
-        items: item.map((String value) {
-          return DropdownMenuItem(
-            value: value,
-            child: Text(
-              value,
-              style: TextStyle(color: Colors.black, fontSize: 12),
-            ),
-          );
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            if (selectedSortBy != value) {
-              selectedSortBy = value;
-              isLoading = true;
-              _getOurProduct();
-            }
-          });
-        });
+    return Container(
+      height: 30,
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white, width: 1),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: DropdownButton<String>(
+          value: selectedSortBy,
+          items: item.map((String value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              if (selectedSortBy != value) {
+                selectedSortBy = value;
+                isLoading = true;
+                _getOurProduct();
+              }
+            });
+          }),
+    );
   }
 
   Widget _buildTextSearch() {
@@ -175,6 +184,7 @@ class _OurProductPageState extends State<OurProductPage> {
   Widget _buildSearch() {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+      color: globals.myColor("light-blue"),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -240,30 +250,6 @@ class _OurProductPageState extends State<OurProductPage> {
     );
   }
 
-  Widget _buildTimer(String status, String expiryTime) {
-    Color colorBox = Color.fromRGBO(255, 77, 77, 1);
-    var colorText = "light";
-    String text = globals.convertTimer(expiryTime) + " left";
-
-    if (status == "Gagal") {
-      colorBox = Colors.red;
-      colorText = "light";
-      text = "Gagal";
-    } else if (status == "Menang" || status == "Terkonfirmasi") {
-      colorBox = Colors.green;
-      text = "Anda Menang";
-    }
-
-    return Container(
-      width: 85,
-      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-      margin: EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
-          color: colorBox, borderRadius: BorderRadius.circular(5)),
-      child: globals.myText(
-          text: text, color: colorText, size: 10, align: TextAlign.center),
-    );
-  }
   //
 
   //detail
