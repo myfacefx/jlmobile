@@ -524,7 +524,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
               physics: ScrollPhysics(),
               semanticChildCount: 2,
               gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.65,
+                  childAspectRatio: widget.from == "LELANG" ? 0.45 : 0.65,
                   crossAxisCount: 2),
               itemBuilder: (BuildContext context, int index) {
                 return _buildCard(animals[index]);
@@ -555,7 +555,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                                 fit: BoxFit.cover)
                             : Image.asset('assets/images/account.png')))),
             Container(
-                width: globals.mw(context) * 0.3,
+                width: globals.mw(context) * 0.28,
                 child: globals.myText(
                     text: "$username",
                     size: 12,
@@ -563,8 +563,13 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
           ],
         ),
         globals.user.verificationStatus == 'verified'
-            ? Icon(Icons.verified_user,
-                size: 18, color: globals.myColor("primary"))
+            ? Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 5),
+                    child: Icon(Icons.verified_user,
+                      size: 18, color: globals.myColor("primary")),
+              ),
+            )
             : Container(),
       ],
     );

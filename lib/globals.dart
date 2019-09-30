@@ -1287,3 +1287,12 @@ void sendOTP(targetPhoneNumber) async {
   //   }
   // }
 }
+
+void openInterestLink() async {
+  String url = 'https://forms.gle/Yq1B8Zpqeuxm4t4KA';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+}
