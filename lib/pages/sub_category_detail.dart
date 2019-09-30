@@ -524,7 +524,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
               physics: ScrollPhysics(),
               semanticChildCount: 2,
               gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: widget.from == "LELANG" ? 0.5 : 0.65,
+                  childAspectRatio: widget.from == "LELANG" ? 0.45 : 0.65,
                   crossAxisCount: 2),
               itemBuilder: (BuildContext context, int index) {
                 return _buildCard(animals[index]);
