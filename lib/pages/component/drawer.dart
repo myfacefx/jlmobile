@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+import 'package:jlf_mobile/globals.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
@@ -80,6 +83,26 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
               Navigator.of(context).pop();
               Navigator.pushNamed(context, "/login");
             }
+          }
+          if (route == "contact") {
+            const url = 'https://forms.gle/zKsUgngPEXGgjdXa8';
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              throw 'Could not launch $url';
+            }
+          }
+          if (route == "terms") {
+            try {
+              String url = getBaseUrl() + "/download/terms-policy";
+              PDFDocument doc = await PDFDocument.fromURL(url);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PDFViewer(document: doc)));
+            } catch (e) {
+              globals.showDialogs("Gagal Memuat Halaman", context);
+            }
           } else {
             Navigator.pop(context);
             Navigator.pushNamed(context, route);
@@ -159,9 +182,15 @@ Widget drawer(context) {
                 _buildDrawerNavigationButtonSmall(
                     "Tentang JLF", "/about", context),
                 _buildDrawerNavigationButtonSmall(
+                    "Kebijakan Privasi", "terms", context),
+                _buildDrawerNavigationButtonSmall(
                     "Tutorial", "/how-to", context),
                 _buildDrawerNavigationButtonSmall(
                     "Tanya Jawab", "/faq", context),
+                _buildDrawerNavigationButtonSmall(
+                    "Tim Kami", "/team", context),
+                _buildDrawerNavigationButtonSmall(
+                    "Hubungi Kami", "contact", context),
                 // _buildDrawerNavigationButtonSmall(
                 //     "Pengaturan", "/setting", context),
                 _buildDrawerNavigationButtonSmall("Keluar", "/logout", context),
