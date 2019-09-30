@@ -13,11 +13,6 @@ Widget _buildDrawerNavigationButtonBig(
     child: FlatButton(
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       padding: EdgeInsets.all(0),
-      // shape: StadiumBorder(side: BorderSide),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(10), bottomRight: Radius.circular(10))),
-      color: Colors.white,
       onPressed: () {
         if (route == '/share') {
           globals.share(null, null);
@@ -30,26 +25,31 @@ Widget _buildDrawerNavigationButtonBig(
           width: double.infinity,
           child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                        child: Text(title,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor))),
-                    bidCount != null && bidCount > 0
-                        ? Container(
-                            constraints:
-                                BoxConstraints(minWidth: 10, minHeight: 10),
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(100)),
-                            child: Text("$bidCount",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 10)))
-                        : Container()
-                  ]))),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                          child: Text(title,
+                              style: TextStyle(
+                                  color: Colors.white))),
+                      bidCount != null && bidCount > 0
+                          ? Container(
+                              constraints:
+                                  BoxConstraints(minWidth: 10, minHeight: 10),
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: Text("$bidCount",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 10)))
+                          : Container(),
+                    ]),
+                    Divider(color: Colors.white)
+                ],
+              ))),
     ),
   );
 }
@@ -57,16 +57,9 @@ Widget _buildDrawerNavigationButtonBig(
 Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
   return Container(
       padding: EdgeInsets.fromLTRB(0, 5, 60, 0),
-      height: 35,
-      child: OutlineButton(
+      height: 25,
+      child: FlatButton(
         padding: EdgeInsets.only(left: 8),
-        borderSide: BorderSide(color: Colors.white),
-        highlightColor: Colors.white10,
-        highlightedBorderColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(10),
-                bottomRight: Radius.circular(10))),
         onPressed: () async {
           if (route == "/logout") {
             final result = await globals.confirmDialog(
@@ -110,7 +103,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
         },
         child: SizedBox(
             width: double.infinity,
-            child: Text(title, style: TextStyle(color: Colors.white))),
+            child: Text(title, style: TextStyle(color: Colors.white, fontSize: 12))),
       ));
 }
 
@@ -138,6 +131,23 @@ Widget drawer(context) {
                                     fit: BoxFit.cover)
                                 : Image.asset('assets/images/account.png')))),
                 Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(100)),
+                    height: 20,
+                    child: FlatButton(
+                      onPressed: () {},
+                      child: Text('${globals.user.point} Poin JLF', 
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300
+                          ),
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
                     child: Container(
                         width: MediaQuery.of(context).size.width * 0.35,
                         child: OutlineButton(
@@ -149,7 +159,7 @@ Widget drawer(context) {
                           highlightColor: Colors.white10,
                           highlightedBorderColor: Colors.white,
                           borderSide: BorderSide(color: Colors.white),
-                          child: Text("Profil",
+                          child: Text("Edit Profile",
                               style: Theme.of(context).textTheme.display4),
                         ))),
                 globals.spacePadding(),
@@ -166,19 +176,20 @@ Widget drawer(context) {
                     : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
-                    "Barangku", '/profile', null, context),
+                    "Barang", '/profile', null, context),
                 _buildDrawerNavigationButtonBig("Lelang Diikuti", '/our-bid',
                     globals.user != null ? globals.user.bidsCount : 0, context),
                 _buildDrawerNavigationButtonBig("Belanjaanku", '/our-product',
                     globals.user != null ? 0 : 0, context),
                 _buildDrawerNavigationButtonBig(
-                    "Rekber", '/rekber', null, context),
+                    "Donasi", '/donasi', null, context),
                 _buildDrawerNavigationButtonBig(
-                    "Reward", '/reward', null, context),
+                    "Hadiah Poin JLF", '/reward', null, context),
                 // buildDrawerNavigationButtonBig(
                 //     "Bagikan JLF", '/share', null, context),
                 globals.spacePadding(),
-                // _buildDrawerNavigationButtonSmall("RekBer", "/rekber", context),
+                _buildDrawerNavigationButtonSmall(
+                    "Rekber", "/rekber", context),
                 _buildDrawerNavigationButtonSmall(
                     "Tentang JLF", "/about", context),
                 _buildDrawerNavigationButtonSmall(

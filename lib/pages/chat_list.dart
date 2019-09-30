@@ -187,7 +187,7 @@ class _ChatListPageState extends State<ChatListPage> {
                                     color: globals.myColor('light')),
                               ),
                               globals.myText(
-                                  text: "Chat Rekber", color: "light"),
+                                  text: "Diskusi Rekber", color: "light", size: 14),
                               unreadCount != null && unreadCount > 0
                                   ? Container(
                                       margin: EdgeInsets.only(left: 5),
@@ -282,7 +282,7 @@ class _ChatListPageState extends State<ChatListPage> {
                       return _buildChat(chatListPagination.data[i]);
                     },
                   )
-                : Center(child: globals.myText(text: "Tidak ada Chat Rekber"))
+                : Center(child: globals.myText(text: "Tidak ada diskusi Rekber"))
             : globals.isLoading());
   }
 
@@ -391,7 +391,7 @@ class _ChatListPageState extends State<ChatListPage> {
                   Center(
                     child: Column(children: <Widget>[
                       globals.myText(
-                          text: "CHAT REKBER", weight: "B", size: 24),
+                          text: "DISKUSI REKBER", weight: "B", size: 20),
                     ]),
                   ),
                   globals.spacePadding(padding: 5),

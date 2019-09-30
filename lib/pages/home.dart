@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
@@ -90,6 +92,35 @@ class _HomePage extends State<HomePage> {
     initUniLinksStream();
 
     handleAppLifecycleState();
+ 
+    subscribeFCM();
+    
+    _verificationBonusPoint();
+  }
+
+  _verificationBonusPoint() async {
+    if (globals.user != null) {
+      globals.debugPrint("${globals.user.point} & ${globals.user.verificationStatus}");
+      if (globals.user.point == 0 && globals.user.verificationStatus == 'verified') {
+        Map<String, dynamic> response = await verificationBonusPoint(globals.user.id, globals.user.tokenRedis);
+
+        if (response['status'] == 'succes') {
+          SchedulerBinding.instance.addPostFrameCallback((_) => globals.loadRewardPoint(context));
+        
+          // Pop Up Success
+          setState(() {
+            globals.user.point = 20;
+          });
+        }
+      } else {
+        globals.debugPrint("Yahhh");
+      }
+    }
+  }
+
+  subscribeFCM() {
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    firebaseMessaging.subscribeToTopic('announcement');
   }
 
   _getHotAuctions() {
@@ -1302,9 +1333,7 @@ class _HomePage extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
             child: GestureDetector(
               onTap: () {
-                var message =
-                    "Hai admin, saya berminat untuk dijadikan kontent pet shop. Prosesnya gimana ya?";
-                globals.sendWhatsApp(globals.getNohpAdmin(), message);
+                globals.openInterestLink();
               },
               child: Column(
                 children: <Widget>[
@@ -1363,9 +1392,7 @@ class _HomePage extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
             child: GestureDetector(
               onTap: () {
-                var message =
-                    "Hai admin, saya berminat untuk dijadikan kontent dokter hewan. Prosesnya gimana ya?";
-                globals.sendWhatsApp(globals.getNohpAdmin(), message);
+                globals.openInterestLink();
               },
               child: Column(
                 children: <Widget>[

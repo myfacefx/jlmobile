@@ -8,12 +8,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction.dart';
-import 'package:jlf_mobile/models/chat_list_pagination.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
-import 'package:jlf_mobile/services/firebase_chat_services.dart';
+import 'package:jlf_mobile/services/auction_chat_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:share/share.dart';
 import 'package:mailer/mailer.dart' as mailer;
@@ -22,7 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 // import 'package:simple_share/simple_share.dart';
 import 'package:http/http.dart' as http;
 
-String version = "v0.1.6";
+String version = "v0.1.7";
 bool isProduction = false;
 
 /// Global Function to return Screen Height
@@ -190,7 +189,10 @@ generateToken() async {
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
 
+BuildContext ctx = null;
+
 notificationListener(context) {
+  ctx = context;
   _fcm.configure(onMessage: (Map<String, dynamic> message) async {
     debugPrint("onMessage: $message");
 
@@ -227,7 +229,11 @@ notificationListener(context) {
 }
 
 Future onSelectNotification(String payload) async {
-  debugPrint(payload);
+  // debugPrint(payload);
+  if (payload != null) {
+    debugPrint('notification payload: ' + payload);
+  }
+  await Navigator.of(ctx).pushNamed('/notification');
 }
 
 Future _showNotificationWithDefaultSound(Map<String, dynamic> message) async {
@@ -551,6 +557,39 @@ void loadingModel(context, {label = "Memuat. . ."}) {
   );
 }
 
+Future<bool> loadRewardPoint(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+        backgroundColor: Colors.white,
+        content: Container(
+          height: 190,
+          width: mw(context),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              myText(text: "SELAMAT ANDA MENDAPATKAN", weight: "B", size: 17),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
+                child: myText(text: "20 POIN", weight: "B", color: "mimosa", size: 20),
+              ),
+              myText(text: "Karena sudah melakukan verifikasi tanda pengenal", color: "grey", align: TextAlign.center, size: 12),
+              Image.asset(
+                "assets/images/clap.png", height: 100,
+              ),
+              SizedBox(height: 10),
+              myText(text: "Reward bisa dicek melalui Menu > Event JLF", color: "grey", align: TextAlign.center, size: 12),
+            ],
+          ),
+        )
+      );
+    },
+  );
+}
+
 Widget bottomNavigationBar(context) {
   return GestureDetector(
       onTap: () {
@@ -758,7 +797,13 @@ void getNotificationCount() async {
   }
 }
 
+String printWhenNotNull(var variable) {
+  return variable == null ? "-" : variable;
+}
+
+
 String convertToMoney(double number) {
+  if (number == null) return "-";
   var moneyMasked = new MoneyMaskedTextController(
     decimalSeparator: '',
     precision: 0,
@@ -789,6 +834,7 @@ Widget buildFailedLoadingData(context, Function refresh) {
 }
 
 String convertFormatDate(String date) {
+  if (date == null) return "-";
   String newDate = "";
   String spDate = date.split(" ")[0];
   List<String> splitDate = spDate.split("-");
@@ -937,6 +983,16 @@ String convertFormatDateDayMonth(String date, {bool monthName = false}) {
       ? convertMonthFromDigitSimple(int.parse(splitDate[1]))
       : splitDate[1];
   newDate = "${splitDate[2]}/$month";
+  return newDate;
+}
+
+String convertFormatFullDate(String date) {
+  if (date == null) return "-";
+  String newDate = "";
+  String spDate = date.split(" ")[0];
+  List<String> splitDate = spDate.split("-");
+  String month = convertMonthFromDigit(int.parse(splitDate[1]));
+  newDate = "${splitDate[2]} $month ${splitDate[0]}";
   return newDate;
 }
 
@@ -1270,4 +1326,13 @@ void sendOTP(targetPhoneNumber) async {
   //     throw 'Could not launch $url';
   //   }
   // }
+}
+
+void openInterestLink() async {
+  String url = 'https://forms.gle/Yq1B8Zpqeuxm4t4KA';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
 }

@@ -43,5 +43,6 @@ ThemeData buildThemeData() {
             TextStyle(color: Color.fromRGBO(178, 178, 178, 1), fontSize: 12),
         display4: TextStyle(
             color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
-      ));
+      )
+      );
 }

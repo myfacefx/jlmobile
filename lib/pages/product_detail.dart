@@ -357,7 +357,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildOwnerDetail() {
     return Container(
       color: Theme.of(context).primaryColor,
-      padding: EdgeInsets.fromLTRB(30, 10, 30, 18),
+      padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -385,13 +385,17 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                   children: <Widget>[
                     globals.myText(
                         text: animal.owner.username, color: "light", size: 18),
-                    globals.myText(
-                        text: animal.owner.regency.name,
-                        color: "light",
-                        size: 10),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+                      child: 
+                        globals.myText(
+                          text: animal.owner.regency.name,
+                          color: "light",
+                          size: 10),
+                    ),
                     globals.myText(
                         text:
-                            'bergabung sejak ${globals.convertFormatDate(animal.owner.createdAt.toString())}',
+                            'bergabung sejak ${globals.convertFormatFullDate(animal.owner.createdAt.toString())}',
                         color: "light",
                         size: 10),
                   ],
@@ -417,8 +421,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             radius: 15,
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: Icon(Icons.person,
-                                    color: globals.myColor())))),
+                                child: Image.asset(
+                                    'assets/images/more.png')))),
                   ),
                   SizedBox(
                     height: 5,
@@ -496,7 +500,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     alignment: Alignment.centerLeft,
                     child: globals.myText(
                         text:
-                            "Diposting : ${globals.convertFormatDate(animal.createdAt.toString())}",
+                            "Diposting : ${globals.convertFormatFullDate(animal.createdAt.toString())}",
                         color: "dark",
                         size: 11)),
               ],
@@ -514,13 +518,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       child: Container(
                           height: 25,
                           child: CircleAvatar(
-                              backgroundColor: globals.myColor('primary'),
                               radius: 15,
                               child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
-                                  child: Icon(Icons.share,
-                                      color: Colors.white, size: 15)))),
-                    ),
+                                  child: Container(
+                                    width: 20,
+                                    height: 20,
+                                    child: Image.asset('assets/images/share.png')))))),
                     SizedBox(height: 5),
                     isAuction
                         ? GestureDetector(
@@ -538,13 +542,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             child: Container(
                                 height: 25,
                                 child: CircleAvatar(
-                                    backgroundColor: globals.myColor('primary'),
                                     radius: 15,
                                     child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(100),
-                                        child: Icon(Icons.edit,
-                                            color: Colors.white, size: 15)))),
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          child: Image.asset('assets/images/edit.png'))))),
                           )
                         : Container()
                   ],
@@ -575,7 +580,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       text: "Deskripsi Produk",
                       color: "grey",
                       size: 13,
-                      align: TextAlign.start),
+                      align: TextAlign.start,
+                      weight: 'L'),
                 ),
 
                 // Desc
@@ -607,8 +613,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Icon(Icons.content_copy,
-                          size: 14, color: globals.myColor("primary")),
+                      Container(
+                        width: 17,
+                        height: 17,
+                        child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -636,7 +644,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       text: "Deskripsi Pengiriman",
                       color: "grey",
                       size: 13,
-                      align: TextAlign.start),
+                      align: TextAlign.start,
+                      weight: 'L'),
                 ),
 
                 // Desc
@@ -668,8 +677,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Icon(Icons.content_copy,
-                          size: 14, color: globals.myColor("primary")),
+                      Container(
+                        width: 17,
+                        height: 17,
+                        child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -697,7 +708,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       text: "Deskripsi Garansi",
                       color: "grey",
                       size: 13,
-                      align: TextAlign.start),
+                      align: TextAlign.start,
+                      weight: 'L'),
                 ),
 
                 // Desc
@@ -729,8 +741,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Icon(Icons.content_copy,
-                          size: 14, color: globals.myColor("primary")),
+                      Container(
+                        width: 17,
+                        height: 17,
+                        child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -758,7 +772,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       text: "Informasi Lainnya",
                       color: "grey",
                       size: 13,
-                      align: TextAlign.start),
+                      align: TextAlign.start,
+                      weight: 'L'),
                 ),
 
                 // Desc
@@ -787,8 +802,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Icon(Icons.content_copy,
-                          size: 14, color: globals.myColor("primary")),
+                      Container(
+                        width: 17,
+                        height: 17,
+                        child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -816,7 +833,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       text: "Jenis Pengiriman",
                       color: "grey",
                       size: 13,
-                      align: TextAlign.start),
+                      align: TextAlign.start,
+                      weight: 'L'),
                 ),
 
                 // Desc
@@ -853,8 +871,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Icon(Icons.content_copy,
-                          size: 14, color: globals.myColor("primary")),
+                      Container(
+                        width: 17,
+                        height: 17,
+                        child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -877,9 +897,16 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            width: 30,
-            height: 30,
-            child: Image.asset('assets/images/customer-service.png'),
+            width: 35,
+            height: 35,
+            child: 
+              CircleAvatar(
+                // radius: 55,
+                backgroundColor: Colors.white,
+                child: Container(
+                      width: 25,
+                      height: 25,
+                      child: Image.asset('assets/images/admin.png')))
           ),
           globals.myText(
               text: "KLIK DISINI UNTUK HUBUNGI ADMIN", color: 'light', size: 16)
