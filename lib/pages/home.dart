@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -107,6 +108,28 @@ class _HomePage extends State<HomePage> {
     handleAppLifecycleState();
  
     subscribeFCM();
+    
+    _verificationBonusPoint();
+  }
+
+  _verificationBonusPoint() async {
+    if (globals.user != null) {
+      globals.debugPrint("${globals.user.point} & ${globals.user.verificationStatus}");
+      if (globals.user.point == 0 && globals.user.verificationStatus == 'verified') {
+        Map<String, dynamic> response = await verificationBonusPoint(globals.user.id, globals.user.tokenRedis);
+
+        if (response['status'] == 'succes') {
+          SchedulerBinding.instance.addPostFrameCallback((_) => globals.loadRewardPoint(context));
+        
+          // Pop Up Success
+          setState(() {
+            globals.user.point = 20;
+          });
+        }
+      } else {
+        globals.debugPrint("Yahhh");
+      }
+    }
   }
 
   subscribeFCM() {

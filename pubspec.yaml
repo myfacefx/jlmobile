@@ -125,8 +125,7 @@ flutter:
     - assets/images/copy.png
     - assets/images/more.png
     - assets/images/share.png
-    
-    
+    - assets/images/clap.png
 
   fonts:
   - family: RobotoMono

@@ -550,6 +550,39 @@ void loadingModel(context, {label = "Memuat. . ."}) {
   );
 }
 
+Future<bool> loadRewardPoint(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+        backgroundColor: Colors.white,
+        content: Container(
+          height: 190,
+          width: mw(context),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              myText(text: "SELAMAT ANDA MENDAPATKAN", weight: "B", size: 17),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
+                child: myText(text: "20 POIN", weight: "B", color: "mimosa", size: 20),
+              ),
+              myText(text: "Karena sudah melakukan verifikasi tanda pengenal", color: "grey", align: TextAlign.center, size: 12),
+              Image.asset(
+                "assets/images/clap.png", height: 100,
+              ),
+              SizedBox(height: 10),
+              myText(text: "Reward bisa dicek melalui Menu > Event JLF", color: "grey", align: TextAlign.center, size: 12),
+            ],
+          ),
+        )
+      );
+    },
+  );
+}
+
 Widget bottomNavigationBar(context) {
   return GestureDetector(
       onTap: () {

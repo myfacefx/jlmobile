@@ -49,17 +49,17 @@ class MyApp extends StatelessWidget {
       initialRoute = "/intro";
     else if (globals.state == "login")
       initialRoute = "/login";
-    else if (globals.user != null) {
-      if (globals.user.verificationStatus == null) {
-        initialRoute = "/verification";
-      } else if (globals.user.verificationStatus != null) {
-        if (globals.user.verificationStatus == "denied") {
-          initialRoute = "/verification";
-        }
-      }
-    } else if (globals.state == "verification") {
-      initialRoute = "/verification";
-    }
+    // else if (globals.user != null) {
+    //   if (globals.user.verificationStatus == null) {
+    //     initialRoute = "/verification";
+    //   } else if (globals.user.verificationStatus != null) {
+    //     if (globals.user.verificationStatus == "denied") {
+    //       initialRoute = "/verification";
+    //     }
+    //   }
+    // } else if (globals.state == "verification") {
+    //   initialRoute = "/verification";
+    // }
 
     return MaterialApp(
       title: 'JLF',
