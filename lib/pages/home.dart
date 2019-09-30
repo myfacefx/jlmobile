@@ -1333,9 +1333,7 @@ class _HomePage extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
             child: GestureDetector(
               onTap: () {
-                var message =
-                    "Hai admin, saya berminat untuk dijadikan kontent pet shop. Prosesnya gimana ya?";
-                globals.sendWhatsApp(globals.getNohpAdmin(), message);
+                globals.openInterestLink();
               },
               child: Column(
                 children: <Widget>[
@@ -1394,9 +1392,7 @@ class _HomePage extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
             child: GestureDetector(
               onTap: () {
-                var message =
-                    "Hai admin, saya berminat untuk dijadikan kontent dokter hewan. Prosesnya gimana ya?";
-                globals.sendWhatsApp(globals.getNohpAdmin(), message);
+                globals.openInterestLink();
               },
               child: Column(
                 children: <Widget>[
