@@ -189,7 +189,10 @@ generateToken() async {
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
 
+BuildContext ctx = null;
+
 notificationListener(context) {
+  ctx = context;
   _fcm.configure(onMessage: (Map<String, dynamic> message) async {
     debugPrint("onMessage: $message");
 
@@ -226,7 +229,11 @@ notificationListener(context) {
 }
 
 Future onSelectNotification(String payload) async {
-  debugPrint(payload);
+  // debugPrint(payload);
+  if (payload != null) {
+    debugPrint('notification payload: ' + payload);
+  }
+  await Navigator.of(ctx).pushNamed('/notification');
 }
 
 Future _showNotificationWithDefaultSound(Map<String, dynamic> message) async {
