@@ -18,6 +18,7 @@ import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
@@ -92,21 +93,25 @@ class _HomePage extends State<HomePage> {
     initUniLinksStream();
 
     handleAppLifecycleState();
- 
+
     subscribeFCM();
-    
+
     _verificationBonusPoint();
   }
 
   _verificationBonusPoint() async {
     if (globals.user != null) {
-      globals.debugPrint("${globals.user.point} & ${globals.user.verificationStatus}");
-      if (globals.user.point == 0 && globals.user.verificationStatus == 'verified') {
-        Map<String, dynamic> response = await verificationBonusPoint(globals.user.id, globals.user.tokenRedis);
+      globals.debugPrint(
+          "${globals.user.point} & ${globals.user.verificationStatus}");
+      if (globals.user.point == 0 &&
+          globals.user.verificationStatus == 'verified') {
+        Map<String, dynamic> response = await verificationBonusPoint(
+            globals.user.id, globals.user.tokenRedis);
 
         if (response['status'] == 'succes') {
-          SchedulerBinding.instance.addPostFrameCallback((_) => globals.loadRewardPoint(context));
-        
+          SchedulerBinding.instance
+              .addPostFrameCallback((_) => globals.loadRewardPoint(context));
+
           // Pop Up Success
           setState(() {
             globals.user.point = 20;
@@ -1238,19 +1243,9 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildLaranganBinatang() {
     return GestureDetector(
-        // onTap: () => Navigator.pushNamed(context, "/blacklist-animal"),
         onTap: () async {
-          try {
-            String url = getBaseUrl() + "/download/restricted-animals";
-            globals.debugPrint(url);
-            PDFDocument doc = await PDFDocument.fromURL(url);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PDFViewer(document: doc)));
-          } catch (e) {
-            globals.showDialogs("Gagal Memuat Halaman", context);
-          }
+          String url = getBaseUrl() + "/download/restricted-animals";
+          globals.openPdf(context, url, "Hewan Dilindungi");
         },
         child: Container(
           padding: EdgeInsets.fromLTRB(10, 16, 10, 16),

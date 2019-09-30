@@ -17,41 +17,21 @@ class _TeamPageState extends State<TeamPage> {
     globals.getNotificationCount();
   }
 
-  Widget _buildBackground() {
-    return Positioned(
-      child: Center(
-        child: Image.asset(
-          'assets/images/jlf-back.png',
-          width: globals.mw(context),
-          height: globals.mh(context),
-          fit: BoxFit.fill,
-        ),
-      ),
-    );
-  }
-
-  Widget _logo() {
-    return Container(
-        height: globals.mh(context) * 0.4,
-        child: Center(
-          child: Image.asset("assets/images/logo.png", height: 140),
-        ));
-  }
-
   Widget _buildEssayTeam() {
     return Container(
       child: globals.myText(
-          text: "Berikut adalah team yang akan berhubungan dengan customer JLF , apabila" +
-              "anda mendapati dihubungi nomor diluar yang tertera di bawah ini silahkan" +
+          text: "Berikut adalah team yang akan berhubungan dengan customer JLF, apabila " +
+              "anda mendapati dihubungi nomor diluar yang tertera di bawah ini silahkan " +
               "abaikan atau hubungi nomor dibawah ini untuk verifikasi.",
-          align: TextAlign.center,
-          letterSpacing: 1,
-          size: 16),
+          align: TextAlign.justify,
+          letterSpacing: 0.5,
+          size: 15),
     );
   }
 
   Widget _buildContact(String content, String number) {
     return Container(
+      margin: EdgeInsets.only(top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -79,7 +59,7 @@ class _TeamPageState extends State<TeamPage> {
 
           // Button Copy
           Container(
-            width: globals.mw(context) * 0.10,
+            width: 30,
             child: GestureDetector(
               onTap: () {
                 Clipboard.setData(new ClipboardData(text: number));
@@ -94,7 +74,7 @@ class _TeamPageState extends State<TeamPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Icon(Icons.content_copy,
-                          size: 14, color: globals.myColor("primary")),
+                          size: 20, color: globals.myColor("primary")),
                     ],
                   )),
             ),
@@ -107,7 +87,7 @@ class _TeamPageState extends State<TeamPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: globals.appBar(_scaffoldKey, context),
+        appBar: globals.appBar(_scaffoldKey, context, isSubMenu: true),
         body: Scaffold(
           key: _scaffoldKey,
           drawer: drawer(context),
@@ -116,16 +96,14 @@ class _TeamPageState extends State<TeamPage> {
             children: <Widget>[
               Stack(
                 children: <Widget>[
-                  _buildBackground(),
                   ListView(
                     shrinkWrap: true,
                     children: <Widget>[
-                      _logo(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           SizedBox(
-                            height: globals.mh(context) * 0.1,
+                            height: 20,
                           ),
                           globals.myText(
                               text: "Tim JLF", weight: "B", size: 20),
@@ -136,13 +114,17 @@ class _TeamPageState extends State<TeamPage> {
                               children: <Widget>[
                                 _buildEssayTeam(),
                                 SizedBox(height: 25),
-                                _buildContact("KERJASAMA BISNIS","+62 856-4387-8166"),
+                                _buildContact(
+                                    "KERJASAMA BISNIS", "+62 856-4387-8166"),
                                 SizedBox(height: 10),
-                                _buildContact("ADMIN DAN CUSTOMER SERVICE", "+62 822-2330-4275"),
+                                _buildContact("ADMIN DAN CUSTOMER SERVICE",
+                                    "+62 822-2330-4275"),
                                 SizedBox(height: 10),
-                                _buildContact("ADMIN SEKTOR BURUNG", "+62 817-723-617"),
+                                _buildContact(
+                                    "ADMIN SEKTOR BURUNG", "+62 817-723-617"),
                                 SizedBox(height: 10),
-                                _buildContact("SALES DAN MARKETING", "+62 877-0831-0833"),
+                                _buildContact(
+                                    "SALES DAN MARKETING", "+62 877-0831-0833"),
                               ],
                             ),
                           )

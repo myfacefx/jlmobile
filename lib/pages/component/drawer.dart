@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:jlf_mobile/globals.dart';
+import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jlf_mobile/services/user_services.dart';
@@ -28,26 +29,25 @@ Widget _buildDrawerNavigationButtonBig(
               child: Column(
                 children: <Widget>[
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                          child: Text(title,
-                              style: TextStyle(
-                                  color: Colors.white))),
-                      bidCount != null && bidCount > 0
-                          ? Container(
-                              constraints:
-                                  BoxConstraints(minWidth: 10, minHeight: 10),
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(100)),
-                              child: Text("$bidCount",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 10)))
-                          : Container(),
-                    ]),
-                    Divider(color: Colors.white)
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                            child: Text(title,
+                                style: TextStyle(color: Colors.white))),
+                        bidCount != null && bidCount > 0
+                            ? Container(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, minHeight: 10),
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.circular(100)),
+                                child: Text("$bidCount",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10)))
+                            : Container(),
+                      ]),
+                  Divider(color: Colors.white)
                 ],
               ))),
     ),
@@ -86,16 +86,8 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
             }
           }
           if (route == "terms") {
-            try {
-              String url = getBaseUrl() + "/download/terms-policy";
-              PDFDocument doc = await PDFDocument.fromURL(url);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PDFViewer(document: doc)));
-            } catch (e) {
-              globals.showDialogs("Gagal Memuat Halaman", context);
-            }
+            String url = getBaseUrl() + "/download/terms-policy";
+            globals.openPdf(context, url, "Kebijakan Privasi");
           } else {
             Navigator.pop(context);
             Navigator.pushNamed(context, route);
@@ -103,7 +95,8 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
         },
         child: SizedBox(
             width: double.infinity,
-            child: Text(title, style: TextStyle(color: Colors.white, fontSize: 12))),
+            child: Text(title,
+                style: TextStyle(color: Colors.white, fontSize: 12))),
       ));
 }
 
@@ -133,16 +126,15 @@ Widget drawer(context) {
                 Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(100)),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
                     height: 20,
                     child: FlatButton(
                       onPressed: () {},
-                      child: Text('${globals.user.point} Poin JLF', 
+                      child: Text(
+                        '${globals.user?.point??0} Poin JLF',
                         style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300
-                          ),
+                            fontSize: 12, fontWeight: FontWeight.w300),
                       ),
                     ),
                   ),
@@ -188,8 +180,7 @@ Widget drawer(context) {
                 // buildDrawerNavigationButtonBig(
                 //     "Bagikan JLF", '/share', null, context),
                 globals.spacePadding(),
-                _buildDrawerNavigationButtonSmall(
-                    "Rekber", "/rekber", context),
+                _buildDrawerNavigationButtonSmall("Rekber", "/rekber", context),
                 _buildDrawerNavigationButtonSmall(
                     "Tentang JLF", "/about", context),
                 _buildDrawerNavigationButtonSmall(
@@ -198,8 +189,7 @@ Widget drawer(context) {
                     "Tutorial", "/how-to", context),
                 _buildDrawerNavigationButtonSmall(
                     "Tanya Jawab", "/faq", context),
-                _buildDrawerNavigationButtonSmall(
-                    "Tim Kami", "/team", context),
+                _buildDrawerNavigationButtonSmall("Tim Kami", "/team", context),
                 _buildDrawerNavigationButtonSmall(
                     "Hubungi Kami", "contact", context),
                 // _buildDrawerNavigationButtonSmall(

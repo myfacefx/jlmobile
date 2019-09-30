@@ -3,11 +3,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
+import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
 import 'package:jlf_mobile/pages/sub_category_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/promo_category_services.dart';
@@ -474,8 +477,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            globals.openInterestLink();
+          onTap: () async {
+            String url = getBaseUrl() + "/download/sponsored_seller";
+            globals.openPdf(context, url, "Sponsored Seller");
           },
           child: Container(
             padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
