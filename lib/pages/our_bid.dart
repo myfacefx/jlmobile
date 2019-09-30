@@ -54,7 +54,7 @@ Widget tabBar(context) {
   return TabBar(
       unselectedLabelColor: Colors.grey,
       indicatorColor: Theme.of(context).primaryColor,
-      labelColor: Theme.of(context).primaryColor,
+      labelColor: Colors.black,
       tabs: choices.map((Choice choice) {
         return Tab(
           text: choice.title,
@@ -154,30 +154,39 @@ class _OurBidPageState extends State<OurBidPage> {
   // sort and search
   Widget dropdownSortBy() {
     List<String> item = <String>['Terbaru', 'Selesai', 'Dimenangkan', 'Kalah'];
-    return DropdownButton<String>(
-        value: selectedSortBy,
-        items: item.map((String value) {
-          return DropdownMenuItem(
-            value: value,
-            child: Text(
-              value,
-              style: TextStyle(color: Colors.black, fontSize: 12),
-            ),
-          );
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            if (selectedSortBy != value) {
-              selectedSortBy = value;
-              isLoading = true;
-              if (selectedTab == "Tawaran Ku") {
-                _getOurBid();
-              } else {
-                _getOurComment();
+    return Container(
+      height: 30,
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white, width: 1),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: DropdownButton<String>(
+          value: selectedSortBy,
+          items: item.map((String value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              if (selectedSortBy != value) {
+                selectedSortBy = value;
+                isLoading = true;
+                if (selectedTab == "Tawaran Ku") {
+                  _getOurBid();
+                } else {
+                  _getOurComment();
+                }
               }
-            }
-          });
-        });
+            });
+          }),
+    );
   }
 
   Widget _buildTextSearch() {
@@ -209,6 +218,7 @@ class _OurBidPageState extends State<OurBidPage> {
   Widget _buildSearch() {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+      color: globals.myColor("light-blue"),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
