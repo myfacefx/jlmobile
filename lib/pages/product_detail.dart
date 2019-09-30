@@ -1371,6 +1371,41 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         ));
   }
 
+  Widget _buildUniqueCode() {
+    String verifCode = "";
+    if (animal.auction.verificationCode != null) {
+      verifCode = animal.auction.verificationCode;
+    } else
+      verifCode = "19191";
+
+    return Container(
+      child: Wrap(
+        alignment: WrapAlignment.start,
+        direction: Axis.horizontal,
+        children: <Widget>[
+          globals.myText(
+            text: "5. ",
+            align: TextAlign.left,
+            color: "dark",
+            size: 13,
+          ),
+          globals.myText(
+              text: verifCode,
+              weight: "B",
+              size: 13,
+              color: "dark"),
+          globals.myText(
+            text:
+                " adalah kode anda apabila ingin menghubungi admin",
+            align: TextAlign.left,
+            color: "dark",
+            size: 13,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildWinnerSection() {
     User winner;
     int amount;
@@ -1526,22 +1561,38 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                     child: Column(
                                       children: <Widget>[
                                         globals.myText(
-                                            text: animal.auction
-                                                        .verificationCode !=
-                                                    null
-                                                ? animal
-                                                    .auction.verificationCode
-                                                : "19191",
-                                            weight: "B",
-                                            size: 30,
-                                            letterSpacing: 3,
-                                            color: "dark"),
+                                            text:
+                                                "1. Tekan tombol “Diskusi Pembayaran” untuk masuk ke forum diskusi pembayaran bersama admin",
+                                            align: TextAlign.left,
+                                            color: "dark",
+                                            size: 13,
+                                            textOverflow: TextOverflow.visible),
+                                        SizedBox(height: 5),
                                         globals.myText(
                                             text:
-                                                "Ini adalah kode unik yang dimiliki oleh pemilik lelang dan pemenang lelang, gunakan kode unik ini untuk melakukan pengecekan",
-                                            align: TextAlign.center,
+                                                "2. Sebelum memasukin diskusi anda akan diminta untuk mengisi form lelang, silahkan isikan selengkap dan sebetul betulnya",
+                                            align: TextAlign.left,
                                             color: "dark",
-                                            size: 13),
+                                            size: 13,
+                                            textOverflow: TextOverflow.visible),
+                                        SizedBox(height: 5),
+                                        globals.myText(
+                                            text:
+                                                "3. Seluruh pemenang wajib menggunakan “Diskusi Pembayaran”, kegagalan akibat tidak menggunakan fitur ini diluar tanggung jawab JLF",
+                                            align: TextAlign.left,
+                                            color: "dark",
+                                            size: 13,
+                                            textOverflow: TextOverflow.visible),
+                                        SizedBox(height: 5),
+                                        globals.myText(
+                                            text:
+                                                "4. Anda dapat mengecek lelang ini kembali melalui menu “Lelang Diikuti” di sidebar. ",
+                                            align: TextAlign.left,
+                                            color: "dark",
+                                            size: 13,
+                                            textOverflow: TextOverflow.visible),
+                                        SizedBox(height: 5),
+                                        _buildUniqueCode()
                                       ],
                                     ),
                                   ))),
@@ -1712,7 +1763,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                           ? globals.myColor('dark')
                                           : globals.myColor('primary'),
                                       child: globals.myText(
-                                          text: "CHAT",
+                                          text: "Diskusi Pembayaran",
                                           color: 'light',
                                           weight: "B"),
                                       shape: RoundedRectangleBorder(
