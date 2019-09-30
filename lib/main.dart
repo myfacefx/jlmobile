@@ -18,6 +18,7 @@ import 'package:jlf_mobile/pages/our_product.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
 import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/pages/setting.dart';
+import 'package:jlf_mobile/pages/team.dart';
 import 'package:jlf_mobile/pages/up_coming.dart';
 import 'package:jlf_mobile/pages/user/edit_password.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
@@ -100,6 +101,7 @@ class MyApp extends StatelessWidget {
         '/list-event': (BuildContext context) => ListEventPage(),
         '/send-otp': (BuildContext context) => SendOTPPage(),
         '/reward': (BuildContext context) => RewardPage(),
+        '/team': (BuildContext context) => TeamPage(),
 
         // '/edit-product': (BuildContext context) => EditProductPage()
       },

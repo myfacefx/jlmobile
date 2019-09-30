@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -8,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/animal.dart';
@@ -31,11 +30,8 @@ import 'package:jlf_mobile/services/static_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 import 'package:jlf_mobile/services/version_services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-
-import 'pdf_view_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -70,7 +66,6 @@ class _HomePage extends State<HomePage> {
   List<Widget> listPromoA = [];
 
   String selectedType = "PASAR HEWAN";
-  String urlPDFPath = "";
 
   @override
   void initState() {
@@ -91,15 +86,6 @@ class _HomePage extends State<HomePage> {
       globals.getNotificationCount();
       globals.generateToken();
       globals.notificationListener(context);
-
-      String urlPdf = getBaseUrl() + "/download/restricted-animals";
-      globals.debugPrint(urlPdf);
-      getFileFromUrl(urlPdf).then((f) {
-        setState(() {
-          urlPDFPath = f.path;
-          globals.debugPrint(urlPDFPath);
-        });
-      });
     }
 
     initUniLinks();
@@ -819,13 +805,14 @@ class _HomePage extends State<HomePage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => HowToJoinHotAuctionPage()));
+                            builder: (BuildContext context) =>
+                                HowToJoinHotAuctionPage()));
                   },
                   child: globals.myText(
-                    text: " LELANG PANAS ",
-                    color: "light",
-                    weight: "B",
-                    size: 14),
+                      text: " LELANG PANAS ",
+                      color: "light",
+                      weight: "B",
+                      size: 14),
                 ),
                 Image.asset(
                   "assets/images/hot_auction.png",
@@ -1249,30 +1236,20 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
-  Future<File> getFileFromUrl(String url) async {
-    print(url);
-    try {
-      var data = await http.get(url);
-      var bytes = data.bodyBytes;
-      var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/larangan.pdf");
-
-      File urlFile = await file.writeAsBytes(bytes);
-      return urlFile;
-    } catch (e) {
-      throw Exception("Error opening url file");
-    }
-  }
-
   Widget _buildLaranganBinatang() {
     return GestureDetector(
         // onTap: () => Navigator.pushNamed(context, "/blacklist-animal"),
-        onTap: () {
-          if (urlPDFPath != null) {
+        onTap: () async {
+          try {
+            String url = getBaseUrl() + "/download/restricted-animals";
+            globals.debugPrint(url);
+            PDFDocument doc = await PDFDocument.fromURL(url);
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PdfViewPage(path: urlPDFPath)));
+                    builder: (context) => PDFViewer(document: doc)));
+          } catch (e) {
+            globals.showDialogs("Gagal Memuat Halaman", context);
           }
         },
         child: Container(
