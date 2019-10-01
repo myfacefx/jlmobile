@@ -1371,41 +1371,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         ));
   }
 
-  Widget _buildUniqueCode() {
-    String verifCode = "";
-    if (animal.auction.verificationCode != null) {
-      verifCode = animal.auction.verificationCode;
-    } else
-      verifCode = "19191";
-
-    return Container(
-      child: Wrap(
-        alignment: WrapAlignment.start,
-        direction: Axis.horizontal,
-        children: <Widget>[
-          globals.myText(
-            text: "5. ",
-            align: TextAlign.left,
-            color: "dark",
-            size: 13,
-          ),
-          globals.myText(
-              text: verifCode,
-              weight: "B",
-              size: 13,
-              color: "dark"),
-          globals.myText(
-            text:
-                " adalah kode anda apabila ingin menghubungi admin",
-            align: TextAlign.left,
-            color: "dark",
-            size: 13,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildWinnerSection() {
     User winner;
     int amount;
@@ -1592,7 +1557,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                             size: 13,
                                             textOverflow: TextOverflow.visible),
                                         SizedBox(height: 5),
-                                        _buildUniqueCode()
                                       ],
                                     ),
                                   ))),

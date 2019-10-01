@@ -99,62 +99,22 @@ class _LoginPage extends State<LoginPage> {
         if (response != null) {
           if (response['status'] == 'success') {
             // Successfully Login
-
             User user = userFromJson(json.encode(response['data']));
 
-            // globals.debugPrint(user.toJson());
-
             saveLocalData('user', json.encode(response['data']));
-            // globals.debugPrint(response['data']);
 
             globals.user = user;
             globals.state = "home";
-
-            if (globals.user.verificationStatus == null) {
-              globals.state = 'verification';
-            } else {
-              if (globals.user.verificationStatus == 'denied') {
-                globals.state = 'verification';
-              }
-            }
-            // globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ?  : globals.state = 'home';
-
+           
             Navigator.of(context).pop();
 
-            // globals.debugPrint("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
             Navigator.pushNamed(
-                context,
-                globals.user.verificationStatus == null ||
-                        globals.user.verificationStatus == 'denied'
-                    ? "/verification"
-                    : "/");
+                context, "/");
           } else {
             globals.showDialogs(response['message'], context);
             globals.debugPrint("ERR: " + response.toString());
           }
         }
-
-        // if (userResult.statusCode == 1) {
-        //   saveLocalData('user', userToJson(userResult));
-        //   globals.debugPrint(userToJson(userResult));
-
-        //   globals.user = userResult;
-        //   globals.state = "home";
-
-        //   Navigator.of(context).pop();
-
-        //   globals.debugPrint("${globals.user.verificationStatus} and ${globals.user.identityNumber}");
-        //   Navigator.pushNamed(context, globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "/verification" : "/");
-
-        // } else if (userResult.statusCode == 2) {
-        //   globals.showDialogs(
-        //       "Username/Password salah atau tidak ditemukan", context);
-        // } else if (userResult.statusCode == 3) {
-        //   globals.showDialogs(
-        //       "Login gagal, Anda masuk dalam blacklist user", context);
-        // } else {
-        //   globals.showDialogs("Login gagal, silahkan coba kembali", context);
-        // }
 
         setState(() {
           loginLoading = false;
@@ -185,18 +145,6 @@ class _LoginPage extends State<LoginPage> {
       loginLoading = true;
     });
 
-    // di uncoment cuk, terus di isi email sama fbId ne
-    // User searchUser = User();
-    //     searchUser.email = profile['email'];
-    //     searchUser.facebookUserId = profile['id'];
-
-    //     globals.debugPrint("FB LOGIN LOOKUP");
-    //     globals.debugPrint(searchUser.toJson());
-    //     // List<User> users = await getByEmail(searchUser.toJson());
-    //     List<User> users = await fbLoginSearch(searchUser.toJson());
-
-    //     globals.debugPrint("####USERS TO STRING#####" + users.toString());
-    //     return;
     FacebookLoginResult result = await facebookLogin
         .logInWithReadPermissions(['email', 'public_profile']);
 
@@ -216,7 +164,6 @@ class _LoginPage extends State<LoginPage> {
 
         globals.debugPrint("FB LOGIN LOOKUP");
         globals.debugPrint(searchUser.toJson());
-        // List<User> users = await getByEmail(searchUser.toJson());
         List<User> users = await fbLoginSearch(searchUser.toJson());
 
         globals.debugPrint("####USERS TO STRING#####" + users.toString());
@@ -241,8 +188,6 @@ class _LoginPage extends State<LoginPage> {
           // No similar email found, user will be pushed to register page
 
           globals.state = "register";
-
-          // globals.debugPrint(profile['email']);
 
           Navigator.push(
               context,

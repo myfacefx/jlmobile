@@ -567,12 +567,12 @@ Future<bool> loadRewardPoint(BuildContext context) {
               borderRadius: BorderRadius.all(Radius.circular(32.0))),
           backgroundColor: Colors.white,
           content: Container(
-            height: 190,
+            height: 230,
             width: mw(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                myText(text: "SELAMAT ANDA MENDAPATKAN", weight: "B", size: 17),
+                myText(text: "SELAMAT ANDA MENDAPATKAN", weight: "B", size: 17, align: TextAlign.center),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 3.0),
                   child: myText(
