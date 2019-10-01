@@ -1247,7 +1247,7 @@ class _HomePage extends State<HomePage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PDFViewer(document: doc)));
+                    builder: (context) => PDFViewer(document: doc, showPicker: false,)));
           } catch (e) {
             globals.showDialogs("Gagal Memuat Halaman", context);
           }

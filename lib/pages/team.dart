@@ -41,7 +41,7 @@ class _TeamPageState extends State<TeamPage> {
   Widget _buildEssayTeam() {
     return Container(
       child: globals.myText(
-          text: "Berikut adalah team yang akan berhubungan dengan customer JLF , apabila" +
+          text: "Berikut adalah tim kami yang akan berhubungan dengan customer JLF , apabila" +
               "anda mendapati dihubungi nomor diluar yang tertera di bawah ini silahkan" +
               "abaikan atau hubungi nomor dibawah ini untuk verifikasi.",
           align: TextAlign.center,

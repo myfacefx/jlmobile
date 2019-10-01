@@ -92,7 +92,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PDFViewer(document: doc)));
+                      builder: (context) => PDFViewer(document: doc, showPicker: false,)));
             } catch (e) {
               globals.showDialogs("Gagal Memuat Halaman", context);
             }
