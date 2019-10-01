@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
+import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
 import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/auction_chat_services.dart';
@@ -499,8 +501,7 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
                 height: 10,
               ),
               myText(
-                  text:
-                      "Berikut $countAuction Lelang yang Perlu Kamu Lunasi :",
+                  text: "Berikut $countAuction Lelang yang Perlu Kamu Lunasi :",
                   align: TextAlign.center,
                   size: 14,
                   color: "danger"),
@@ -562,30 +563,39 @@ Future<bool> loadRewardPoint(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        backgroundColor: Colors.white,
-        content: Container(
-          height: 190,
-          width: mw(context),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              myText(text: "SELAMAT ANDA MENDAPATKAN", weight: "B", size: 17),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3.0),
-                child: myText(text: "20 POIN", weight: "B", color: "mimosa", size: 20),
-              ),
-              myText(text: "Karena sudah melakukan verifikasi tanda pengenal", color: "grey", align: TextAlign.center, size: 12),
-              Image.asset(
-                "assets/images/clap.png", height: 100,
-              ),
-              SizedBox(height: 10),
-              myText(text: "Reward bisa dicek melalui Menu > Event JLF", color: "grey", align: TextAlign.center, size: 12),
-            ],
-          ),
-        )
-      );
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          backgroundColor: Colors.white,
+          content: Container(
+            height: 190,
+            width: mw(context),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                myText(text: "SELAMAT ANDA MENDAPATKAN", weight: "B", size: 17),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 3.0),
+                  child: myText(
+                      text: "20 POIN", weight: "B", color: "mimosa", size: 20),
+                ),
+                myText(
+                    text: "Karena sudah melakukan verifikasi tanda pengenal",
+                    color: "grey",
+                    align: TextAlign.center,
+                    size: 12),
+                Image.asset(
+                  "assets/images/clap.png",
+                  height: 100,
+                ),
+                SizedBox(height: 10),
+                myText(
+                    text: "Reward bisa dicek melalui Menu > Event JLF",
+                    color: "grey",
+                    align: TextAlign.center,
+                    size: 12),
+              ],
+            ),
+          ));
     },
   );
 }
@@ -800,7 +810,6 @@ void getNotificationCount() async {
 String printWhenNotNull(var variable) {
   return variable == null ? "-" : variable;
 }
-
 
 String convertToMoney(double number) {
   if (number == null) return "-";
@@ -1330,9 +1339,27 @@ void sendOTP(targetPhoneNumber) async {
 
 void openInterestLink() async {
   String url = 'https://forms.gle/Yq1B8Zpqeuxm4t4KA';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+void openPdf(context, String url, String title) async {
+  try {
+    debugPrint(url);
+    loadingModel(context);
+    PDFDocument doc = await PDFDocument.fromURL(url);
+    Navigator.pop(context);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PdfViewerPage(
+                  document: doc,
+                  title: title,
+                )));
+  } catch (e) {
+    showDialogs("Gagal Memuat Halaman", context);
+  }
 }
