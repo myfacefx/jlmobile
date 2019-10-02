@@ -967,32 +967,35 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       _type = 3;
       name = "Jual Aksesoris";
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => CreateAuctionPage(
-                          type: _type,
-                          categoryId: widget.animalCategory.id,
-                          subCategoryId: selectedAnimalSubCategoryId,
-                        )));
-          },
-          icon: Icon(
-            Icons.add_circle,
-            color: globals.myColor("primary"),
-            size: 30,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => CreateAuctionPage(
+                      type: _type,
+                      categoryId: widget.animalCategory.id,
+                      subCategoryId: selectedAnimalSubCategoryId,
+                    )));
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.add_circle,
+              color: globals.myColor("primary"),
+              size: 30,
+            ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(5, 0, 20, 0),
-          child: globals.myText(
-              text: name, size: 16, color: "primary", weight: "B"),
-        )
-      ],
+          Padding(
+            padding: EdgeInsets.fromLTRB(5, 0, 20, 0),
+            child: globals.myText(
+                text: name, size: 16, color: "primary", weight: "B"),
+          )
+        ],
+      ),
     );
   }
 
