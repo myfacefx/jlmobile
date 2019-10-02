@@ -44,6 +44,7 @@ class User {
   String verificationStatus;
   String tokenRedis;
   int point;
+  int coupon;
   String level;
   int unreadChatCount;
 
@@ -76,6 +77,7 @@ class User {
       this.verificationStatus,
       this.tokenRedis,
       this.point,
+      this.coupon,
       this.level,
       this.unreadChatCount
       });
@@ -123,6 +125,8 @@ class User {
             json["verification_status"] == null ? null : json["verification_status"],
         point:
             json["point"] == null ? null : json["point"],
+        coupon:
+            json["point"] == null ? null : json["coupon"],
         level:
             json["level"] == null ? null : json["level"],
   );
@@ -156,6 +160,7 @@ class User {
         "verification_status": verificationStatus == null ? null : verificationStatus,
         "identity_number": identityNumber == null ? null : identityNumber,
         "point": point == null ? null : point,
+        "coupon": point == null ? null : coupon,
         "level": level == null ? null : level
       }..removeWhere((key, val) => val == null);
 }

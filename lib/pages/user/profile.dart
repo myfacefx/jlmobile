@@ -590,6 +590,10 @@ class _ProfilePageState extends State<ProfilePage>
         ? (globals.user.point / 1000).toStringAsFixed(1)
         : globals.user.point.toString();
 
+    String userCoupon = globals.user.coupon > 999
+        ? (globals.user.coupon / 1000).toStringAsFixed(1)
+        : globals.user.coupon.toString();
+
     return Container(
       padding: EdgeInsets.all(5),
       width: globals.mw(context),
@@ -599,181 +603,168 @@ class _ProfilePageState extends State<ProfilePage>
               child: Stack(
                 children: <Widget>[
                   user.id == globals.user.id
-                      ? Row(
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.topLeft,
-                                  width: 87,
-                                  child: ButtonTheme(
-                                    height: 25,
-                                    child: FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      WebviewScaffold(
-                                                          // displayZoomControls: true,
-                                                          scrollBar: true,
-                                                          withZoom: true,
-                                                          url:
-                                                              'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
-                                                          appBar: globals.appBar(
-                                                              _scaffoldKey,
-                                                              context,
-                                                              isSubMenu: true,
-                                                              showNotification:
-                                                                  false))));
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            globals.myText(
-                                                text: "$userPoint POIN",
-                                                color: "light",
-                                                size: 12,
-                                                weight: "B")
-                                          ],
-                                        ),
-                                        color: isLoading
-                                            ? Colors.grey
-                                            : globals.myColor("warning"),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5))),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {
-                                    var text = RichText(
-                                        text: TextSpan(
-                                          style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: Colors.black,
-                                          ),
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                                text:
-                                                    'Dapatkan poin setiap menyelesaikan transaksi lelang, pemilik lelang mendapat 2 poin, sedangkan untuk pemenang lelang mendapat 1 poin. Cek hadiah yang tersedia dengan klik pada tombol poin.'),
-                                          ],
-                                        ),
-                                      );
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Tukarkan Poin dengan Hadiah Menarik'),
-                                            content: text,
-                                            actions: <Widget>[
-                                              FlatButton(
-                                                child: Text('Cek Hadiah'),
-                                                onPressed: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              WebviewScaffold(
-                                                                  // displayZoomControls: true,
-                                                                  scrollBar: true,
-                                                                  withZoom: true,
-                                                                  url:
-                                                                      'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
-                                                                  appBar: globals.appBar(
-                                                                      _scaffoldKey,
-                                                                      context,
-                                                                      isSubMenu: true,
-                                                                      showNotification:
-                                                                          false))));
-                                                },
-                                              ),
-                                              FlatButton(
-                                                child: Text('Tutup'),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              )
+                      ? Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.topLeft,
+                                    width: 87,
+                                    child: ButtonTheme(
+                                      height: 25,
+                                      child: FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        WebviewScaffold(
+                                                            // displayZoomControls: true,
+                                                            scrollBar: true,
+                                                            withZoom: true,
+                                                            url:
+                                                                'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
+                                                            appBar: globals.appBar(
+                                                                _scaffoldKey,
+                                                                context,
+                                                                isSubMenu: true,
+                                                                showNotification:
+                                                                    false))));
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              globals.myText(
+                                                  text: "$userPoint POIN",
+                                                  color: "light",
+                                                  size: 12,
+                                                  weight: "B")
                                             ],
-                                          );
-                                        },
-                                      );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 5),
-                                    child: Icon(Icons.info_outline,
-                                        color: globals.myColor("warning")),
+                                          ),
+                                          color: isLoading
+                                              ? Colors.grey
+                                              : globals.myColor("warning"),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5))),
+                                    ),
                                   ),
-                                ),
-                                GestureDetector(
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  GestureDetector(
                                     onTap: () {
                                       var text = RichText(
-                                        text: TextSpan(
-                                          style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: Colors.black,
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              color: Colors.black,
+                                            ),
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  text:
+                                                      'Dapatkan poin setiap menyelesaikan transaksi lelang, pemilik lelang mendapat 2 poin, sedangkan untuk pemenang lelang mendapat 1 poin. Cek hadiah yang tersedia dengan klik pada tombol poin.'),
+                                            ],
                                           ),
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                                text:
-                                                    'Dapatkan kupon undian setelah menyelesaikan transaksi Lelang atau Jual beli dengan menggunakan rekber JLF.'),
-                                            TextSpan(
-                                                text: ' Member JLF',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            TextSpan(
-                                                text:
-                                                    ' akan mendapatkan masing-masing'),
-                                            TextSpan(
-                                                text: ' 1 kupon',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            TextSpan(text: ' undian untuk'),
-                                            TextSpan(
-                                                text: ' 5 kali',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            TextSpan(
-                                                text:
-                                                    ' menjual atau membeli atau melelang menggunakan rekber JLF.'),
-                                          ],
-                                        ),
-                                      );
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Informasi'),
-                                            content: text,
-                                            actions: <Widget>[
-                                              FlatButton(
-                                                child: Text('Tutup'),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
+                                        );
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Tukarkan Poin dengan Hadiah Menarik'),
+                                              content: text,
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text('Cek Hadiah'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                WebviewScaffold(
+                                                                    // displayZoomControls: true,
+                                                                    scrollBar: true,
+                                                                    withZoom: true,
+                                                                    url:
+                                                                        'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
+                                                                    appBar: globals.appBar(
+                                                                        _scaffoldKey,
+                                                                        context,
+                                                                        isSubMenu: true,
+                                                                        showNotification:
+                                                                            false))));
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  child: Text('Tutup'),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Icon(Icons.info_outline,
+                                          color: globals.myColor("warning")),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+
+                          // Text Kupon
+                          Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.topLeft,
+                                    width: 80,
+                                    child: ButtonTheme(
+                                      height: 25,
+                                      child: FlatButton(
+                                          onPressed: () {},
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Row(
+                                                children: <Widget>[
+                                                  globals.myText(
+                                                    text: "$userCoupon",
+                                                    color: "light",
+                                                    size: 12,
+                                                    weight: "B"),
+                                                  Container(
+                                                    width: 20,
+                                                    height: 30,
+                                                    child: Image.asset('assets/images/coupon.png'),
+                                                  )
+                                                ],
                                               )
                                             ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      height: 30,
-                                      width: 30,
-                                      child: Image.asset(
-                                          'assets/images/coupon.png'),
-                                    ))
-                              ],
-                            )
-                          ],
-                        )
+                                          ),
+                                          color: isLoading
+                                              ? Colors.grey
+                                              : globals.myColor("light-blue"),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5))),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      )
                       : Container(),
                   user.id == globals.user.id
                       ? Container(
