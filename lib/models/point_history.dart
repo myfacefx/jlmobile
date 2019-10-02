@@ -11,7 +11,7 @@ String pointHistoryToJson(List<PointHistory> data) => json.encode(List<dynamic>.
 class PointHistory {
     int id;
     String information;
-    int point;
+    double point;
     int userId;
     dynamic animalId;
     dynamic type;

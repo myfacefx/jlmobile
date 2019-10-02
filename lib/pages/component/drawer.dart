@@ -17,6 +17,8 @@ Widget _buildDrawerNavigationButtonBig(
       onPressed: () {
         if (route == '/share') {
           globals.share(null, null);
+        } else if (route == 'verification') {
+          globals.verificationOptionDialog(context);
         } else {
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
@@ -161,7 +163,7 @@ Widget drawer(context) {
                     ? globals.user.verificationStatus != 'verified'
                         ? _buildDrawerNavigationButtonBig(
                             "Verifikasi Data Diri",
-                            '/verification',
+                            'verification',
                             null,
                             context)
                         : Container()
