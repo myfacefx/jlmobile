@@ -422,7 +422,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
                                 child: Image.asset(
-                                    'assets/images/more.png')))),
+                                    'assets/images/user.png')))),
                   ),
                   SizedBox(
                     height: 5,
