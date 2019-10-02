@@ -13,6 +13,7 @@ import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
 import 'package:jlf_mobile/pages/send_OTP.dart';
+import 'package:jlf_mobile/pages/verify_pin.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/auction_chat_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
@@ -572,7 +573,11 @@ Future<bool> loadRewardPoint(BuildContext context) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                myText(text: "SELAMAT ANDA MENDAPATKAN", weight: "B", size: 17, align: TextAlign.center),
+                myText(
+                    text: "SELAMAT ANDA MENDAPATKAN",
+                    weight: "B",
+                    size: 17,
+                    align: TextAlign.center),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 3.0),
                   child: myText(
@@ -842,12 +847,14 @@ Widget buildFailedLoadingData(context, Function refresh) {
   );
 }
 
-String convertFormatDate(String date) {
+String convertFormatDate(String date, {bool simple = true}) {
   if (date == null) return "-";
   String newDate = "";
   String spDate = date.split(" ")[0];
   List<String> splitDate = spDate.split("-");
-  String month = convertMonthFromDigitSimple(int.parse(splitDate[1]));
+  String month = simple
+      ? convertMonthFromDigitSimple(int.parse(splitDate[1]))
+      : convertMonthFromDigit(int.parse(splitDate[1]));
   newDate = "${splitDate[2]}-$month-${splitDate[0]}";
   return newDate;
 }
@@ -1193,6 +1200,97 @@ Text myText(
       fontWeight: myFontWeight(weight),
     ),
   );
+}
+
+Future<bool> verificationOptionDialog(context) {
+  return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: myText(
+                text: "Konfirmasi WhatsApp Aktifmu Dulu Yuk",
+                align: TextAlign.center,
+                size: 20,
+                weight: "B"),
+            content: Wrap(
+              children: <Widget>[
+                myText(
+                    text:
+                        "Untuk melakukan BID dibutuhkan nomor WhatsApp yang aktif demi keamanan lelang dan mempermudah transaksi, dapatkan 5 poin untuk konfirmasi no WhatsAppmu",
+                    align: TextAlign.center)
+              ],
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  // FlatButton(
+                  //   child: Row(
+                  //     children: <Widget>[
+                  //       Text("Tanda Pengenal ",
+                  //           style: TextStyle(color: Colors.blue[300], fontSize: 14)),
+                  //       Container(
+                  //         constraints:
+                  //             BoxConstraints(minWidth: 15, minHeight: 15),
+                  //         padding: EdgeInsets.all(5),
+                  //         decoration: BoxDecoration(
+                  //             color: Colors.blue[300],
+                  //             borderRadius: BorderRadius.circular(100)),
+                  //         child: myText(
+                  //             text: " +10 ",
+                  //             weight: "B",
+                  //             color: 'light',
+                  //             size: 15))
+                  //     ],
+                  //   ),
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop(true);
+                  //     Navigator.of(context).pushNamed("/verification");
+                  //   },
+                  // ),
+                  // VerticalDivider(
+                  //   width: 10,
+                  //   color: Colors.white,
+                  // ),
+                  FlatButton(
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          "Konfirmasi ",
+                          style:
+                              TextStyle(color: Colors.green[600], fontSize: 14),
+                        ),
+                        Container(
+                            constraints:
+                                BoxConstraints(minWidth: 15, minHeight: 15),
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.green[600],
+                                borderRadius: BorderRadius.circular(100)),
+                            child: myText(
+                                text: " +5 ",
+                                weight: "B",
+                                color: 'light',
+                                size: 15))
+                      ],
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                      // Navigator.of(context).pushNamed("/send-otp");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => VerifyPinPage(
+                                  phoneNumber: user.phoneNumber)));
+                    },
+                  ),
+                ],
+              )
+            ],
+          );
+        },
+      ) ??
+      false;
 }
 
 Future<bool> confirmDialog(String content, context,

@@ -43,7 +43,7 @@ class User {
   String identityNumber;
   String verificationStatus;
   String tokenRedis;
-  int point;
+  double point;
   int coupon;
   String level;
   int unreadChatCount;

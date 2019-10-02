@@ -16,11 +16,13 @@ import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/pages/article.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/how_to_join_hot_auction.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
@@ -340,13 +342,8 @@ class _HomePage extends State<HomePage> {
           listPromoA.add(GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => WebviewScaffold(
-                      // displayZoomControls: true,
-                      scrollBar: true,
-                      withZoom: true,
-                      url: slider.name,
-                      appBar: globals.appBar(_scaffoldKey, context,
-                          isSubMenu: true, showNotification: false))));
+                builder: (context) => ArticlePage(title: slider.name, html: slider.description, image: slider.link, startDate: slider.startDate, endDate: slider.endDate)
+              ));
             },
             child: CachedNetworkImage(
               imageUrl: slider.link,
@@ -557,28 +554,6 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  // Widget _buildAsk() {
-  //   return GestureDetector(
-  //     onTap: () =>
-  //         launch("https://www.youtube.com/channel/UCW-Y3yIisBSOIJhV3ToA5oA"),
-  //     child: Container(
-  //       margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
-  //       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-  //       height: 64,
-  //       decoration: BoxDecoration(
-  //           color: Theme.of(context).primaryColor,
-  //           borderRadius: BorderRadius.circular(4)),
-  //       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-  //         globals.myText(
-  //             text: "TONTON PANDUAN DAN TIPS TRIK LENGKAP JLF DI SINI",
-  //             color: "light",
-  //             size: 16,
-  //             align: TextAlign.center),
-  //       ]),
-  //     ),
-  //   );
-  // }
-
   Widget _buildNumberMember() {
     String numberUser = (membersCount / 1000).toStringAsFixed(1);
     String numberAnimal = (animalCount / 1000).toStringAsFixed(1);
@@ -628,7 +603,8 @@ class _HomePage extends State<HomePage> {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Konfirmasi Nomor WA mu dapatkan 5 Poin JLF Gratis';
+        // display = 'Konfirmasi Nomor WA mu dapatkan 5 Poin JLF Gratis';
+        display = "Verifikasi sekarang dan dapatkan bonus poin JLF";
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
@@ -642,7 +618,7 @@ class _HomePage extends State<HomePage> {
 
       return _verificationStatus != 'verified'
           ? GestureDetector(
-              onTap: () => Navigator.pushNamed(context, "/verification"),
+              onTap: () => globals.verificationOptionDialog(context),
               child: Container(
                 margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 padding: EdgeInsets.fromLTRB(20, 10, 20, 10),

@@ -100,13 +100,14 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             "Garansi", globals.printWhenNotNull(transaction.guarantee)),
         _textContainer(
             "Nominal",
+            
             transaction.price != null
                 ? "Rp. " + globals.convertToMoney(transaction.price.toDouble())
                 : "-"),
         _textContainer("Ekspedisi Pengiriman",
             globals.printWhenNotNull(transaction.expeditionName)),
         _textContainer(
-            "Ongkos Kirim",
+            "Ongkos Kirim (Include Packing)",
             transaction.deliveryPrice != null
                 ? "Rp. " + globals.convertToMoney(transaction.deliveryPrice.toDouble())
                 : "-"),

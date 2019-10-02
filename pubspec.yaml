@@ -43,12 +43,7 @@ dependencies:
   firebase_messaging: 5.1.5
   firebase_analytics: ^5.0.2
 
-  # firebase_storage: ^3.0.4
-  # firebase_core: ^0.4.0+6
-  # # firebase_auth:
-  # cloud_firestore: ^0.12.5+2
-  # firebase_messaging: ^5.0.4
-  # firebase_analytics: ^4.0.2
+  flutter_html: ^0.11.0
 
   datetime_picker_formfield: ^0.4.3
   

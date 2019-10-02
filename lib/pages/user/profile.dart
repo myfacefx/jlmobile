@@ -639,7 +639,7 @@ class _ProfilePageState extends State<ProfilePage>
                                               globals.myText(
                                                   text: "$userPoint POIN",
                                                   color: "light",
-                                                  size: 12,
+                                                  size: 11.5,
                                                   weight: "B")
                                             ],
                                           ),

@@ -2055,11 +2055,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             "Bid gagal, Anda masuk dalam blacklist user",
                             context);
                       } else if (result == 4) {
-                        await globals.showDialogsVerificationOptions(
-                            "Untuk memastikan lelang berjalan baik , silahkan verifikasi akun anda terlebih dahulu",
-                            context,
-                            phoneNumber: globals.user.phoneNumber,
-                            userId: globals.user.id);
+                        await globals.verificationOptionDialog(context);
                       } else if (result == 5) {
                         await globals.showDialogs(
                             "Session anda telah berakhir, Silakan melakukan login ulang",

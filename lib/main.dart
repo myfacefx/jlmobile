@@ -41,26 +41,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setEnabledSystemUIOverlays ([]);
-    // print("Verification Status: ${globals.user.verificationStatus}");
     String initialRoute = "/";
-
-    print(globals.state);
 
     if (globals.state == "intro")
       initialRoute = "/intro";
     else if (globals.state == "login")
       initialRoute = "/login";
-    // else if (globals.user != null) {
-    //   if (globals.user.verificationStatus == null) {
-    //     initialRoute = "/verification";
-    //   } else if (globals.user.verificationStatus != null) {
-    //     if (globals.user.verificationStatus == "denied") {
-    //       initialRoute = "/verification";
-    //     }
-    //   }
-    // } else if (globals.state == "verification") {
-    //   initialRoute = "/verification";
-    // }
 
     return MaterialApp(
       title: 'JLF',
@@ -68,9 +54,6 @@ class MyApp extends StatelessWidget {
       navigatorObservers: <NavigatorObserver>[observer],
       theme: buildThemeData(),
       initialRoute: initialRoute,
-      // initialRoute: globals.state == "intro"
-      //     ? "/intro"
-      //     : (globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied') ? "/verification" : (globals.state == "home" ? "/" : "/login"),
       routes: <String, WidgetBuilder>{
         //Root Page
         '/': (BuildContext context) => HomePage(),
@@ -101,9 +84,7 @@ class MyApp extends StatelessWidget {
         '/list-event': (BuildContext context) => ListEventPage(),
         '/send-otp': (BuildContext context) => SendOTPPage(),
         '/reward': (BuildContext context) => RewardPage(),
-        '/team': (BuildContext context) => TeamPage(),
-
-        // '/edit-product': (BuildContext context) => EditProductPage()
+        '/team': (BuildContext context) => TeamPage()
       },
     );
   }
