@@ -378,3 +378,22 @@ Future<Map<String, dynamic>> verificationBonusPoint(int userId, String token) as
     throw Exception(response['message']);
   }
 }
+Future<Map<String, dynamic>> verificationBonusPointOtp(int userId, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "users/$userId/verification-bonus-poin-otp";
+
+  debugPrint(url);
+
+  http.Response res =
+      await http.post(url, headers: header);
+
+  var response = json.decode(res.body);
+
+  if (res.statusCode == 201) {
+    return response;
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(response['message']);
+  }
+}

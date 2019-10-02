@@ -634,7 +634,8 @@ class _HomePage extends State<HomePage> {
                           color: "light",
                           size: 12,
                           weight: "N",
-                          align: TextAlign.center)
+                          align: TextAlign.center,
+                          textOverflow: TextOverflow.ellipsis)
                     ]),
               ),
             )
@@ -1316,7 +1317,7 @@ class _HomePage extends State<HomePage> {
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
-                        fontSize: 11,
+                        fontSize: 13,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -1375,7 +1376,7 @@ class _HomePage extends State<HomePage> {
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
-                        fontSize: 11,
+                        fontSize: 13,
                       ),
                       textAlign: TextAlign.center,
                     ),

@@ -8,6 +8,7 @@ import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product/edit.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/promo.dart';
 import 'package:jlf_mobile/pages/user/point_history.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
@@ -616,21 +617,10 @@ class _ProfilePageState extends State<ProfilePage>
                                       height: 25,
                                       child: FlatButton(
                                           onPressed: () {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        WebviewScaffold(
-                                                            // displayZoomControls: true,
-                                                            scrollBar: true,
-                                                            withZoom: true,
-                                                            url:
-                                                                'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
-                                                            appBar: globals.appBar(
-                                                                _scaffoldKey,
-                                                                context,
-                                                                isSubMenu: true,
-                                                                showNotification:
-                                                                    false))));
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext context) => PromoPage()));
                                           },
                                           child: Row(
                                             mainAxisAlignment:
@@ -730,7 +720,12 @@ class _ProfilePageState extends State<ProfilePage>
                                     child: ButtonTheme(
                                       height: 25,
                                       child: FlatButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext context) => PromoPage()));
+                                          },
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
