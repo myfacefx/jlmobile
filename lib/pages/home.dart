@@ -628,7 +628,7 @@ class _HomePage extends State<HomePage> {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Konfirmasi Nomor WA mu dapatkan 5 Poin JLF Gratis';
+        display = 'Konfirmasi Nomor WA mu dapatkan 1 Poin JLF Gratis';
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
@@ -658,7 +658,8 @@ class _HomePage extends State<HomePage> {
                           color: "light",
                           size: 12,
                           weight: "N",
-                          align: TextAlign.center)
+                          align: TextAlign.center,
+                          textOverflow: TextOverflow.ellipsis)
                     ]),
               ),
             )
@@ -1340,7 +1341,7 @@ class _HomePage extends State<HomePage> {
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
-                        fontSize: 11,
+                        fontSize: 13,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -1399,7 +1400,7 @@ class _HomePage extends State<HomePage> {
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
-                        fontSize: 11,
+                        fontSize: 13,
                       ),
                       textAlign: TextAlign.center,
                     ),
