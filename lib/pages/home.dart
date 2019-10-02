@@ -628,7 +628,7 @@ class _HomePage extends State<HomePage> {
       var _verificationStatus = globals.user.verificationStatus;
 
       if (_verificationStatus == null) {
-        display = 'Konfirmasi Nomor WA mu dapatkan 1 Poin JLF Gratis';
+        display = 'Konfirmasi Nomor WA mu dapatkan 5 Poin JLF Gratis';
         color = 'danger';
       } else {
         if (_verificationStatus == 'verified') {
