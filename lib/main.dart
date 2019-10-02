@@ -30,6 +30,7 @@ import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
 import 'package:jlf_mobile/pages/verification.dart';
 import 'package:jlf_mobile/pages/reward.dart';
+import 'package:jlf_mobile/pages/promo.dart';
 import 'package:jlf_mobile/themes.dart';
 
 void main() => runApp(MyApp());
@@ -102,6 +103,7 @@ class MyApp extends StatelessWidget {
         '/send-otp': (BuildContext context) => SendOTPPage(),
         '/reward': (BuildContext context) => RewardPage(),
         '/team': (BuildContext context) => TeamPage(),
+        '/promo': (BuildContext context) => PromoPage(),
 
         // '/edit-product': (BuildContext context) => EditProductPage()
       },

@@ -176,7 +176,7 @@ Widget drawer(context) {
                 _buildDrawerNavigationButtonBig(
                     "Donasi", '/donasi', null, context),
                 _buildDrawerNavigationButtonBig(
-                    "Hadiah Poin JLF", '/reward', null, context),
+                    "Promo JLF", '/promo', null, context),
                 // buildDrawerNavigationButtonBig(
                 //     "Bagikan JLF", '/share', null, context),
                 globals.spacePadding(),
