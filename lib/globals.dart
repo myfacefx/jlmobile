@@ -493,14 +493,6 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
                 "assets/images/block-rekber.jpeg",
               ),
               myText(
-                  text:
-                      "Lakukan pelunasan rekber dahulu untuk melanjutkan proses lelang lainnya",
-                  align: TextAlign.center,
-                  size: 16),
-              SizedBox(
-                height: 10,
-              ),
-              myText(
                   text: "Berikut $countAuction Lelang yang Perlu Kamu Lunasi :",
                   align: TextAlign.center,
                   size: 14,
