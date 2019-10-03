@@ -44,28 +44,44 @@ class _PromoState extends State<PromoPage> {
   }
 
   Widget _buildPromotionB() {
-    return ListView.builder(
-            padding: const EdgeInsets.all(15.0),
-            itemCount: listPromoB.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: <Widget>[
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: CachedNetworkImage(
-                        imageUrl: listPromoB[index].link,
-                        placeholder: (context, url) =>
-                            Image.asset('assets/images/loading.gif', height: 175),
-                        errorWidget: (context, url, error) => Image.asset(
-                          'assets/images/error.jpeg',
-                          height: 75,
-                        ),
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(top: 15),
+          child: globals.myText(text: "PROMO JLF BULAN INI", weight: "B", size: 20),
+        ),
+        Flexible(
+          child: ListView.builder(
+                  padding: const EdgeInsets.all(15.0),
+                  itemCount: listPromoB.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () async {
+                        String url = listPromoB[index].name;
+                        globals.openPdf(context, url, listPromoB[index].fileName);
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(15.0),
+                              child: CachedNetworkImage(
+                                imageUrl: listPromoB[index].link,
+                                placeholder: (context, url) =>
+                                    Image.asset('assets/images/loading.gif', height: 175),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  'assets/images/error.jpeg',
+                                  height: 75,
+                                ),
+                              ),
+                          ),
+                          SizedBox(height: 15),
+                        ],
                       ),
-                  ),
-                  SizedBox(height: 15),
-                ],
-              );
-            });
+                    );
+                  }),
+        ),
+      ],
+    );
   }
 
   @override

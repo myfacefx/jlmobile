@@ -192,6 +192,26 @@ Future<ChatListPagination> getAuctionsWithActiveChat(
   }
 }
 
+Future<List<Auction>> getPopularAuctions(
+    String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  String url = getBaseUrl();
+
+  url += "/auctions/popular";
+
+  debugPrint(url);
+
+  http.Response res = await http.get(url, headers: header);
+
+  if (res.statusCode == 200) {
+    return auctionFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
 Future<List<Auction>> getAuctionsWithActiveChatNoPaginate(
     String token, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};

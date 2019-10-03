@@ -162,7 +162,7 @@ Widget drawer(context) {
                 globals.user != null
                     ? globals.user.verificationStatus != 'verified'
                         ? _buildDrawerNavigationButtonBig(
-                            "Verifikasi Data Diri",
+                            "Verifikasi WhatsApp",
                             'verification',
                             null,
                             context)
