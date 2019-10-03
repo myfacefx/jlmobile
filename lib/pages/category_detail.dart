@@ -3,14 +3,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/globals.dart';
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
-import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
+import 'package:jlf_mobile/models/top_seller_point.dart';
 import 'package:jlf_mobile/pages/sub_category_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/promo_category_services.dart';
@@ -36,6 +35,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   bool isLoadingLoadMore = false;
   bool isLoadingProvince = true;
   bool isLoadingTopSellers = true;
+  bool isLoadingTopSellersPoint = true;
   bool isLoadingPromos = true;
   String currentSubCategory = "ALL";
   int currentIdSubCategory;
@@ -49,6 +49,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
 
   List<Animal> animals = List<Animal>();
   List<TopSeller> topSellers = List<TopSeller>();
+  List<TopSellerPoint> topSellersPoint = List<TopSellerPoint>();
 
   List<Widget> _topSellerPages = List<Widget>();
   List<Widget> _promoCategory = List<Widget>();
@@ -85,12 +86,31 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         isLoadingPromos = false;
       });
     });
+
+    _getTopSellerPoin();
   }
 
   @override
   void initState() {
     super.initState();
     refreshTopSellerByCategoryId(animalCategory.id);
+  }
+
+  void _getTopSellerPoin() {
+    getTopSellerPointCategory(globals.user.tokenRedis, animalCategory.id)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+      topSellersPoint = onValue;
+      setState(() {
+        isLoadingTopSellersPoint = false;
+      });
+    });
   }
 
   void refreshTopSellerByCategoryId(animalCategoryId) {
@@ -311,7 +331,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _templateTopSellerProfile(TopSeller topSeller) {
+  Widget _templateTopSellerProfile(TopSellerPoint topSeller) {
     return GestureDetector(
       onTap: () {
         topSeller.userId != null
@@ -339,14 +359,14 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                             radius: 75,
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: topSeller.thumbnail != null ||
+                                child: topSeller.user.photo != null ||
                                         topSeller.user.photo != null
                                     ? FadeInImage.assetNetwork(
                                         fit: BoxFit.cover,
                                         placeholder:
                                             'assets/images/loading.gif',
-                                        image: topSeller.thumbnail != null
-                                            ? topSeller.thumbnail
+                                        image: topSeller.user.photo != null
+                                            ? topSeller.user.photo
                                             : topSeller.user.photo)
                                     : Image.asset(
                                         'assets/images/account.png')))))),
@@ -354,7 +374,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               height: 10,
             ),
             globals.myText(
-                text: "100 POIN",
+                text: "${topSeller.point} POIN",
                 size: 10,
                 align: TextAlign.center,
                 color: "unprime",
@@ -421,22 +441,23 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             Container(
               padding: EdgeInsets.only(left: 15, bottom: 10, top: 10),
               alignment: Alignment.centerLeft,
-              child: globals.myText(text: "TOP SELLERS", size: 18, weight: "XB"),
+              child:
+                  globals.myText(text: "TOP SELLERS", size: 18, weight: "XB"),
             ),
             Container(
-                height: topSellers.length > 0 ? 100 : 40,
+                height: topSellersPoint.length > 0 ? 100 : 40,
                 alignment: Alignment.center,
-                child: isLoadingTopSellers
+                child: isLoadingTopSellersPoint
                     ? globals.isLoading()
-                    : topSellers.length > 0
+                    : topSellersPoint.length > 0
                         ? ListView.builder(
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: false,
                             itemBuilder: (context, index) {
                               return _templateTopSellerProfile(
-                                  topSellers[index]);
+                                  topSellersPoint[index]);
                             },
-                            itemCount: topSellers.length,
+                            itemCount: topSellersPoint.length,
                           )
                         : globals.myText(
                             text: "Belum ada top seller pada kategori ini")),

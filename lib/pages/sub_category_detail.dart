@@ -5,6 +5,7 @@ import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
+import 'package:jlf_mobile/models/top_seller_point.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
@@ -33,6 +34,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
   int selectedAnimalSubCategoryId;
   String selectedSortBy = "Populer";
   bool isLoading = true;
+  bool isLoadingTopSellerPoin = true;
   bool isLoadingLoadMore = false;
   bool isLast = false;
   int _type = 0;
@@ -41,19 +43,35 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
   List<Animal> animals = List<Animal>();
   List<TopSeller> topSellers = List<TopSeller>();
   List<Widget> _sponsoredSellerPages = List<Widget>();
+  List<TopSellerPoint> topSellersPoint = List<TopSellerPoint>();
 
   bool isLoadingTopSellers = true;
 
   @override
   void initState() {
     super.initState();
-    refreshTopSellerBySubCategoryId(animalCategory.id);
+  }
+
+  void _getTopSellerPointSubCategoy() {
+    getTopSellerPointSubCategory(
+            globals.user.tokenRedis, selectedAnimalSubCategoryId)
+        .then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+      topSellersPoint = onValue;
+
+      setState(() {
+        isLoadingTopSellerPoin = false;
+      });
+    });
   }
 
   void refreshTopSellerBySubCategoryId(animalSubCategoryId) {
-    setState(() {
-      isLoadingTopSellers = true;
-    });
     getTopSellersBySubCategoryId(globals.user.tokenRedis, animalSubCategoryId)
         .then((onValue) async {
       if (onValue == null) {
@@ -65,6 +83,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       }
       setState(() {
         topSellers = onValue;
+        _registerTopSellerCarousel(onValue);
         isLoadingTopSellers = false;
       });
     });
@@ -79,6 +98,8 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       globals.autoClose();
     }
 
+    refreshTopSellerBySubCategoryId(selectedAnimalSubCategoryId);
+    _getTopSellerPointSubCategoy();
     globals.getNotificationCount();
 
     var function;
@@ -121,27 +142,6 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
     });
   }
 
-  void refreshTopSellerByCategoryId(animalCategoryId) {
-    setState(() {
-      isLoadingTopSellers = true;
-    });
-    getTopSellersByCategoryId(globals.user.tokenRedis, animalCategoryId)
-        .then((onValue) async {
-      if (onValue == null) {
-        await globals.showDialogs(
-            "Session anda telah berakhir, Silakan melakukan login ulang",
-            context,
-            isLogout: true);
-        return;
-      }
-      setState(() {
-        topSellers = onValue;
-        isLoadingTopSellers = false;
-        _registerTopSellerCarousel(onValue);
-      });
-    });
-  }
-
   _registerTopSellerCarousel(List<TopSeller> topSellers) {
     setState(() {
       _sponsoredSellerPages = List<Widget>();
@@ -150,10 +150,10 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
         List<Widget> secondRowWidget = List<Widget>();
 
         for (var topSeller in topSellers) {
-          if (firstRowWidget.length < 3)
+          if (firstRowWidget.length < 4)
             firstRowWidget
                 .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
-          else if (secondRowWidget.length < 3)
+          else if (secondRowWidget.length < 4)
             secondRowWidget
                 .add(_templateHeaderTopSellerProfile(topSeller, height: 62));
           else {
@@ -206,7 +206,11 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       child: Column(
         children: <Widget>[
           Container(
-              margin: EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300], width: 1),
+                  borderRadius: BorderRadius.circular(5.0)),
+              margin: EdgeInsets.symmetric(horizontal: 10),
               child: Container(
                   alignment: Alignment.center,
                   width: height,
@@ -301,7 +305,12 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
   void _refresh(int subCategoryId) {
     setState(() {
       isLoading = true;
+      isLoadingTopSellerPoin = true;
+      isLoadingTopSellers = true;
     });
+
+    _getTopSellerPointSubCategoy();
+    refreshTopSellerBySubCategoryId(selectedAnimalSubCategoryId);
 
     nextUrl = null;
     isLast = false;
@@ -729,6 +738,25 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                             : null,
                         widget.from == "LELANG",
                         animal.createdAt.toString()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: globals.myColor("light-blue"),
+                          ),
+                          padding: EdgeInsets.all(3),
+                          margin: EdgeInsets.fromLTRB(0, 3, 0, 3),
+                          child: globals.myText(
+                              color: "light",
+                              size: 11,
+                              text: animal.auction.closingType == "durasi"
+                                  ? "last bidder"
+                                  : "closed time"),
+                        ),
+                      ],
+                    ),
                     isNotError
                         ? _buildImage(animal.animalImages[0].thumbnail)
                         : globals.failLoadImage(),
@@ -843,19 +871,19 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
             ),
             Container(
                 color: Colors.white,
-                height: topSellers.length > 0 ? 100 : 40,
+                height: topSellersPoint.length > 0 ? 100 : 40,
                 alignment: Alignment.center,
-                child: isLoadingTopSellers
+                child: isLoadingTopSellerPoin
                     ? globals.isLoading()
-                    : topSellers.length > 0
+                    : topSellersPoint.length > 0
                         ? ListView.builder(
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: false,
                             itemBuilder: (context, index) {
                               return _templateTopSellerProfile(
-                                  topSellers[index]);
+                                  topSellersPoint[index]);
                             },
-                            itemCount: topSellers.length,
+                            itemCount: topSellersPoint.length,
                           )
                         : globals.myText(
                             text: "Belum ada top seller pada kategori ini")),
@@ -865,7 +893,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
     );
   }
 
-  Widget _templateTopSellerProfile(TopSeller topSeller) {
+  Widget _templateTopSellerProfile(TopSellerPoint topSeller) {
     return GestureDetector(
       onTap: () {
         topSeller.userId != null
@@ -895,14 +923,14 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                             radius: 75,
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: topSeller.thumbnail != null ||
+                                child: topSeller.user.photo != null ||
                                         topSeller.user.photo != null
                                     ? FadeInImage.assetNetwork(
                                         fit: BoxFit.cover,
                                         placeholder:
                                             'assets/images/loading.gif',
-                                        image: topSeller.thumbnail != null
-                                            ? topSeller.thumbnail
+                                        image: topSeller.user.photo != null
+                                            ? topSeller.user.photo
                                             : topSeller.user.photo)
                                     : Image.asset(
                                         'assets/images/account.png')))))),
@@ -910,7 +938,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
               height: 10,
             ),
             globals.myText(
-                text: "100 POIN",
+                text: "${topSeller.point} POIN",
                 size: 10,
                 align: TextAlign.center,
                 color: "unprime",
@@ -935,13 +963,13 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
           Container(
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-            height: _sponsoredSellerPages.length != 0 ? 190 : 50,
+            height: _sponsoredSellerPages.length != 0 ? 210 : 50,
             child: _sponsoredSellerPages.length != 0
                 ? CarouselSlider(
                     autoPlay: true,
-                    autoPlayInterval: Duration(seconds: 2),
+                    autoPlayInterval: Duration(seconds: 4),
                     viewportFraction: 1.0,
-                    height: 190,
+                    height: 210,
                     enableInfiniteScroll: true,
                     onPageChanged: (index) {
                       setState(() {});

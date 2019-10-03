@@ -266,7 +266,7 @@ class _HomePage extends State<HomePage> {
       }
     }).catchError((onError) async {
       await globals.showDialogs(
-          "Maaf, Server Sedang Dalam Maintenance,\nSilakan Coba Beberapa Saat Lagi",
+          "Maaf, Server Sedang Dalam Maintenance,\nSilakan Coba Kembali Beberapa Saat Lagi",
           context);
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     });
@@ -730,8 +730,7 @@ class _HomePage extends State<HomePage> {
                       color: globals.myColor("hot-auction"),
                       borderRadius: BorderRadius.circular(5)),
                   child: globals.myText(
-                      text:
-                          "${auction.bids.length} BID",
+                      text: "${auction.bids.length} BID",
                       weight: "B",
                       color: 'light',
                       textOverflow: TextOverflow.ellipsis,
@@ -1430,8 +1429,9 @@ class _HomePage extends State<HomePage> {
             color: Color.fromRGBO(0, 0, 0, 0),
             child: FittedBox(
               child: FloatingActionButton(
-                onPressed: () {
-                  globals.sendOTP(globals.user.phoneNumber);
+                onPressed: () async {
+                  String url = getBaseUrl() + "/download/hadiah_jlf";
+                  globals.openPdf(context, url, "Hadiah JLF");
                 },
                 child: Image.asset("assets/images/floatingbutton.png"),
                 backgroundColor: Color.fromRGBO(0, 0, 0, 0),
