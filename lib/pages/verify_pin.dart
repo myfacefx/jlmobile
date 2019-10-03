@@ -253,12 +253,16 @@ class _VerifyPinState extends State<VerifyPinPage> {
         }
         globals.debugPrint("content");
         _isProcessing = false;
+        setState(() {
+          globals.user.verificationStatus = "verified";
+        });
         // globals.state = "/profile";
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "/profile");
+        Navigator.pop(context, true);
+        Navigator.pop(context, true);
+        // Navigator.pushNamed(context, "/profile");
         // Navigator.pushReplacementNamed(context, "/profile");
       } catch (error) {
-        Navigator.pop(context);
+        Navigator.pop(context, true);
         // globals.showDialogs(
         //     "Gagal Verifikasi Data, Silakan hubungi admin", context);
       }
