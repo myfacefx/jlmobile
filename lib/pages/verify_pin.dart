@@ -259,8 +259,8 @@ class _VerifyPinState extends State<VerifyPinPage> {
         // Navigator.pushReplacementNamed(context, "/profile");
       } catch (error) {
         Navigator.pop(context);
-        globals.showDialogs(
-            "Gagal Verifikasi Data, Silakan hubungi admin", context);
+        // globals.showDialogs(
+        //     "Gagal Verifikasi Data, Silakan hubungi admin", context);
       }
     }
 
