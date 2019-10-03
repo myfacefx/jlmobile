@@ -83,7 +83,7 @@ class _VerifyPinState extends State<VerifyPinPage> {
 
   _sendOTP() async {
     generateRandomOTP();
-    _messageOTP = "[JLF] DON'T SHARE THIS WITH ANYONE. YOUR SECRET OTP CODE :" +
+    _messageOTP = "== [JLF] ==\nJANGAN MEMBERITAHU KODE RAHASIA INI KE SIAPAPUN termasuk pihak JLF. KODE INI HANYA DIGUNAKAN DI APLIKASI JLF. KODE RAHASIA untuk VERIFIKASI OTP ANDA adalah :" +
         _otpKey +
         ". Kunjungi Kami di http://juallelangfauna.com/";
 
