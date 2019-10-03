@@ -70,7 +70,7 @@ class _LoginPage extends State<LoginPage> {
       }
     }).catchError((onError) async {
       await globals.showDialogs(
-          "Maaf, Server Sedang Dalam Maintenance,\nSilakan Coba Beberapa Saat Lagi",
+          "Maaf, Server Sedang Dalam Maintenance,\nSilakan Coba Kembali Beberapa Saat Lagi",
           context);
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     });

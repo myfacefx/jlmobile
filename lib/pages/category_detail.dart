@@ -421,7 +421,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             Container(
               padding: EdgeInsets.only(left: 15, bottom: 10, top: 10),
               alignment: Alignment.centerLeft,
-              child: globals.myText(text: "TOP SELLERS", weight: "B"),
+              child: globals.myText(text: "TOP SELLERS", size: 18, weight: "XB"),
             ),
             Container(
                 height: topSellers.length > 0 ? 100 : 40,
