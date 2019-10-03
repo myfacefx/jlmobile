@@ -1269,7 +1269,7 @@ Future<bool> verificationOptionDialog(context) {
                       ],
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop(false);
+                      // Navigator.of(context).pop(false);
                       // Navigator.of(context).pushNamed("/send-otp");
                       Navigator.push(
                           context,
