@@ -407,7 +407,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           SizedBox(width: 5),
           Column(
             children: <Widget>[
-              Column(
+              Row(
                 children: <Widget>[
                   GestureDetector(
                     onTap: () => Navigator.push(
@@ -416,16 +416,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             builder: (BuildContext context) =>
                                 ProfilePage(userId: animal.owner.id))),
                     child: Container(
-                        height: 25,
-                        child: CircleAvatar(
-                            radius: 15,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Image.asset(
-                                    'assets/images/user.png')))),
+                        height: 32,
+                        child: Image.asset(
+                                    'assets/images/user.png')),
                   ),
-                  SizedBox(
-                    height: 5,
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(1.5, 0, 1.5, 0),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -436,7 +432,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       _sendWhatsApp(phone, message);
                     },
                     child: Container(
-                        height: 25,
+                        height: 32,
                         child: CircleAvatar(
                             radius: 15,
                             child: ClipRRect(
@@ -461,7 +457,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         children: <Widget>[
           // Desc
           Container(
-            width: globals.mw(context) * 0.70,
+            width: globals.mw(context) * 0.6,
             child: Column(
               children: <Widget>[
                 Container(
@@ -508,54 +504,55 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           ),
           // Buttons
           Container(
-            width: globals.mw(context) * 0.10,
-            child: Column(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () => globals.share(widget.from, animal),
-                      child: Container(
-                          height: 25,
-                          child: CircleAvatar(
-                              radius: 15,
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Container(
-                                    width: 20,
-                                    height: 20,
-                                    child: Image.asset('assets/images/share.png')))))),
-                    SizedBox(height: 5),
-                    isAuction
-                        ? GestureDetector(
-                            onTap: () async {
-                              await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          EditAuctionPage(
-                                            animalId: animal.id,
-                                            description: animal.description,
-                                          )));
-                              loadAnimal(animal.id);
-                            },
-                            child: Container(
-                                height: 25,
-                                child: CircleAvatar(
-                                    radius: 15,
-                                    child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        child: Container(
-                                          width: 20,
-                                          height: 20,
-                                          child: Image.asset('assets/images/edit.png'))))),
-                          )
-                        : Container()
-                  ],
-                ),
-              ],
-            ),
+            width: globals.mw(context) * 0.2,
+            child: 
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(child: Container(),),
+                  GestureDetector(
+                    onTap: () => globals.share(widget.from, animal),
+                    child: Container(
+                        height: 32,
+                        child: CircleAvatar(
+                            radius: 15,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Container(
+                                  width: 22,
+                                  height: 22,
+                                  child: Image.asset('assets/images/share.png')))))),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(1, 0, 1, 0),
+                  ),
+                  isAuction
+                      ? GestureDetector(
+                          onTap: () async {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        EditAuctionPage(
+                                          animalId: animal.id,
+                                          description: animal.description,
+                                        )));
+                            loadAnimal(animal.id);
+                          },
+                          child: Container(
+                              height: 32,
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  child: ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.circular(100),
+                                      child: Container(
+                                        width: 22,
+                                        height: 22,
+                                        child: Image.asset('assets/images/edit.png'))))),
+                        )
+                      : Container()
+                ],
+              ),
           )
         ],
       ),
@@ -614,8 +611,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 17,
-                        height: 17,
+                        width: 22,
+                        height: 22,
                         child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
@@ -678,8 +675,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 17,
-                        height: 17,
+                        width: 22,
+                        height: 22,
                         child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
@@ -742,8 +739,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 17,
-                        height: 17,
+                        width: 22,
+                        height: 22,
                         child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
@@ -803,8 +800,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 17,
-                        height: 17,
+                        width: 22,
+                        height: 22,
                         child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
@@ -872,8 +869,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 17,
-                        height: 17,
+                        width: 22,
+                        height: 22,
                         child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
@@ -886,7 +883,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
 
   Widget _buildChatAdmin() {
     return RaisedButton(
-      color: Color.fromRGBO(109, 105, 105, 1),
+      color: Color.fromRGBO(25, 25, 25, 1),
       padding: EdgeInsets.all(20),
       onPressed: () {
         String message =
@@ -897,15 +894,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            width: 35,
-            height: 35,
+            width: 45,
+            height: 45,
             child: 
               CircleAvatar(
-                // radius: 55,
                 backgroundColor: Colors.white,
                 child: Container(
-                      width: 25,
-                      height: 25,
+                      width: 32,
+                      height: 32,
                       child: Image.asset('assets/images/admin.png')))
           ),
           globals.myText(
