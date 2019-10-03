@@ -501,7 +501,7 @@ class _ChatPageState extends State<ChatPage> {
     return Container(
       width: globals.mw(context),
       child: RaisedButton(
-        child: globals.myText(text: "FORM REKBER", weight: "B", color: "light"),
+        child: globals.myText(text: "Klik Disini Untuk Pengisian Form Rekber", weight: "B", color: "light"),
         color: globals.myColor("primary"), 
         onPressed: () => _loadTransaction(),
       )

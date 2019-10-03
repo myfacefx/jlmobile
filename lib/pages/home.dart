@@ -28,6 +28,7 @@ import 'package:jlf_mobile/pages/how_to_join_hot_auction.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_event_services.dart';
+import 'package:jlf_mobile/services/auction_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/static_services.dart';
 import 'package:jlf_mobile/services/top_seller_services.dart';
@@ -135,7 +136,7 @@ class _HomePage extends State<HomePage> {
       isLoadingAuctionEvents = true;
     });
 
-    getAuctionEventParticipants(globals.user.tokenRedis).then((onValue) async {
+    getPopularAuctions(globals.user.tokenRedis).then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
             "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -342,8 +343,13 @@ class _HomePage extends State<HomePage> {
           listPromoA.add(GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ArticlePage(title: slider.name, html: slider.description, image: slider.link, startDate: slider.startDate, endDate: slider.endDate)
-              ));
+                  builder: (context) => WebviewScaffold(
+                      // displayZoomControls: true,
+                      scrollBar: true,
+                      withZoom: true,
+                      url: slider.name,
+                      appBar: globals.appBar(_scaffoldKey, context,
+                          isSubMenu: true, showNotification: false))));
             },
             child: CachedNetworkImage(
               imageUrl: slider.link,
@@ -725,36 +731,13 @@ class _HomePage extends State<HomePage> {
                       borderRadius: BorderRadius.circular(5)),
                   child: globals.myText(
                       text:
-                          "+ ${auction.auctionEventParticipant.auctionEvent.extraPoint} POIN",
+                          "${auction.bids.length} BID",
                       weight: "B",
                       color: 'light',
                       textOverflow: TextOverflow.ellipsis,
                       align: TextAlign.center),
                 ),
               ),
-              Positioned(
-                top: 0,
-                child: Container(
-                  width: 80,
-                  decoration: BoxDecoration(
-                      color: globals.myColor("hot-auction"),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.timer, color: Colors.white, size: 14),
-                      globals.myText(
-                          text:
-                              " ${globals.convertTimer(auction.auctionEventParticipant.auctionEvent.endDate)}",
-                          weight: "B",
-                          color: 'light',
-                          textOverflow: TextOverflow.ellipsis,
-                          align: TextAlign.center),
-                    ],
-                  ),
-                ),
-              )
             ],
           ),
         ),
