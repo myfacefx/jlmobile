@@ -19,6 +19,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter_video_compress/flutter_video_compress.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class CreateAuctionPage extends StatefulWidget {
   final int categoryId;
@@ -82,6 +83,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String _description;
 
   int _auctionDuration;
+  String _expiryDate;
   String _gender = "M";
   bool _innerIslandShippingBool = false;
   int _innerIslandShipping = 0;
@@ -101,6 +103,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   final _flutterVideoCompress = FlutterVideoCompress();
   String _convertedVideoPath;
   String _sizeVideo;
+
+  List<String> _closingTypeList = ['durasi', 'custom-time'];
+  String _closingType = 'durasi';
+  int _injuryTimeCounter = 0;
+  String selectedDate = "";
+  String selectedTime = "";
 
   @override
   void initState() {
@@ -424,6 +432,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         auction.multiply = multiplyController.numberValue.toInt();
         auction.buyItNow = binController.numberValue.toInt();
         auction.duration = _auctionDuration;
+        auction.expiryDate = _expiryDate;
+        auction.closingType = _closingType;
+        auction.injuryTimeCounter = _injuryTimeCounter;
         auction.ownerUserId = globals.user.id;
         auction.active = 1;
         auction.innerIslandShipping = _innerIslandShipping;
@@ -514,38 +525,206 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
     }
   }
 
+  Widget _buildSelectedClosingType() {
+    if (_closingType == "durasi") {
+      return Container(
+          width: globals.mw(context) * 0.95,
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+          child: DropdownButtonFormField<int>(
+            decoration: InputDecoration(
+                fillColor: Colors.white,
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+                contentPadding: EdgeInsets.all(13),
+                hintText: "Durasi Lelang",
+                labelText: "Durasi Lelang"),
+            value: _auctionDuration,
+            validator: (value) {
+              if (value == null) {
+                return 'Silahkan pilih durasi lelang';
+              }
+            },
+            onChanged: (int value) {
+              setState(() {
+                _auctionDuration = value;
+              });
+            },
+            items: durations.map((int type) {
+              return DropdownMenuItem<int>(
+                  value: type,
+                  child: Text("1x$type Jam Last Bidder",
+                      style: TextStyle(color: Colors.black)));
+            }).toList(),
+          ));
+    } else {
+      return Container(
+        color: Color.fromRGBO(244, 244, 244, 1),
+        width: globals.mw(context) * 0.95,
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+        child: Center(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+              // elevation: 4.0,
+              onPressed: () {
+                DatePicker.showDatePicker(context,
+                    theme: DatePickerTheme(
+                      containerHeight: 210.0,
+                    ),
+                    showTitleActions: true,
+                    minTime: DateTime(2019, 1, 1),
+                    maxTime: DateTime(2022, 12, 31), onConfirm: (date) {
+                  selectedDate = '${date.year}-${date.month}-${date.day}';
+                  setState(() {
+                    _expiryDate = "";
+                    _expiryDate = selectedDate;
+                  });
+                }, currentTime: DateTime.now(), locale: LocaleType.en);
+              },
+              child: Container(
+                alignment: Alignment.center,
+                height: 50.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.date_range,
+                                size: 14.0,
+                                color: Colors.black,
+                              ),
+                              Text(
+                                " $selectedDate",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 14.0),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Text(
+                      "  Change",
+                      style: TextStyle(
+                          color: Colors.black,
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 14.0),
+                    ),
+                  ],
+                ),
+              ),
+              color: Color.fromRGBO(244, 244, 244, 1),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+              // elevation: 4.0,
+              onPressed: () {
+                DatePicker.showTimePicker(context,
+                    theme: DatePickerTheme(
+                      containerHeight: 210.0,
+                    ),
+                    showTitleActions: true, onConfirm: (time) {
+                  selectedTime =
+                      ' ${time.hour}:${time.minute}:${time.second}';
+                  setState(() {
+                    _expiryDate += selectedTime;
+                    print(_expiryDate);
+                  });
+                }, currentTime: DateTime.now(), locale: LocaleType.en);
+                setState(() {
+                });
+              },
+              child: Container(
+                alignment: Alignment.center,
+                height: 50.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.access_time,
+                                size: 14.0,
+                                color: Colors.black,
+                              ),
+                              Text(
+                                " $selectedTime",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 14.0),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Text(
+                      "  Change",
+                      style: TextStyle(
+                          color: Colors.black,
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 14.0),
+                    ),
+                  ],
+                ),
+              ),
+              color: Color.fromRGBO(244, 244, 244, 1),
+            )
+          ],
+        )),
+      );
+    }
+  }
+
   Widget _buildAuction() {
     return Column(
       children: <Widget>[
         Container(
             width: globals.mw(context) * 0.95,
             padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-            child: DropdownButtonFormField<int>(
+            child: DropdownButtonFormField<String>(
               decoration: InputDecoration(
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5)),
                   contentPadding: EdgeInsets.all(13),
-                  hintText: "Durasi Lelang",
-                  labelText: "Durasi Lelang"),
-              value: _auctionDuration,
+                  hintText: "Tipe Closing Lelang",
+                  labelText: "Tipe Closing Lelang"),
+              value: _closingType,
               validator: (value) {
                 if (value == null) {
-                  return 'Silahkan pilih durasi lelang';
+                  return 'Silahkan pilih tipe closing lelang';
                 }
               },
-              onChanged: (int value) {
+              onChanged: (String value) {
                 setState(() {
-                  _auctionDuration = value;
+                  _closingType = value;
                 });
               },
-              items: durations.map((int type) {
-                return DropdownMenuItem<int>(
+              items: _closingTypeList.map((String type) {
+                return DropdownMenuItem<String>(
                     value: type,
-                    child: Text("1x$type Jam Last Bidder",
-                        style: TextStyle(color: Colors.black)));
+                    child: Text(type, style: TextStyle(color: Colors.black)));
               }).toList(),
             )),
+        _buildSelectedClosingType(),
         Container(
             padding: EdgeInsets.only(bottom: 15),
             child: globals.myText(
@@ -1044,8 +1223,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(13),
-                          hintText:
-                              "Tuliskan deskripsi $labelNamaType",
+                          hintText: "Tuliskan deskripsi $labelNamaType",
                           labelText: "Deskripsi Hewan",
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -1121,8 +1299,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(13),
-                          hintText:
-                              "Catatan wajib diisi",
+                          hintText: "Catatan wajib diisi",
                           labelText: "Catatan Lain",
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -1193,7 +1370,12 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                 ),
                 _buildGridViewImages(),
                 SizedBox(height: 10),
-
+                // Builder(
+                //   builder: (context) => FlatButton(
+                //     onPressed: () => inputTimeSelect(),
+                //     child: Text("Show Time Picker"),
+                //   ),
+                // ),
                 Divider(),
 
                 SizedBox(height: 8),

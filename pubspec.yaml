@@ -32,6 +32,7 @@ dependencies:
 
   #pdf viewer for not statefull widget
   flutter_plugin_pdf_viewer: any
+  flutter_datetime_picker: ^1.2.6
 
   # flutter_swiper: ^1.1.6
   
