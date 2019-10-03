@@ -124,9 +124,9 @@ class User {
         verificationStatus:
             json["verification_status"] == null ? null : json["verification_status"],
         point:
-            json["point"] == null ? null : json["point"],
+            json["point"] == null ? null : double.parse(json["point"].toString()),
         coupon:
-            json["point"] == null ? null : json["coupon"],
+            json["coupon"] == null ? null : int.parse(json["coupon"].toString()),
         level:
             json["level"] == null ? null : json["level"],
   );
@@ -160,7 +160,7 @@ class User {
         "verification_status": verificationStatus == null ? null : verificationStatus,
         "identity_number": identityNumber == null ? null : identityNumber,
         "point": point == null ? null : point,
-        "coupon": point == null ? null : coupon,
+        "coupon": coupon == null ? null : coupon,
         "level": level == null ? null : level
       }..removeWhere((key, val) => val == null);
 }
