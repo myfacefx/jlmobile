@@ -1273,7 +1273,8 @@ Future<bool> verificationOptionDialog(context) {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) => VerifyPinPage(
-                                  phoneNumber: user.phoneNumber)));
+                                  phoneNumber: user.phoneNumber,
+                                  userId: user.id,)));
                     },
                   ),
                 ],
