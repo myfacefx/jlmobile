@@ -3,29 +3,37 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/services/send_wa_service.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 import 'package:pin_view/pin_view.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class VerifyPinPage extends StatefulWidget {
   final String pinUser;
   final String phoneNumber;
   final bool isMatch;
+  final int userId;
   const VerifyPinPage(
-      {Key key, this.pinUser, @required this.phoneNumber, this.isMatch})
+      {Key key,
+      this.pinUser,
+      @required this.phoneNumber,
+      this.isMatch,
+      this.userId})
       : super(key: key);
   @override
   State<StatefulWidget> createState() =>
-      _VerifyPinState(pinUser, phoneNumber, isMatch);
+      _VerifyPinState(pinUser, phoneNumber, userId, isMatch);
 }
 
 class _VerifyPinState extends State<VerifyPinPage> {
-  bool isProcessing = false;
+  bool _isProcessing = false;
   String pinUser = "";
   String _phoneNumber;
   String _phoneNumberSubs;
   bool _isAvailable = false;
   bool _isMatch = false;
+  int _userId;
   String _messageOTP;
   String _otpKey;
   Timer _timer;
@@ -48,10 +56,12 @@ class _VerifyPinState extends State<VerifyPinPage> {
     super.dispose();
   }
 
-  _VerifyPinState(String pinUser, String phoneNumber, [bool isMatch]) {
+  _VerifyPinState(String pinUser, String phoneNumber, int userId,
+      [bool isMatch]) {
     this.pinUser = pinUser;
     this._phoneNumber = phoneNumber;
     this._isMatch = isMatch;
+    this._userId = userId;
   }
 
   void startTimer() {
@@ -78,14 +88,14 @@ class _VerifyPinState extends State<VerifyPinPage> {
       rndnumber = rndnumber + rnd.nextInt(9).toString();
     }
     _otpKey = rndnumber;
-    print(_otpKey);
   }
 
   _sendOTP() async {
     generateRandomOTP();
-    _messageOTP = "== [JLF] ==\nJANGAN MEMBERITAHU KODE RAHASIA INI KE SIAPAPUN termasuk pihak JLF. KODE INI HANYA DIGUNAKAN DI APLIKASI JLF. KODE RAHASIA untuk VERIFIKASI OTP ANDA adalah :" +
-        _otpKey +
-        ". Kunjungi Kami di http://juallelangfauna.com/";
+    _messageOTP =
+        "== [JLF] ==\nJANGAN MEMBERITAHU KODE RAHASIA INI KE SIAPAPUN termasuk pihak JLF. KODE INI HANYA DIGUNAKAN DI APLIKASI JLF. KODE RAHASIA untuk VERIFIKASI OTP ANDA adalah :" +
+            _otpKey +
+            ". Kunjungi Kami di http://juallelangfauna.com/";
 
     var formData = Map<String, dynamic>();
     formData['phone'] = _phoneNumber;
@@ -99,10 +109,21 @@ class _VerifyPinState extends State<VerifyPinPage> {
             context,
             isLogout: true);
       }
-      isProcessing = false;
+      _isProcessing = false;
     } catch (error) {
       Navigator.pop(context);
       globals.showDialogs("Internal Server Error - SOTP-01", context);
+    }
+  }
+
+  _sendWhatsApp(phone, message) async {
+    if (phone.isNotEmpty && message.isNotEmpty) {
+      String url = 'https://api.whatsapp.com/send?phone=$phone&text=$message';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
     }
   }
 
@@ -127,10 +148,37 @@ class _VerifyPinState extends State<VerifyPinPage> {
       return Container();
     }
 
+    Widget _buildContactAdmin() {
+      return Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                globals.myText(text: "Butuh Bantuan?"),
+                GestureDetector(
+                  onTap: () {
+                    String phone = "6282223304275";
+                    String message =
+                        "Saya pengguna dengan nomor WA $_phoneNumber mengalami kesulitan Verifikasi Data Via OTP";
+                    _sendWhatsApp(phone, message);
+                  },
+                  child: Container(
+                      height: 25,
+                      child: CircleAvatar(
+                          radius: 15,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child:
+                                  Image.asset('assets/images/whatsapp.png')))),
+                )
+              ]));
+    }
+
     Widget _buildPhoneNumberField(_phoneNumber) {
       return Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          margin: EdgeInsets.only(bottom: 16),
+          // margin: EdgeInsets.only(bottom: 10),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
@@ -192,12 +240,42 @@ class _VerifyPinState extends State<VerifyPinPage> {
               ]));
     }
 
+    void _userVerificationByOTP(_userId) async {
+      try {
+        debugPrint(globals.user.tokenRedis);
+        final res =
+            await updateVerificationByOTP(_userId, globals.user.tokenRedis);
+        if (res == null) {
+          await globals.showDialogs(
+              "Session anda telah berakhir, Silakan melakukan login ulang",
+              context,
+              isLogout: true);
+        }
+        globals.debugPrint("content");
+        _isProcessing = false;
+        // globals.state = "/profile";
+        Navigator.pop(context);
+        Navigator.pushNamed(context, "/profile");
+        // Navigator.pushReplacementNamed(context, "/profile");
+      } catch (error) {
+        Navigator.pop(context);
+        globals.showDialogs(
+            "Gagal Verifikasi Data, Silakan hubungi admin", context);
+      }
+    }
+
     void _verifyPin(String inputPin) async {
       try {
         if (inputPin == _otpKey) {
           Toast.show("OTP Cocok!", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.TOP);
-          Navigator.pop(context, true);
+
+          if (_userId != null) {
+            _userVerificationByOTP(_userId);
+          } else {
+            Navigator.pop(context, true);
+            Navigator.pop(context, true);
+          }
         } else {
           globals.showDialogs("OTP anda salah, Coba lagi", context);
         }
@@ -229,8 +307,6 @@ class _VerifyPinState extends State<VerifyPinPage> {
                     borderSide:
                         BorderSide(color: Theme.of(context).buttonColor))),
             submit: (String pin) {
-              // when all the fields are filled
-              print(pin);
               _verifyPin(pin);
             }),
       );
@@ -241,9 +317,9 @@ class _VerifyPinState extends State<VerifyPinPage> {
         final res = await globals.willExit(context,
             contentText: "Apakah anda yakin akan membatalkan proses OTP ?");
         if (res) {
-          globals.state = "login";
+          // globals.state = "login";
           Navigator.pop(context);
-          Navigator.pushReplacementNamed(context, "/login");
+          // Navigator.pushReplacementNamed(context, "/login");
         }
       },
       child: Scaffold(
@@ -261,6 +337,7 @@ class _VerifyPinState extends State<VerifyPinPage> {
                       "Masukan OTP",
                       style: Theme.of(context).textTheme.subtitle,
                     ),
+                    _buildContactAdmin(),
                     _buildFooter(mh, mw),
                   ],
                 ),
