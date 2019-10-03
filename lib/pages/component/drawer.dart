@@ -170,7 +170,7 @@ Widget drawer(context) {
                     : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
                 _buildDrawerNavigationButtonBig(
-                    "Barang", '/profile', null, context),
+                    "Produkku", '/profile', null, context),
                 _buildDrawerNavigationButtonBig("Lelang Diikuti", '/our-bid',
                     globals.user != null ? globals.user.bidsCount : 0, context),
                 _buildDrawerNavigationButtonBig("Belanjaanku", '/our-product',
@@ -184,16 +184,12 @@ Widget drawer(context) {
                 globals.spacePadding(),
                 _buildDrawerNavigationButtonSmall("Rekber", "/rekber", context),
                 _buildDrawerNavigationButtonSmall(
+                    "Hubungi Kami", "contact", context),
+                _buildDrawerNavigationButtonSmall(
                     "Tentang JLF", "/about", context),
+                _buildDrawerNavigationButtonSmall("Team JLF", "/team", context),
                 _buildDrawerNavigationButtonSmall(
                     "Kebijakan Privasi", "terms", context),
-                _buildDrawerNavigationButtonSmall(
-                    "Tutorial", "/how-to", context),
-                _buildDrawerNavigationButtonSmall(
-                    "Tanya Jawab", "/faq", context),
-                _buildDrawerNavigationButtonSmall("Tim Kami", "/team", context),
-                _buildDrawerNavigationButtonSmall(
-                    "Hubungi Kami", "contact", context),
                 // _buildDrawerNavigationButtonSmall(
                 //     "Pengaturan", "/setting", context),
                 _buildDrawerNavigationButtonSmall("Keluar", "/logout", context),
