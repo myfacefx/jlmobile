@@ -52,6 +52,8 @@ class Auction {
     AuctionEventParticipant auctionEventParticipant;
     AuctionChat chat;
     int transactionId;
+    String closingType;
+    int injuryTimeCounter;
 
     Auction({
         this.id,
@@ -96,7 +98,9 @@ class Auction {
         this.adminId,
         this.auctionEventParticipant,
         this.chat,
-        this.transactionId
+        this.transactionId,
+        this.closingType,
+        this.injuryTimeCounter
     });
 
     factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
@@ -143,6 +147,8 @@ class Auction {
         auctionEventParticipant: json["auction_event_participant"] == null ? null : AuctionEventParticipant.fromJson(json["auction_event_participant"]),
         chat: json["chat"] == null ? null : AuctionChat.fromJson(json["chat"]),
         transactionId: json["transaction_id"] == null ? null : json["transaction_id"],
+        closingType: json["closing_type"] == null ? null : json["closing_type"],
+        injuryTimeCounter: json["injury_time_counter"] == null ? null : json["injury_time_counter"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -182,6 +188,8 @@ class Auction {
         "auction_event_participant": auctionEventParticipant == null ? null : auctionEventParticipant.toJson(),
         "chat": chat == null ? null : chat.toJson(),
         "transaction_id": transactionId == null ? null : transactionId,
+        "closing_type": closingType == null ? null : closingType,
+        "injury_time_counter": injuryTimeCounter == null ? null : injuryTimeCounter,
     }..removeWhere( (key, val) => val == null);
 }
 
