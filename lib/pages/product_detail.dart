@@ -33,7 +33,7 @@ class ProductDetailPage extends StatefulWidget {
   ProductDetailPage({Key key, @required this.animalId, @required this.from})
       : super(key: key);
   @override
-  _ProductDetailPage createState() => _ProductDetailPage(animalId);
+  _ProductDetailPage createState() => _ProductDetailPage(animalId, from);
 }
 
 class _ProductDetailPage extends State<ProductDetailPage> {
@@ -55,10 +55,12 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       precision: 0, leftSymbol: "Rp. ", decimalSeparator: "");
   TextEditingController commentController = TextEditingController();
 
-  _ProductDetailPage(int animalId) {
+  _ProductDetailPage(int animalId, String from) {
     loadAnimal(animalId);
     globals.getNotificationCount();
-    globals.autoClose();
+    if (from == "LELANG") {
+      globals.autoClose();
+    }
   }
 
   _checkAuctionActivity() {
@@ -387,8 +389,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         text: animal.owner.username, color: "light", size: 18),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
-                      child: 
-                        globals.myText(
+                      child: globals.myText(
                           text: animal.owner.regency.name,
                           color: "light",
                           size: 10),
@@ -417,8 +418,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                 ProfilePage(userId: animal.owner.id))),
                     child: Container(
                         height: 32,
-                        child: Image.asset(
-                                    'assets/images/user.png')),
+                        child: Image.asset('assets/images/user.png')),
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(1.5, 0, 1.5, 0),
@@ -505,12 +505,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           // Buttons
           Container(
             width: globals.mw(context) * 0.2,
-            child: 
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(child: Container(),),
-                  GestureDetector(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Container(),
+                ),
+                GestureDetector(
                     onTap: () => globals.share(widget.from, animal),
                     child: Container(
                         height: 32,
@@ -519,40 +520,41 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
                                 child: Container(
-                                  width: 22,
-                                  height: 22,
-                                  child: Image.asset('assets/images/share.png')))))),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(1, 0, 1, 0),
-                  ),
-                  isAuction
-                      ? GestureDetector(
-                          onTap: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        EditAuctionPage(
-                                          animalId: animal.id,
-                                          description: animal.description,
-                                        )));
-                            loadAnimal(animal.id);
-                          },
-                          child: Container(
-                              height: 32,
-                              child: CircleAvatar(
-                                  radius: 15,
-                                  child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(100),
-                                      child: Container(
+                                    width: 22,
+                                    height: 22,
+                                    child: Image.asset(
+                                        'assets/images/share.png')))))),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(1, 0, 1, 0),
+                ),
+                isAuction
+                    ? GestureDetector(
+                        onTap: () async {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      EditAuctionPage(
+                                        animalId: animal.id,
+                                        description: animal.description,
+                                      )));
+                          loadAnimal(animal.id);
+                        },
+                        child: Container(
+                            height: 32,
+                            child: CircleAvatar(
+                                radius: 15,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: Container(
                                         width: 22,
                                         height: 22,
-                                        child: Image.asset('assets/images/edit.png'))))),
-                        )
-                      : Container()
-                ],
-              ),
+                                        child: Image.asset(
+                                            'assets/images/edit.png'))))),
+                      )
+                    : Container()
+              ],
+            ),
           )
         ],
       ),
@@ -611,9 +613,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 22,
-                        height: 22,
-                        child: Image.asset('assets/images/copy.png')),
+                          width: 22,
+                          height: 22,
+                          child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -675,9 +677,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 22,
-                        height: 22,
-                        child: Image.asset('assets/images/copy.png')),
+                          width: 22,
+                          height: 22,
+                          child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -739,9 +741,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 22,
-                        height: 22,
-                        child: Image.asset('assets/images/copy.png')),
+                          width: 22,
+                          height: 22,
+                          child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -800,9 +802,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 22,
-                        height: 22,
-                        child: Image.asset('assets/images/copy.png')),
+                          width: 22,
+                          height: 22,
+                          child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -869,9 +871,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Container(
-                        width: 22,
-                        height: 22,
-                        child: Image.asset('assets/images/copy.png')),
+                          width: 22,
+                          height: 22,
+                          child: Image.asset('assets/images/copy.png')),
                     ],
                   )),
             ),
@@ -894,16 +896,14 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            width: 45,
-            height: 45,
-            child: 
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Container(
+              width: 45,
+              height: 45,
+              child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Container(
                       width: 32,
                       height: 32,
-                      child: Image.asset('assets/images/admin.png')))
-          ),
+                      child: Image.asset('assets/images/admin.png')))),
           globals.myText(
               text: "KLIK DISINI UNTUK HUBUNGI ADMIN", color: 'light', size: 16)
         ],

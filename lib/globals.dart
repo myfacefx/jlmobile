@@ -437,6 +437,7 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
         child: Row(
           children: <Widget>[
             Container(
+              padding: EdgeInsets.only(right: 5),
                 height: 35,
                 child: CircleAvatar(
                     radius: 25,
@@ -450,6 +451,7 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
                                 fit: BoxFit.cover)
                             : Image.network('assets/images/account.png')))),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 myText(
                   text: generateInvoice(auction),
