@@ -701,6 +701,30 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
     );
   }
 
+  Widget _buildClosingType(Animal animal) {
+    String cosing = "";
+    if (animal.auction.closingType != null) {
+      cosing = animal.auction.closingType == "durasi"
+          ? "last bidder"
+          : "closed time";
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: globals.myColor("light-blue"),
+          ),
+          padding: EdgeInsets.all(3),
+          margin: EdgeInsets.fromLTRB(0, 3, 0, 3),
+          child: globals.myText(color: "light", size: 11, text: cosing),
+        ),
+      ],
+    );
+  }
+
   Widget _buildCard(Animal animal) {
     var isNotError = false;
     if (animal.animalImages.length > 0 &&
@@ -738,25 +762,9 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                             : null,
                         widget.from == "LELANG",
                         animal.createdAt.toString()),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: globals.myColor("light-blue"),
-                          ),
-                          padding: EdgeInsets.all(3),
-                          margin: EdgeInsets.fromLTRB(0, 3, 0, 3),
-                          child: globals.myText(
-                              color: "light",
-                              size: 11,
-                              text: animal.auction.closingType == "durasi"
-                                  ? "last bidder"
-                                  : "closed time"),
-                        ),
-                      ],
-                    ),
+                    widget.from == "LELANG"
+                        ? _buildClosingType(animal)
+                        : Container(),
                     isNotError
                         ? _buildImage(animal.animalImages[0].thumbnail)
                         : globals.failLoadImage(),
