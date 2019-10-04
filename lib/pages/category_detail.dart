@@ -289,7 +289,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           Padding(
             padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
             child:
-                globals.myText(text: "Our Categories", size: 18, weight: "XB"),
+                globals.myText(text: "Our Categories", size: 16, weight: "M"),
           ),
           isLoadingPromos ? globals.isLoading() : _buildCarouselTop()
         ],
@@ -306,7 +306,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
           Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: globals.myText(
-                text: "Sponsored Seller", size: 18, weight: "XB"),
+                text: "Sponsored Sellers", size: 16, weight: "M"),
           ),
           Container(
             alignment: Alignment.center,
@@ -386,7 +386,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   Widget _templateHeaderTopSellerProfile(TopSeller topSeller,
-      {double height: 42}) {
+      {double height: 45}) {
     return GestureDetector(
       onTap: () {
         topSeller.userId != null
@@ -404,7 +404,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[300], width: 1),
                   borderRadius: BorderRadius.circular(5.0)),
-              margin: EdgeInsets.symmetric(horizontal: 10),
+              margin: EdgeInsets.fromLTRB(10, 0, 10, 1),
               child: Container(
                   alignment: Alignment.center,
                   width: height,
@@ -423,7 +423,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                               : Image.asset('assets/images/account.png'))))),
           globals.myText(
               text: topSeller.user != null ? topSeller.user.username : ' ',
-              weight: "B",
+              size: 10,
               textOverflow: TextOverflow.ellipsis)
         ],
       ),
@@ -442,7 +442,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
               padding: EdgeInsets.only(left: 15, bottom: 10, top: 10),
               alignment: Alignment.centerLeft,
               child:
-                  globals.myText(text: "TOP SELLERS", size: 18, weight: "XB"),
+                  globals.myText(text: "TOP SELLERS", size: 16, weight: "M"),
             ),
             Container(
                 height: topSellersPoint.length > 0 ? 100 : 40,

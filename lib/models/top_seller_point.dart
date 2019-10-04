@@ -35,7 +35,7 @@ class TopSellerPoint {
 
     factory TopSellerPoint.fromJson(Map<String, dynamic> json) => TopSellerPoint(
         id: json["id"] == null ? null : json["id"],
-        userId: json["user_id"] == null ? null : json["user_id"],
+        userId: json["owner_user_id"] == null ? null : json["owner_user_id"],
         point: json["point"] == null ? null : double.parse(json["point"].toString()),
         animalSubCategoryId: json["animal_sub_category_id"] == null ? null : json["animal_sub_category_id"],
         animalCategoryId: json["animal_category_id"] == null ? null : json["animal_category_id"],

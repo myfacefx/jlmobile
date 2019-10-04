@@ -20,3 +20,24 @@ Future<List<PromoCategory>> getAllPromosCategory(
     throw Exception(res.body);
   }
 }
+
+Future<List<PromoCategory>> getAllPromosSubCategory(
+    String token, int subCategoryAnimalId) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  final url = getBaseUrl() + "promo/animal-sub-category/$subCategoryAnimalId";
+  debugPrint(url);
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+  if (res.statusCode == 200) {
+    return promoCategoryFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
+
+

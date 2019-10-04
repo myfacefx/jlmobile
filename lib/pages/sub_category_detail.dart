@@ -705,8 +705,8 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
     String cosing = "";
     if (animal.auction.closingType != null) {
       cosing = animal.auction.closingType == "durasi"
-          ? "last bidder"
-          : "closed time";
+          ? "bid terakhir"
+          : "waktu ditentukan";
     }
 
     return Row(
@@ -931,15 +931,12 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                             radius: 75,
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: topSeller.user.photo != null ||
-                                        topSeller.user.photo != null
+                                child: topSeller.user.photo != null
                                     ? FadeInImage.assetNetwork(
                                         fit: BoxFit.cover,
                                         placeholder:
                                             'assets/images/loading.gif',
-                                        image: topSeller.user.photo != null
-                                            ? topSeller.user.photo
-                                            : topSeller.user.photo)
+                                        image: topSeller.user.photo)
                                     : Image.asset(
                                         'assets/images/account.png')))))),
             SizedBox(
@@ -1017,13 +1014,10 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.add_circle,
-              color: globals.myColor("primary"),
-              size: 30,
-            ),
+          Icon(
+            Icons.add_circle,
+            color: globals.myColor("primary"),
+            size: 30,
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(5, 0, 20, 0),

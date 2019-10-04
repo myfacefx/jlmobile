@@ -68,7 +68,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
   String labelNamaType = "Hewan";
 
   List<SelectProduct> selectProducts = [
-    SelectProduct(id: 0, name: "Draf"),
+    SelectProduct(id: 0, name: "Draft"),
     SelectProduct(id: 1, name: "Lelang"),
     SelectProduct(id: 2, name: "Produk Jual"),
     // SelectProduct(id: 3, name: "Produk Aksesoris"),
@@ -637,15 +637,13 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                       containerHeight: 210.0,
                     ),
                     showTitleActions: true, onConfirm: (time) {
-                  selectedTime =
-                      ' ${time.hour}:${time.minute}:${time.second}';
+                  selectedTime = ' ${time.hour}:${time.minute}:${time.second}';
                   setState(() {
                     _expiryDate += selectedTime;
                     print(_expiryDate);
                   });
                 }, currentTime: DateTime.now(), locale: LocaleType.en);
-                setState(() {
-                });
+                setState(() {});
               },
               child: Container(
                 alignment: Alignment.center,
@@ -721,7 +719,9 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
               items: _closingTypeList.map((String type) {
                 return DropdownMenuItem<String>(
                     value: type,
-                    child: Text(type, style: TextStyle(color: Colors.black)));
+                    child: Text(
+                        type == "durasi" ? "Bid Terakhir" : "Waktu Ditentukan",
+                        style: TextStyle(color: Colors.black)));
               }).toList(),
             )),
         _buildSelectedClosingType(),
