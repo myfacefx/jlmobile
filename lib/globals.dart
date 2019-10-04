@@ -1006,6 +1006,21 @@ String convertFormatFullDate(String date) {
   return newDate;
 }
 
+String convertFormatDateTimeDate(String date) {
+  String newDate = "";
+  if (date == null || date == "") {
+    return "-";
+  }
+  List<String> split = date.split(" ");
+  List<String> splitTime = split[1].split(":");
+
+  List<String> splitDate = split[0].split("-");
+  String month = convertMonthFromDigit(int.parse(splitDate[1]));
+  newDate =
+      "${splitDate[2]} $month ${splitDate[0]}  ${splitTime[0]}:${splitTime[1]}";
+  return newDate;
+}
+
 Widget isLoading() {
   return Container(
     child: Center(

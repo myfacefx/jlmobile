@@ -230,6 +230,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               children: <Widget>[
                 Container(
                     padding: EdgeInsets.all(3),
+                    
                     width: globals.mw(context) * 0.45,
                     alignment: Alignment.centerRight,
                     decoration: BoxDecoration(
@@ -251,11 +252,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                // _buildRuleProduct(
-                //     "Jumlah Tersedia", animal.product.quantity, true),
-                // SizedBox(
-                //   height: 8,
-                // ),
                 _buildRuleProduct(
                     "Harga Jual", animal.product.price.toDouble(), false),
               ],
@@ -274,6 +270,8 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       _buildOtherDesc(),
       Divider(),
       _buildShippingDetail(innerIslandShipping),
+      Divider(),
+      _buildTypeLelang(),
       SizedBox(
         height: 8,
       ),
@@ -359,7 +357,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
   Widget _buildOwnerDetail() {
     return Container(
       color: Theme.of(context).primaryColor,
-      padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+      padding: EdgeInsets.fromLTRB(30, 0, 30, 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -421,7 +419,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         child: Image.asset('assets/images/user.png')),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(1.5, 0, 1.5, 0),
+                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -468,9 +466,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                           color: Colors.lightBlue,
                           fontWeight: FontWeight.bold)),
                 ),
-                SizedBox(
-                  height: 6,
-                ),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Wrap(
@@ -479,24 +474,28 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         child: globals.myText(
                             text:
                                 "${animal.animalSubCategory.animalCategory.name}",
-                            color: "dark",
+                            color: "light-blue",
                             size: 11),
                       ),
-                      globals.myText(text: " - ", color: "dark", size: 11),
+                      globals.myText(
+                          text: " - ", color: "light-blue", size: 11),
                       GestureDetector(
                         child: globals.myText(
                             text: "${animal.animalSubCategory.name}",
-                            color: "dark",
+                            color: "light-blue",
                             size: 11),
                       )
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 8,
+                ),
                 Container(
                     alignment: Alignment.centerLeft,
                     child: globals.myText(
                         text:
-                            "Diposting : ${globals.convertFormatFullDate(animal.createdAt.toString())}",
+                            "Diposting : ${globals.convertFormatDateTimeDate(animal.createdAt.toString())}",
                         color: "dark",
                         size: 11)),
               ],
@@ -753,6 +752,76 @@ class _ProductDetailPage extends State<ProductDetailPage> {
     );
   }
 
+  Widget _buildTypeLelang() {
+    String desc = "";
+    if (animal.auction.closingType != null) {
+      desc = animal.auction.closingType == "durasi"
+          ? "BID TERAKHIR - Waktu close diliat dari jarak waktu bid terakhir. Misal close 1*24 jam last bidder,bid terakhir jam 10 siang, close jam 10 siang hari besok. Apabila jam 9 ada yang bid, maka close diundur jam 9 besok apabila tidak ada yg bid"
+          : "WAKTU DITENTUKAN - Jika selama 10 menit terakhir tidak ada yang bid, maka lelangan dianggap closed sesuai waktu yang ditentukan. Jika ada bid baru di 10 menit sebelum waktu closed tersebut, akan ada extra time perpanjangan 10 menit dari waktu closed lama, dan waktu lelang closed akan diupdate.";
+    }
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          // Desc's Container
+          Container(
+            width: globals.mw(context) * 0.70,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                // Title
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: globals.myText(
+                      text: "Jenis Penyelesaian Lelang",
+                      color: "grey",
+                      size: 13,
+                      align: TextAlign.start,
+                      weight: 'L'),
+                ),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: globals.myText(
+                      text: "$desc",
+                      color: "danger",
+                      size: 13,
+                      align: TextAlign.justify),
+                ),
+              ],
+            ),
+          ),
+
+          // Button Copy
+          Container(
+            width: globals.mw(context) * 0.10,
+            child: GestureDetector(
+              onTap: () {
+                Clipboard.setData(
+                    new ClipboardData(text: animal.descriptionWarranty));
+                globals.showDialogs("Berhasil menyalin deskripsi", context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(3),
+                  width: 30,
+                  alignment: Alignment.bottomRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                          width: 22,
+                          height: 22,
+                          child: Image.asset('assets/images/copy.png')),
+                    ],
+                  )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _buildOtherDesc() {
     return Container(
       child: Row(
@@ -897,7 +966,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         children: <Widget>[
           Container(
               width: 45,
-              height: 45,
+              height: 38,
               child: CircleAvatar(
                   backgroundColor: Colors.white,
                   child: Container(
@@ -905,7 +974,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                       height: 32,
                       child: Image.asset('assets/images/admin.png')))),
           globals.myText(
-              text: "KLIK DISINI UNTUK HUBUNGI ADMIN", color: 'light', size: 16)
+              text: "KLIK UNTUK HUBUNGI ADMIN REKBER",
+              color: 'light',
+              size: 12,
+              letterSpacing: 1)
         ],
       ),
     );
@@ -2612,13 +2684,15 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         : Container(),
                     _buildImage(),
                     SizedBox(
-                      height: 8,
+                      height: 20,
                     ),
                     // If the logged in was the auction owner, hide element
                     (animal.ownerUserId == globals.user.id)
                         ? Container()
                         : _buildOwnerDetail(),
-
+                    SizedBox(
+                      height: 20,
+                    ),
                     _buildDesc(widget.from == "LELANG"),
 
                     widget.from == "LELANG" &&
@@ -2650,6 +2724,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                         : Container(),
 
                     _buildForum(),
+                    SizedBox(
+                      height: 20,
+                    ),
                     _buildChatAdmin()
                   ],
                 ),
