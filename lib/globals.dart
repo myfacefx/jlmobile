@@ -802,6 +802,13 @@ void getNotificationCount() async {
       user.unreadChatCount = unreadChatCount;
     }
 
+    User userResponse = await getUserPointCoupon(user.id, user.tokenRedis);
+
+    if (userResponse != null) {
+      user.point = userResponse.point;
+      user.coupon = userResponse.coupon;
+    }
+
     return null;
   }
 }

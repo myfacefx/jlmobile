@@ -397,3 +397,20 @@ Future<Map<String, dynamic>> verificationBonusPointOtp(int userId, String token)
     throw Exception(response['message']);
   }
 }
+
+Future<User> getUserPointCoupon(int userId, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final url = getBaseUrl() + "/users/$userId/get/point-coupon";
+
+  http.Response res = await http
+      .get(url, headers: header)
+      .timeout(Duration(seconds: getTimeOut()));
+
+  if (res.statusCode == 200) {
+    return userFromJson(res.body);
+  } else if (res.statusCode == 444) {
+    return null;
+  } else {
+    throw Exception(res.body);
+  }
+}
