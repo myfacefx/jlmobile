@@ -88,6 +88,7 @@ class _VerifyPinState extends State<VerifyPinPage> {
       rndnumber = rndnumber + rnd.nextInt(9).toString();
     }
     _otpKey = rndnumber;
+    globals.debugPrint(_otpKey);
   }
 
   _sendOTP() async {
@@ -251,7 +252,6 @@ class _VerifyPinState extends State<VerifyPinPage> {
               context,
               isLogout: true);
         }
-        globals.debugPrint("content");
         _isProcessing = false;
         setState(() {
           globals.user.verificationStatus = "verified";
@@ -274,9 +274,16 @@ class _VerifyPinState extends State<VerifyPinPage> {
           Toast.show("OTP Cocok!", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.TOP);
 
+          // use for user verification modul
           if (_userId != null) {
             _userVerificationByOTP(_userId);
-          } else {
+          }
+          // use for reset password modul
+          else {
+            globals.showDialogs(
+                "Kami telah mengirimkan password baru ke email kamu, silakan cek emailmu!",
+                context,
+                isLogout: true);
             Navigator.pop(context, true);
             Navigator.pop(context, true);
           }
