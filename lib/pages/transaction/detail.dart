@@ -207,7 +207,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                     : "-"),
             globals.user.id == transaction.adminUserId || globals.user.roleId == 1
             ? Container(
-                width: 100,
+                
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: FlatButton(
                     onPressed: () async {
@@ -219,7 +219,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                             transaction: transaction)));
                         this._refresh();
                       },
-                    child: globals.myText(text: "UBAH", color: "light"),
+                    child: globals.myText(text: "Lengkapi Form Rekber Saya", color: "light"),
                     color:
                         isLoading ? Colors.grey : Theme.of(context).primaryColor,
                     shape: RoundedRectangleBorder(

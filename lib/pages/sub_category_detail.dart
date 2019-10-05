@@ -587,7 +587,8 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       int duration,
       int innerIslandShipping,
       bool isAuction,
-      String createdDate) {
+      String createdDate,
+      String closingType) {
     //String ageNow = globals.convertToAge(birthDate);
 
     return Container(
@@ -595,48 +596,56 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Wrap(
-            children: <Widget>[
-              isAuction
-                  ? Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: globals.myColor("primary")),
-                      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                      child: globals.myText(
-                          text: "1x$duration jam",
-                          size: 10,
-                          color: "light",
-                          letterSpacing: 1.2),
-                    )
-                  : Container(),
-              Container(
-                margin: EdgeInsets.only(left: 5),
-                child: innerIslandShipping == 1
+          Container(
+            width: double.infinity,
+            height: 18,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              children: <Widget>[
+                isAuction && closingType == "durasi"
                     ? Container(
+                      margin: EdgeInsets.only(right: 5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: globals.myColor("primary")),
                         padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
                         child: globals.myText(
-                            text: "Dalam Pulau",
+                            text: "1x$duration jam",
                             size: 10,
                             color: "light",
                             letterSpacing: 1.2),
                       )
-                    : Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: globals.myColor("primary")),
-                        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
-                        child: globals.myText(
-                            text: "Nusantara",
-                            size: 10,
-                            color: "light",
-                            letterSpacing: 1.2),
-                      ),
-              ),
-            ],
+                    : Container(),
+                Container(
+                  
+                  child: innerIslandShipping == 1
+                      ? Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: globals.myColor("primary")),
+                          padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                          child: globals.myText(
+                              text: "Dalam Pulau",
+                              size: 10,
+                              color: "light",
+                              letterSpacing: 1.2),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: globals.myColor("primary")),
+                          padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                          child: globals.myText(
+                              text: "Nusantara",
+                              size: 10,
+                              color: "light",
+                              letterSpacing: 1.2),
+                        ),
+                ),
+                isAuction ? _buildClosingType(closingType) : Container(),
+              ],
+            ),
           ),
           SizedBox(height: 5),
           Text(
@@ -701,27 +710,20 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
     );
   }
 
-  Widget _buildClosingType(Animal animal) {
+  Widget _buildClosingType(String closingType) {
     String cosing = "";
-    if (animal.auction.closingType != null) {
-      cosing = animal.auction.closingType == "durasi"
-          ? "bid terakhir"
-          : "waktu ditentukan";
+    if (closingType != null) {
+      cosing = closingType == "durasi" ? "Bid Terakhir" : "Waktu Ditentukan";
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: globals.myColor("light-blue"),
-          ),
-          padding: EdgeInsets.all(3),
-          margin: EdgeInsets.fromLTRB(0, 3, 0, 3),
-          child: globals.myText(color: "light", size: 11, text: cosing),
-        ),
-      ],
+    return Container(
+      margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: globals.myColor("light-blue")),
+      padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+      child: globals.myText(
+          text: cosing, size: 10, color: "light", letterSpacing: 1.2),
     );
   }
 
@@ -762,25 +764,26 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                             : null,
                         widget.from == "LELANG",
                         animal.createdAt.toString()),
-                    widget.from == "LELANG"
-                        ? _buildClosingType(animal)
-                        : Container(),
                     isNotError
                         ? _buildImage(animal.animalImages[0].thumbnail)
                         : globals.failLoadImage(),
                     _buildDetail(
-                        animal.name,
-                        animal.owner.username,
-                        animal.owner.regency.name,
-                        animal.owner.province.name,
-                        animal.gender,
-                        animal.dateOfBirth,
-                        animal.auction?.duration,
-                        widget.from == "LELANG"
-                            ? animal.auction.innerIslandShipping
-                            : animal.product.innerIslandShipping,
-                        widget.from == "LELANG",
-                        animal.createdAt.toString()),
+                      animal.name,
+                      animal.owner.username,
+                      animal.owner.regency.name,
+                      animal.owner.province.name,
+                      animal.gender,
+                      animal.dateOfBirth,
+                      animal.auction?.duration,
+                      widget.from == "LELANG"
+                          ? animal.auction.innerIslandShipping
+                          : animal.product.innerIslandShipping,
+                      widget.from == "LELANG",
+                      animal.createdAt.toString(),
+                      widget.from == "LELANG"
+                          ? animal.auction.closingType
+                          : null,
+                    ),
                     widget.from == "LELANG"
                         ? Column(
                             children: <Widget>[

@@ -54,7 +54,7 @@ class _NotificationPageState extends State<NotificationPage> {
     });
   }
 
-  _setHistories(listOfHistoryId) {
+  _setHistories(int listOfHistoryId) {
     setHistories(globals.user.tokenRedis, listOfHistoryId)
         .then((onValue) async {
       if (onValue == null) {
@@ -152,18 +152,15 @@ class _NotificationPageState extends State<NotificationPage> {
                                     }
                                   }
 
-                                  // globals.debugPrint(informationBuild);
-
                                   List<int> listOfHistoryId = List<int>();
                                   listOfHistoryId.add(histories[i].id);
 
-                                  // globals.debugPrint("List of ID $listOfHistoryId");
-
                                   return InkWell(
-                                    onTap: () {
+                                    onTap: () async {
                                       if (histories[i].auction != null) {
-                                        _setHistories(listOfHistoryId);
-                                        Navigator.push(
+                                        _setHistories(histories[i].id);
+                                        histories[i].read = 1;
+                                        await Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder:
@@ -174,23 +171,32 @@ class _NotificationPageState extends State<NotificationPage> {
                                                               .animalId,
                                                           from: "LELANG",
                                                         )));
+                                        setState(() {});
                                       } else {
                                         if (histories[i].animalId != null) {
                                           String from = 'LELANG';
 
                                           if (histories[i].type != null) {
-                                            from = histories[i].type != 'auction' ? '' : 'LELANG'; 
+                                            from =
+                                                histories[i].type != 'auction'
+                                                    ? ''
+                                                    : 'LELANG';
                                           }
+                                          histories[i].read = 1;
+                                          _setHistories(histories[i].id);
 
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        ProductDetailPage(
-                                                          animalId: histories[i].animalId,
-                                                          from: from,
-                                                        )));
+                                          await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          ProductDetailPage(
+                                                            animalId:
+                                                                histories[i]
+                                                                    .animalId,
+                                                            from: from,
+                                                          )));
+                                          setState(() {});
                                         } else {
                                           globals.showDialogs(
                                               "Notifikasi jual beli terbaru yang dapat menggunakan fitur ini",

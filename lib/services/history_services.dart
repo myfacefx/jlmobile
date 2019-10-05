@@ -24,15 +24,15 @@ Future<List<History>> getHistories(String token, int userId) async {
   }
 }
 
-Future<dynamic> setHistories(String token, List<int> listOfHistoryId) async {
+Future<dynamic> setHistories(String token, int historyId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  final url = getBaseUrl() + "/histories/mark";
+  final url = getBaseUrl() + "/histories/mark/$historyId";
 
   debugPrint(url);
 
   http.Response res = await http
-      .put(url, headers: header, body: json.encode(listOfHistoryId))
+      .put(url, headers: header)
       .timeout(Duration(seconds: getTimeOut()));
 
   debugPrint(res.statusCode);

@@ -230,7 +230,6 @@ class _ProductDetailPage extends State<ProductDetailPage> {
               children: <Widget>[
                 Container(
                     padding: EdgeInsets.all(3),
-                    
                     width: globals.mw(context) * 0.45,
                     alignment: Alignment.centerRight,
                     decoration: BoxDecoration(
@@ -271,7 +270,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       Divider(),
       _buildShippingDetail(innerIslandShipping),
       Divider(),
-      _buildTypeLelang(),
+      isAuction ? _buildTypeLelang() : Container(),
       SizedBox(
         height: 8,
       ),
