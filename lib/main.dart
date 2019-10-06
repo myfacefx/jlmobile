@@ -16,7 +16,6 @@ import 'package:jlf_mobile/pages/list_event.dart';
 import 'package:jlf_mobile/pages/our_bid.dart';
 import 'package:jlf_mobile/pages/our_product.dart';
 import 'package:jlf_mobile/pages/rekber.dart';
-import 'package:jlf_mobile/pages/send_OTP.dart';
 import 'package:jlf_mobile/pages/setting.dart';
 import 'package:jlf_mobile/pages/team.dart';
 import 'package:jlf_mobile/pages/up_coming.dart';
@@ -83,7 +82,6 @@ class MyApp extends StatelessWidget {
         '/upcoming': (BuildContext context) => UpComingPage(),
         '/forget-password': (BuildContext context) => ForgotPasswordPage(),
         '/list-event': (BuildContext context) => ListEventPage(),
-        '/send-otp': (BuildContext context) => SendOTPPage(),
         '/reward': (BuildContext context) => RewardPage(),
         '/team': (BuildContext context) => TeamPage(),
         '/promo': (BuildContext context) => PromoPage(),
