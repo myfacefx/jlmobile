@@ -297,11 +297,13 @@ class _VerifyPinState extends State<VerifyPinPage> {
 
     Widget _buildInputPin() {
       return Container(
-        padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
         child: PinPut(
           fieldsCount: 6,
           onSubmit: (String pin) => _verifyPin(pin),
           isTextObscure: false,
+          textStyle: TextStyle(
+              color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w500),
         ),
         // PinView(
         //     count: 6, // describes the field number

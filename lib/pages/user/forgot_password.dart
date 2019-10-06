@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
-import 'package:jlf_mobile/pages/verify_pin.dart';
+import 'package:jlf_mobile/pages/pin_code.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
