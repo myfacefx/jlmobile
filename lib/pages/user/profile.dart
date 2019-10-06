@@ -72,11 +72,13 @@ class _ProfilePageState extends State<ProfilePage>
     refresh();
   }
 
-  refresh() {
+  refresh() async {
     _getProdukKu();
     _getProdukLelang();
     _getProdukPasarHewan();
-    globals.getNotificationCount();
+    globals.getNotificationCount().then((a) async {
+      setState(() {});
+    });
   }
 
   _getProdukKu() {

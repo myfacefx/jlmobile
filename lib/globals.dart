@@ -24,7 +24,7 @@ import 'package:url_launcher/url_launcher.dart';
 // import 'package:simple_share/simple_share.dart';
 import 'package:http/http.dart' as http;
 
-String version = "v0.1.8";
+String version = "v0.1.7";
 bool isProduction = true;
 
 /// Global Function to return Screen Height
@@ -782,7 +782,7 @@ void autoClose() async {
   await AuctionService.autoClose(user.tokenRedis);
 }
 
-void getNotificationCount() async {
+Future<dynamic> getNotificationCount() async {
   if (user != null && user.id != null) {
     int historiesCount = await getHistoriesCount(user.id, user.tokenRedis);
 
@@ -805,6 +805,7 @@ void getNotificationCount() async {
     User userResponse = await getUserPointCoupon(user.id, user.tokenRedis);
 
     if (userResponse != null) {
+      debugPrint("USERS POINT: ${userResponse.toJson()}");
       user.point = userResponse.point;
       user.coupon = userResponse.coupon;
     }

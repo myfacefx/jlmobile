@@ -87,7 +87,10 @@ class _HomePage extends State<HomePage> {
 
       _loadPromosA();
 
-      globals.getNotificationCount();
+      // globals.getNotificationCount();
+      globals.getNotificationCount().then((a) async {
+        setState(() {});
+      });
       globals.generateToken();
       globals.notificationListener(context);
     }
@@ -117,7 +120,7 @@ class _HomePage extends State<HomePage> {
 
           // Pop Up Success
           setState(() {
-            globals.user.point = 20;
+            globals.user.point = globals.user.point + 20;
           });
         }
       } else {
