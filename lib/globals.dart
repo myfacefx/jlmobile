@@ -12,8 +12,7 @@ import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/chat.dart';
 import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
-import 'package:jlf_mobile/pages/send_OTP.dart';
-import 'package:jlf_mobile/pages/verify_pin.dart';
+import 'package:jlf_mobile/pages/pin_code.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionService;
 import 'package:jlf_mobile/services/auction_chat_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
@@ -342,7 +341,7 @@ Future<bool> showDialogsVerificationOptions(
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => SendOTPPage(
+                      builder: (BuildContext context) => VerifyPinPage(
                           phoneNumber: phoneNumber, userId: userId)));
               // Navigator.of(context).pop(true);
             },

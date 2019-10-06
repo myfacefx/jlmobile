@@ -4,8 +4,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/services/send_wa_service.dart';
 import 'package:jlf_mobile/services/user_services.dart';
-import 'package:pin_view/pin_view.dart';
+
 import 'package:jlf_mobile/globals.dart' as globals;
+import 'package:pinput/pin_put/pin_put.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -88,7 +89,7 @@ class _VerifyPinState extends State<VerifyPinPage> {
       rndnumber = rndnumber + rnd.nextInt(9).toString();
     }
     _otpKey = rndnumber;
-    globals.debugPrint(_otpKey);
+    // globals.debugPrint(_otpKey);
   }
 
   _sendOTP() async {
@@ -243,7 +244,6 @@ class _VerifyPinState extends State<VerifyPinPage> {
 
     void _userVerificationByOTP(_userId) async {
       try {
-        debugPrint(globals.user.tokenRedis);
         final res =
             await updateVerificationByOTP(_userId, globals.user.tokenRedis);
         if (res == null) {
@@ -297,29 +297,36 @@ class _VerifyPinState extends State<VerifyPinPage> {
 
     Widget _buildInputPin() {
       return Container(
-        padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
-        child: PinView(
-            count: 6, // describes the field number
-            margin: EdgeInsets.all(5), // margin between the fields
-            obscureText:
-                false, // describes whether the text fields should be obscure or not, defaults to false
-            style: TextStyle(
-                // style for the fields
-                fontSize: 19.0,
-                color: Colors.black,
-                fontWeight: FontWeight.w500),
-            dashStyle: TextStyle(
-                // dash style
-                fontSize: 25.0,
-                color: Colors.grey),
-            // autoFocusFirstField: true,
-            inputDecoration: InputDecoration(
-                focusedBorder: UnderlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Theme.of(context).buttonColor))),
-            submit: (String pin) {
-              _verifyPin(pin);
-            }),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+        child: PinPut(
+          fieldsCount: 6,
+          onSubmit: (String pin) => _verifyPin(pin),
+          isTextObscure: false,
+          textStyle: TextStyle(
+              color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w500),
+        ),
+        // PinView(
+        //     count: 6, // describes the field number
+        //     margin: EdgeInsets.all(5), // margin between the fields
+        //     obscureText:
+        //         false, // describes whether the text fields should be obscure or not, defaults to false
+        //     style: TextStyle(
+        //         // style for the fields
+        //         fontSize: 19.0,
+        //         color: Colors.black,
+        //         fontWeight: FontWeight.w500),
+        //     dashStyle: TextStyle(
+        //         // dash style
+        //         fontSize: 25.0,
+        //         color: Colors.grey),
+        //     // autoFocusFirstField: true,
+        //     inputDecoration: InputDecoration(
+        //         focusedBorder: UnderlineInputBorder(
+        //             borderSide:
+        //                 BorderSide(color: Theme.of(context).buttonColor))),
+        //     submit: (String pin) {
+        //       _verifyPin(pin);
+        //     }),
       );
     }
 
