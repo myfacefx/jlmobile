@@ -95,10 +95,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             isLogout: true);
         _isMatch = false;
       }
-      setState(() {
-        _phoneNumber = result.phoneNumber;
-      });
-      _awaitResultFromOTP(context, _phoneNumber);
+
+      if (result.phoneNumber == null) {
+        await globals.showDialogs("Email Tidak Ditemukan!", context,
+            isLogout: true);
+      } else {
+        setState(() {
+          _phoneNumber = result.phoneNumber;
+        });
+        _awaitResultFromOTP(context, _phoneNumber);
+      }
     } catch (e) {
       Navigator.pop(context);
       globals.showDialogs(
