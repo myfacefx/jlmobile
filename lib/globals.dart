@@ -23,7 +23,7 @@ import 'package:url_launcher/url_launcher.dart';
 // import 'package:simple_share/simple_share.dart';
 import 'package:http/http.dart' as http;
 
-String version = "v0.1.7";
+String version = "v0.1.8";
 bool isProduction = true;
 
 /// Global Function to return Screen Height
