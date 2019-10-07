@@ -151,7 +151,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
             break;
           }
         }
-        showVideoByCategory();
         _getAnimalSubCategories();
       }
 
@@ -640,7 +639,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                   selectedTime = ' ${time.hour}:${time.minute}:${time.second}';
                   setState(() {
                     _expiryDate += selectedTime;
-                    print(_expiryDate);
                   });
                 }, currentTime: DateTime.now(), locale: LocaleType.en);
                 setState(() {});
@@ -1082,6 +1080,7 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
                           _animalCategory = category;
                         });
                         _getAnimalSubCategories();
+                        showVideoByCategory();
                       },
                       items: animalCategories.map((AnimalCategory category) {
                         return DropdownMenuItem<AnimalCategory>(
