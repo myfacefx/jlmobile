@@ -7,26 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show PlatformException;
-import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/globals.dart';
+import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/models/user.dart';
-import 'package:jlf_mobile/pages/article.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
-import 'package:jlf_mobile/pages/component/pdf_viewer.dart';
+import 'package:jlf_mobile/pages/how_to_join_hot_auction.dart';
 import 'package:jlf_mobile/pages/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
-import 'package:jlf_mobile/pages/how_to_join_hot_auction.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
-import 'package:jlf_mobile/services/auction_event_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
 import 'package:jlf_mobile/services/static_services.dart';
@@ -344,14 +340,19 @@ class _HomePage extends State<HomePage> {
         onValue.forEach((slider) {
           listPromoA.add(GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => WebviewScaffold(
-                      // displayZoomControls: true,
-                      scrollBar: true,
-                      withZoom: true,
-                      url: slider.name,
-                      appBar: globals.appBar(_scaffoldKey, context,
-                          isSubMenu: true, showNotification: false))));
+              globals.debugPrint(slider.name);
+              if (slider.name.contains(".pdf")) {
+                globals.openPdf(context, slider.name, slider.description);
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => WebviewScaffold(
+                        scrollBar: true,
+                        withZoom: true,
+                        withOverviewMode: true,
+                        url: slider.name,
+                        appBar: globals.appBar(_scaffoldKey, context,
+                            isSubMenu: true, showNotification: false))));
+              }
             },
             child: CachedNetworkImage(
               imageUrl: slider.link,

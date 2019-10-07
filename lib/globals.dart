@@ -436,7 +436,7 @@ Future<bool> showDialogBlockRekber(List<Auction> content, BuildContext context,
         child: Row(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(right: 5),
+                padding: EdgeInsets.only(right: 5),
                 height: 35,
                 child: CircleAvatar(
                     radius: 25,
@@ -1297,8 +1297,9 @@ Future<bool> verificationOptionDialog(context) {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) => VerifyPinPage(
-                                  phoneNumber: user.phoneNumber,
-                                  userId: user.id,)));
+                                    phoneNumber: user.phoneNumber,
+                                    userId: user.id,
+                                  )));
                     },
                   ),
                 ],
@@ -1475,6 +1476,7 @@ void openPdf(context, String url, String title) async {
                   title: title,
                 )));
   } catch (e) {
+    Navigator.pop(context);
     showDialogs("Gagal Memuat Halaman", context);
   }
 }
