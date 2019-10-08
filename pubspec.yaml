@@ -17,7 +17,7 @@ dependencies:
   flutter_masked_text: ^0.8.0
   multi_image_picker: ^4.3.4
   image_picker: ^0.6.1
-  image_cropper: ^1.0.2
+  image_cropper: 1.0.2
   permission_handler: '^3.2.0'
   mailer: ^2.2.1
   video_player: ^0.10.2
@@ -27,7 +27,7 @@ dependencies:
   #   git: 
   #     url: https://github.com/yudaprama/flutter_facebook_login
   #     ref: android-x
-  flutter_facebook_login: ^2.0.1
+  flutter_facebook_login: 2.0.1
   flutter_video_compress: ^0.3.7+8
 
   #pdf viewer for not statefull widget
@@ -61,8 +61,8 @@ dependencies:
 
   youtube_player_flutter: ^4.0.0+1
 
-  flutter_native_image:
-    git: https://github.com/btastic/flutter_native_image.git
+  flutter_native_image: ^0.0.4
+    # git: https://github.com/btastic/flutter_native_image.git
 
   carousel_pro: ^1.0.0
   cached_network_image: ^1.1.1

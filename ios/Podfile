@@ -8,7 +8,11 @@ pod 'Protobuf', :inhibit_warnings => true
 pod 'Firebase/Analytics'
 pod 'Firebase/Storage'
 pod 'Firebase/Firestore'
-pod 'FBSDKCoreKit'
+
+pod 'FBSDKCoreKit', '4.39.1' 
+pod 'FBSDKLoginKit', '4.39.1'
+
+use_modular_headers!
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
