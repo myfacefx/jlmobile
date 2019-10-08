@@ -642,27 +642,16 @@ class _ProfilePageState extends State<ProfilePage>
                                                     content: text,
                                                     actions: <Widget>[
                                                       FlatButton(
-                                                        child:
-                                                            Text('Cek Hadiah'),
-                                                        onPressed: () {
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      WebviewScaffold(
-                                                                          // displayZoomControls: true,
-                                                                          scrollBar:
-                                                                              true,
-                                                                          withZoom:
-                                                                              true,
-                                                                          url:
-                                                                              'https://jlfbackend.xyz/jlf-admin-panel/public/point-rewards',
-                                                                          appBar: globals.appBar(
-                                                                              _scaffoldKey,
-                                                                              context,
-                                                                              isSubMenu: true,
-                                                                              showNotification: false))));
-                                                        },
-                                                      ),
+                                                          child: Text(
+                                                              'Cek Hadiah'),
+                                                          onPressed: () {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (BuildContext
+                                                                            context) =>
+                                                                        PromoPage()));
+                                                          }),
                                                       FlatButton(
                                                         child: Text('Tutup'),
                                                         onPressed: () {
