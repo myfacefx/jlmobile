@@ -14,7 +14,6 @@ import 'package:jlf_mobile/models/product.dart';
 import 'package:jlf_mobile/models/select_product.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart';
-import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
 import 'package:jlf_mobile/services/product_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 

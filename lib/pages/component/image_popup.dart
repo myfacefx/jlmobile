@@ -1,9 +1,8 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal_image.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:jlf_mobile/globals.dart' as globals;
-import 'package:carousel_pro/carousel_pro.dart';
 
 class ImagePopupPage extends StatefulWidget {
   final List<AnimalImage> image;

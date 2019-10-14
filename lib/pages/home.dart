@@ -17,9 +17,9 @@ import 'package:jlf_mobile/models/top_seller.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/category_detail.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
-import 'package:jlf_mobile/pages/how_to_join_hot_auction.dart';
-import 'package:jlf_mobile/pages/not_found.dart';
+import 'package:jlf_mobile/pages/component/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/static/how_to_join_hot_auction.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
@@ -45,9 +45,11 @@ class _HomePage extends State<HomePage> {
   StreamSubscription _sub;
 
   int _current = 0;
+  int _currentD = 0;
 
   bool isLoadingCategories = true;
   bool isLoadingPromoA = true;
+  bool isLoadingPromoD = true;
   bool isLoadingPromotedTopSellers = true;
   bool isLoadingSponsoredProducts = true;
   bool isLoadingAuctionEvents = true;
@@ -63,6 +65,7 @@ class _HomePage extends State<HomePage> {
   int animalCount = 0;
   int promosCountC = 0;
   List<Widget> listPromoA = [];
+  List<Widget> listPromoD = [];
 
   String selectedType = "PASAR HEWAN";
 
@@ -81,6 +84,7 @@ class _HomePage extends State<HomePage> {
       _getPromotedTopSeller();
 
       _loadPromosA();
+      _loadPromosD();
 
       // globals.getNotificationCount();
       globals.getNotificationCount().then((a) async {
@@ -378,6 +382,56 @@ class _HomePage extends State<HomePage> {
     });
   }
 
+  _loadPromosD() {
+    getAllPromos(globals.user.tokenRedis, "iklan", "D").then((onValue) async {
+      if (onValue == null) {
+        await globals.showDialogs(
+            "Session anda telah berakhir, Silakan melakukan login ulang",
+            context,
+            isLogout: true);
+        return;
+      }
+      if (onValue.length != 0) {
+        listPromoD = [];
+        onValue.forEach((slider) {
+          listPromoD.add(GestureDetector(
+            onTap: () {
+              globals.debugPrint(slider.name);
+              if (slider.name.contains(".pdf")) {
+                globals.openPdf(context, slider.name, slider.description);
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => WebviewScaffold(
+                        scrollBar: true,
+                        withZoom: true,
+                        withOverviewMode: true,
+                        url: slider.name,
+                        appBar: globals.appBar(_scaffoldKey, context,
+                            isSubMenu: true, showNotification: false))));
+              }
+            },
+            child: CachedNetworkImage(
+              imageUrl: slider.link,
+              placeholder: (context, url) =>
+                  Image.asset('assets/images/loading.gif'),
+              errorWidget: (context, url, error) =>
+                  Image.asset('assets/images/error.jpeg'),
+            ),
+          ));
+        });
+      }
+
+      setState(() {
+        isLoadingPromoD = false;
+      });
+    }).catchError((onError) {
+      listPromoD = getTemplateSlider();
+      setState(() {
+        isLoadingPromoD = false;
+      });
+    });
+  }
+
   _refresh() {
     getUsersCount().then((onValue) {
       membersCount = onValue;
@@ -561,6 +615,42 @@ class _HomePage extends State<HomePage> {
             ))
       ],
     );
+  }
+
+  Widget _buildCarouselD() {
+    return listPromoD.length > 0
+        ? Stack(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: CarouselSlider(
+                  aspectRatio: 3,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 25),
+                  viewportFraction: 3.0,
+                  height: 218,
+                  enableInfiniteScroll: true,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentD = index;
+                    });
+                  },
+                  items: listPromoD,
+                ),
+              ),
+              Positioned(
+                  bottom: 10,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _buildDoted(_currentD + 1, listPromoD.length)
+                    ],
+                  ))
+            ],
+          )
+        : Container();
   }
 
   Widget _buildNumberMember() {
@@ -1417,6 +1507,9 @@ class _HomePage extends State<HomePage> {
                         _buildGridCategory(animalCategories, selectedType),
                         _buildEventHewan(),
                         _buildAuctionEvents(),
+                        isLoadingPromoD
+                            ? globals.isLoading()
+                            : _buildCarouselD(),
                         _buildSponsoredProduct(),
                         // _buildPromotedSellerItems(),
                         _buildPromotedSeller(),
