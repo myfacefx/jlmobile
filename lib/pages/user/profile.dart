@@ -956,6 +956,20 @@ class _ProfilePageState extends State<ProfilePage>
                                   align: TextAlign.center),
                             )
                           : Container(),
+                      Container(
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: (){
+                              Navigator.pushNamed(context, "/point-history");
+                            },
+                            child: Text('Lihat Riwayat Poin', 
+                              style: TextStyle(
+                                color: Colors.lightBlue,
+                                decoration: TextDecoration.underline
+                              )),
+                          ),
+                        ),
+                      ),
                       user.id == globals.user.id
                           ? FlatButton(
                               // shape: CircleBorder(),

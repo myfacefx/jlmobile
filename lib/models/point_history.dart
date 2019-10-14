@@ -34,7 +34,7 @@ class PointHistory {
     factory PointHistory.fromJson(Map<String, dynamic> json) => PointHistory(
         id: json["id"] == null ? null : json["id"],
         information: json["information"] == null ? null : json["information"],
-        point: json["point"] == null ? null : json["point"],
+        point: json["point"] == null ? null : double.parse(json["point"].toString()),
         userId: json["user_id"] == null ? null : json["user_id"],
         animalId: json["animal_id"],
         type: json["type"],

@@ -63,7 +63,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                           padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                           child: Center(
                               child: globals.myText(
-                                  text: "POIN REWARD",
+                                  text: "Riwayat Poin",
                                   weight: "B",
                                   color: "dark",
                                   size: 22))),
@@ -77,50 +77,57 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                                     color: Colors.white,
                                     child: Column(
                                       children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Container(
-                                                      padding: EdgeInsets
-                                                          .fromLTRB(
-                                                              8, 5, 8, 8),
-                                                      child: globals.myText(text: histories[i].information, align: TextAlign.start)
-                                                      ),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.only(
-                                                            bottom: 3,
-                                                            left: 7),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 3),
-                                                          child: globals.myText(
-                                                              size: 10,
-                                                              color:
-                                                                  "unprime2",
-                                                              text: histories[i].createdAt != null ? globals.convertFormatDateTime(
-                                                                  histories[
-                                                                          i]
-                                                                      .createdAt
-                                                                      .toString()) : '-'),
-                                                        ),
-                                                      ],
+                                        Container(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              // Created At
+                                              Container(
+                                                color: Color.fromRGBO(223, 219, 236, 1),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      width: globals.mw(context) * 0.85,
+                                                      padding: EdgeInsets.all(5),
+                                                      child: globals.myText(
+                                                                size: 10,
+                                                                color:
+                                                                    "unprime2",
+                                                                text: histories[i].createdAt != null ? globals.convertFormatDateTime(
+                                                                    histories[
+                                                                            i]
+                                                                        .createdAt
+                                                                        .toString()) : '-')
                                                     ),
-                                                  ),
-                                                ],
+                                                    histories[i].point != null ? 
+                                                    Container(
+                                                      width: globals.mw(context) * 0.10,
+                                                      padding: EdgeInsets.all(5),
+                                                      child: globals.myText(
+                                                                size: 10,
+                                                                color:
+                                                                    "success",
+                                                                weight:  'B',
+                                                                align: TextAlign.right,
+                                                                text: histories[i].point.toString())) : Container(),
+                                                  ],
+                                                ),
                                               ),
-                                              flex: 5,
-                                            ),
-                                          ],
+                                              // Information
+                                              Container(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Flexible(
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(10),
+                                                        child: globals.myText(text: histories[i].information, align: TextAlign.start),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         )
                                       ]
                                     )
