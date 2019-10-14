@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/promo.dart';
+import 'package:jlf_mobile/pages/component/zoom_banner_image.dart';
 import 'package:jlf_mobile/services/promo_services.dart';
-import 'package:jlf_mobile/pages/zoom_banner_image.dart';
 
 class ListEventPage extends StatefulWidget {
   @override
@@ -72,12 +72,11 @@ class _ListEventPageState extends State<ListEventPage> {
             globals.debugPrint('tapped');
             globals.debugPrint(slider.items);
             Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => 
-                        ZoomBannerImagePage(image: listPromoC[_current].link, imageName: listPromoC[_current].name)
-                    )
-                  );
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => ZoomBannerImagePage(
+                        image: listPromoC[_current].link,
+                        imageName: listPromoC[_current].name)));
           },
           child: Container(
             child: slider,

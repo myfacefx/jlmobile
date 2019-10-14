@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/event_promotion/promo.dart';
 import 'package:jlf_mobile/pages/product/edit.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
-import 'package:jlf_mobile/pages/promo.dart';
-import 'package:jlf_mobile/pages/user/point_history.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
@@ -83,7 +80,8 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukKu() {
-    getUserUnauctionedAnimals(globals.user.tokenRedis, _userId, searchController.text)
+    getUserUnauctionedAnimals(
+            globals.user.tokenRedis, _userId, searchController.text)
         .then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
@@ -102,7 +100,8 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukLelang() {
-    getUserAuctionAnimals(globals.user.tokenRedis, _userId, searchController.text)
+    getUserAuctionAnimals(
+            globals.user.tokenRedis, _userId, searchController.text)
         .then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
@@ -121,8 +120,11 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukPasarHewan() {
-    getUserProductAnimals(globals.user.tokenRedis, _userId, searchController.text,)
-        .then((onValue) async {
+    getUserProductAnimals(
+      globals.user.tokenRedis,
+      _userId,
+      searchController.text,
+    ).then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
             "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -960,14 +962,13 @@ class _ProfilePageState extends State<ProfilePage>
                       Container(
                         child: Center(
                           child: GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Navigator.pushNamed(context, "/point-history");
                             },
-                            child: Text('Lihat Riwayat Poin', 
-                              style: TextStyle(
-                                color: Colors.lightBlue,
-                                decoration: TextDecoration.underline
-                              )),
+                            child: Text('Lihat Riwayat Poin',
+                                style: TextStyle(
+                                    color: Colors.lightBlue,
+                                    decoration: TextDecoration.underline)),
                           ),
                         ),
                       ),

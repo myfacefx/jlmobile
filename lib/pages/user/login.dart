@@ -105,11 +105,10 @@ class _LoginPage extends State<LoginPage> {
 
             globals.user = user;
             globals.state = "home";
-           
+
             Navigator.of(context).pop();
 
-            Navigator.pushNamed(
-                context, "/");
+            Navigator.pushNamed(context, "/");
           } else {
             globals.showDialogs(response['message'], context);
             globals.debugPrint("ERR: " + response.toString());
@@ -262,6 +261,19 @@ class _LoginPage extends State<LoginPage> {
                       color: "primary"),
                 ],
               ))),
+    );
+  }
+
+  Widget _textFacebook() {
+    return Container(
+      width: 300,
+      child: Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          globals.myText(text: "Daftar dan masuk dengan", color: "dark"),
+        ],
+      )),
     );
   }
 
@@ -509,6 +521,10 @@ class _LoginPage extends State<LoginPage> {
                       _forgetPassword(),
                       SizedBox(
                         height: 15,
+                      ),
+                      _textFacebook(),
+                      SizedBox(
+                        height: 5,
                       ),
                       _floatingButton("Facebook"),
                       SizedBox(height: 15),
