@@ -23,7 +23,7 @@ Future<Paginate> getAnimalAuctionByCategory(String token, int animalCategoryId,
     String sortBy, String filterName, int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  if(sortBy == "Expiry Date") {
+  if (sortBy == "Expiry Date") {
     sortBy = "Expiry_Date";
   }
 
@@ -35,7 +35,8 @@ Future<Paginate> getAnimalAuctionByCategory(String token, int animalCategoryId,
     params = params + "&animal_name=$filterName";
   }
 
-  debugPrint(getBaseUrl() + "/animals/category/$animalCategoryId/auction$params");
+  debugPrint(
+      getBaseUrl() + "/animals/category/$animalCategoryId/auction$params");
   http.Response res = await http.get(
       getBaseUrl() + "/animals/category/$animalCategoryId/auction$params",
       headers: header);
@@ -56,7 +57,7 @@ Future<Paginate> getAnimalAuctionBySubCategory(
     int userId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-    if(sortBy == "Expiry Date") {
+  if (sortBy == "Expiry Date") {
     sortBy = "Expiry_Date";
   }
 
@@ -95,7 +96,8 @@ Future<Paginate> getAnimalProductByCategory(String token, int animalCategoryId,
     params = params + "&animal_name=$filterName";
   }
 
-  debugPrint(getBaseUrl() + "/animals/category/$animalCategoryId/product$params");
+  debugPrint(
+      getBaseUrl() + "/animals/category/$animalCategoryId/product$params");
   http.Response res = await http.get(
       getBaseUrl() + "/animals/category/$animalCategoryId/product$params",
       headers: header);
@@ -171,9 +173,16 @@ Future<int> deleteAnimalById(String token, int animalId) async {
   }
 }
 
-Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId) async {
+Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId, String filterName) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  final url = getBaseUrl() + "/users/$userId/animals/draft";
+
+  String params = "?";
+
+  if (filterName != "") {
+    params = params + "&animal_name=$filterName";
+  }
+
+  final url = getBaseUrl() + "/users/$userId/animals/draft$params";
   debugPrint(url);
 
   http.Response res = await http.get(url, headers: header);
@@ -187,12 +196,19 @@ Future<List<Animal>> getUserUnauctionedAnimals(String token, int userId) async {
   }
 }
 
-Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
+Future<List<Animal>> getUserAuctionAnimals(String token, int userId, String filterName) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  debugPrint(getBaseUrl() + "/users/$userId/auctions/animals");
-  http.Response res = await http
-      .get(getBaseUrl() + "/users/$userId/auctions/animals", headers: header);
+  String params = "?";
+
+  if (filterName != "") {
+    params = params + "&animal_name=$filterName";
+  }
+
+  debugPrint(getBaseUrl() + "/users/$userId/auctions/animals$params");
+  http.Response res = await http.get(
+      getBaseUrl() + "/users/$userId/auctions/animals$params",
+      headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
   } else if (res.statusCode == 444) {
@@ -202,12 +218,17 @@ Future<List<Animal>> getUserAuctionAnimals(String token, int userId) async {
   }
 }
 
-Future<List<Animal>> getUserProductAnimals(String token, int userId) async {
+Future<List<Animal>> getUserProductAnimals(String token, int userId, String filterName) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
 
-  debugPrint(getBaseUrl() + "/users/$userId/products/animals");
+  String params = "?";
+  if (filterName != "") {
+    params = params + "&animal_name=$filterName";
+  }
+
+  debugPrint(getBaseUrl() + "/users/$userId/products/animals$params");
   http.Response res = await http
-      .get(getBaseUrl() + "/users/$userId/products/animals", headers: header);
+      .get(getBaseUrl() + "/users/$userId/products/animals$params", headers: header);
   if (res.statusCode == 200) {
     return animalFromJson(res.body);
   } else if (res.statusCode == 444) {
