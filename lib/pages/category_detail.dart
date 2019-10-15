@@ -385,8 +385,10 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _templateHeaderTopSellerProfile(TopSeller topSeller,
-      {double height: 45}) {
+  Widget _templateHeaderTopSellerProfile(TopSeller topSeller, {double height: 45}) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double containerWidth = (deviceWidth - 125) / 4;
+
     return GestureDetector(
       onTap: () {
         topSeller.userId != null
@@ -401,10 +403,11 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         children: <Widget>[
           Container(
               padding: EdgeInsets.all(5),
+              margin: EdgeInsets.fromLTRB(10, 0, 10, 1),
+              width: containerWidth,
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[300], width: 1),
                   borderRadius: BorderRadius.circular(5.0)),
-              margin: EdgeInsets.fromLTRB(10, 0, 10, 1),
               child: Container(
                   alignment: Alignment.center,
                   width: height,
@@ -484,6 +487,9 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
   }
 
   Widget _buildBottomBanner() {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double containerWidth = (deviceWidth - 40) / 2;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -492,6 +498,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             launch("https://forms.gle/2BB8FTiPy1yAGpz78");
           },
           child: Container(
+            width: containerWidth,
             padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
             child: Image.asset('assets/images/ceritajlf.jpg',
                 width: globals.mw(context) * 0.45),
@@ -503,6 +510,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             globals.openPdf(context, url, "Sponsored Seller");
           },
           child: Container(
+            width: containerWidth,
             padding: EdgeInsets.fromLTRB(10, 16, 10, 16),
             child: Image.asset(
               'assets/images/sponsorseller.jpg',
