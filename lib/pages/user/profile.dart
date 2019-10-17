@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:jlf_mobile/pages/event_promotion/promo.dart';
 import 'package:jlf_mobile/pages/product/edit.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
-import 'package:jlf_mobile/pages/promo.dart';
-import 'package:jlf_mobile/pages/user/point_history.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
@@ -27,6 +24,7 @@ class _ProfilePageState extends State<ProfilePage>
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TabController _tabController;
+  TextEditingController searchController = TextEditingController();
 
   bool isLoadingAnimals = true;
   bool isLoadingAuctions = true;
@@ -82,7 +80,8 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukKu() {
-    getUserUnauctionedAnimals(globals.user.tokenRedis, _userId)
+    getUserUnauctionedAnimals(
+            globals.user.tokenRedis, _userId, searchController.text)
         .then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
@@ -101,7 +100,8 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukLelang() {
-    getUserAuctionAnimals(globals.user.tokenRedis, _userId)
+    getUserAuctionAnimals(
+            globals.user.tokenRedis, _userId, searchController.text)
         .then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
@@ -120,8 +120,11 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _getProdukPasarHewan() {
-    getUserProductAnimals(globals.user.tokenRedis, _userId)
-        .then((onValue) async {
+    getUserProductAnimals(
+      globals.user.tokenRedis,
+      _userId,
+      searchController.text,
+    ).then((onValue) async {
       if (onValue == null) {
         await globals.showDialogs(
             "Session anda telah berakhir, Silakan melakukan login ulang",
@@ -959,14 +962,13 @@ class _ProfilePageState extends State<ProfilePage>
                       Container(
                         child: Center(
                           child: GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Navigator.pushNamed(context, "/point-history");
                             },
-                            child: Text('Lihat Riwayat Poin', 
-                              style: TextStyle(
-                                color: Colors.lightBlue,
-                                decoration: TextDecoration.underline
-                              )),
+                            child: Text('Lihat Riwayat Poin',
+                                style: TextStyle(
+                                    color: Colors.lightBlue,
+                                    decoration: TextDecoration.underline)),
                           ),
                         ),
                       ),
@@ -1150,6 +1152,57 @@ class _ProfilePageState extends State<ProfilePage>
         ))));
   }
 
+  Widget _buildTextSearch() {
+    return Container(
+      width: globals.mw(context) * 0.75,
+      padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+      height: 30,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: TextField(
+        controller: searchController,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 12,
+        ),
+        onSubmitted: (String text) {
+          refresh();
+        },
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Nama Binatang',
+            hintStyle: TextStyle(fontSize: 9)),
+      ),
+    );
+  }
+
+  Widget _buildSearch() {
+    return Container(
+      height: 50,
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+      color: globals.myColor("primary"),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          _buildTextSearch(),
+          ButtonTheme(
+            minWidth: 40,
+            child: OutlineButton(
+              borderSide: BorderSide(color: Colors.white),
+              onPressed: () {
+                refresh();
+              },
+              child: globals.myText(text: "Cari", color: "light", size: 10),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1167,6 +1220,7 @@ class _ProfilePageState extends State<ProfilePage>
                       widget.userId == null
                           ? _tabBarListMe()
                           : _tabBarListVisitor(),
+                      _buildSearch(),
                       widget.userId == null ? buildMe() : buildVisitor(),
                     ],
                   ))));

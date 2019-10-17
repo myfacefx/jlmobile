@@ -23,10 +23,7 @@ dependencies:
   video_player: ^0.10.2
   pinput: ^0.1.10
   toast: ^0.1.5
-  # flutter_facebook_login:
-  #   git: 
-  #     url: https://github.com/yudaprama/flutter_facebook_login
-  #     ref: android-x
+ 
   flutter_facebook_login: 2.0.1
   flutter_video_compress: ^0.3.7+8
 

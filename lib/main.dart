@@ -2,34 +2,32 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
-import 'package:jlf_mobile/pages/about.dart';
 import 'package:jlf_mobile/pages/auction/create.dart';
-import 'package:jlf_mobile/pages/blacklist.dart';
-import 'package:jlf_mobile/pages/blacklist_animal.dart';
-import 'package:jlf_mobile/pages/chat_list.dart';
-import 'package:jlf_mobile/pages/donasi.dart';
-import 'package:jlf_mobile/pages/faq.dart';
+import 'package:jlf_mobile/pages/event_promotion/list_event.dart';
+import 'package:jlf_mobile/pages/event_promotion/promo.dart';
 import 'package:jlf_mobile/pages/home.dart';
-import 'package:jlf_mobile/pages/how_to.dart';
-import 'package:jlf_mobile/pages/intro.dart';
-import 'package:jlf_mobile/pages/list_event.dart';
-import 'package:jlf_mobile/pages/our_bid.dart';
-import 'package:jlf_mobile/pages/our_product.dart';
-import 'package:jlf_mobile/pages/rekber.dart';
-import 'package:jlf_mobile/pages/setting.dart';
-import 'package:jlf_mobile/pages/team.dart';
-import 'package:jlf_mobile/pages/up_coming.dart';
+import 'package:jlf_mobile/pages/static/about.dart';
+import 'package:jlf_mobile/pages/static/donasi.dart';
+import 'package:jlf_mobile/pages/static/faq.dart';
+import 'package:jlf_mobile/pages/static/how_to.dart';
+import 'package:jlf_mobile/pages/static/intro.dart';
+import 'package:jlf_mobile/pages/static/rekber.dart';
+import 'package:jlf_mobile/pages/static/reward.dart';
+import 'package:jlf_mobile/pages/static/setting.dart';
+import 'package:jlf_mobile/pages/static/team.dart';
+import 'package:jlf_mobile/pages/transaction/chat_list.dart';
+import 'package:jlf_mobile/pages/user/blacklist.dart';
 import 'package:jlf_mobile/pages/user/edit_password.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
 import 'package:jlf_mobile/pages/user/forgot_password.dart';
 import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/pages/user/notification.dart';
+import 'package:jlf_mobile/pages/user/our_bid.dart';
+import 'package:jlf_mobile/pages/user/our_product.dart';
 import 'package:jlf_mobile/pages/user/point_history.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/pages/user/register.dart';
-import 'package:jlf_mobile/pages/verification.dart';
-import 'package:jlf_mobile/pages/reward.dart';
-import 'package:jlf_mobile/pages/promo.dart';
+import 'package:jlf_mobile/pages/verification/verification.dart';
 import 'package:jlf_mobile/themes.dart';
 
 void main() => runApp(MyApp());
@@ -45,8 +43,7 @@ class MyApp extends StatelessWidget {
 
     if (globals.state == "intro")
       initialRoute = "/intro";
-    else if (globals.state == "login")
-      initialRoute = "/login";
+    else if (globals.state == "login") initialRoute = "/login";
 
     return MaterialApp(
       title: 'JLF',
@@ -77,9 +74,7 @@ class MyApp extends StatelessWidget {
         '/intro': (BuildContext context) => IntroPage(),
         '/chat-list': (BuildContext context) => ChatListPage(),
         '/donasi': (BuildContext context) => DonasiPage(),
-        '/blacklist-animal': (BuildContext context) => BlacklistAnimalPage(),
         '/verification': (BuildContext context) => VerificationPage(),
-        '/upcoming': (BuildContext context) => UpComingPage(),
         '/forget-password': (BuildContext context) => ForgotPasswordPage(),
         '/list-event': (BuildContext context) => ListEventPage(),
         '/reward': (BuildContext context) => RewardPage(),

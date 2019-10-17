@@ -12,10 +12,10 @@ import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/product_comment.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/edit.dart';
-import 'package:jlf_mobile/pages/chat.dart';
-import 'package:jlf_mobile/pages/image_popup.dart';
+import 'package:jlf_mobile/pages/component/image_popup.dart';
+import 'package:jlf_mobile/pages/component/video_popup.dart';
+import 'package:jlf_mobile/pages/transaction/chat.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
-import 'package:jlf_mobile/pages/video_popup.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/auction_comment_services.dart';
 import 'package:jlf_mobile/services/auction_services.dart' as AuctionServices;
@@ -2694,10 +2694,10 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                     ),
                     _buildDesc(widget.from == "LELANG"),
 
-                    widget.from == "LELANG" &&
-                            (animal.ownerUserId == globals.user.id)
-                        ? _buildCancelAuction()
-                        : Container(),
+                    // widget.from == "LELANG" &&
+                    //         (animal.ownerUserId == globals.user.id)
+                    //     ? _buildCancelAuction()
+                    //     : Container(),
 
                     widget.from == "LELANG"
                         ? _buildBidRuleAuction()

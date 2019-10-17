@@ -15,11 +15,10 @@ import 'package:jlf_mobile/models/animal_sub_category.dart';
 import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/product.dart';
 import 'package:jlf_mobile/models/select_product.dart';
-import 'package:jlf_mobile/pages/video_popup.dart';
+import 'package:jlf_mobile/pages/component/video_popup.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart' as AnimalServices;
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
-import 'package:jlf_mobile/services/product_services.dart' as ProductServices;
 import 'package:jlf_mobile/services/product_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
@@ -1543,8 +1542,7 @@ class _EditProductPageState extends State<EditProductPage> {
                       style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(13),
-                          hintText:
-                              "Tuliskan deskripsi $labelNamaType",
+                          hintText: "Tuliskan deskripsi $labelNamaType",
                           labelText: "Deskripsi Hewan",
                           fillColor: Colors.white,
                           border: OutlineInputBorder(

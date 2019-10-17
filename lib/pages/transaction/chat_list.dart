@@ -5,9 +5,10 @@ import 'package:jlf_mobile/models/auction.dart';
 import 'package:jlf_mobile/models/bid.dart';
 import 'package:jlf_mobile/models/chat_list_pagination.dart';
 import 'package:jlf_mobile/models/user.dart';
-import 'package:jlf_mobile/pages/chat.dart';
+
 import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
+import 'package:jlf_mobile/pages/transaction/chat.dart';
 import 'package:jlf_mobile/services/auction_services.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _ChatListPageState extends State<ChatListPage> {
             isLogout: true);
         return;
       }
-      
+
       chatListPagination = null;
       chatListPagination = onValue;
 
@@ -187,7 +188,9 @@ class _ChatListPageState extends State<ChatListPage> {
                                     color: globals.myColor('light')),
                               ),
                               globals.myText(
-                                  text: "Diskusi Rekber", color: "light", size: 14),
+                                  text: "Diskusi Rekber",
+                                  color: "light",
+                                  size: 14),
                               unreadCount != null && unreadCount > 0
                                   ? Container(
                                       margin: EdgeInsets.only(left: 5),
@@ -212,7 +215,8 @@ class _ChatListPageState extends State<ChatListPage> {
                                   context);
                               return null;
                             } else {
-                              globals.debugPrint("FIREBASECHATID ${auction.firebaseChatId}");
+                              globals.debugPrint(
+                                  "FIREBASECHATID ${auction.firebaseChatId}");
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -282,7 +286,8 @@ class _ChatListPageState extends State<ChatListPage> {
                       return _buildChat(chatListPagination.data[i]);
                     },
                   )
-                : Center(child: globals.myText(text: "Tidak ada diskusi Rekber"))
+                : Center(
+                    child: globals.myText(text: "Tidak ada diskusi Rekber"))
             : globals.isLoading());
   }
 

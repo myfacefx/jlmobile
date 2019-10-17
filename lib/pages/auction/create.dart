@@ -1,10 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_video_compress/flutter_video_compress.dart';
 import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/animal_category.dart';
@@ -16,10 +19,6 @@ import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/animal_sub_category_services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:flutter_video_compress/flutter_video_compress.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class CreateAuctionPage extends StatefulWidget {
   final int categoryId;
@@ -148,6 +147,8 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
         for (var animalCategory in animalCategories) {
           if (animalCategory.id == widget.categoryId) {
             _animalCategory = animalCategory;
+            showVideoByCategory();
+
             break;
           }
         }
@@ -201,31 +202,6 @@ class _CreateAuctionPageState extends State<CreateAuctionPage> {
       });
     });
   }
-
-  // Future<Null> _selectDate(BuildContext context) async {
-  //   final DateTime picked = await showDatePicker(
-  //       context: context,
-  //       initialDate: DateTime.now(),
-  //       lastDate: DateTime.now(),
-  //       firstDate: DateTime(2000, 1),
-  //       builder: (BuildContext context, Widget child) {
-  //         return Theme(
-  //           data: ThemeData.dark(),
-  //           child: child,
-  //         );
-  //       });
-
-  //   if (picked != null) {
-  //     setState(() {
-  //       _dateOfBirth = picked;
-  //       dateOfBirthController.text = _dateOfBirth.day.toString() +
-  //           "-" +
-  //           _dateOfBirth.month.toString() +
-  //           "-" +
-  //           _dateOfBirth.year.toString();
-  //     });
-  //   }
-  // }
 
   _getAnimalSubCategories() {
     setState(() {
