@@ -525,7 +525,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(1, 0, 1, 0),
                 ),
-                isAuction
+                isAuction && animal.ownerUserId == globals.user.id
                     ? GestureDetector(
                         onTap: () async {
                           await Navigator.push(

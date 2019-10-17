@@ -235,7 +235,6 @@ Future<List<Auction>> getAuctionsWithActiveChatNoPaginate(
 Future<int> editDescAuction(String token, var data, int animalId) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
   String url = getBaseUrl() + "/animals/$animalId/auctions/update";
-
   debugPrint(url);
   debugPrint(json.encode(data));
 
