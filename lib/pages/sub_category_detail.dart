@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
@@ -220,12 +221,16 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                           radius: 85,
                           child: topSeller.thumbnail != null ||
                                   topSeller.user.photo != null
-                              ? FadeInImage.assetNetwork(
+                              ? CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  placeholder: 'assets/images/loading.gif',
-                                  image: topSeller.thumbnail != null
+                                  imageUrl: topSeller.thumbnail != null
                                       ? topSeller.thumbnail
-                                      : topSeller.user.photo)
+                                      : topSeller.user.photo,
+                                  placeholder: (context, url) =>
+                                      Image.asset('assets/images/loading.gif'),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset('assets/images/error.jpeg'),
+                                )
                               : Image.asset('assets/images/account.png'))))),
           globals.myText(
               text: topSeller.user != null ? topSeller.user.username : ' ',
@@ -605,7 +610,7 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
               children: <Widget>[
                 isAuction && closingType == "durasi"
                     ? Container(
-                      margin: EdgeInsets.only(right: 5),
+                        margin: EdgeInsets.only(right: 5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: globals.myColor("primary")),
@@ -618,7 +623,6 @@ class _SubCategoryDetailPageState extends State<SubCategoryDetailPage> {
                       )
                     : Container(),
                 Container(
-                  
                   child: innerIslandShipping == 1
                       ? Container(
                           decoration: BoxDecoration(

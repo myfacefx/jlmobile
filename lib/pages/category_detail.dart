@@ -385,7 +385,8 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
     );
   }
 
-  Widget _templateHeaderTopSellerProfile(TopSeller topSeller, {double height: 45}) {
+  Widget _templateHeaderTopSellerProfile(TopSeller topSeller,
+      {double height: 45}) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double containerWidth = (deviceWidth - 125) / 4;
 
@@ -417,12 +418,16 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
                           radius: 85,
                           child: topSeller.thumbnail != null ||
                                   topSeller.user.photo != null
-                              ? FadeInImage.assetNetwork(
+                              ? CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  placeholder: 'assets/images/loading.gif',
-                                  image: topSeller.thumbnail != null
+                                  imageUrl: topSeller.thumbnail != null
                                       ? topSeller.thumbnail
-                                      : topSeller.user.photo)
+                                      : topSeller.user.photo,
+                                  placeholder: (context, url) =>
+                                      Image.asset('assets/images/loading.gif'),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset('assets/images/error.jpeg'),
+                                )
                               : Image.asset('assets/images/account.png'))))),
           globals.myText(
               text: topSeller.user != null ? topSeller.user.username : ' ',
@@ -444,8 +449,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
             Container(
               padding: EdgeInsets.only(left: 15, bottom: 10, top: 10),
               alignment: Alignment.centerLeft,
-              child:
-                  globals.myText(text: "TOP SELLERS", size: 16, weight: "M"),
+              child: globals.myText(text: "TOP SELLERS", size: 16, weight: "M"),
             ),
             Container(
                 height: topSellersPoint.length > 0 ? 100 : 40,
