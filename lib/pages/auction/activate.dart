@@ -180,7 +180,7 @@ class _ActivateAuctionPageState extends State<ActivateAuctionPage> {
   _deleteAnimal() async {
     globals.loadingModel(context);
     try {
-      final result = await deleteAnimalById("", animalId);
+      final result = await deleteAnimalById(globals.user.tokenRedis, animalId);
       Navigator.pop(context);
       if (result == 1) {
         await globals.showDialogs("Berhasil menghapus data", context,
