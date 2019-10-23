@@ -349,7 +349,7 @@ Future<User> verifyToken(String token) async {
   debugPrint(token);
 
   http.Response res =
-      await http.get(url, headers: header).timeout(Duration(seconds: 7));
+      await http.get(url, headers: header).timeout(Duration(seconds: 5));
 
   if (res.statusCode == 200) {
     return userFromJson(res.body);

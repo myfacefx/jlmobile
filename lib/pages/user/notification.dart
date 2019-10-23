@@ -179,7 +179,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                           if (histories[i].type != null) {
                                             from =
                                                 histories[i].type != 'auction'
-                                                    ? ''
+                                                    ? 'PASAR HEWAN'
                                                     : 'LELANG';
                                           }
                                           histories[i].read = 1;

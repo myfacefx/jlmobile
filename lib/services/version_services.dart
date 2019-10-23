@@ -10,7 +10,7 @@ Future<Version> verifyVersion(String version) async {
 
   http.Response res = await http
       .get(url, headers: header)
-      .timeout(Duration(seconds: 10));
+      .timeout(Duration(seconds: 4));
   if (res.statusCode == 200) {
     return versionFromJson(res.body);
   } else {
