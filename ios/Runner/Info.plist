@@ -47,10 +47,24 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Media Library</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Calendar Usage</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Using Camera Usage</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Contact Usage</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location always using</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location when using</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Motion Usage</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Using Photo Library</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech Recognition</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
