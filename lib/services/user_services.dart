@@ -103,6 +103,26 @@ Future<String> updateUserLogin(
   }
 }
 
+Future<Map<String, dynamic>> updateUserFacebookUserId(
+    Map<String, dynamic> _data, int userId, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+  final String url = getBaseUrl() + "/users/$userId/update-facebook-user-id";
+
+  debugPrint(url);
+
+  http.Response res = await http
+      .put(url, headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut()));
+
+  var response = json.decode(res.body);
+
+  if (res.statusCode == 201) {
+    return response;
+  } else {
+    throw Exception(response['message']);
+  }
+}
+
 Future<Map<String, dynamic>> updateVerification(
     Map<String, dynamic> _data, int userId, String token) async {
   final header = {"Content-Type": "application/json", "Authorization": token};

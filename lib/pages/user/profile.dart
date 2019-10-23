@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
 import 'package:jlf_mobile/models/user.dart';
 import 'package:jlf_mobile/pages/auction/activate.dart';
 import 'package:jlf_mobile/pages/component/drawer.dart';
+import 'package:http/http.dart' as http;
 import 'package:jlf_mobile/pages/event_promotion/promo.dart';
 import 'package:jlf_mobile/pages/product/edit.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
+import 'dart:convert';
 
 class ProfilePage extends StatefulWidget {
   final int userId;
@@ -21,6 +24,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
+  FacebookLogin facebookLogin = FacebookLogin();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TabController _tabController;
@@ -546,6 +550,77 @@ class _ProfilePageState extends State<ProfilePage>
     return widget;
   }
 
+  _syncFacebook() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (globals.user.facebookUserId != null) {
+      globals.showDialogs("Akun Anda sudah terhubung dengan Facebook", context);
+      setState(() {
+        isLoading = false;
+      });
+      return false;
+    }
+
+    FacebookLoginResult result = await facebookLogin
+        .logInWithReadPermissions(['email', 'public_profile']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        globals.debugPrint("####FACEBOOK OUTPUT#####");
+
+        var graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,address,gender,location,picture.type(large).redirect(false)&access_token=${result.accessToken.token}');
+
+        var profile = json.decode(graphResponse.body);
+        globals.debugPrint(profile.toString());
+
+        if (profile['id'] != null) {
+          User user = User();
+          user.facebookUserId = profile['id'];
+
+          Map<String, dynamic> response = await updateUserFacebookUserId(user.toJson(), globals.user.id, globals.user.tokenRedis);
+
+          if (response != null) {
+            if (response['status'] == 'success') {
+              await globals.showDialogs(response['message'], context);
+
+              setState(() {
+                globals.user.facebookUserId = profile['id'];
+              });
+            } else {
+              await globals.showDialogs(response['message'], context);
+              setState(() {});
+              globals.debugPrint("ERR: " + response.toString());
+            }
+          }
+
+          setState(() {
+            isLoading = false;
+          });
+        }
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        // globals.showDialog("Login dengan Facebook dibatalkan", context);
+        setState(() {
+          isLoading = false;
+        });
+        throw new StateError("Cancelled by user");
+        break;
+      case FacebookLoginStatus.error:
+        // LoginManager
+        globals.showDialogs("Error: ${result.errorMessage}", context);
+        facebookLogin.logOut();
+
+        setState(() {
+          isLoading = false;
+        });
+        // throw new StateError(FacebookLoginStatus.error.toString());
+        break;
+    }
+  }
+
   Widget _buildChips(String text, String value) {
     return Container(
       width: (globals.mw(context) * 0.5),
@@ -878,6 +953,44 @@ class _ProfilePageState extends State<ProfilePage>
                                               fit: BoxFit.cover)
                                           : Image.asset(
                                               'assets/images/account.png'))))),
+                      globals.user.facebookUserId == null ? Container(
+                        alignment: Alignment.topLeft,
+                        width: globals.mw(context) * 0.5,
+                        child: ButtonTheme(
+                          height: 30,
+                          child: FlatButton(
+                              onPressed: () {
+                                _syncFacebook();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  globals.myText(
+                                    text: " HUBUNGKAN DENGAN",
+                                    color: "light",
+                                    size: 11.5,
+                                    weight: "B"),
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                    child: Container(
+                                      height: 18,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white, borderRadius: BorderRadius.circular(25)),
+                                      child: Image.asset(
+                                        "assets/images/Facebook.png",
+                                        height: 25,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              color: isLoading
+                                  ? Colors.grey
+                                  : globals.myColor("primary"),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5))),
+                        ),
+                      ) : Container(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
