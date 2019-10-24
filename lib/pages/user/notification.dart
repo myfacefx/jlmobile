@@ -269,11 +269,22 @@ class _NotificationPageState extends State<NotificationPage> {
                                                               "Apakah anda yakin untuk menghapus?",
                                                               context);
                                                       if (res) {
-                                                        deleteHistory("",
-                                                            histories[i].id);
-                                                        histories.remove(
-                                                            histories[i]);
-                                                        setState(() {});
+                                                        globals.loadingModel(
+                                                            context);
+                                                        try {
+                                                          await deleteHistory(
+                                                              globals.user
+                                                                  .tokenRedis,
+                                                              histories[i].id);
+                                                          Navigator.pop(
+                                                              context);
+                                                          histories.remove(
+                                                              histories[i]);
+                                                          setState(() {});
+                                                        } catch (e) {
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
                                                       }
                                                     },
                                                   ),

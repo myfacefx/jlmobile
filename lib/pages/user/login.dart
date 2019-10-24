@@ -454,7 +454,8 @@ class _LoginPage extends State<LoginPage> {
                           child: TextFormField(
                             textInputAction: TextInputAction.next,
                             validator: (String value) {
-                              if (value.isEmpty) return 'Username masih kosong';
+                              if (value.isEmpty)
+                                return 'Username / Phone Number masih kosong';
                             },
                             onSaved: (String value) => _username = value,
                             onFieldSubmitted: (String value) {
@@ -466,8 +467,8 @@ class _LoginPage extends State<LoginPage> {
                             controller: usernameController,
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(13),
-                                hintText: "Username",
-                                labelText: "Username",
+                                hintText: "Username / Phone Number",
+                                labelText: "Username / Phone Number",
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20))),
                           )),
