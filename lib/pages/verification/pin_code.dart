@@ -177,9 +177,37 @@ class _VerifyPinState extends State<VerifyPinPage> {
               ]));
     }
 
+    Widget _buildBackButton() {
+      return Container(
+        // padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () {
+                // if not in reset password page
+                if (_userId != null) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushNamed("/");
+                } else {
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, "/login");
+                }
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              child:
+                  globals.myText(text: "Kembali", color: "light", size: 15),
+              color: globals.myColor("dark"),
+            ),
+          ],
+        ),
+      );
+    }
+
     Widget _buildPhoneNumberField(_phoneNumber) {
       return Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
           // margin: EdgeInsets.only(bottom: 10),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,9 +230,10 @@ class _VerifyPinState extends State<VerifyPinPage> {
                     _isAvailable == true
                         ? RaisedButton(
                             onPressed: () {
-                              Toast.show("Mengirim OTP . . .", context,
-                                  duration: Toast.LENGTH_LONG,
-                                  gravity: Toast.TOP);
+                              // Toast.show("Mengirim OTP . . .", context,
+                              //     duration: Toast.LENGTH_LONG,
+                              //     gravity: Toast.TOP);
+                              globals.showDialogs("Kami segera mengirimkan kode OTP ke WA anda, silakan cek WA anda", context);
                               setState(() {
                                 _isAvailable = false;
                                 _sendOTP();
@@ -281,7 +310,7 @@ class _VerifyPinState extends State<VerifyPinPage> {
           // use for reset password modul
           else {
             globals.showDialogs(
-                "Kami telah mengirimkan password baru ke email kamu, silakan cek emailmu!",
+                "Kami telah mengirimkan password baru ke email kamu, cek folder spam apabila tidak menemukan di kotak masuk.",
                 context,
                 isLogout: true);
             Navigator.pop(context, true);
@@ -350,6 +379,7 @@ class _VerifyPinState extends State<VerifyPinPage> {
                   children: <Widget>[
                     _imageHeader(),
                     _buildPhoneNumberField(_phoneNumber),
+                    _buildBackButton(),
                     _buildInputPin(),
                     Text(
                       "Masukan OTP",
