@@ -129,7 +129,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       Navigator.pop(context);
       if (result == 1) {
         globals.showDialogs(
-            "Untuk menjaga keamanan password anda kami akan mengirimkan password baru anda, jika anda ingin mengganti silahkan login dan ganti melalui menu edit profile",
+            "Kami telah mengirimkan password baru ke email anda (cek folder spam apabila tidak ditemukan di kotak masuk).",
             context,
             isLogout: true);
       } else if (result == 2) {
