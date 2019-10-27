@@ -43,7 +43,6 @@ class _LoginPage extends State<LoginPage> {
   void initState() {
     super.initState();
     _checkVersion();
-    _getCount();
   }
 
   _getCount() {
@@ -67,6 +66,7 @@ class _LoginPage extends State<LoginPage> {
         }
       } else {
         globals.debugPrint("Already Up To Date Version");
+        _getCount();
       }
     }).catchError((onError) async {
       await globals.showDialogs(
@@ -406,6 +406,7 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("open login");
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     return WillPopScope(
       onWillPop: () {

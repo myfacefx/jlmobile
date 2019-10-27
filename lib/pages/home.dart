@@ -79,33 +79,9 @@ class _HomePage extends State<HomePage> {
 
     _checkVersion();
 
-    if (globals.user != null) {
-      _verificationCheck();
-      _refresh();
-      _getListCategoriesProduct();
-      _getHotAuctions();
-      _getSponsoredProducts();
-      _getPromotedTopSeller();
-
-      _loadPromosA();
-      _loadPromosD();
-
-      // globals.getNotificationCount();
-      globals.getNotificationCount().then((a) async {
-        setState(() {});
-      });
-      globals.generateToken();
-      globals.notificationListener(context);
-    }
-
     initUniLinks();
     initUniLinksStream();
-
     handleAppLifecycleState();
-
-    subscribeFCM();
-
-    _verificationBonusPoint();
   }
 
   _verificationBonusPoint() async {
@@ -225,7 +201,8 @@ class _HomePage extends State<HomePage> {
           User user = User();
           user.facebookUserId = profile['id'];
 
-          Map<String, dynamic> response = await updateUserFacebookUserId(user.toJson(), globals.user.id, globals.user.tokenRedis);
+          Map<String, dynamic> response = await updateUserFacebookUserId(
+              user.toJson(), globals.user.id, globals.user.tokenRedis);
 
           if (response != null) {
             if (response['status'] == 'success') {
@@ -319,6 +296,26 @@ class _HomePage extends State<HomePage> {
         }
       } else {
         globals.debugPrint("Already Up To Date Version");
+        if (globals.user != null) {
+          _verificationCheck();
+          _refresh();
+          _getListCategoriesProduct();
+          _getHotAuctions();
+          _getSponsoredProducts();
+          _getPromotedTopSeller();
+
+          _loadPromosA();
+          _loadPromosD();
+          subscribeFCM();
+          _verificationBonusPoint();
+
+          // globals.getNotificationCount();
+          globals.getNotificationCount().then((a) async {
+            setState(() {});
+          });
+          globals.generateToken();
+          globals.notificationListener(context);
+        }
         setState(() {
           alreadyUpToDate = true;
         });
@@ -750,42 +747,47 @@ class _HomePage extends State<HomePage> {
       ],
     );
   }
-  
+
   Widget _buildFacebookSynchronization() {
-    return globals.user.facebookUserId == null ? GestureDetector(
-      onTap: () => _syncFacebook(),
-      child: Container(
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-        height: 35,
-        decoration: BoxDecoration(
-            color: globals.myColor('primary'),
-            borderRadius: BorderRadius.circular(4)),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              globals.myText(
-                  text: "HUBUNGKAN AKUN DENGAN FACEBOOK",
-                  color: "light",
-                  size: 12,
-                  weight: "B",
-                  align: TextAlign.center,
-                  textOverflow: TextOverflow.ellipsis),
-              Container(
-                padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+    return globals.user != null
+        ? globals.user.facebookUserId == null
+            ? GestureDetector(
+                onTap: () => _syncFacebook(),
                 child: Container(
-                  height: 18,
+                  margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  height: 35,
                   decoration: BoxDecoration(
-                      color: Colors.white, borderRadius: BorderRadius.circular(25)),
-                  child: Image.asset(
-                    "assets/images/Facebook.png",
-                    height: 25,
-                  ),
+                      color: globals.myColor('primary'),
+                      borderRadius: BorderRadius.circular(4)),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        globals.myText(
+                            text: "HUBUNGKAN AKUN DENGAN FACEBOOK",
+                            color: "light",
+                            size: 12,
+                            weight: "B",
+                            align: TextAlign.center,
+                            textOverflow: TextOverflow.ellipsis),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                          child: Container(
+                            height: 18,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(25)),
+                            child: Image.asset(
+                              "assets/images/Facebook.png",
+                              height: 25,
+                            ),
+                          ),
+                        )
+                      ]),
                 ),
               )
-            ]),
-      ),
-    ) : Container();
+            : Container()
+        : Container();
   }
 
   Widget _buildVerificationStatus() {
@@ -1575,6 +1577,7 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("open home");
     return WillPopScope(
       onWillPop: () {
         _exitDialog();

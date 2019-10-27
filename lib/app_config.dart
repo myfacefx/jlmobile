@@ -33,15 +33,16 @@ class AppConfig extends InheritedWidget {
     globals.baseUrl = baseUrl;
     globals.flavor = flavorName;
     globals.isProduction = isProduction;
-    try {
-      String firstInstall = await readLocalData("isNew");
-      if (firstInstall != null) {
-        String userData = await readLocalData("user");
-        if (userData != null) {
-          User newUser = userFromJson(userData);
-          globals.debugPrint("User Found = ${newUser.username}");
 
-          globals.debugPrint("verify token");
+    String firstInstall = await readLocalData("isNew");
+    if (firstInstall != null) {
+      String userData = await readLocalData("user");
+      if (userData != null) {
+        User newUser = userFromJson(userData);
+        globals.debugPrint("User Found = ${newUser.username}");
+
+        globals.debugPrint("verify token");
+        try {
           final resVerify = await verifyToken(newUser.tokenRedis);
           if (resVerify != null) {
             globals.debugPrint("verifed token");
@@ -56,21 +57,19 @@ class AppConfig extends InheritedWidget {
               if (globals.user.verificationStatus == 'denied')
                 globals.state = 'verification';
             }
-            // globals.state = globals.user.verificationStatus == null || globals.user.verificationStatus == 'denied' ? "verification" : "home";
           } else {
             globals.debugPrint("token not found");
             deleteLocalData("user");
             globals.state = "login";
           }
-        } else {
-          globals.state = "login";
+        } catch (e) {
+          globals.state = 'home';
         }
       } else {
-        globals.state = "intro";
+        globals.state = "login";
       }
-    } catch (e) {
-      globals.state = "login";
-      globals.mailError("app_config", e.toString());
+    } else {
+      globals.state = "intro";
     }
   }
 }
