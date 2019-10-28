@@ -563,8 +563,7 @@ class _ProfilePageState extends State<ProfilePage>
       return false;
     }
 
-    FacebookLoginResult result = await facebookLogin
-        .logInWithReadPermissions(['email', 'public_profile']);
+    FacebookLoginResult result = await facebookLogin.logIn(['email', 'public_profile']);
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:

@@ -1,10 +1,4 @@
 PODS:
-  - Bolts (1.9.0):
-    - Bolts/AppLinks (= 1.9.0)
-    - Bolts/Tasks (= 1.9.0)
-  - Bolts/AppLinks (1.9.0):
-    - Bolts/Tasks
-  - Bolts/Tasks (1.9.0)
   - BoringSSL-GRPC (0.0.3):
     - BoringSSL-GRPC/Implementation (= 0.0.3)
     - BoringSSL-GRPC/Interface (= 0.0.3)
@@ -20,10 +14,14 @@ PODS:
     - Firebase/Core
     - Firebase/Firestore (~> 6.0)
     - Flutter
-  - FBSDKCoreKit (4.39.1):
-    - Bolts (~> 1.9)
-  - FBSDKLoginKit (4.39.1):
-    - FBSDKCoreKit
+  - FBSDKCoreKit (5.5.0):
+    - FBSDKCoreKit/Basics (= 5.5.0)
+    - FBSDKCoreKit/Core (= 5.5.0)
+  - FBSDKCoreKit/Basics (5.5.0)
+  - FBSDKCoreKit/Core (5.5.0):
+    - FBSDKCoreKit/Basics
+  - FBSDKLoginKit (5.5.0):
+    - FBSDKCoreKit (~> 5.0)
   - Firebase/Analytics (6.9.0):
     - Firebase/Core
   - Firebase/Core (6.9.0):
@@ -110,8 +108,8 @@ PODS:
     - GTMSessionFetcher/Core (~> 1.1)
   - Flutter (1.0.0)
   - flutter_facebook_login (0.0.1):
-    - FBSDKCoreKit (= 4.39.1)
-    - FBSDKLoginKit (= 4.39.1)
+    - FBSDKCoreKit (~> 5.5)
+    - FBSDKLoginKit (~> 5.5)
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -180,8 +178,8 @@ PODS:
   - image_picker (0.0.1):
     - Flutter
   - leveldb-library (1.22)
-  - multi_image_picker (4.5.6):
-    - BSImagePicker (~> 2.10.1)
+  - multi_image_picker (4.5.8):
+    - BSImagePicker (~> 2.10.3)
     - Flutter
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
@@ -190,7 +188,7 @@ PODS:
   - nanopb/encode (0.3.901)
   - path_provider (0.0.1):
     - Flutter
-  - permission_handler (3.2.2):
+  - permission_handler (3.3.0):
     - Flutter
   - Protobuf (3.10.0)
   - Regift (1.5.0)
@@ -213,8 +211,8 @@ PODS:
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
-  - FBSDKCoreKit (= 4.39.1)
-  - FBSDKLoginKit (= 4.39.1)
+  - FBSDKCoreKit (= 5.5.0)
+  - FBSDKLoginKit (= 5.5.0)
   - Firebase/Analytics
   - Firebase/Firestore
   - Firebase/Storage
@@ -222,7 +220,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
@@ -246,7 +244,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Bolts
     - BoringSSL-GRPC
     - BSGridCollectionViewLayout
     - BSImagePicker
@@ -290,7 +287,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
   flutter_facebook_login:
     :path: ".symlinks/plugins/flutter_facebook_login/ios"
   flutter_local_notifications:
@@ -331,14 +328,13 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
   BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   cloud_firestore: 0ac494d23db743f104b95d3291946afec187b74c
-  FBSDKCoreKit: f442aa96179cc9b382bb4abeb7e340a47cca8f91
-  FBSDKLoginKit: c3079d9a4db27c492287b1eed7a4272b28cf8a59
+  FBSDKCoreKit: 7ade9cfea30eef2f6cf105a1aa904f89ea68fb7d
+  FBSDKLoginKit: bb28062f24e79590c44ba03297ca9bea4b6436d2
   Firebase: 2d750c54cda57d5a6ae31212cfe5cc813c6be7e4
   firebase_analytics: 045e7ebe7b8a4d27357168072868ff082dca15a6
   firebase_core: ae55ea92448ec8675d325da4db22cf3b4d58a54d
@@ -355,7 +351,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: b22b949cc45c14da01e60404dd7bffc78956380c
   FirebaseStorage: b7c6d00997bc21d4465453bdcc5cc65513110fed
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_facebook_login: be61e24a4b7d621515353c6b4583d1981bdaa3d6
+  flutter_facebook_login: cfb5659f686b1c575ef205c6b6fd20db9679d3c4
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   flutter_plugin_pdf_viewer: 7d8e3a03f42d346b2af8840f980b7de95ad5732a
@@ -371,12 +367,12 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
   image_cropper: f25bdfbf1ef970c9a0a0f78306fb6a0aaac7229e
   image_downloader: 0cce746db85ab8e068b7bcf8acacbdf71bca185e
-  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
+  image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
-  multi_image_picker: 3356eab6166b0bcf205f8c1e4bedfefef725772c
+  multi_image_picker: b1f4d88e59966c2083848c605dbe36a5d05a3fb2
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  permission_handler: d59f41439f5bc6c4d1005f3355e98f05ddc68ece
+  permission_handler: 67637977b227d62d46bfbf524f335f8568de5a73
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
   Regift: d097afd401021f4f42b102ee125ceeb125a38caf
   share: 7d22fe8baedfe93aefd864bf0b73f29711fbb0a3
@@ -385,9 +381,9 @@ SPEC CHECKSUMS:
   TOCropViewController: 00dc36c4e4a0f4a45efa91adbf22df8a4fae01d3
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
-  video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
+  video_player: 69c5f029fac4ffe4fc8a85ea7f7b793709661549
   webview_flutter: 1aa7604e6cdb451a9b7ed2c37d5454c0b440246b
 
-PODFILE CHECKSUM: c9cf4eee6463ccf7df4b5d8527395cc24d3d509d
+PODFILE CHECKSUM: e14cd5e122f3ac63d4a6194b2ecccdd987111f15
 
 COCOAPODS: 1.8.4

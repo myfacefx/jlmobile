@@ -144,8 +144,7 @@ class _LoginPage extends State<LoginPage> {
       loginLoading = true;
     });
 
-    FacebookLoginResult result = await facebookLogin
-        .logInWithReadPermissions(['email', 'public_profile']);
+    FacebookLoginResult result = await facebookLogin.logIn(['email', 'public_profile']);
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:

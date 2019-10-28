@@ -44,6 +44,8 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
@@ -59,8 +61,12 @@
 	<string>Location always using</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location when using</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Using Microphone</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Motion Usage</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Using photo library</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Using Photo Library</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

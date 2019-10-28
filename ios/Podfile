@@ -9,8 +9,8 @@ pod 'Firebase/Analytics'
 pod 'Firebase/Storage'
 pod 'Firebase/Firestore'
 
-pod 'FBSDKCoreKit', '4.39.1' 
-pod 'FBSDKLoginKit', '4.39.1'
+pod 'FBSDKCoreKit', '5.5.0' 
+pod 'FBSDKLoginKit', '5.5.0'
 
 use_modular_headers!
 
