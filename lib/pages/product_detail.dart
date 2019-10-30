@@ -23,6 +23,7 @@ import 'package:jlf_mobile/services/auction_services.dart';
 import 'package:jlf_mobile/services/bid_services.dart';
 import 'package:jlf_mobile/services/product_comment_services.dart';
 import 'package:jlf_mobile/services/product_services.dart';
+import 'package:jlf_mobile/services/user_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -270,7 +271,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       Divider(),
       _buildShippingDetail(innerIslandShipping),
       Divider(),
-      isAuction ? _buildTypeLelang() : Container(),
+      isAuction ? _buildTypeLelang() : _buildAddToCart(animal),
       SizedBox(
         height: 8,
       ),
@@ -819,6 +820,50 @@ class _ProductDetailPage extends State<ProductDetailPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildAddToCart(Animal _animal) {
+    return Container(
+        // padding: EdgeInsets.only(top: 20, bottom: 20),
+        color: Colors.white,
+        child: Column(children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RaisedButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.add_shopping_cart,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    Container(
+                      width: 10,
+                    ),
+                    Text("Add To Cart", style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+                color: Theme.of(context).primaryColor,
+                onPressed: () {
+                  if (globals.tempCart == null) {
+                    List<Animal> tamp = List<Animal>();
+                    tamp.add(_animal);
+                    globals.tempCart = tamp;
+                  } else {
+                    globals.tempCart.add(_animal);
+                  }
+                  saveLocalData('tempCart', animalListToJson(globals.tempCart));
+                  globals.showDialogs(
+                      "Berhasil Menambah ke Keranjang!", context);
+                },
+              ),
+            ],
+          )
+        ]));
   }
 
   Widget _buildOtherDesc() {
