@@ -82,6 +82,7 @@ class _HomePage extends State<HomePage> {
     initUniLinks();
     initUniLinksStream();
     handleAppLifecycleState();
+    globals.loadTemporaryCart();
   }
 
   _verificationBonusPoint() async {
@@ -184,7 +185,8 @@ class _HomePage extends State<HomePage> {
       return false;
     }
 
-    FacebookLoginResult result = await facebookLogin.logIn(['email', 'public_profile']);
+    FacebookLoginResult result =
+        await facebookLogin.logIn(['email', 'public_profile']);
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:

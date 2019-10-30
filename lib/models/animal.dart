@@ -15,6 +15,7 @@ List<Animal> animalFromJson(String str) => new List<Animal>.from(json.decode(str
 // Animal animalFromJson(String str) => Animal.fromJson(json.decode(str));
 
 String animalToJson(Animal data) => json.encode(data.toJson());
+String animalListToJson(List<Animal> data) => json.encode(new List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Animal {
     int id;

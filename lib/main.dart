@@ -3,6 +3,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/pages/auction/create.dart';
+import 'package:jlf_mobile/pages/cart_list.dart';
 import 'package:jlf_mobile/pages/event_promotion/list_event.dart';
 import 'package:jlf_mobile/pages/event_promotion/promo.dart';
 import 'package:jlf_mobile/pages/home.dart';
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
         '/reward': (BuildContext context) => RewardPage(),
         '/team': (BuildContext context) => TeamPage(),
         '/promo': (BuildContext context) => PromoPage(),
+        '/cart-list': (BuildContext context) => CartListPage(),
 
         // '/edit-product': (BuildContext context) => EditProductPage()
       },

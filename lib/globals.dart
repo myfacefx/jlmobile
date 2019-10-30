@@ -106,6 +106,7 @@ String norek = '8165246817';
 String nohpAdmin = '6282223304275';
 
 User user;
+List<Animal> tempCart;
 
 // Global timeout setting
 int timeOut = 60;
@@ -649,9 +650,63 @@ Widget appBar(GlobalKey<ScaffoldState> scaffoldKey, context,
   );
 }
 
+void loadTemporaryCart() async {
+  String temporaryCart = await readLocalData("tempCart");
+  if (temporaryCart != null) {
+    tempCart = animalFromJson(temporaryCart);
+  } else {
+    tempCart = List<Animal>();
+  }
+}
+
 Widget myAppBarIcon(context) {
   return Row(
     children: <Widget>[
+      GestureDetector(
+        onTap: () => Navigator.of(context).pushNamed('/cart-list'),
+        child: Center(
+          child: Container(
+              margin: EdgeInsets.only(right: 10),
+              width: 30,
+              height: 30,
+              child: Stack(
+                children: [
+                  Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                  tempCart != null
+                      ? Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.topRight,
+                          margin: EdgeInsets.only(top: 0),
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: myColor('prime'),
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 1)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Center(
+                                child: Text(
+                                  tempCart.length.toString(),
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(),
+                ],
+              )),
+        ),
+      ),
       GestureDetector(
         onTap: () => Navigator.of(context).pushNamed('/chat-list'),
         child: Center(
@@ -664,7 +719,7 @@ Widget myAppBarIcon(context) {
                   Icon(
                     Icons.chat,
                     color: Colors.white,
-                    size: 30,
+                    size: 25,
                   ),
                   user != null &&
                           user.unreadChatCount != null &&
@@ -711,7 +766,7 @@ Widget myAppBarIcon(context) {
                   Icon(
                     Icons.notifications,
                     color: Colors.white,
-                    size: 30,
+                    size: 25,
                   ),
                   user != null &&
                           user.historiesCount != null &&
