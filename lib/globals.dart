@@ -22,7 +22,7 @@ import 'package:mailer/smtp_server.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String version = "v0.1.8";
+String version = "v0.1.9";
 bool isProduction = true;
 
 /// Global Function to return Screen Height

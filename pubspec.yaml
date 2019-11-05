@@ -1,7 +1,7 @@
 name: jlf_mobile
 description: Jual Lelang Fauna.
 
-version: 0.1.8
+version: 0.1.9
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
