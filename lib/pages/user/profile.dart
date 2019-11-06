@@ -952,7 +952,7 @@ class _ProfilePageState extends State<ProfilePage>
                                               fit: BoxFit.cover)
                                           : Image.asset(
                                               'assets/images/account.png'))))),
-                      globals.user.facebookUserId == null ? Container(
+                      globals.user.facebookUserId == null && user.id == globals.user.id ? Container(
                         alignment: Alignment.topLeft,
                         width: globals.mw(context) * 0.5,
                         child: ButtonTheme(
