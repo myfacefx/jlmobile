@@ -510,7 +510,7 @@ class _CategoryDetailPage extends State<CategoryDetailPage> {
         ),
         GestureDetector(
           onTap: () async {
-            String url = getBaseUrl() + "/download/sponsored_seller";
+            String url = getBaseUrlAsset() + "/download/sponsored_seller";
             globals.openPdf(context, url, "Sponsored Seller");
           },
           child: Container(

@@ -1393,7 +1393,7 @@ class _HomePage extends State<HomePage> {
   Widget _buildLaranganBinatang() {
     return GestureDetector(
         onTap: () async {
-          String url = getBaseUrl() + "/download/restricted-animals";
+          String url = getBaseUrlAsset() + "/download/restricted-animals";
           globals.openPdf(context, url, "Hewan Dilindungi");
         },
         child: Container(
@@ -1625,7 +1625,7 @@ class _HomePage extends State<HomePage> {
             child: FittedBox(
               child: FloatingActionButton(
                 onPressed: () async {
-                  String url = getBaseUrl() + "/download/hadiah_jlf";
+                  String url = getBaseUrlAsset() + "/download/hadiah_jlf";
                   globals.openPdf(context, url, "Hadiah JLF");
                 },
                 child: Image.asset("assets/images/floatingbutton.png"),

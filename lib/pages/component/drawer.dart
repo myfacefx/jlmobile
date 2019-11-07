@@ -88,7 +88,7 @@ Widget _buildDrawerNavigationButtonSmall(String title, String route, context) {
             }
           }
           if (route == "terms") {
-            String url = getBaseUrl() + "/download/terms-policy";
+            String url = getBaseUrlAsset() + "/download/terms-policy";
             globals.openPdf(context, url, "Kebijakan Privasi");
           } else {
             Navigator.pop(context);

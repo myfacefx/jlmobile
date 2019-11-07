@@ -99,6 +99,7 @@ void share(String from, Animal animal) {
 }
 
 String baseUrl = "http://192.168.100.119:8000";
+String baseUrlAsset = "http://192.168.100.119:8000";
 String flavor = "Development";
 String state = "Login";
 
@@ -117,6 +118,10 @@ int getTimeOut() {
 
 String getBaseUrl() {
   return baseUrl;
+}
+
+String getBaseUrlAsset() {
+  return baseUrlAsset;
 }
 
 String getNorek() {
