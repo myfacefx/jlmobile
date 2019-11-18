@@ -425,10 +425,11 @@ class _LoginPage extends State<LoginPage> {
                           height: 140),
                     )),
                 Container(
-                    child: Center(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Center(
                   child: Image.asset(
-                    "assets/images/pets_login.jpg",
-                    fit: BoxFit.fitWidth,
+                    "assets/images/pets_login.png",
+                    fit: BoxFit.fitHeight,
                     height: 200,
                     width: globals.mw(context),
                   ),

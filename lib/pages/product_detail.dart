@@ -271,7 +271,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       Divider(),
       _buildShippingDetail(innerIslandShipping),
       Divider(),
-      isAuction ? _buildTypeLelang() : _buildAddToCart(animal),
+      // isAuction ? _buildTypeLelang() : _buildAddToCart(animal),
       SizedBox(
         height: 8,
       ),

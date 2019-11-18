@@ -373,8 +373,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         return;
       }
       setState(() {
-        globals.user.photo =
-            globals.getBaseUrl() + "/images/profile_pictures/$newFileName.jpg";
+        globals.user.photo = res;
+        globals.debugPrint(res);
       });
 
       globals.showDialogs("Foto berhasil diubah", context);

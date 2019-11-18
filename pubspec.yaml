@@ -108,7 +108,8 @@ flutter:
     - assets/images/calendar.png
     - assets/images/daftar_binatang_dilarang.jpg
     - assets/images/jlf-blue.png
-    - assets/images/pets_login.jpg                
+    - assets/images/pets_login.jpg 
+    - assets/images/pets_login.png                
     - assets/images/donation_banner.png
     - assets/images/sponsored_product.png
     - assets/images/promoted_seller.png

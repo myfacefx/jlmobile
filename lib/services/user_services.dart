@@ -182,8 +182,8 @@ Future<String> updateProfilePicture(
       .put(url, headers: header, body: json.encode(_data))
       .timeout(Duration(seconds: getTimeOut()));
 
-  if (res.statusCode == 202) {
-    return json.decode(res.body)['content'];
+  if (res.statusCode == 200) {
+    return json.decode(res.body);
   } else if (res.statusCode == 444) {
     return null;
   } else {
