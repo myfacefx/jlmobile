@@ -99,7 +99,7 @@ void share(String from, Animal animal) {
 }
 
 String baseUrl = "http://192.168.100.119:8000";
-String baseUrlAsset = "http://192.168.100.119:8000";
+String baseUrlAsset = "https://asset.glodoku.xyz";
 String flavor = "Development";
 String state = "Login";
 
