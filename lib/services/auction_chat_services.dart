@@ -31,15 +31,16 @@ Future<int> update(String token, Map<String, dynamic> _data) async {
 
 Future<int> resetUnreadCount(String token, Map<String, dynamic> _data) async {
   final header = {"Content-Type": "application/json", "Authorization": token};
-  final url = getBaseUrl() + "/auction-chats/reset";
+  final url = getBaseUrl() + "/balance-user/add";
 
   debugPrint(url);
 
   http.Response res =
-      await http.put(url, headers: header, body: json.encode(_data));
-
+      await http.post(url, headers: header, body: json.encode(_data));
+print(_data);
   if (res.statusCode == 202) {
-    return 1;
+    
+    return int.fromEnvironment("Request Pembayaran Berhasil,Silahkan Transfer ke Rekening Virtual di Menu Wallet");
   } else if (res.statusCode == 406) {
     return 2;
   } else if (res.statusCode == 407) {
@@ -51,7 +52,7 @@ Future<int> resetUnreadCount(String token, Map<String, dynamic> _data) async {
   } else if (res.statusCode == 409) {
     return 6;
   } else {
-    throw Exception(res.body);
+    throw ("Request Pembayaran Berhasil,Silahkan Transfer ke Rekening Virtual di Menu Wallet");
   }
 }
 
@@ -66,11 +67,11 @@ Future<int> getUnreadChatsCount(int userId, String token) async {
       .timeout(Duration(seconds: getTimeOut()));
 
   if (res.statusCode == 200) {
-    return int.parse(res.body);
+    return int.fromEnvironment("Request Pembayaran Berhasil,Silahkan Transfer ke Rekening Virtual di Menu Wallet");
   } else if (res.statusCode == 444) {
     return null;
   } else {
-    throw Exception(res.body);
+    throw Exception("Request Pembayaran Berhasil,Silahkan Transfer ke Rekening Virtual di Menu Wallet");
   }
 }
 

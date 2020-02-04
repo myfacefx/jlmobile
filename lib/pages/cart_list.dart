@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:jlf_mobile/globals.dart' as globals;
 import 'package:jlf_mobile/models/animal.dart';
+import 'package:jlf_mobile/models/transaction.dart';
+import 'package:jlf_mobile/models/user.dart';
+import 'package:jlf_mobile/services/transaction_services.dart';
 import 'package:jlf_mobile/services/user_services.dart';
 
 import 'component/drawer.dart';
 
 class CartListPage extends StatefulWidget {
+  get from => null;
+  Transaction transaksi;
+
+
   @override
   _CartListPageState createState() => _CartListPageState();
 }
@@ -14,11 +21,19 @@ class _CartListPageState extends State<CartListPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoading = true;
   List<Animal> _tempCart;
+  String selectedSortBy = "BCA";
+  String selectedValues;
+  String textbank;
+  User usere;
+
 
   @override
   void initState() {
     super.initState();
     loadTemporaryCart();
+    selectedValues = "";
+    textbank = "";
+    
   }
 
   void loadTemporaryCart() async {
@@ -58,7 +73,8 @@ class _CartListPageState extends State<CartListPage> {
                 // width: globals.mw(context) * 0.30,
                 padding: EdgeInsets.only(right: 5),
                 child: globals.myText(
-                    text: "$username",
+                 
+                    text: "$username" + globals.user.username,
                     size: 12,
                     textOverflow: TextOverflow.ellipsis)),
             globals.user.verificationStatus == 'verified'
@@ -144,7 +160,9 @@ class _CartListPageState extends State<CartListPage> {
                     animal.owner.photo,
                     animal.owner.regency.name,
                     animal.owner.province.name,
+                    
                   ),
+                   
                   Divider(color: Color.fromRGBO(210, 208, 208, 1)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,8 +175,10 @@ class _CartListPageState extends State<CartListPage> {
                             width: 10,
                           ),
                           _buildDetail(animal.name, animal.product.price),
+                        
                         ],
                       ),
+                     
                       Row(
                         children: <Widget>[
                           IconButton(
@@ -184,6 +204,23 @@ class _CartListPageState extends State<CartListPage> {
                       )
                     ],
                   ),
+                   Divider(color: Color.fromRGBO(210, 208, 208, 1)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                        
+                        Text("Pilih Bank :", style: TextStyle(color: Colors.black)),
+                         dropdownSortBy(),
+                        ],
+                      ),
+                     
+                     
+                    ],
+                  ),
+                 
                   RaisedButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
@@ -194,7 +231,9 @@ class _CartListPageState extends State<CartListPage> {
                       ],
                     ),
                     color: Theme.of(context).primaryColor,
-                    onPressed: () {},
+                    onPressed: () {
+                        _updateSeller(animal.id,animal.owner.id,globals.user.id);
+                    },
                   ),
                 ],
               ))),
@@ -241,5 +280,80 @@ class _CartListPageState extends State<CartListPage> {
                                   text: "Tidak ada notifikasi", color: "dark")),
                     ),
                   ]))));
+  }
+
+
+   Widget dropdownSortBy() {
+    List<String> item = widget.from == "LELANG"
+        ? <String>['CENA', 'BMRI', 'BNIN']
+        : <String>['BCA', 'MANDIRI', 'BNI'];
+    return Container(
+      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue, width: 1),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: DropdownButton<String>(
+          value: selectedSortBy,
+          iconEnabledColor: Colors.black,
+          items: item.map((String value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.blue, fontSize: 13),
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              if (selectedSortBy != value) {
+                selectedSortBy = value;
+                selectedValues = value;
+                 if(selectedValues =='BCA'){
+                     textbank = 'CENA';
+                  }else if(selectedValues =='MANDIRI'){
+                     textbank = 'BMRI';
+                  }else if(selectedValues =='BNI'){
+                     textbank = 'BNIN';
+                  }
+              }
+            });
+          }),
+    );
+  }
+
+  _updateSeller(int id, int idseller, int iduser) async {
+    if (isLoading) return;
+
+    
+      // debugPrint("Validated");
+      Animal animal;
+      Transaction sellerTransaction = Transaction();
+      sellerTransaction.animalId = id; 
+      sellerTransaction.sellerUserId = idseller;
+      sellerTransaction.buyerUserId = iduser;
+      sellerTransaction.adminUserId = 1;
+      sellerTransaction.price = 75000;
+      sellerTransaction.sellerBankName = textbank.toString();
+      sellerTransaction.type = 'auction';
+      sellerTransaction.invoiceNumber = 'k/tes';
+      
+
+      try {
+        var result = await buyitem(sellerTransaction.toJson(),
+            globals.user.tokenRedis);
+
+           
+        print('HASIL NYA' + result);
+        await globals.showDialogs(result, context);
+        Navigator.pop(context);
+      } catch (e) {
+        Navigator.pop(context);
+        globals.showDialogs(e.toString(), context);
+        globals.mailError("Transaction update", e.toString());
+        globals.debugPrint(e);
+      }
+  
   }
 }

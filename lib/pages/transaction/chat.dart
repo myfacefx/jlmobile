@@ -59,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
     _data['id'] = globals.user.id;
     _data['firebase_chat_id'] = auction.firebaseChatId;
     _data['auction_id'] = auction.id;
-
+     _data['winamount'] = auction.winnerBid.amount;
     _data['seller_user_id'] = auction.ownerUserId;
     _data['buyer_user_id'] = auction.winnerBid.userId;
     _data['admin_user_id'] = auction.adminId;
@@ -74,6 +74,7 @@ class _ChatPageState extends State<ChatPage> {
     }
 
     if (_data['role'] != null) {
+      print(_data);
       AuctionChatServices.resetUnreadCount(globals.user.tokenRedis, _data)
           .then((onValue) async {
         if (onValue == 5) {
@@ -181,8 +182,9 @@ class _ChatPageState extends State<ChatPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Center(
+                   
                       child: globals.myText(
-                          text: "JLF Rekber V.01 - Forum Model",
+                          text: "JLF Rekber V.01 - Forum Model"+ auction.winnerBid.amount.toString(),
                           weight: "B",
                           size: 15,
                           align: TextAlign.center)),
@@ -288,6 +290,7 @@ class _ChatPageState extends State<ChatPage> {
               child: Text("Tutup"),
               onPressed: () {
                 Navigator.pop(context);
+                 Navigator.pushNamed(context, '/balance-user');
               },
             ),
           ],
@@ -372,7 +375,10 @@ class _ChatPageState extends State<ChatPage> {
                                         fit: BoxFit.cover),
                                   )
                                 : globals.myText(text: document['content']),
+                                
+
                             Container(
+                             
                                 alignment: Alignment.centerRight,
                                 child: globals.myText(
                                     text: timestamp,

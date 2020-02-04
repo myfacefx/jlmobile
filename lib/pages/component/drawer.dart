@@ -169,6 +169,8 @@ Widget drawer(context) {
                         : Container()
                     : Container(),
                 _buildDrawerNavigationButtonBig("Beranda", '/', null, context),
+                  _buildDrawerNavigationButtonBig("Wallet", '/balance-user',
+                    globals.user != null ? 0 : 0, context),
                 _buildDrawerNavigationButtonBig(
                     "Produkku", '/profile', null, context),
                 _buildDrawerNavigationButtonBig("Lelang Diikuti", '/our-bid',

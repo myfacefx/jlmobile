@@ -22,6 +22,7 @@ import 'package:jlf_mobile/pages/component/drawer.dart';
 import 'package:jlf_mobile/pages/component/not_found.dart';
 import 'package:jlf_mobile/pages/product_detail.dart';
 import 'package:jlf_mobile/pages/static/how_to_join_hot_auction.dart';
+import 'package:jlf_mobile/pages/user/login.dart';
 import 'package:jlf_mobile/pages/user/profile.dart';
 import 'package:jlf_mobile/services/animal_category_services.dart';
 import 'package:jlf_mobile/services/animal_services.dart';
@@ -172,7 +173,7 @@ class _HomePage extends State<HomePage> {
           _lastLifecyleState = AppLifecycleState.resumed;
           break;
         case "AppLifecycleState.suspending":
-          _lastLifecyleState = AppLifecycleState.suspending;
+         // _lastLifecyleState = AppLifecycleState.suspending;
           break;
         default:
       }
@@ -285,7 +286,7 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  void _checkVersion() {
+ void _checkVersion() {
     globals.debugPrint("Checking Version");
     verifyVersion(globals.version).then((onValue) async {
       if (!onValue.isUpToDate) {
@@ -316,6 +317,9 @@ class _HomePage extends State<HomePage> {
           });
           globals.generateToken();
           globals.notificationListener(context);
+        }else {
+           Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
         }
         setState(() {
           alreadyUpToDate = true;

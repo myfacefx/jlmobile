@@ -193,7 +193,7 @@ class _RegisterPageState extends State<RegisterPage> {
       user.facebookUserId = _facebookUserId;
       user.roleId = 2;
 
-      globals.debugPrint(user.toJson());
+     print(user.toJson());
 
       Map<String, dynamic> formData = user.toJson();
 
@@ -216,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
         try {
           globals.debugPrint(e);
           globals.showDialogs(e.toString().split(":")[1], context);
-          globals.mailError("Register", e.toString());
+          //globals.mailError("Register", e.toString());
         } catch (e) {
           globals.showDialogs(e.toString(), context);
         }

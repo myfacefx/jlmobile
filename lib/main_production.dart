@@ -6,7 +6,7 @@ void main() async {
   var configuredApp = AppConfig(
     appName: 'Jual Lelang Fauna',
     flavorName: 'production',
-    baseUrl: 'https://api.jlfbackend.xyz',
+    baseUrl: 'https://www.tutor.my.id/apilelang/public',
     apiUrl: '/api',
     isProduction: true,
     child: MyApp(),

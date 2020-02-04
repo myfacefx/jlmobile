@@ -98,7 +98,7 @@ void share(String from, Animal animal) {
       text + ' - Cek Segera Hanya di JLF - https://juallelangfauna.com/$param');
 }
 
-String baseUrl = "http://192.168.100.119:8000";
+String baseUrl = "https://www.tutor.my.id/apilelang/public";
 String baseUrlAsset = "https://asset.glodoku.xyz";
 String flavor = "Development";
 String state = "Login";
@@ -667,51 +667,51 @@ void loadTemporaryCart() async {
 Widget myAppBarIcon(context) {
   return Row(
     children: <Widget>[
-      // GestureDetector(
-      //   onTap: () => Navigator.of(context).pushNamed('/cart-list'),
-      //   child: Center(
-      //     child: Container(
-      //         margin: EdgeInsets.only(right: 10),
-      //         width: 30,
-      //         height: 30,
-      //         child: Stack(
-      //           children: [
-      //             Icon(
-      //               Icons.shopping_cart,
-      //               color: Colors.white,
-      //               size: 25,
-      //             ),
-      //             tempCart != null
-      //                 ? Container(
-      //                     width: 30,
-      //                     height: 30,
-      //                     alignment: Alignment.topRight,
-      //                     margin: EdgeInsets.only(top: 0),
-      //                     child: Container(
-      //                       width: 15,
-      //                       height: 15,
-      //                       decoration: BoxDecoration(
-      //                           shape: BoxShape.circle,
-      //                           color: myColor('prime'),
-      //                           border: Border.all(
-      //                               color: Theme.of(context).primaryColor,
-      //                               width: 1)),
-      //                       child: Padding(
-      //                         padding: const EdgeInsets.all(0.0),
-      //                         child: Center(
-      //                           child: Text(
-      //                             tempCart.length.toString(),
-      //                             style: TextStyle(fontSize: 10),
-      //                           ),
-      //                         ),
-      //                       ),
-      //                     ),
-      //                   )
-      //                 : Container(),
-      //           ],
-      //         )),
-      //   ),
-      // ),
+       GestureDetector(
+        onTap: () => Navigator.of(context).pushNamed('/cart-list'),
+        child: Center(
+          child: Container(
+              margin: EdgeInsets.only(right: 10),
+              width: 30,
+              height: 30,
+              child: Stack(
+                children: [
+                 Icon(
+                   Icons.shopping_cart,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                  tempCart != null
+                      ? Container(
+                        width: 30,
+                         height: 30,
+                          alignment: Alignment.topRight,
+                        margin: EdgeInsets.only(top: 0),
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                           decoration: BoxDecoration(
+                                 shape: BoxShape.circle,
+                                 color: myColor('prime'),
+                                 border: Border.all(
+                                     color: Theme.of(context).primaryColor,
+                                     width: 1)),
+                             child: Padding(
+                               padding: const EdgeInsets.all(0.0),
+                               child: Center(
+                                 child: Text(
+                                   tempCart.length.toString(),
+                                   style: TextStyle(fontSize: 10),
+                                 ),
+                               ),
+                             ),
+                           ),
+                         )
+                       : Container(),
+                 ],
+               )),
+         ),
+       ),
       GestureDetector(
         onTap: () => Navigator.of(context).pushNamed('/chat-list'),
         child: Center(

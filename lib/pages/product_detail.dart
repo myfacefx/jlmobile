@@ -271,7 +271,7 @@ class _ProductDetailPage extends State<ProductDetailPage> {
       Divider(),
       _buildShippingDetail(innerIslandShipping),
       Divider(),
-      // isAuction ? _buildTypeLelang() : _buildAddToCart(animal),
+       isAuction ? _buildTypeLelang() : _buildAddToCart(animal),
       SizedBox(
         height: 8,
       ),
@@ -1715,24 +1715,9 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                   padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
                                   child: FlatButton(
                                       onPressed: () async {
-                                        if (chatLoading) return null;
+                                      
 
-                                        setState(() {
-                                          chatLoading = true;
-                                        });
-
-                                        if (animal.auction.firebaseChatId !=
-                                                null &&
-                                            animal.auction.firebaseChatId
-                                                    .length >
-                                                0) {
-                                          setState(() {
-                                            chatLoading = false;
-                                          });
-
-                                          globals.debugPrint(
-                                              animal.auction.firebaseChatId);
-                                          Navigator.push(
+                                        Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder:
@@ -1740,106 +1725,13 @@ class _ProductDetailPage extends State<ProductDetailPage> {
                                                           ChatPage(
                                                               auction: animal
                                                                   .auction)));
-                                        } else {
-                                          // Check first from server whether firebase chat id just set
 
-                                          String firebaseChatId =
-                                              await AuctionServices
-                                                  .getFirebaseChatId(
-                                                      globals.user.tokenRedis,
-                                                      animal.auction.id);
-                                          if (firebaseChatId == null) {
-                                            await globals.showDialogs(
-                                                "Session anda telah berakhir, Silakan melakukan login ulang",
-                                                context,
-                                                isLogout: true);
-                                          }
-
-                                          globals.debugPrint(
-                                              "FirebaseChatId = $firebaseChatId");
-
-                                          if (firebaseChatId == null ||
-                                              firebaseChatId.length < 1) {
-                                            var documentReference = Firestore
-                                                .instance
-                                                .collection('chat_rooms');
-
-                                            String id;
-
-                                            DocumentReference temp =
-                                                await documentReference.add({
-                                              'admin_token': null,
-                                              'winner_token': winner != null
-                                                  ? winner.firebaseToken
-                                                  : null,
-                                              'owner_token': animal.owner !=
-                                                      null
-                                                  ? animal.owner.firebaseToken
-                                                  : null
-                                            });
-                                            id = temp.documentID;
-
-                                            Auction update = Auction();
-                                            update.firebaseChatId = id;
-
-                                            var response = await AuctionServices
-                                                .updateFirebaseChatId(
-                                                    globals.user.tokenRedis,
-                                                    update.toJson(),
-                                                    animal.auction.id);
-
-                                            if (response == null) {
-                                              await globals.showDialogs(
-                                                  "Session anda telah berakhir, Silakan melakukan login ulang",
-                                                  context,
-                                                  isLogout: true);
-                                            }
-
-                                            if (response) {
-                                              animal.auction.firebaseChatId =
-                                                  id;
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          ChatPage(
-                                                              auction: animal
-                                                                  .auction)));
-                                              setState(() {
-                                                chatLoading = false;
-                                              });
-                                            } else {
-                                              await globals.showDialogs(
-                                                  "Gagal membuka chat, silahkan ulangi",
-                                                  context);
-
-                                              setState(() {
-                                                chatLoading = false;
-                                              });
-                                            }
-                                          } else {
-                                            animal.auction.firebaseChatId =
-                                                firebaseChatId;
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        ChatPage(
-                                                            auction: animal
-                                                                .auction)));
-                                            setState(() {
-                                              chatLoading = false;
-                                            });
-                                          }
-                                        }
                                       },
                                       color: chatLoading
                                           ? globals.myColor('dark')
                                           : globals.myColor('primary'),
                                       child: globals.myText(
-                                          text: "Diskusi Pembayaran",
+                                          text: "Transfer Now",
                                           color: 'light',
                                           weight: "B"),
                                       shape: RoundedRectangleBorder(

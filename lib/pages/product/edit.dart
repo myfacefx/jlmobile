@@ -486,7 +486,7 @@ class _EditProductPageState extends State<EditProductPage> {
                               padding: EdgeInsets.all(5),
                               child: FadeInImage.assetNetwork(
                                 fit: BoxFit.fitHeight,
-                                placeholder: 'assets/images/loading.gif',
+                                placeholder: 'assets/images/loading.gif', image: null,
                                 // image: currentImages[index],
                               ))
                           : Container(),

@@ -61,3 +61,22 @@ Future<String> update(int transactionId, Map<String, dynamic> _data, String toke
     throw Exception(res.body);
   }
 }
+
+
+Future<String> buyitem(Map<String, dynamic> _data, String token) async {
+  final header = {"Content-Type": "application/json", "Authorization": token};
+
+  final url = getBaseUrl() + "/transactions/buyitem";
+  
+  debugPrint(url);
+// print(_data);
+  http.Response res = await http
+      .post(url, headers: header, body: json.encode(_data))
+      .timeout(Duration(seconds: getTimeOut()));
+//print(res.statusCode);
+  if (res.statusCode == 200) {
+    return ("Request Pembayaran Berhasil,Silahkan Transfer ke Rekening Virtual Dibawah Ini");
+  } else {
+    throw Exception(res.body);
+  }
+}

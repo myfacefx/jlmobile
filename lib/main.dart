@@ -17,6 +17,7 @@ import 'package:jlf_mobile/pages/static/reward.dart';
 import 'package:jlf_mobile/pages/static/setting.dart';
 import 'package:jlf_mobile/pages/static/team.dart';
 import 'package:jlf_mobile/pages/transaction/chat_list.dart';
+import 'package:jlf_mobile/pages/user/balance_user.dart';
 import 'package:jlf_mobile/pages/user/blacklist.dart';
 import 'package:jlf_mobile/pages/user/edit_password.dart';
 import 'package:jlf_mobile/pages/user/edit_profile.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
         '/auction/create': (BuildContext context) => CreateAuctionPage(),
         '/notification': (BuildContext context) => NotificationPage(),
         '/point-history': (BuildContext context) => PointHistoryPage(),
+        '/balance-user': (BuildContext context) => BalanceUserPage(),
         '/intro': (BuildContext context) => IntroPage(),
         '/chat-list': (BuildContext context) => ChatListPage(),
         '/donasi': (BuildContext context) => DonasiPage(),

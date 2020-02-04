@@ -1084,6 +1084,19 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                         ),
                       ),
+                      Container(
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, "/balance-user");
+                            },
+                            child: Text('Balance Rekber',
+                                style: TextStyle(
+                                    color: Colors.lightBlue,
+                                    decoration: TextDecoration.underline)),
+                          ),
+                        ),
+                      ),
                       user.id == globals.user.id
                           ? FlatButton(
                               // shape: CircleBorder(),

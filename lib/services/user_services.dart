@@ -14,7 +14,7 @@ Future<Map<String, dynamic>> login(Map<String, dynamic> _data) async {
       await http.post(url, headers: header, body: json.encode(_data));
 
   var response = json.decode(res.body);
-
+print(response);
   if (res.statusCode == 200) {
     return response;
   } else {

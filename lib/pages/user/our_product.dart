@@ -201,7 +201,7 @@ class _OurProductPageState extends State<OurProductPage> {
     return animals.length == 0
         ? Center(
             child: Text(
-              "Data tidak ditemukan",
+              "Belanjaan Data tidak ditemukan",
               style: Theme.of(context).textTheme.title,
             ),
           )

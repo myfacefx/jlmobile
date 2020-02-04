@@ -49,6 +49,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+/*
     flavorDimensions "flavor"
     productFlavors {
         staging {
@@ -67,6 +68,7 @@ android {
             dimension "flavor"
         }
     }
+    */
 
     signingConfigs {
        release {
@@ -108,9 +110,9 @@ dependencies {
     
     implementation 'com.sangcomz:FishBun:0.9.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
-
-    implementation 'com.google.firebase:firebase-core:16.0.1'
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.firebase:firebase-messaging:20.0.1'
+    // 'com.google.firebase:firebase-core:16.0.1'
+    // 'com.google.firebase:firebase-messaging:17.3.4'
 }
 
 apply plugin: 'com.google.gms.google-services'
